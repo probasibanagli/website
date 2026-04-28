@@ -1,36 +1,114 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ProbasiBangali.in
 
-## Getting Started
+> Helping Bengali people feel at home anywhere in Tamil Nadu 🇮🇳
 
-First, run the development server:
+A full-stack community platform for Bengali-speaking people living in, studying in, or visiting Tamil Nadu. Built with Next.js 16, Tailwind CSS v4, and Supabase.
+
+## 🚀 Quick Start
 
 ```bash
+# Install dependencies
+npm install
+
+# Copy environment config
+cp .env.example .env.local
+# Edit .env.local with your API keys (see below)
+
+# Start development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+
+# Build for production
+npm run build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🔑 Environment Setup
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Variable | Where to Get | Cost |
+|----------|-------------|------|
+| `GROQ_API_KEY` | [console.groq.com](https://console.groq.com) | **FREE** (14,400 req/day) |
+| `NEXT_PUBLIC_SUPABASE_URL` | [supabase.com](https://supabase.com) | **FREE** tier |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase dashboard → Settings → API | **FREE** tier |
+| `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` | [Google Cloud Console](https://console.cloud.google.com) | **FREE** (28K loads/mo) |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 📦 Modules
 
-## Learn More
+### 1. 🏠 Home Page (`/`)
+Hero banner, quick access tiles, emergency strip, community section, CTA
 
-To learn more about Next.js, take a look at the following resources:
+### 2. 🔍 Explore
+- **Stay** (`/explore/stay`) — Bengali-friendly PGs, hotels, rental houses
+- **Food** (`/explore/food`) — Bengali restaurants, sweet shops, tiffin, delivery
+- **Travel** (`/explore/travel`) — Bus, metro, train routes + Tamil word helper
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 3. 👥 Community
+- **Groups** (`/community/groups`) — WhatsApp, Telegram, Facebook communities
+- **Matrimonial** (`/community/matrimonial`) — Full registration → verification → matching flow
+- **Events** (`/community/events`) — Durga Puja, festivals, cultural events
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 4. 🚨 Emergency
+- **Hospitals** (`/emergency/hospitals`) — Bengali doctor filter, 24/7 status, call buttons
+- **Ambulance/SOS** (`/emergency/ambulance`) — One-tap 112, 108, 100, 101 calling
+- **Blood Help** (`/emergency/blood`) — Search by blood group + city
 
-## Deploy on Vercel
+### 5. 🎓 Services
+- **College Finder** (`/services/college`) — Engineering, medical, arts colleges
+- **Government** (`/services/government`) — Aadhaar, ration card, passport portals
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 6. 📝 Blog (`/blog`)
+Community-driven articles, recipes, and guides
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🤖 AI Chatbot
+- **Primary:** Groq API (LLaMA 3.3 70B) — FREE tier
+- **Fallback:** Intelligent demo responses covering all modules
+- **Languages:** Bengali (বাংলা), Tamil (தமிழ்), English
+
+## 🛠 Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Framework | Next.js 16.2 (App Router + Turbopack) |
+| Styling | Tailwind CSS v4 |
+| Icons | Lucide React |
+| Animation | Framer Motion |
+| Database | Supabase (PostgreSQL) |
+| Auth | Supabase Auth |
+| AI | Groq API (LLaMA 3.3 70B) |
+| Fonts | DM Sans, Playfair Display, Hind Siliguri |
+| Language | TypeScript |
+
+## 📁 Project Structure
+
+```
+src/
+├── app/
+│   ├── api/chat/          # AI chatbot API (Groq)
+│   ├── auth/              # Login & Register
+│   ├── blog/              # Blog listing & posts
+│   ├── community/         # Groups, Matrimonial, Events
+│   ├── emergency/         # Hospitals, Ambulance, Blood
+│   ├── explore/           # Stay, Food, Travel
+│   ├── profile/           # User profile
+│   └── services/          # College, Government
+├── components/
+│   ├── chatbot/           # AI chat widget
+│   ├── layout/            # Navbar, Footer
+│   └── ui/                # Button, Card, Badge, Input
+├── data/                  # Sample data
+├── lib/                   # Utils, constants, Supabase client
+└── types/                 # TypeScript interfaces
+```
+
+## 🎨 Design System
+
+| Token | Value |
+|-------|-------|
+| Primary | `#D85A30` (warm terracotta) |
+| Accent | `#1D9E75` (emerald green) |
+| Surface | `#F8F7F4` (warm off-white) |
+| Display Font | Playfair Display |
+| Body Font | DM Sans |
+| Bengali Font | Hind Siliguri |
+
+## 📄 License
+
+Built with ❤️ for the Bengali community in Tamil Nadu.

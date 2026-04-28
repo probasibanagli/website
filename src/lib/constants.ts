@@ -34,7 +34,11 @@ export const GOVT_SERVICES = [
   { id: 'mgnregs', title: 'MGNREGS Job Card', description: 'Register for 100 days guaranteed employment scheme.', category: 'Employment', url: 'https://nrega.nic.in/', icon: '👷' },
   { id: 'tn-e-seva', title: 'TN e-Seva Portal', description: 'One-stop portal for various Tamil Nadu government services.', category: 'Government', url: 'https://www.tnesevai.tn.gov.in/', icon: '🏛️' },
   { id: 'passport', title: 'Passport Seva', description: 'Apply for a new passport or renew existing one.', category: 'Travel', url: 'https://passportindia.gov.in/', icon: '✈️' },
-  { id: 'voter-id', title: 'Voter ID (EPIC)', description: 'Register as a voter or update your electoral details.', category: 'Education', url: 'https://voters.eci.gov.in/', icon: '🗳️' },
+  { id: 'voter-id', title: 'Voter ID (EPIC)', description: 'Register as a voter or update your electoral details.', category: 'Election', url: 'https://voters.eci.gov.in/', icon: '🗳️' },
+  { id: 'police-verification', title: 'Police Verification (Tenants)', description: 'Mandatory police verification for tenants and migrants in Tamil Nadu.', category: 'Safety', url: 'https://eservices.tnpolice.gov.in/', icon: '🛡️' },
+  { id: 'labour-registration', title: 'TN Labour Registration', description: 'Register as a migrant worker with the Tamil Nadu Labour Department.', category: 'Employment', url: 'https://labour.tn.gov.in/', icon: '🏗️' },
+  { id: 'esic-pf', title: 'ESIC / PF Registration', description: 'Employee health insurance (ESIC) and provident fund (EPFO) portals.', category: 'Employment', url: 'https://www.esic.gov.in/', icon: '💼' },
+  { id: 'scholarships', title: 'Scholarship Schemes', description: 'Central and state scholarship schemes for students from economically weaker sections.', category: 'Education', url: 'https://scholarships.gov.in/', icon: '🎓' },
 ];
 
 export const TAMIL_WORDS = [
@@ -46,4 +50,12 @@ export const TAMIL_WORDS = [
   { tamil: 'Kaasu', meaning: 'Money', script: 'காசு' },
   { tamil: 'Auto varumo?', meaning: 'Will auto come?', script: 'ஆட்டோ வருமா?' },
   { tamil: 'Thanni venum', meaning: 'I need water', script: 'தண்ணி வேணும்' },
+  { tamil: 'Saapadu', meaning: 'Food / Meal', script: 'சாப்பாடு' },
+  { tamil: 'Bus nilayam', meaning: 'Bus station', script: 'பஸ் நிலையம்' },
+  { tamil: 'Maruthuvamani', meaning: 'Hospital', script: 'மருத்துவமனை' },
+  { tamil: 'Udavi', meaning: 'Help!', script: 'உதவி!' },
+  { tamil: 'Veetuku poganum', meaning: 'I need to go home', script: 'வீட்டுக்கு போகணும்' },
+  { tamil: 'Romba nalla irukku', meaning: 'Very good!', script: 'ரொம்ப நல்லா இருக்கு' },
+  { tamil: 'Puriyala', meaning: 'I don\'t understand', script: 'புரியல' },
+  { tamil: 'Oru nimisham', meaning: 'One moment', script: 'ஒரு நிமிஷம்' },
 ];
