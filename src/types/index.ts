@@ -1,13 +1,50 @@
-export interface User {
-  id: string;
-  email?: string;
+/* ──────────────── Role & Permission Types ──────────────── */
+
+export type UserRole = 'user' | 'admin' | 'superadmin';
+
+export type PermissionLevel = 'none' | 'view' | 'edit' | 'manage';
+
+export type ModuleKey =
+  | 'stay'
+  | 'food'
+  | 'travel'
+  | 'emergency'
+  | 'community'
+  | 'services'
+  | 'blog'
+  | 'users';
+
+export type ModulePermissions = Record<ModuleKey, PermissionLevel>;
+
+export interface UserProfile {
+  uid: string;
+  email: string;
   phone?: string;
-  full_name?: string;
+  full_name: string;
   bengali_name?: string;
-  role: 'user' | 'admin';
   avatar_url?: string;
+  role: UserRole;
+  permissions: ModulePermissions;
   created_at: string;
+  updated_at: string;
+  created_by?: string;
+  is_active: boolean;
 }
+
+/* ──────────────── Module Labels (for UI) ──────────────── */
+
+export const MODULE_LABELS: Record<ModuleKey, string> = {
+  stay: 'Stay & Accommodation',
+  food: 'Bengali Food & Sweets',
+  travel: 'Travel & Transport',
+  emergency: 'Emergency Services',
+  community: 'Community',
+  services: 'Campus & Government',
+  blog: 'Blog Posts',
+  users: 'User Management',
+};
+
+/* ──────────────── Data Models ──────────────── */
 
 export interface Listing {
   id: string;

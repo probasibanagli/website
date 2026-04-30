@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { T } from '@/lib/contexts/LanguageContext';
 import { ArrowRight, Home, UtensilsCrossed, Bus, Users, Heart, Calendar, GraduationCap, Landmark, Hospital, Droplets, Siren, Phone, MapPin, Shield, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -18,27 +19,27 @@ export default function HomePage() {
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <Badge variant="teal" className="mb-6 animate-fade-in">
-            🇮🇳 Bengali community platform for Tamil Nadu
+            <T>Bengali community platform for Tamil Nadu</T>
           </Badge>
 
           <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold font-display text-text-primary leading-tight animate-fade-in delay-100">
-            Feel at <em className="text-primary not-italic">Home</em>,<br />
-            Wherever You Are
+            <T>Feel at</T> <em className="text-primary not-italic"><T>Home</T></em>,<br />
+            <T>Wherever You Are</T>
           </h1>
 
           <p className="mt-6 text-lg sm:text-xl text-text-muted max-w-2xl mx-auto leading-relaxed animate-fade-in delay-200">
-            Find Bengali food, safe accommodation, travel help, and community connections — built for Bengalis living in Tamil Nadu.
+            <T>Find Bengali food, safe accommodation, travel help, and community connections — built for Bengalis living in Tamil Nadu.</T>
           </p>
 
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in delay-300">
             <Link href="/explore/stay">
               <Button variant="primary" size="lg">
-                Explore Services <ArrowRight className="w-5 h-5" />
+                <T>Explore Services</T> <ArrowRight className="w-5 h-5" />
               </Button>
             </Link>
             <Link href="/community/groups">
               <Button variant="outline" size="lg">
-                Join Community
+                <T>Join Community</T>
               </Button>
             </Link>
           </div>
@@ -53,7 +54,7 @@ export default function HomePage() {
             ].map((stat) => (
               <div key={stat.label} className="flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-white/80 backdrop-blur-sm border border-border shadow-sm">
                 <span className={stat.color}>{stat.icon}</span>
-                <span className="text-sm font-semibold text-text-primary">{stat.label}</span>
+                <span className="text-sm font-semibold text-text-primary"><T>{stat.label}</T></span>
               </div>
             ))}
           </div>
@@ -64,12 +65,12 @@ export default function HomePage() {
       <section className="py-20 lg:py-28 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
-            <Badge variant="bengali" className="mb-4">Explore</Badge>
+            <Badge variant="bengali" className="mb-4"><T>Explore</T></Badge>
             <h2 className="text-3xl sm:text-4xl font-bold font-display text-text-primary">
-              Everything You Need
+              <T>Everything You Need</T>
             </h2>
             <p className="mt-3 text-text-muted max-w-xl mx-auto">
-              From finding a Bengali-friendly PG to authentic fish curry — we&apos;ve got you covered.
+              <T>From finding a Bengali-friendly PG to authentic fish curry — we've got you covered.</T>
             </p>
           </div>
 
@@ -84,10 +85,10 @@ export default function HomePage() {
                   <div className={`w-14 h-14 rounded-2xl ${item.color} flex items-center justify-center mb-5 group-hover:scale-110 transition-transform`}>
                     {item.icon}
                   </div>
-                  <h3 className="text-xl font-bold text-text-primary mb-2">{item.title}</h3>
-                  <p className="text-sm text-text-muted leading-relaxed mb-4">{item.desc}</p>
+                  <h3 className="text-xl font-bold text-text-primary mb-2"><T>{item.title}</T></h3>
+                  <p className="text-sm text-text-muted leading-relaxed mb-4"><T>{item.desc}</T></p>
                   <span className="text-sm font-semibold text-primary flex items-center gap-1 group-hover:gap-2 transition-all">
-                    View <ArrowRight className="w-4 h-4" />
+                    <T>View</T> <ArrowRight className="w-4 h-4" />
                   </span>
                 </Card>
               </Link>
@@ -101,10 +102,10 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSA2MCAwIEwgMCAwIDAgNjAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNTUsMjU1LDI1NSwwLjA1KSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')] opacity-30" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl sm:text-4xl font-bold font-display text-white mb-3">
-            Emergency Services
+            <T>Emergency Services</T>
           </h2>
           <p className="text-white/80 max-w-xl mx-auto mb-10">
-            Immediate help when you need it most — hospitals, blood banks, and emergency contacts.
+            <T>Immediate help when you need it most — hospitals, blood banks, and emergency contacts.</T>
           </p>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl mx-auto">
             {[
@@ -120,7 +121,7 @@ export default function HomePage() {
                     : 'bg-white/15 hover:bg-white/25 text-white backdrop-blur-sm'
                 }`}>
                   {item.icon}
-                  <span className="text-sm font-semibold">{item.label}</span>
+                  <span className="text-sm font-semibold"><T>{item.label}</T></span>
                 </div>
               </Link>
             ))}
@@ -132,12 +133,12 @@ export default function HomePage() {
       <section className="py-20 lg:py-28 bg-surface">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
-            <Badge variant="teal" className="mb-4">Community</Badge>
+            <Badge variant="teal" className="mb-4"><T>Community</T></Badge>
             <h2 className="text-3xl sm:text-4xl font-bold font-display text-text-primary">
-              Connect with Your People
+              <T>Connect with Your People</T>
             </h2>
             <p className="mt-3 text-text-muted max-w-xl mx-auto">
-              Join groups, find life partners, celebrate festivals, and stay connected.
+              <T>Join groups, find life partners, celebrate festivals, and stay connected.</T>
             </p>
           </div>
 
@@ -153,8 +154,8 @@ export default function HomePage() {
                   <div className={`w-14 h-14 rounded-2xl ${item.color} flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform`}>
                     {item.icon}
                   </div>
-                  <h3 className="text-lg font-bold text-text-primary mb-2">{item.title}</h3>
-                  <p className="text-sm text-text-muted">{item.desc}</p>
+                  <h3 className="text-lg font-bold text-text-primary mb-2"><T>{item.title}</T></h3>
+                  <p className="text-sm text-text-muted"><T>{item.desc}</T></p>
                 </Card>
               </Link>
             ))}
@@ -202,20 +203,20 @@ export default function HomePage() {
       <section className="py-20 bg-gradient-to-br from-accent-light via-white to-primary-light">
         <div className="max-w-3xl mx-auto px-4 text-center">
           <h2 className="text-3xl sm:text-4xl font-bold font-display text-text-primary mb-4">
-            Join the ProbasiBangali Community
+            <T>Join the ProbasiBangali Community</T>
           </h2>
           <p className="text-text-muted mb-8 max-w-lg mx-auto">
-            Whether you&apos;re a student, professional, or family — connect with fellow Bengalis and make Tamil Nadu feel like home.
+            <T>Whether you're a student, professional, or family — connect with fellow Bengalis and make Tamil Nadu feel like home.</T>
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link href="/auth/register">
               <Button variant="primary" size="lg">
-                Create Free Account <ArrowRight className="w-5 h-5" />
+                <T>Create Free Account</T> <ArrowRight className="w-5 h-5" />
               </Button>
             </Link>
             <Link href="/community/groups">
               <Button variant="secondary" size="lg">
-                Browse Community Groups
+                <T>Browse Community Groups</T>
               </Button>
             </Link>
           </div>

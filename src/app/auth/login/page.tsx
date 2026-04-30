@@ -2,22 +2,52 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Mail, Phone, Lock, Eye, EyeOff } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { Mail, Phone, Lock, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
+import { useAuth } from '@/lib/auth/AuthContext';
 
 export default function LoginPage() {
+  const router = useRouter();
+  const { signIn } = useAuth();
   const [mode, setMode] = useState<'email' | 'phone'>('email');
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Supabase auth integration will go here
-    alert('Login functionality requires Supabase configuration. Please add your Supabase credentials to .env.local');
+    setError('');
+    setLoading(true);
+
+    try {
+      if (mode === 'email') {
+        await signIn(email, password);
+      } else {
+        // Phone OTP login will be added later
+        setError('Phone login is coming soon. Please use email.');
+        setLoading(false);
+        return;
+      }
+      // Redirect to intended page or home
+      const params = new URLSearchParams(window.location.search);
+      const redirect = params.get('redirect') || '/';
+      router.push(redirect);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Login failed';
+      if (message.includes('user-not-found') || message.includes('wrong-password') || message.includes('invalid-credential')) {
+        setError('Invalid email or password. Please try again.');
+      } else {
+        setError(message);
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -42,6 +72,12 @@ export default function LoginPage() {
             </button>
           </div>
 
+          {error && (
+            <div className="mb-4 p-3 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm">
+              {error}
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="space-y-4">
             {mode === 'email' ? (
               <Input label="Email Address" id="login-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" />
@@ -60,8 +96,9 @@ export default function LoginPage() {
               <button type="button" className="text-xs text-primary hover:underline cursor-pointer">Forgot password?</button>
             </div>
 
-            <Button variant="primary" size="lg" className="w-full" type="submit">
-              <Lock className="w-4 h-4" /> Login
+            <Button variant="primary" size="lg" className="w-full" type="submit" disabled={loading}>
+              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Lock className="w-4 h-4" />}
+              {loading ? 'Logging in...' : 'Login'}
             </Button>
           </form>
 

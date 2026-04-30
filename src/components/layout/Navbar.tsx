@@ -2,9 +2,15 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Menu, X, ChevronDown, Phone, Globe } from 'lucide-react';
+import { T } from '@/lib/contexts/LanguageContext';
+import { usePathname, useRouter } from 'next/navigation';
+import {
+  Menu, X, ChevronDown, Phone, Globe, User, Shield, LogOut,
+} from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@/lib/auth/AuthContext';
+import { useLanguage } from '@/lib/contexts/LanguageContext';
 
 const navLinks = [
   {
@@ -43,7 +49,29 @@ const navLinks = [
 export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
-  const [lang, setLang] = useState<'en' | 'bn'>('en');
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const { language, setLanguage } = useLanguage();
+  const [langMenuOpen, setLangMenuOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const pathname = usePathname();
+  const router = useRouter();
+  const { firebaseUser, profile, loading, logOut } = useAuth();
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Don't show navbar on admin pages (admin has its own layout)
+  if (pathname.startsWith('/admin')) return null;
+
+  const isLoggedIn = !!firebaseUser && !!profile;
+  const isAdmin = profile?.role === 'admin' || profile?.role === 'superadmin';
+
+  const handleLogout = async () => {
+    await logOut();
+    setUserMenuOpen(false);
+    router.push('/');
+  };
 
   return (
     <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-border">
@@ -69,7 +97,7 @@ export function Navbar() {
                 onMouseLeave={() => setActiveDropdown(null)}
               >
                 <button className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-text-primary hover:text-primary transition-colors rounded-lg hover:bg-surface cursor-pointer">
-                  {link.label}
+                  <T>{link.label}</T>
                   <ChevronDown className={cn('w-3.5 h-3.5 transition-transform', activeDropdown === link.label && 'rotate-180')} />
                 </button>
                 {activeDropdown === link.label && (
@@ -81,7 +109,7 @@ export function Navbar() {
                         className="flex items-center gap-3 px-4 py-2.5 text-sm text-text-primary hover:bg-surface hover:text-primary transition-colors"
                       >
                         <span className="text-lg">{child.icon}</span>
-                        {child.label}
+                        <T>{child.label}</T>
                       </Link>
                     ))}
                   </div>
@@ -89,32 +117,117 @@ export function Navbar() {
               </div>
             ))}
             <Link href="/blog" className="px-3 py-2 text-sm font-medium text-text-primary hover:text-primary transition-colors rounded-lg hover:bg-surface">
-              Blog
+              <T>Blog</T>
             </Link>
           </div>
 
           {/* Right side */}
           <div className="flex items-center gap-2">
-            <button
-              onClick={() => setLang(lang === 'en' ? 'bn' : 'en')}
-              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-text-muted hover:text-primary border border-border rounded-full hover:border-primary transition-all cursor-pointer"
-            >
-              <Globe className="w-3.5 h-3.5" />
-              {lang === 'en' ? 'বাংলা' : 'EN'}
-            </button>
+            {/* Language Selector */}
+            <div className="relative">
+              <button
+                onClick={() => setLangMenuOpen(!langMenuOpen)}
+                className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-text-muted hover:text-primary border border-border rounded-full hover:border-primary transition-all cursor-pointer bg-white"
+              >
+                <Globe className="w-3.5 h-3.5" />
+                {language === 'en' ? 'EN' : language === 'bn' ? 'বাংলা' : 'தமிழ்'}
+                <ChevronDown className={cn('w-3 h-3 transition-transform', langMenuOpen && 'rotate-180')} />
+              </button>
+
+              {langMenuOpen && (
+                <div className="absolute top-full right-0 mt-2 w-32 bg-white rounded-xl shadow-xl border border-border py-1 z-50 animate-fade-in">
+                  {[
+                    { code: 'en', label: 'English', native: 'EN' },
+                    { code: 'bn', label: 'Bengali', native: 'বাংলা' },
+                    { code: 'ta', label: 'Tamil', native: 'தமிழ்' },
+                  ].map((l) => (
+                    <button
+                      key={l.code}
+                      onClick={() => {
+                        setLanguage(l.code as any);
+                        setLangMenuOpen(false);
+                      }}
+                      className={cn(
+                        "w-full text-left px-4 py-2 text-sm hover:bg-surface transition-colors",
+                        language === l.code ? "text-primary font-bold" : "text-text-primary"
+                      )}
+                    >
+                      {l.native}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
 
             <Link href="/emergency/ambulance">
               <Button variant="danger" size="sm" className="hidden sm:inline-flex animate-pulse-glow">
                 <Phone className="w-3.5 h-3.5" />
-                Emergency
+                <T>Emergency</T>
               </Button>
             </Link>
 
-            <Link href="/auth/login">
-              <Button variant="outline" size="sm" className="hidden sm:inline-flex">
-                Login
-              </Button>
-            </Link>
+            {/* Auth section */}
+            {!mounted || loading ? (
+              <div className="w-8 h-8 rounded-full bg-surface animate-pulse hidden sm:block" />
+            ) : isLoggedIn ? (
+              <div className="relative hidden sm:block">
+                <button
+                  onClick={() => setUserMenuOpen(!userMenuOpen)}
+                  className="flex items-center gap-2 px-2 py-1.5 rounded-full border border-border hover:border-primary/40 transition-all cursor-pointer"
+                >
+                  <div className="w-7 h-7 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white text-xs font-bold">
+                    {profile.full_name?.charAt(0).toUpperCase()}
+                  </div>
+                  <span className="text-sm font-medium text-text-primary max-w-[100px] truncate">
+                    {profile.full_name?.split(' ')[0]}
+                  </span>
+                  <ChevronDown className={cn('w-3.5 h-3.5 text-text-muted transition-transform', userMenuOpen && 'rotate-180')} />
+                </button>
+
+                {userMenuOpen && (
+                  <div className="absolute top-full right-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-border py-2 animate-fade-in z-50">
+                    <div className="px-4 py-2 border-b border-border mb-1">
+                      <p className="text-sm font-semibold text-text-primary">{profile.full_name}</p>
+                      <p className="text-xs text-text-muted">{profile.email}</p>
+                      <span className="inline-block mt-1 px-2 py-0.5 text-[10px] font-semibold rounded-full bg-primary/10 text-primary capitalize">
+                        {profile.role === 'superadmin' ? 'Super Admin' : profile.role}
+                      </span>
+                    </div>
+
+                    <Link
+                      href="/profile"
+                      onClick={() => setUserMenuOpen(false)}
+                      className="flex items-center gap-3 px-4 py-2.5 text-sm text-text-primary hover:bg-surface transition-colors"
+                    >
+                      <User className="w-4 h-4" /> My Profile
+                    </Link>
+
+                    {isAdmin && (
+                      <Link
+                        href="/admin"
+                        onClick={() => setUserMenuOpen(false)}
+                        className="flex items-center gap-3 px-4 py-2.5 text-sm text-text-primary hover:bg-surface transition-colors"
+                      >
+                        <Shield className="w-4 h-4" /> Admin Panel
+                      </Link>
+                    )}
+
+                    <button
+                      onClick={handleLogout}
+                      className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
+                    >
+                      <LogOut className="w-4 h-4" /> Logout
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <Link href="/auth/login">
+                <Button variant="outline" size="sm" className="hidden sm:inline-flex">
+                  Login
+                </Button>
+              </Link>
+            )}
 
             {/* Mobile Menu Toggle */}
             <button
@@ -156,9 +269,22 @@ export function Navbar() {
                   <Phone className="w-3.5 h-3.5" /> Emergency
                 </Button>
               </Link>
-              <Link href="/auth/login" className="flex-1" onClick={() => setMobileOpen(false)}>
-                <Button variant="outline" size="sm" className="w-full">Login</Button>
-              </Link>
+              {isLoggedIn ? (
+                <div className="flex-1 flex gap-2">
+                  <Link href="/profile" className="flex-1" onClick={() => setMobileOpen(false)}>
+                    <Button variant="outline" size="sm" className="w-full">Profile</Button>
+                  </Link>
+                  {isAdmin && (
+                    <Link href="/admin" className="flex-1" onClick={() => setMobileOpen(false)}>
+                      <Button variant="primary" size="sm" className="w-full">Admin</Button>
+                    </Link>
+                  )}
+                </div>
+              ) : (
+                <Link href="/auth/login" className="flex-1" onClick={() => setMobileOpen(false)}>
+                  <Button variant="outline" size="sm" className="w-full">Login</Button>
+                </Link>
+              )}
             </div>
           </div>
         </div>

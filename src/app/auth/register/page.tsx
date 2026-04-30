@@ -2,20 +2,52 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { UserPlus, Eye, EyeOff } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { UserPlus, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
+import { useAuth } from '@/lib/auth/AuthContext';
 
 export default function RegisterPage() {
+  const router = useRouter();
+  const { signUp } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [form, setForm] = useState({ full_name: '', email: '', phone: '', password: '', agree: false });
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const update = (field: string, value: string | boolean) => setForm({ ...form, [field]: value });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    alert('Registration requires Supabase configuration. Please add your Supabase credentials to .env.local');
+    setError('');
+
+    if (!form.full_name.trim()) {
+      setError('Please enter your full name.');
+      return;
+    }
+    if (form.password.length < 6) {
+      setError('Password must be at least 6 characters.');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await signUp(form.email, form.password, form.full_name, form.phone || undefined);
+      router.push('/');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Registration failed';
+      if (message.includes('email-already-in-use')) {
+        setError('This email is already registered. Please login instead.');
+      } else if (message.includes('weak-password')) {
+        setError('Password is too weak. Use at least 6 characters.');
+      } else {
+        setError(message);
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -31,6 +63,12 @@ export default function RegisterPage() {
         </div>
 
         <Card padding="lg">
+          {error && (
+            <div className="mb-4 p-3 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm">
+              {error}
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="space-y-4">
             <Input label="Full Name" id="reg-name" value={form.full_name} onChange={(e) => update('full_name', e.target.value)} placeholder="Your full name" />
             <Input label="Email Address" id="reg-email" type="email" value={form.email} onChange={(e) => update('email', e.target.value)} placeholder="you@example.com" />
@@ -45,8 +83,9 @@ export default function RegisterPage() {
               <input type="checkbox" checked={form.agree} onChange={(e) => update('agree', e.target.checked)} className="mt-1 accent-primary" />
               <span className="text-xs text-text-muted">I agree to the <Link href="#" className="text-primary underline">Terms of Service</Link> and <Link href="#" className="text-primary underline">Privacy Policy</Link></span>
             </label>
-            <Button variant="primary" size="lg" className="w-full" type="submit" disabled={!form.agree}>
-              <UserPlus className="w-4 h-4" /> Create Account
+            <Button variant="primary" size="lg" className="w-full" type="submit" disabled={!form.agree || loading}>
+              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <UserPlus className="w-4 h-4" />}
+              {loading ? 'Creating Account...' : 'Create Account'}
             </Button>
           </form>
           <p className="text-center text-sm text-text-muted mt-6">

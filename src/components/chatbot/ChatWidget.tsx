@@ -21,6 +21,11 @@ export function ChatWidget() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const sendMessage = async (text: string) => {
     if (!text.trim()) return;
@@ -136,20 +141,22 @@ export function ChatWidget() {
       )}
 
       {/* FAB Button */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className={cn(
-          'fixed bottom-5 right-4 sm:right-6 z-50 w-14 h-14 rounded-full shadow-xl flex items-center justify-center transition-all duration-300 cursor-pointer',
-          isOpen ? 'bg-gray-700 rotate-90' : 'bg-primary animate-pulse-glow hover:scale-110'
-        )}
-        title="Ask in Bengali, Tamil, or English"
-      >
-        {isOpen ? (
-          <X className="w-6 h-6 text-white" />
-        ) : (
-          <MessageCircle className="w-6 h-6 text-white" />
-        )}
-      </button>
+      {mounted && (
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className={cn(
+            'fixed bottom-5 right-4 sm:right-6 z-50 w-14 h-14 rounded-full shadow-xl flex items-center justify-center transition-all duration-300 cursor-pointer',
+            isOpen ? 'bg-gray-700 rotate-90' : 'bg-primary animate-pulse-glow hover:scale-110'
+          )}
+          title="Ask in Bengali, Tamil, or English"
+        >
+          {isOpen ? (
+            <X className="w-6 h-6 text-white" />
+          ) : (
+            <MessageCircle className="w-6 h-6 text-white" />
+          )}
+        </button>
+      )}
     </>
   );
 }
