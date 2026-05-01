@@ -51,6 +51,10 @@ export interface FoodListing {
   specialties: string[];
   zomato_url?: string;
   swiggy_url?: string;
+  magicpin_url?: string;
+  dunzo_url?: string;
+  eatsure_url?: string;
+  uber_eats_url?: string;
   images: string[];
   verified: boolean;
   created_at: string;

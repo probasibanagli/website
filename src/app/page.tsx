@@ -76,7 +76,7 @@ export default function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
               { icon: <Home className="w-7 h-7" />, title: 'Stay & Accommodation', desc: 'Find Bengali-friendly PGs, hotels, and rental houses across Tamil Nadu cities.', href: '/explore/stay', color: 'bg-blue-50 text-blue-600', borderColor: 'hover:border-blue-300' },
-              { icon: <UtensilsCrossed className="w-7 h-7" />, title: 'Bengali Food & Sweets', desc: 'Discover Bengali restaurants, sweet shops, tiffin services, and home delivery.', href: '/explore/food', color: 'bg-orange-50 text-orange-600', borderColor: 'hover:border-orange-300' },
+              { icon: <UtensilsCrossed className="w-7 h-7" />, title: 'Bengali Food & Sweets', desc: 'Discover Bengali restaurants, sweet shops, tiffin services, and delivery partners.', href: '/explore/food', color: 'bg-orange-50 text-orange-600', borderColor: 'hover:border-orange-300' },
               { icon: <Bus className="w-7 h-7" />, title: 'Travel & Transport', desc: 'Plan your route with bus, metro, auto, and cab options. Common Tamil words included.', href: '/explore/travel', color: 'bg-green-50 text-green-600', borderColor: 'hover:border-green-300' },
             ].map((item) => (
               <Link key={item.title} href={item.href}>

@@ -14,6 +14,24 @@ export default function FoodDetailPage() {
   const params = useParams();
   const food = sampleFoodListings.find((f) => f.id === params.id);
 
+  const FOOD_TYPE_LABELS: Record<string, string> = {
+    restaurant: 'Restaurants',
+    sweets: 'Sweets',
+    tiffin: 'Tiffin',
+    delivery: 'Delivery Partner',
+  };
+
+  const DELIVERY_PARTNERS = [
+    { key: 'zomato_url', label: 'Zomato', emoji: '🍕' },
+    { key: 'swiggy_url', label: 'Swiggy', emoji: '🛵' },
+    { key: 'magicpin_url', label: 'Magicpin', emoji: '⭐' },
+    { key: 'dunzo_url', label: 'Dunzo', emoji: '🚲' },
+    { key: 'eatsure_url', label: 'EatSure', emoji: '🍽️' },
+    { key: 'uber_eats_url', label: 'Uber Eats', emoji: '🚕' },
+  ] as const;
+
+  const typeLabel = food?.type ? FOOD_TYPE_LABELS[food.type] ?? food.type : 'Food';
+
   if (!food) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -36,7 +54,7 @@ export default function FoodDetailPage() {
         <div className="relative h-64 sm:h-80 bg-gradient-to-br from-orange-50 to-amber-50 rounded-2xl flex items-center justify-center mb-8">
           <span className="text-8xl opacity-20">🍽️</span>
           <div className="absolute top-4 left-4 flex gap-2">
-            <Badge variant="amber">{food.type}</Badge>
+            <Badge variant="amber">{typeLabel}</Badge>
             {food.verified && <Badge variant="verified"><CheckCircle2 className="w-3 h-3 mr-1" />Verified</Badge>}
           </div>
         </div>
@@ -73,8 +91,14 @@ export default function FoodDetailPage() {
               <div className="space-y-3">
                 {food.phone && <a href={`tel:${food.phone}`}><Button variant="primary" className="w-full"><Phone className="w-4 h-4" /> Call</Button></a>}
                 {food.whatsapp && <a href={getWhatsAppUrl(food.whatsapp)} target="_blank" rel="noopener noreferrer"><Button variant="secondary" className="w-full mt-2"><MessageCircle className="w-4 h-4" /> WhatsApp</Button></a>}
-                {food.zomato_url && <a href={food.zomato_url} target="_blank" rel="noopener noreferrer"><Button variant="outline" className="w-full mt-2">🍕 Order on Zomato <ExternalLink className="w-3 h-3" /></Button></a>}
-                {food.swiggy_url && <a href={food.swiggy_url} target="_blank" rel="noopener noreferrer"><Button variant="outline" className="w-full mt-2">🛵 Order on Swiggy <ExternalLink className="w-3 h-3" /></Button></a>}
+                {DELIVERY_PARTNERS.map((partner) => {
+                  const url = food[partner.key] as string | undefined;
+                  return url ? (
+                    <a key={partner.key} href={url} target="_blank" rel="noopener noreferrer">
+                      <Button variant="outline" className="w-full mt-2">{partner.emoji} Order on {partner.label} <ExternalLink className="w-3 h-3" /></Button>
+                    </a>
+                  ) : null;
+                })}
               </div>
             </Card>
           </div>

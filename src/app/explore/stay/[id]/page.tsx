@@ -7,12 +7,12 @@ import { MapPin, Phone, MessageCircle, ArrowLeft, CheckCircle2, Bed, Users, Indi
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/Card';
-import { sampleListings } from '@/data/sample-data';
+import { sampleStayListings } from '@/data/sample-data';
 import { formatPrice, getWhatsAppUrl } from '@/lib/utils';
 
 export default function StayDetailPage() {
   const params = useParams();
-  const listing = sampleListings.find((l) => l.id === params.id);
+  const listing = sampleStayListings.find((l) => l.id === params.id);
 
   if (!listing) {
     return (

@@ -6,7 +6,7 @@ import { MapPin, Phone, MessageCircle, Search, CheckCircle2, ExternalLink } from
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/Card';
-import { sampleFoodListings } from '@/data/sample-data';
+import { sampleFoodListings, cityRestaurants } from '@/data/sample-data';
 import { CITIES } from '@/lib/constants';
 import { getWhatsAppUrl } from '@/lib/utils';
 
@@ -14,6 +14,22 @@ export default function FoodPage() {
   const [activeType, setActiveType] = useState<string>('all');
   const [city, setCity] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+
+  const FOOD_TYPE_LABELS: Record<string, string> = {
+    restaurant: 'Restaurants',
+    sweets: 'Sweets',
+    tiffin: 'Tiffin',
+    delivery: 'Delivery Partner',
+  };
+
+  const DELIVERY_PARTNERS = [
+    { key: 'zomato_url', label: 'Zomato', variant: 'red' },
+    { key: 'swiggy_url', label: 'Swiggy', variant: 'amber' },
+    { key: 'magicpin_url', label: 'Magicpin', variant: 'default' },
+    { key: 'dunzo_url', label: 'Dunzo', variant: 'teal' },
+    { key: 'eatsure_url', label: 'EatSure', variant: 'amber' },
+    { key: 'uber_eats_url', label: 'Uber Eats', variant: 'red' },
+  ] as const;
 
   const filtered = useMemo(() => {
     return sampleFoodListings.filter((f) => {
@@ -23,6 +39,8 @@ export default function FoodPage() {
       return true;
     });
   }, [activeType, city, searchQuery]);
+
+  const restaurantSuggestions = city ? cityRestaurants[city] ?? [] : [];
 
   return (
     <div className="min-h-screen bg-surface">
@@ -34,7 +52,7 @@ export default function FoodPage() {
             <span className="text-text-primary font-medium">Food</span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-bold font-display text-text-primary">Bengali Food & Sweets</h1>
-          <p className="mt-2 text-text-muted">Discover authentic Bengali restaurants, sweet shops, and tiffin services.</p>
+          <p className="mt-2 text-text-muted">Discover authentic Bengali restaurants, sweet shops, tiffin services, and delivery partners.</p>
 
           <div className="mt-6 flex flex-wrap gap-2">
             {[
@@ -42,7 +60,7 @@ export default function FoodPage() {
               { value: 'restaurant', label: '🍽️ Restaurants' },
               { value: 'sweets', label: '🍬 Sweets' },
               { value: 'tiffin', label: '🍱 Tiffin' },
-              { value: 'delivery', label: '🛵 Delivery' },
+              { value: 'delivery', label: '🛵 Delivery Partner' },
             ].map((tab) => (
               <button key={tab.value} onClick={() => setActiveType(tab.value)}
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-all cursor-pointer ${activeType === tab.value ? 'bg-primary text-white shadow-md' : 'bg-white text-text-primary border border-border hover:border-primary'}`}>
@@ -54,7 +72,7 @@ export default function FoodPage() {
           <div className="mt-4 flex flex-wrap items-center gap-3">
             <div className="relative flex-1 min-w-[200px] max-w-sm">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
-              <input value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="Search restaurants..." className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+              <input value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="Search food listings..." className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
             </div>
             <select value={city} onChange={(e) => setCity(e.target.value)} className="px-4 py-2.5 rounded-xl border border-border text-sm cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30">
               <option value="">All Cities</option>
@@ -66,13 +84,25 @@ export default function FoodPage() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <p className="text-sm text-text-muted mb-6"><span className="font-semibold text-text-primary">{filtered.length}</span> places found</p>
+        {city && restaurantSuggestions.length > 0 && (
+          <Card className="mb-6 p-5">
+            <h2 className="text-lg font-semibold text-text-primary mb-3">Top restaurant picks in {city}</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {restaurantSuggestions.map((name) => (
+                <div key={name} className="rounded-2xl border border-border bg-white px-4 py-3 text-sm text-text-primary">
+                  {name}
+                </div>
+              ))}
+            </div>
+          </Card>
+        )}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filtered.map((food) => (
             <Card key={food.id} className="p-0 overflow-hidden group">
               <div className="relative h-40 bg-gradient-to-br from-orange-50 to-amber-50 flex items-center justify-center">
                 <span className="text-5xl opacity-30">{food.type === 'restaurant' ? '🍽️' : food.type === 'sweets' ? '🍬' : food.type === 'tiffin' ? '🍱' : '🛵'}</span>
                 <div className="absolute top-3 left-3">
-                  <Badge variant="amber">{food.type}</Badge>
+                  <Badge variant="amber">{food.type ? FOOD_TYPE_LABELS[food.type] ?? food.type : 'Food'}</Badge>
                 </div>
                 {food.verified && <div className="absolute top-3 right-3"><Badge variant="verified"><CheckCircle2 className="w-3 h-3 mr-1" />Verified</Badge></div>}
               </div>
@@ -83,9 +113,15 @@ export default function FoodPage() {
                   {food.specialties.slice(0, 4).map((s) => (<span key={s} className="px-2 py-0.5 bg-surface rounded-md text-xs text-text-muted">{s}</span>))}
                 </div>
                 <div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
-                  <div className="flex gap-2">
-                    {food.zomato_url && <a href={food.zomato_url} target="_blank" rel="noopener noreferrer"><Badge variant="red">Zomato <ExternalLink className="w-2.5 h-2.5 ml-1" /></Badge></a>}
-                    {food.swiggy_url && <a href={food.swiggy_url} target="_blank" rel="noopener noreferrer"><Badge variant="amber">Swiggy <ExternalLink className="w-2.5 h-2.5 ml-1" /></Badge></a>}
+                  <div className="flex flex-wrap gap-2">
+                    {DELIVERY_PARTNERS.map((partner) => {
+                      const url = food[partner.key] as string | undefined;
+                      return url ? (
+                        <a key={partner.key} href={url} target="_blank" rel="noopener noreferrer">
+                          <Badge variant={partner.variant}>{partner.label} <ExternalLink className="w-2.5 h-2.5 ml-1" /></Badge>
+                        </a>
+                      ) : null;
+                    })}
                   </div>
                   <div className="flex gap-2">
                     {food.google_maps_url && <a href={food.google_maps_url} target="_blank" rel="noopener noreferrer"><Button variant="ghost" size="sm"><MapPin className="w-4 h-4" /></Button></a>}

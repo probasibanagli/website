@@ -6,7 +6,7 @@ import { MapPin, Phone, MessageCircle, Wifi, Wind, UtensilsCrossed, CheckCircle2
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/Card';
-import { sampleListings } from '@/data/sample-data';
+import { sampleStayListings } from '@/data/sample-data';
 import { CITIES } from '@/lib/constants';
 import { formatPrice, getWhatsAppUrl } from '@/lib/utils';
 
@@ -23,7 +23,7 @@ export default function StayPage() {
   const [searchQuery, setSearchQuery] = useState('');
 
   const filtered = useMemo(() => {
-    return sampleListings.filter((l) => {
+    return sampleStayListings.filter((l) => {
       if (activeType !== 'all' && l.type !== activeType) return false;
       if (city && l.city !== city) return false;
       if (bengaliOnly && !l.bengali_friendly) return false;
@@ -103,6 +103,7 @@ export default function StayPage() {
         </div>
       </div>
 
+      {/* City hotel suggestions */}
       {/* Results */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <p className="text-sm text-text-muted mb-6">
