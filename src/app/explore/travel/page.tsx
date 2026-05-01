@@ -1,20 +1,24 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { MapPin, Navigation, Bus, Train, Car, Bike, ExternalLink } from 'lucide-react';
+import { MapPin, Navigation, Bus, Train, Car, Bike, ExternalLink, Loader2, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { TAMIL_WORDS } from '@/lib/constants';
+import { checkRouteAvailability, RouteResponse, TransportCategory, PrivateMode } from '@/lib/routingService';
 
-const transportModes = [
-  { id: 'bus', label: 'Bus', icon: <Bus className="w-5 h-5" /> },
-  { id: 'metro', label: 'Metro', icon: <Train className="w-5 h-5" /> },
-  { id: 'auto', label: 'Auto', icon: <Car className="w-5 h-5" /> },
-  { id: 'cab', label: 'Cab', icon: <Car className="w-5 h-5" /> },
-  { id: 'bike', label: 'Bike Taxi', icon: <Bike className="w-5 h-5" /> },
-];
+const transportCategories = [
+  { id: 'public', label: 'Public Transport', icon: <Bus className="w-5 h-5" />, desc: 'Bus, Metro, Train' },
+  { id: 'private', label: 'Private Transport', icon: <Car className="w-5 h-5" />, desc: 'Auto, Cab, Bike' }
+] as const;
+
+const privateSubModes = [
+  { id: 'ola', label: 'Ola', icon: <Car className="w-4 h-4" />, color: 'bg-green-100 text-green-700 hover:bg-green-200' },
+  { id: 'uber', label: 'Uber', icon: <Car className="w-4 h-4" />, color: 'bg-gray-900 text-white hover:bg-gray-800' },
+  { id: 'rapido', label: 'Rapido', icon: <Bike className="w-4 h-4" />, color: 'bg-yellow-100 text-yellow-700 hover:bg-yellow-200' }
+] as const;
 
 const cabApps = [
   { name: 'Rapido', url: 'https://www.rapido.bike', color: 'bg-yellow-100 text-yellow-700' },
@@ -26,14 +30,34 @@ const cabApps = [
 export default function TravelPage() {
   const [from, setFrom] = useState('');
   const [to, setTo] = useState('');
-  const [mode, setMode] = useState('bus');
+  const [category, setCategory] = useState<TransportCategory>('public');
+  const [privateMode, setPrivateMode] = useState<PrivateMode>('ola');
+  
+  const [isLoading, setIsLoading] = useState(false);
+  const [routeResult, setRouteResult] = useState<RouteResponse | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
 
-  const getGoogleMapsDirections = () => {
-    if (from && to) {
-      const travelMode = mode === 'bus' || mode === 'metro' ? 'transit' : 'driving';
-      return `https://www.google.com/maps/dir/${encodeURIComponent(from)}/${encodeURIComponent(to)}/@13.0827,80.2707,12z/data=!4m2!4m1!3e${mode === 'bus' || mode === 'metro' ? '3' : '0'}`;
+  useEffect(() => {
+    // Detect if user is on a mobile device to correctly format deep links
+    setIsMobile(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
+  }, []);
+
+  // Clear route result when inputs change
+  useEffect(() => {
+    setRouteResult(null);
+  }, [from, to, category, privateMode]);
+
+  const handleGetRoute = async () => {
+    setIsLoading(true);
+    setRouteResult(null);
+    try {
+      const res = await checkRouteAvailability(from, to, category, privateMode, isMobile);
+      setRouteResult(res);
+    } catch (error) {
+      setRouteResult({ isValid: false, message: 'An error occurred while fetching the route.' });
+    } finally {
+      setIsLoading(false);
     }
-    return '#';
   };
 
   return (
@@ -73,24 +97,113 @@ export default function TravelPage() {
               </div>
 
               <div className="mt-6">
-                <label className="block text-sm font-medium text-text-primary mb-3">Transport Mode</label>
-                <div className="flex flex-wrap gap-2">
-                  {transportModes.map((m) => (
-                    <button key={m.id} onClick={() => setMode(m.id)}
-                      className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${mode === m.id ? 'bg-primary text-white shadow-md' : 'bg-white border border-border hover:border-primary'}`}>
-                      {m.icon} {m.label}
-                    </button>
+                <label className="block text-sm font-medium text-text-primary mb-3">Transport Category</label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {transportCategories.map((c) => (
+                    <div 
+                      key={c.id} 
+                      onClick={() => setCategory(c.id as TransportCategory)}
+                      className={`flex flex-col p-4 rounded-xl border transition-all cursor-pointer ${
+                        category === c.id 
+                          ? 'border-primary bg-primary/5 ring-1 ring-primary' 
+                          : 'border-border bg-white hover:border-primary/50'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2 mb-1">
+                        <div className={category === c.id ? 'text-primary' : 'text-text-muted'}>
+                          {c.icon}
+                        </div>
+                        <span className={`font-bold ${category === c.id ? 'text-primary' : 'text-text-primary'}`}>
+                          {c.label}
+                        </span>
+                      </div>
+                      <span className="text-xs text-text-muted ml-7">{c.desc}</span>
+                    </div>
                   ))}
                 </div>
               </div>
 
+              {category === 'private' && (
+                <div className="mt-4 p-4 bg-surface rounded-xl border border-border">
+                  <label className="block text-xs font-bold text-text-muted uppercase tracking-wider mb-3">Select Provider</label>
+                  <div className="flex flex-wrap gap-2">
+                    {privateSubModes.map((m) => {
+                      const isSelected = privateMode === m.id;
+                      return (
+                        <button 
+                          key={m.id} 
+                          onClick={() => setPrivateMode(m.id as PrivateMode)}
+                          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all cursor-pointer ${
+                            isSelected 
+                              ? `${m.color} shadow-sm ring-2 ring-offset-2 ring-primary/50` 
+                              : 'bg-white border border-border text-text-muted hover:border-gray-400 hover:text-gray-900'
+                          }`}
+                        >
+                          {m.icon} {m.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
               <div className="mt-6">
-                <a href={getGoogleMapsDirections()} target="_blank" rel="noopener noreferrer">
-                  <Button variant="primary" size="lg" className="w-full" disabled={!from || !to}>
-                    <Navigation className="w-5 h-5" /> Get Directions
-                  </Button>
-                </a>
+                <Button 
+                  variant="primary" 
+                  size="lg" 
+                  className="w-full" 
+                  disabled={!from || !to || isLoading}
+                  onClick={handleGetRoute}
+                >
+                  {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Navigation className="w-5 h-5" />} 
+                  {isLoading ? 'Checking Availability...' : 'Check Availability & Get Route'}
+                </Button>
               </div>
+
+              {routeResult && !routeResult.isValid && (
+                <div className="mt-4 p-4 bg-red-50 text-red-800 rounded-xl border border-red-200 flex flex-col gap-3 items-start">
+                  <div className="flex items-center gap-2">
+                    <AlertCircle className="w-5 h-5 text-red-600" />
+                    <p className="font-medium text-sm">{routeResult.message}</p>
+                  </div>
+                  {category === 'public' && (
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      className="bg-white hover:bg-red-50 text-red-700 border-red-200 hover:border-red-300" 
+                      onClick={() => setCategory('private')}
+                    >
+                      <Car className="w-4 h-4 mr-2" /> Switch to Private Transport
+                    </Button>
+                  )}
+                </div>
+              )}
+
+              {routeResult && routeResult.isValid && (
+                <div className="mt-4 p-5 bg-green-50/50 rounded-xl border border-green-200">
+                  <h3 className="text-sm font-bold text-green-800 mb-4 border-b border-green-200/50 pb-2">Route Available</h3>
+                  <div className="grid grid-cols-3 gap-4 mb-5">
+                    <div className="flex flex-col bg-white p-3 rounded-lg border border-green-100 shadow-sm">
+                      <span className="text-xs text-green-600 font-medium mb-1">Est. Time</span>
+                      <span className="font-bold text-green-900">{routeResult.estimatedTime}</span>
+                    </div>
+                    <div className="flex flex-col bg-white p-3 rounded-lg border border-green-100 shadow-sm">
+                      <span className="text-xs text-green-600 font-medium mb-1">Distance</span>
+                      <span className="font-bold text-green-900">{routeResult.estimatedDistance}</span>
+                    </div>
+                    <div className="flex flex-col bg-white p-3 rounded-lg border border-green-100 shadow-sm">
+                      <span className="text-xs text-green-600 font-medium mb-1">Mode</span>
+                      <span className="font-bold text-green-900 text-sm truncate">{routeResult.modeUsed}</span>
+                    </div>
+                  </div>
+                  <a href={routeResult.url} target="_blank" rel="noopener noreferrer">
+                    <Button className="w-full bg-green-600 hover:bg-green-700 text-white shadow-sm border-transparent">
+                      <Navigation className="w-4 h-4 mr-2" /> 
+                      {category === 'public' ? 'Open in Google Maps' : `Book on ${routeResult.modeUsed}`}
+                    </Button>
+                  </a>
+                </div>
+              )}
             </Card>
 
             {/* Chennai Transport Info */}
