@@ -3,8 +3,8 @@
 import React from 'react';
 import Link from 'next/link';
 import { User, Settings, LogOut, Shield } from 'lucide-react';
-import { Button } from '@/components/ui/Button';
-import { Card } from '@/components/ui/Card';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 
 export default function ProfilePage() {
   return (

@@ -4,7 +4,7 @@ import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { Calendar, MapPin, User, Phone } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
-import { Card } from '@/components/ui/Card';
+import { Card } from '@/components/ui/card';
 import { sampleEvents } from '@/data/sample-data';
 import { CITIES } from '@/lib/constants';
 

@@ -4,15 +4,15 @@ import React from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { MapPin, Phone, MessageCircle, ArrowLeft, CheckCircle2, Bed, Users, IndianRupee, Shield } from 'lucide-react';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/Badge';
-import { Card } from '@/components/ui/Card';
-import { sampleStayListings } from '@/data/sample-data';
+import { Card } from '@/components/ui/card';
+import { sampleListings } from '@/data/sample-data';
 import { formatPrice, getWhatsAppUrl } from '@/lib/utils';
 
 export default function StayDetailPage() {
   const params = useParams();
-  const listing = sampleStayListings.find((l) => l.id === params.id);
+  const listing = sampleListings.find((l) => l.id === params.id);
 
   if (!listing) {
     return (

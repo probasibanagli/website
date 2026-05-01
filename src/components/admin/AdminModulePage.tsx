@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useMemo, useState } from 'react';
-import { Button } from '@/components/ui/Button';
-import { Card } from '@/components/ui/Card';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 import { sampleListings } from '@/data/sample-data';
 import type { Listing } from '@/types';
 
@@ -33,16 +33,18 @@ export default function AdminModulePage({
   formFields,
 }: AdminModulePageProps) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
+
   const [formValues, setFormValues] = useState<Record<string, string>>(
-    formFields.reduce((acc, field) => ({ ...acc, [field.key]: '' }), {})
+    () =>
+      formFields.reduce((acc, field) => {
+        acc[field.key] = '';
+        return acc;
+      }, {} as Record<string, string>)
   );
 
   const rows = useMemo(() => {
-    if (moduleKey === 'stay') {
-      return sampleListings;
-    }
     return sampleListings;
-  }, [moduleKey]);
+  }, []);
 
   const handleChange = (key: string, value: string) => {
     setFormValues((prev) => ({ ...prev, [key]: value }));
@@ -50,45 +52,55 @@ export default function AdminModulePage({
 
   const handleClear = () => {
     setSelectedId(null);
-    setFormValues(formFields.reduce((acc, field) => ({ ...acc, [field.key]: '' }), {}));
+    setFormValues(
+      formFields.reduce((acc, field) => {
+        acc[field.key] = '';
+        return acc;
+      }, {} as Record<string, string>)
+    );
   };
 
   return (
     <div className="min-h-screen bg-surface py-10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-        <div className="space-y-2">
-          <p className="text-sm text-text-muted uppercase tracking-[0.16em]">Admin module</p>
-          <h1 className="text-3xl font-bold text-text-primary">Manage {collectionName}</h1>
-          <p className="text-sm text-text-muted">
-            Edit, review, and add stay listings for the {moduleKey} module.
+      <div className="max-w-7xl mx-auto px-4 space-y-8">
+
+        <div>
+          <p className="text-sm text-gray-500 uppercase tracking-widest">
+            Admin module
+          </p>
+          <h1 className="text-3xl font-bold">
+            Manage {collectionName}
+          </h1>
+          <p className="text-sm text-gray-500">
+            Edit and manage {moduleKey} listings.
           </p>
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
+        <div className="grid lg:grid-cols-[1.4fr_1fr] gap-6">
+
+          {/* TABLE */}
           <Card className="overflow-x-auto p-0">
-            <table className="min-w-full divide-y divide-border">
-              <thead className="bg-surface">
+            <table className="min-w-full">
+              <thead>
                 <tr>
-                  {columns.map((column) => (
-                    <th
-                      key={column.key}
-                      className="px-4 py-3 text-left text-sm font-semibold text-text-muted"
-                    >
-                      {column.label}
+                  {columns.map((col) => (
+                    <th key={col.key} className="text-left p-3 text-sm">
+                      {col.label}
                     </th>
                   ))}
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-text-muted">Actions</th>
+                  <th className="p-3 text-sm">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-border">
+
+              <tbody>
                 {rows.map((item: Listing) => (
-                  <tr key={item.id} className="hover:bg-surface">
-                    {columns.map((column) => (
-                      <td key={column.key} className="px-4 py-3 text-sm text-text-primary">
-                        {String((item as any)[column.key] ?? '')}
+                  <tr key={item.id} className="border-t">
+                    {columns.map((col) => (
+                      <td key={col.key} className="p-3 text-sm">
+                        {String((item as any)[col.key] ?? '')}
                       </td>
                     ))}
-                    <td className="px-4 py-3">
+                    <td className="p-3">
                       <Button
                         variant="outline"
                         size="sm"
@@ -103,66 +115,73 @@ export default function AdminModulePage({
             </table>
           </Card>
 
-          <Card className="space-y-6">
-            <div className="flex items-center justify-between gap-4">
-              <div>
-                <p className="text-sm text-text-muted uppercase tracking-[0.16em]">Form</p>
-                <h2 className="text-xl font-semibold text-text-primary">
-                  {selectedId ? 'Edit Listing' : 'New Listing'}
-                </h2>
-              </div>
+          {/* FORM */}
+          <Card className="p-4 space-y-4">
+
+            <div className="flex justify-between items-center">
+              <h2 className="text-xl font-semibold">
+                {selectedId ? 'Edit Listing' : 'New Listing'}
+              </h2>
+
               <Button variant="ghost" size="sm" onClick={handleClear}>
                 Clear
               </Button>
             </div>
 
-            <form className="space-y-4" onSubmit={(event) => event.preventDefault()}>
+            <form
+              className="space-y-4"
+              onSubmit={(e) => e.preventDefault()}
+            >
               {formFields.map((field) => (
-                <div key={field.key} className="space-y-2">
-                  <label htmlFor={field.key} className="block text-sm font-medium text-text-primary">
+                <div key={field.key}>
+                  <label className="text-sm font-medium">
                     {field.label}
-                    {field.required ? ' *' : ''}
                   </label>
+
                   {field.type === 'textarea' ? (
                     <textarea
-                      id={field.key}
+                      className="w-full border p-2 rounded"
                       value={formValues[field.key]}
-                      onChange={(event) => handleChange(field.key, event.target.value)}
-                      className="w-full rounded-xl border border-border px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+                      onChange={(e) =>
+                        handleChange(field.key, e.target.value)
+                      }
                     />
                   ) : field.type === 'select' ? (
                     <select
-                      id={field.key}
+                      className="w-full border p-2 rounded"
                       value={formValues[field.key]}
-                      onChange={(event) => handleChange(field.key, event.target.value)}
-                      className="w-full rounded-xl border border-border px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+                      onChange={(e) =>
+                        handleChange(field.key, e.target.value)
+                      }
                     >
                       <option value="">Select</option>
-                      {field.options?.map((option) => (
-                        <option key={option} value={option}>
-                          {option}
+                      {field.options?.map((opt) => (
+                        <option key={opt} value={opt}>
+                          {opt}
                         </option>
                       ))}
                     </select>
                   ) : (
                     <input
-                      id={field.key}
+                      className="w-full border p-2 rounded"
                       type={field.type ?? 'text'}
                       value={formValues[field.key]}
-                      onChange={(event) => handleChange(field.key, event.target.value)}
-                      className="w-full rounded-xl border border-border px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+                      onChange={(e) =>
+                        handleChange(field.key, e.target.value)
+                      }
                     />
                   )}
                 </div>
               ))}
 
-              <div className="flex justify-end gap-3 pt-3 border-t border-border">
-                <Button variant="ghost" type="button" onClick={handleClear}>
+              <div className="flex justify-end gap-2">
+                <Button type="button" variant="ghost" onClick={handleClear}>
                   Reset
                 </Button>
-                <Button type="submit">Save Listing</Button>
+                <Button type="submit">Save</Button>
               </div>
             </form>
+
           </Card>
         </div>
       </div>

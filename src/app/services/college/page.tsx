@@ -3,9 +3,9 @@
 import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { Search, MapPin, Phone, GraduationCap, Globe, ExternalLink, Navigation } from 'lucide-react';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/Badge';
-import { Card } from '@/components/ui/Card';
+import { Card } from '@/components/ui/card';
 import { sampleColleges } from '@/data/sample-data';
 import { CITIES, COLLEGE_TYPES } from '@/lib/constants';
 
