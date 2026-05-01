@@ -86,6 +86,12 @@ export default function StayDetailPage() {
               <p className="text-sm text-text-muted">per month</p>
               <div className="mt-4 space-y-2">
                 <p className="text-sm"><span className="font-medium">Owner:</span> {listing.owner_name}</p>
+                {listing.owner_phone && (
+                  <p className="flex items-center gap-1.5 text-sm font-medium">
+                    <Phone className="w-4 h-4 text-primary" /> +91 {listing.owner_phone}
+                    {listing.verified && <CheckCircle2 className="w-4 h-4 text-green-500" />}
+                  </p>
+                )}
               </div>
               <div className="mt-6 space-y-3">
                 <a href={`tel:${listing.owner_phone}`}><Button variant="primary" className="w-full"><Phone className="w-4 h-4" /> Call Owner</Button></a>
@@ -96,7 +102,7 @@ export default function StayDetailPage() {
                 )}
                 {listing.google_maps_url && (
                   <a href={listing.google_maps_url} target="_blank" rel="noopener noreferrer">
-                    <Button variant="outline" className="w-full mt-2"><MapPin className="w-4 h-4" /> Open in Maps</Button>
+                    <Button variant="outline" className="w-full mt-2"><MapPin className="w-4 h-4" /> Google Business Page</Button>
                   </a>
                 )}
               </div>

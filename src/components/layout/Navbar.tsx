@@ -73,17 +73,19 @@ export function Navbar() {
                   <ChevronDown className={cn('w-3.5 h-3.5 transition-transform', activeDropdown === link.label && 'rotate-180')} />
                 </button>
                 {activeDropdown === link.label && (
-                  <div className="absolute top-full left-0 mt-1 w-64 bg-white rounded-2xl shadow-xl border border-border py-2 animate-fade-in">
-                    {link.children.map((child) => (
-                      <Link
-                        key={child.href}
-                        href={child.href}
-                        className="flex items-center gap-3 px-4 py-2.5 text-sm text-text-primary hover:bg-surface hover:text-primary transition-colors"
-                      >
-                        <span className="text-lg">{child.icon}</span>
-                        {child.label}
-                      </Link>
-                    ))}
+                  <div className="absolute top-full left-0 pt-2 w-64">
+                    <div className="bg-white rounded-2xl shadow-xl border border-border py-2 animate-fade-in">
+                      {link.children.map((child) => (
+                        <Link
+                          key={child.href}
+                          href={child.href}
+                          className="flex items-center gap-3 px-4 py-2.5 text-sm text-text-primary hover:bg-surface hover:text-primary transition-colors"
+                        >
+                          <span className="text-lg">{child.icon}</span>
+                          {child.label}
+                        </Link>
+                      ))}
+                    </div>
                   </div>
                 )}
               </div>

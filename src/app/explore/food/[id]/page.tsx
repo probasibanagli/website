@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/card';
 import { sampleFoodListings } from '@/data/sample-data';
-import { getWhatsAppUrl } from '@/lib/utils';
+import { getWhatsAppUrl, getZomatoSearchUrl, getSwiggySearchUrl, getMagicpinSearchUrl, getEatsureSearchUrl, getUberEatsSearchUrl } from '@/lib/utils';
 
 const FOOD_TYPE_LABELS: Record<string, string> = {
   restaurant: 'Restaurant',
@@ -80,11 +80,11 @@ export default function FoodDetailPage() {
               <div className="space-y-3">
                 {food.phone && <a href={`tel:${food.phone}`}><Button variant="primary" className="w-full"><Phone className="w-4 h-4" /> Call</Button></a>}
                 {food.whatsapp && <a href={getWhatsAppUrl(food.whatsapp)} target="_blank" rel="noopener noreferrer"><Button variant="secondary" className="w-full mt-2"><MessageCircle className="w-4 h-4" /> WhatsApp</Button></a>}
-                {food.zomato_url && <a href={food.zomato_url} target="_blank" rel="noopener noreferrer"><Button variant="outline" className="w-full mt-2">🍕 Order on Zomato <ExternalLink className="w-3 h-3" /></Button></a>}
-                {food.swiggy_url && <a href={food.swiggy_url} target="_blank" rel="noopener noreferrer"><Button variant="outline" className="w-full mt-2">🛵 Order on Swiggy <ExternalLink className="w-3 h-3" /></Button></a>}
-                {food.magicpin_url && <a href={food.magicpin_url} target="_blank" rel="noopener noreferrer"><Button variant="outline" className="w-full mt-2">✨ Open Magicpin <ExternalLink className="w-3 h-3" /></Button></a>}
-                {food.eatsure_url && <a href={food.eatsure_url} target="_blank" rel="noopener noreferrer"><Button variant="outline" className="w-full mt-2">🍱 Open EatSure <ExternalLink className="w-3 h-3" /></Button></a>}
-                {food.uber_eats_url && <a href={food.uber_eats_url} target="_blank" rel="noopener noreferrer"><Button variant="outline" className="w-full mt-2">🚗 Open Uber Eats <ExternalLink className="w-3 h-3" /></Button></a>}
+                {food.zomato_url && <a href={getZomatoSearchUrl(food.name, food.city)} target="_blank" rel="noopener noreferrer"><Button variant="outline" className="w-full mt-2">🍕 Order on Zomato <ExternalLink className="w-3 h-3" /></Button></a>}
+                {food.swiggy_url && <a href={getSwiggySearchUrl(food.name, food.city)} target="_blank" rel="noopener noreferrer"><Button variant="outline" className="w-full mt-2">🛵 Order on Swiggy <ExternalLink className="w-3 h-3" /></Button></a>}
+                {food.magicpin_url && <a href={getMagicpinSearchUrl(food.name, food.city)} target="_blank" rel="noopener noreferrer"><Button variant="outline" className="w-full mt-2">✨ Open Magicpin <ExternalLink className="w-3 h-3" /></Button></a>}
+                {food.eatsure_url && <a href={getEatsureSearchUrl(food.name)} target="_blank" rel="noopener noreferrer"><Button variant="outline" className="w-full mt-2">🍱 Open EatSure <ExternalLink className="w-3 h-3" /></Button></a>}
+                {food.uber_eats_url && <a href={getUberEatsSearchUrl(food.name, food.city)} target="_blank" rel="noopener noreferrer"><Button variant="outline" className="w-full mt-2">🚗 Open Uber Eats <ExternalLink className="w-3 h-3" /></Button></a>}
               </div>
             </Card>
           </div>

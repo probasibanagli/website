@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/card';
 import { sampleFoodListings } from '@/data/sample-data';
 import { CITIES } from '@/lib/constants';
-import { getWhatsAppUrl } from '@/lib/utils';
+import { getWhatsAppUrl, getZomatoSearchUrl, getSwiggySearchUrl, getMagicpinSearchUrl, getEatsureSearchUrl, getUberEatsSearchUrl } from '@/lib/utils';
 
 const FOOD_TYPE_LABELS: Record<string, string> = {
   restaurant: 'Restaurant',
@@ -51,7 +51,6 @@ export default function FoodPage() {
               { value: 'restaurant', label: '🍽️ Restaurants' },
               { value: 'sweets', label: '🍬 Sweets' },
               { value: 'tiffin', label: '🍱 Tiffin' },
-              { value: 'delivery', label: '🛵 Delivery Partner' },
             ].map((tab) => (
               <button key={tab.value} onClick={() => setActiveType(tab.value)}
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-all cursor-pointer ${activeType === tab.value ? 'bg-primary text-white shadow-md' : 'bg-white text-text-primary border border-border hover:border-primary'}`}>
@@ -93,11 +92,11 @@ export default function FoodPage() {
                 </div>
                 <div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
                   <div className="flex flex-wrap gap-2">
-                    {food.zomato_url && <a href={food.zomato_url} target="_blank" rel="noopener noreferrer"><Badge variant="red">Zomato <ExternalLink className="w-2.5 h-2.5 ml-1" /></Badge></a>}
-                    {food.swiggy_url && <a href={food.swiggy_url} target="_blank" rel="noopener noreferrer"><Badge variant="amber">Swiggy <ExternalLink className="w-2.5 h-2.5 ml-1" /></Badge></a>}
-                    {food.magicpin_url && <a href={food.magicpin_url} target="_blank" rel="noopener noreferrer"><Badge variant="teal">Magicpin <ExternalLink className="w-2.5 h-2.5 ml-1" /></Badge></a>}
-                    {food.eatsure_url && <a href={food.eatsure_url} target="_blank" rel="noopener noreferrer"><Badge variant="red">EatSure <ExternalLink className="w-2.5 h-2.5 ml-1" /></Badge></a>}
-                    {food.uber_eats_url && <a href={food.uber_eats_url} target="_blank" rel="noopener noreferrer"><Badge variant="amber">Uber Eats <ExternalLink className="w-2.5 h-2.5 ml-1" /></Badge></a>}
+                    {food.zomato_url && <a href={getZomatoSearchUrl(food.name, food.city)} target="_blank" rel="noopener noreferrer"><Badge variant="red">Zomato <ExternalLink className="w-2.5 h-2.5 ml-1" /></Badge></a>}
+                    {food.swiggy_url && <a href={getSwiggySearchUrl(food.name, food.city)} target="_blank" rel="noopener noreferrer"><Badge variant="amber">Swiggy <ExternalLink className="w-2.5 h-2.5 ml-1" /></Badge></a>}
+                    {food.magicpin_url && <a href={getMagicpinSearchUrl(food.name, food.city)} target="_blank" rel="noopener noreferrer"><Badge variant="teal">Magicpin <ExternalLink className="w-2.5 h-2.5 ml-1" /></Badge></a>}
+                    {food.eatsure_url && <a href={getEatsureSearchUrl(food.name)} target="_blank" rel="noopener noreferrer"><Badge variant="red">EatSure <ExternalLink className="w-2.5 h-2.5 ml-1" /></Badge></a>}
+                    {food.uber_eats_url && <a href={getUberEatsSearchUrl(food.name, food.city)} target="_blank" rel="noopener noreferrer"><Badge variant="amber">Uber Eats <ExternalLink className="w-2.5 h-2.5 ml-1" /></Badge></a>}
                   </div>
                   <div className="flex gap-2">
                     {food.google_maps_url && <a href={food.google_maps_url} target="_blank" rel="noopener noreferrer"><Button variant="ghost" size="sm"><MapPin className="w-4 h-4" /></Button></a>}
