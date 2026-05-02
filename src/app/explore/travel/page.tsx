@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { MapPin, Navigation, Bus, Train, Car, Bike, ExternalLink, Loader2, AlertCircle } from 'lucide-react';
+import { MapPin, Navigation, Bus, Train, Car, Bike, ExternalLink, Loader2, AlertCircle, Download } from 'lucide-react';
+import { Bus as BusIcon, Car01, Announcement01, Map01, NavigationPointer01, SearchLg } from '@untitledui/icons';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/Badge';
@@ -10,8 +11,8 @@ import { TAMIL_WORDS } from '@/lib/constants';
 import { checkRouteAvailability, RouteResponse, TransportCategory, PrivateMode } from '@/lib/routingService';
 
 const transportCategories = [
-  { id: 'public', label: 'Public Transport', icon: <Bus className="w-5 h-5" />, desc: 'Bus, Metro, Train' },
-  { id: 'private', label: 'Private Transport', icon: <Car className="w-5 h-5" />, desc: 'Auto, Cab, Bike' }
+  { id: 'public', label: 'Public Transport', icon: <BusIcon className="w-5 h-5" />, desc: 'Bus, Metro, Train' },
+  { id: 'private', label: 'Private Transport', icon: <Car01 className="w-5 h-5" />, desc: 'Auto, Cab, Bike' }
 ] as const;
 
 const privateSubModes = [
@@ -60,6 +61,10 @@ export default function TravelPage() {
     }
   };
 
+  const handleDownloadPDF = () => {
+    window.print();
+  };
+
   return (
     <div className="min-h-screen bg-surface">
       <div className="bg-white border-b border-border">
@@ -78,7 +83,12 @@ export default function TravelPage() {
           {/* Route Planner */}
           <div className="lg:col-span-2 space-y-6">
             <Card padding="lg">
-              <h2 className="text-xl font-bold mb-6">Route Planner</h2>
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-bold">Route Planner</h2>
+                <button onClick={handleDownloadPDF} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium bg-surface text-text-muted hover:text-text-primary transition-all cursor-pointer">
+                  <Download className="w-3.5 h-3.5" /> Save PDF
+                </button>
+              </div>
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-text-primary mb-1.5">From</label>
@@ -242,7 +252,9 @@ export default function TravelPage() {
           {/* Tamil Words Helper */}
           <div>
             <Card className="sticky top-20">
-              <h3 className="text-lg font-bold mb-4">🗣️ Tamil Word Helper</h3>
+              <h3 className="text-lg font-bold mb-4 inline-flex items-center gap-2">
+                <Announcement01 className="w-5 h-5 text-primary" /> Tamil Word Helper
+              </h3>
               <p className="text-sm text-text-muted mb-4">Common Tamil words you&apos;ll need while traveling:</p>
               <div className="space-y-3">
                 {TAMIL_WORDS.map((word) => (

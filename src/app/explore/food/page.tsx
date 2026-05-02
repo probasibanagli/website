@@ -2,13 +2,16 @@
 
 import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { MapPin, Phone, MessageCircle, Search, CheckCircle2, ExternalLink } from 'lucide-react';
+import { MapPin, Phone, MessageCircle, Search, CheckCircle2, ExternalLink, Download } from 'lucide-react';
+import { Gift01, Home01, ShoppingBag01, Bus, SearchLg } from '@untitledui/icons';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/card';
 import { sampleFoodListings } from '@/data/sample-data';
 import { CITIES } from '@/lib/constants';
 import { getWhatsAppUrl, getZomatoSearchUrl, getSwiggySearchUrl, getMagicpinSearchUrl, getEatsureSearchUrl, getUberEatsSearchUrl } from '@/lib/utils';
+import { useFirestore } from '@/lib/hooks/useFirestore';
+import { FoodListing } from '@/types';
 
 const FOOD_TYPE_LABELS: Record<string, string> = {
   restaurant: 'Restaurant',
@@ -17,21 +20,39 @@ const FOOD_TYPE_LABELS: Record<string, string> = {
   delivery: 'Delivery Partner',
 };
 
+const FOOD_TYPE_ICONS: Record<string, React.ReactNode> = {
+  restaurant: <Home01 className="w-5 h-5" />,
+  sweets: <Gift01 className="w-5 h-5" />,
+  tiffin: <ShoppingBag01 className="w-5 h-5" />,
+  delivery: <Bus className="w-5 h-5" />,
+};
+
 export default function FoodPage() {
+  const { data: firestoreListings, loading } = useFirestore<FoodListing>('food_listings');
   const [activeType, setActiveType] = useState<string>('all');
   const [city, setCity] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
 
   const sortedCities = useMemo(() => [...CITIES].sort((a, b) => a.localeCompare(b)), []);
 
+  const combinedListings = useMemo(() => {
+    // Merge Firestore data with sample data, prioritizing Firestore (or just showing both)
+    const firestoreIds = new Set(firestoreListings.map(l => l.id));
+    return [...firestoreListings, ...sampleFoodListings.filter(l => !firestoreIds.has(l.id))];
+  }, [firestoreListings]);
+
   const filtered = useMemo(() => {
-    return sampleFoodListings.filter((f) => {
+    return combinedListings.filter((f) => {
       if (activeType !== 'all' && f.type !== activeType) return false;
       if (city && f.city !== city && f.type !== 'delivery') return false;
       if (searchQuery && !f.name.toLowerCase().includes(searchQuery.toLowerCase())) return false;
       return true;
     });
-  }, [activeType, city, searchQuery]);
+  }, [combinedListings, activeType, city, searchQuery]);
+
+  const handleDownloadPDF = () => {
+    window.print(); // Simple way to download as PDF (Print to PDF)
+  };
 
   return (
     <div className="min-h-screen bg-surface">
@@ -47,16 +68,20 @@ export default function FoodPage() {
 
           <div className="mt-6 flex flex-wrap gap-2">
             {[
-              { value: 'all', label: 'All' },
-              { value: 'restaurant', label: '🍽️ Restaurants' },
-              { value: 'sweets', label: '🍬 Sweets' },
-              { value: 'tiffin', label: '🍱 Tiffin' },
+              { value: 'all', label: 'All', icon: <SearchLg className="w-4 h-4" /> },
+              { value: 'restaurant', label: 'Restaurants', icon: <Home01 className="w-4 h-4" /> },
+              { value: 'sweets', label: 'Sweets', icon: <Gift01 className="w-4 h-4" /> },
+              { value: 'tiffin', label: 'Tiffin', icon: <ShoppingBag01 className="w-4 h-4" /> },
             ].map((tab) => (
               <button key={tab.value} onClick={() => setActiveType(tab.value)}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-all cursor-pointer ${activeType === tab.value ? 'bg-primary text-white shadow-md' : 'bg-white text-text-primary border border-border hover:border-primary'}`}>
+                className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all cursor-pointer ${activeType === tab.value ? 'bg-primary text-white shadow-md' : 'bg-white text-text-primary border border-border hover:border-primary'}`}>
+                {tab.icon}
                 {tab.label}
               </button>
             ))}
+            <button onClick={handleDownloadPDF} className="ml-auto inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-white text-text-primary border border-border hover:bg-surface transition-all cursor-pointer">
+              <Download className="w-4 h-4" /> Download PDF
+            </button>
           </div>
 
           <div className="mt-4 flex flex-wrap items-center gap-3">
@@ -78,7 +103,9 @@ export default function FoodPage() {
           {filtered.map((food) => (
             <Card key={food.id} className="p-0 overflow-hidden group">
               <div className="relative h-40 bg-gradient-to-br from-orange-50 to-amber-50 flex items-center justify-center">
-                <span className="text-5xl opacity-30">{food.type === 'restaurant' ? '🍽️' : food.type === 'sweets' ? '🍬' : food.type === 'tiffin' ? '🍱' : '🛵'}</span>
+                <div className="text-primary opacity-40 scale-[2.5]">
+                  {FOOD_TYPE_ICONS[food.type as string] || <Home01 />}
+                </div>
                 <div className="absolute top-3 left-3">
                   <Badge variant="amber">{FOOD_TYPE_LABELS[food.type as string] || food.type}</Badge>
                 </div>
@@ -107,7 +134,19 @@ export default function FoodPage() {
             </Card>
           ))}
         </div>
-        {filtered.length === 0 && (<div className="text-center py-20"><p className="text-5xl mb-4">🍛</p><h3 className="text-xl font-bold text-text-primary mb-2">No food listings found</h3><p className="text-text-muted">Try adjusting your filters.</p></div>)}
+        {filtered.length === 0 && !loading && (
+          <div className="text-center py-20">
+            <div className="flex justify-center mb-4 text-primary/40"><SearchLg className="w-16 h-16" /></div>
+            <h3 className="text-xl font-bold text-text-primary mb-2">No food listings found</h3>
+            <p className="text-text-muted">Try adjusting your filters.</p>
+          </div>
+        )}
+        {loading && (
+          <div className="text-center py-20 flex flex-col items-center gap-4">
+            <div className="w-10 h-10 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
+            <p className="text-text-muted text-sm font-medium animate-pulse">Fetching fresh listings...</p>
+          </div>
+        )}
       </div>
     </div>
   );

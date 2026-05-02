@@ -60,13 +60,18 @@ export default function AdminModulePage({ moduleKey, collectionName, columns, fo
       if (editId) {
         await updateDoc(doc(db, collectionName, editId), { ...formData, updated_at: now });
         setItems(prev => prev.map(i => i.id === editId ? { ...i, ...formData } : i));
+        alert('Item updated successfully!');
       } else {
         const id = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
         await setDoc(doc(db, collectionName, id), { ...formData, id, created_at: now });
         setItems(prev => [{ id, ...formData, created_at: now }, ...prev]);
+        alert('Item added successfully!');
       }
       setShowForm(false);
-    } catch (e) { console.error(e); }
+    } catch (e) {
+      console.error(e);
+      alert('Error saving item. Please check your connection and permissions.');
+    }
     finally { setSaving(false); }
   }
 
@@ -75,7 +80,11 @@ export default function AdminModulePage({ moduleKey, collectionName, columns, fo
     try {
       await deleteDoc(doc(db, collectionName, id));
       setItems(prev => prev.filter(i => i.id !== id));
-    } catch (e) { console.error(e); }
+      alert('Item deleted successfully!');
+    } catch (e) {
+      console.error(e);
+      alert('Error deleting item.');
+    }
   }
 
   if (!canView) return (

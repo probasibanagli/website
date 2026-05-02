@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { ExternalLink } from 'lucide-react';
+import * as UntitledIcons from '@untitledui/icons';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { GOVT_SERVICES } from '@/lib/constants';
@@ -21,12 +22,14 @@ export default function GovernmentPage() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {GOVT_SERVICES.map((service) => (
-            <Card key={service.id} className="group flex flex-col">
-              <div className="flex items-start gap-4">
-                <div className="w-14 h-14 rounded-2xl bg-surface flex items-center justify-center text-2xl shrink-0 group-hover:scale-110 transition-transform">
-                  {service.icon}
-                </div>
+          {GOVT_SERVICES.map((service) => {
+            const IconComponent = (UntitledIcons as any)[service.icon] || UntitledIcons.Building01;
+            return (
+              <Card key={service.id} className="group flex flex-col">
+                <div className="flex items-start gap-4">
+                  <div className="w-14 h-14 rounded-2xl bg-primary/5 flex items-center justify-center text-primary shrink-0 group-hover:scale-110 transition-transform">
+                    <IconComponent className="w-8 h-8" />
+                  </div>
                 <div className="flex-1">
                   <h3 className="text-lg font-bold text-text-primary group-hover:text-primary transition-colors">{service.title}</h3>
                   <span className="text-xs text-text-muted bg-surface px-2 py-0.5 rounded-full">{service.category}</span>
@@ -40,8 +43,9 @@ export default function GovernmentPage() {
                   </Button>
                 </a>
               </div>
-            </Card>
-          ))}
+              </Card>
+            );
+          })}
         </div>
       </div>
     </div>

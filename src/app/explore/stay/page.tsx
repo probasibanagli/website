@@ -2,21 +2,31 @@
 
 import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { MapPin, Phone, MessageCircle, Wifi, Wind, UtensilsCrossed, CheckCircle2, Search, SlidersHorizontal, ChevronDown } from 'lucide-react';
+import { MapPin, Phone, MessageCircle, Wifi, Wind, UtensilsCrossed, CheckCircle2, Search, SlidersHorizontal, ChevronDown, Download } from 'lucide-react';
+import { Home01, Building01, Home04, SearchLg, Wifi as WifiIcon, Wind01, Gift01 } from '@untitledui/icons';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/card';
 import { sampleListings } from '@/data/sample-data';
 import { CITIES } from '@/lib/constants';
 import { formatPrice, getWhatsAppUrl } from '@/lib/utils';
+import { useFirestore } from '@/lib/hooks/useFirestore';
+import { Listing } from '@/types';
 
 const amenityIcons: Record<string, React.ReactNode> = {
-  'WiFi': <Wifi className="w-3 h-3" />,
-  'AC': <Wind className="w-3 h-3" />,
-  'Bengali Food': <UtensilsCrossed className="w-3 h-3" />,
+  'WiFi': <WifiIcon className="w-3 h-3" />,
+  'AC': <Wind01 className="w-3 h-3" />,
+  'Bengali Food': <Gift01 className="w-3 h-3" />,
+};
+
+const STAY_TYPE_ICONS: Record<string, React.ReactNode> = {
+  pg: <Home01 className="w-5 h-5" />,
+  hotel: <Building01 className="w-5 h-5" />,
+  rental: <Home04 className="w-5 h-5" />,
 };
 
 export default function StayPage() {
+  const { data: firestoreListings, loading } = useFirestore<Listing>('stay_listings');
   const [activeType, setActiveType] = useState<string>('all');
   const [city, setCity] = useState('');
   const [isCityOpen, setIsCityOpen] = useState(false);
@@ -26,8 +36,13 @@ export default function StayPage() {
   const [maxPrice, setMaxPrice] = useState('');
   const [subcategory, setSubcategory] = useState('');
 
+  const combinedListings = useMemo(() => {
+    const firestoreIds = new Set(firestoreListings.map(l => l.id));
+    return [...firestoreListings, ...sampleListings.filter(l => !firestoreIds.has(l.id))];
+  }, [firestoreListings]);
+
   const filtered = useMemo(() => {
-    return sampleListings.filter((l) => {
+    return combinedListings.filter((l) => {
       if (activeType !== 'all' && l.type !== activeType) return false;
       if (city && l.city !== city) return false;
       if (bengaliOnly && !l.bengali_friendly) return false;
@@ -44,7 +59,11 @@ export default function StayPage() {
       }
       return true;
     });
-  }, [activeType, city, bengaliOnly, searchQuery, minPrice, maxPrice, subcategory]);
+  }, [combinedListings, activeType, city, bengaliOnly, searchQuery, minPrice, maxPrice, subcategory]);
+
+  const handleDownloadPDF = () => {
+    window.print();
+  };
 
   return (
     <div className="min-h-screen bg-surface">
@@ -66,23 +85,27 @@ export default function StayPage() {
           {/* Type Tabs */}
           <div className="mt-6 flex flex-wrap gap-2">
             {[
-              { value: 'all', label: 'All' },
-              { value: 'pg', label: '🏠 PG' },
-              { value: 'hotel', label: '🏨 Hotels' },
-              { value: 'rental', label: '🏘️ Rental House' },
+              { value: 'all', label: 'All', icon: <SearchLg className="w-4 h-4" /> },
+              { value: 'pg', label: 'PG', icon: <Home01 className="w-4 h-4" /> },
+              { value: 'hotel', label: 'Hotels', icon: <Building01 className="w-4 h-4" /> },
+              { value: 'rental', label: 'Rental House', icon: <Home04 className="w-4 h-4" /> },
             ].map((tab) => (
               <button
                 key={tab.value}
                 onClick={() => setActiveType(tab.value)}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-all cursor-pointer ${
+                className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all cursor-pointer ${
                   activeType === tab.value
                     ? 'bg-primary text-white shadow-md'
                     : 'bg-white text-text-primary border border-border hover:border-primary'
                 }`}
               >
+                {tab.icon}
                 {tab.label}
               </button>
             ))}
+            <button onClick={handleDownloadPDF} className="ml-auto inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-white text-text-primary border border-border hover:bg-surface transition-all cursor-pointer">
+              <Download className="w-4 h-4" /> Download PDF
+            </button>
           </div>
 
           {/* Filters */}
@@ -181,9 +204,9 @@ export default function StayPage() {
             <Card key={listing.id} className="p-0 overflow-hidden group">
               {/* Image placeholder */}
               <div className="relative h-48 bg-gradient-to-br from-primary-light to-accent-light flex items-center justify-center">
-                <span className="text-6xl opacity-30">
-                  {listing.type === 'pg' ? '🏠' : listing.type === 'hotel' ? '🏨' : '🏘️'}
-                </span>
+                <div className="text-primary opacity-40 scale-[3]">
+                  {STAY_TYPE_ICONS[listing.type] || <Home01 />}
+                </div>
                 <div className="absolute top-3 left-3 flex gap-2">
                   <Badge variant={listing.type as 'pg' | 'hotel' | 'rental'}>
                     {listing.type.toUpperCase()}
@@ -247,11 +270,17 @@ export default function StayPage() {
           ))}
         </div>
 
-        {filtered.length === 0 && (
+        {filtered.length === 0 && !loading && (
           <div className="text-center py-20">
-            <p className="text-5xl mb-4">🏠</p>
+            <div className="flex justify-center mb-4 text-primary/40"><SearchLg className="w-16 h-16" /></div>
             <h3 className="text-xl font-bold text-text-primary mb-2">No listings found</h3>
             <p className="text-text-muted">Try adjusting your filters or search query.</p>
+          </div>
+        )}
+        {loading && (
+          <div className="text-center py-20 flex flex-col items-center gap-4">
+            <div className="w-10 h-10 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
+            <p className="text-text-muted text-sm font-medium animate-pulse">Fetching fresh listings...</p>
           </div>
         )}
       </div>

@@ -7,6 +7,20 @@ import { usePathname, useRouter } from 'next/navigation';
 import {
   Menu, X, ChevronDown, Phone, Globe, User, Shield, LogOut,
 } from 'lucide-react';
+import {
+  Home01,
+  Users01,
+  Heart,
+  Calendar,
+  MedicalCross,
+  Droplets01,
+  LifeBuoy01,
+  GraduationHat01,
+  Building01,
+  Bus,
+  Gift01,
+  AnnotationInfo,
+} from '@untitledui/icons';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/lib/auth/AuthContext';
@@ -16,32 +30,32 @@ const navLinks = [
   {
     label: 'Explore',
     children: [
-      { label: 'Stay & Accommodation', href: '/explore/stay', icon: '🏠' },
-      { label: 'Bengali Food', href: '/explore/food', icon: '🍛' },
-      { label: 'Travel & Transport', href: '/explore/travel', icon: '🚌' },
+      { label: 'Stay & Accommodation', href: '/explore/stay', icon: <Home01 className="w-4 h-4" /> },
+      { label: 'Bengali Food', href: '/explore/food', icon: <Gift01 className="w-4 h-4" /> },
+      { label: 'Travel & Transport', href: '/explore/travel', icon: <Bus className="w-4 h-4" /> },
     ],
   },
   {
     label: 'Community',
     children: [
-      { label: 'Community Groups', href: '/community/groups', icon: '👥' },
-      { label: 'Matrimonial', href: '/community/matrimonial', icon: '💑' },
-      { label: 'Events & Festivals', href: '/community/events', icon: '🎉' },
+      { label: 'Community Groups', href: '/community/groups', icon: <Users01 className="w-4 h-4" /> },
+      { label: 'Matrimonial', href: '/community/matrimonial', icon: <Heart className="w-4 h-4" /> },
+      { label: 'Events & Festivals', href: '/community/events', icon: <Calendar className="w-4 h-4" /> },
     ],
   },
   {
     label: 'Emergency',
     children: [
-      { label: 'Hospitals', href: '/emergency/hospitals', icon: '🏥' },
-      { label: 'Blood Help', href: '/emergency/blood', icon: '🩸' },
-      { label: 'Ambulance & SOS', href: '/emergency/ambulance', icon: '🚑' },
+      { label: 'Hospitals', href: '/emergency/hospitals', icon: <MedicalCross className="w-4 h-4" /> },
+      { label: 'Blood Help', href: '/emergency/blood', icon: <Droplets01 className="w-4 h-4" /> },
+      { label: 'Ambulance & SOS', href: '/emergency/ambulance', icon: <LifeBuoy01 className="w-4 h-4" /> },
     ],
   },
   {
     label: 'Services',
     children: [
-      { label: 'College Finder', href: '/services/college', icon: '🎓' },
-      { label: 'Government Services', href: '/services/government', icon: '🏛️' },
+      { label: 'College Finder', href: '/services/college', icon: <GraduationHat01 className="w-4 h-4" /> },
+      { label: 'Government Services', href: '/services/government', icon: <Building01 className="w-4 h-4" /> },
     ],
   },
 ];
@@ -260,8 +274,8 @@ export function Navbar() {
                 ))}
               </div>
             ))}
-            <Link href="/blog" onClick={() => setMobileOpen(false)} className="block px-3 py-2.5 text-sm text-text-primary hover:bg-surface rounded-xl">
-              📖 Blog
+            <Link href="/blog" onClick={() => setMobileOpen(false)} className="flex items-center gap-2 px-3 py-2.5 text-sm text-text-primary hover:bg-surface rounded-xl">
+              <AnnotationInfo className="w-4 h-4 text-primary" /> Blog
             </Link>
             <div className="flex gap-2 pt-3 border-t border-border">
               <Link href="/emergency/ambulance" className="flex-1" onClick={() => setMobileOpen(false)}>

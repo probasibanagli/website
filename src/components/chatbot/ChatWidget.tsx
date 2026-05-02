@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { MessageCircle, X, Send, Sparkles } from 'lucide-react';
+import { HomeLine } from '@untitledui/icons';
 import { cn } from '@/lib/utils';
 
 const suggestedPrompts = [
@@ -74,8 +75,9 @@ export function ChatWidget() {
           <div className="flex-1 overflow-y-auto p-4 space-y-3">
             {messages.length === 0 && (
               <div className="space-y-3">
-                <p className="text-sm text-text-muted text-center py-4">
-                  👋 Hi! I can help you find PGs, food, hospitals, and more in Tamil Nadu.
+                <p className="text-sm text-text-muted text-center py-4 flex flex-col items-center gap-2">
+                  <HomeLine className="w-10 h-10 text-primary/30 mb-1" />
+                  Hi! I can help you find PGs, food, hospitals, and more in Tamil Nadu.
                 </p>
                 <div className="space-y-2">
                   {suggestedPrompts.map((prompt) => (
