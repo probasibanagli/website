@@ -7,15 +7,35 @@ import { db } from '@/lib/firebase';
 import { useAuth } from '@/lib/auth/AuthContext';
 import type { UserProfile } from '@/types';
 import { MODULE_LABELS } from '@/types';
-import { Shield, Crown, Search, ChevronRight, Check, X, Loader2 } from 'lucide-react';
+import { Shield, Crown, Search, ChevronRight, Check, X, Loader2, UserPlus } from 'lucide-react';
+
+const ADMIN_DEFAULT_PERMISSIONS = { stay:'edit', food:'edit', travel:'edit', emergency:'edit', community:'edit', services:'edit', blog:'edit', users:'none' };
+const USER_DEFAULT_PERMISSIONS = { stay:'none', food:'none', travel:'none', emergency:'none', community:'none', services:'none', blog:'none', users:'none' };
+
+const AVAILABLE_MODULES = [
+  { key: 'stay', label: 'Stay & Accommodation' },
+  { key: 'food', label: 'Bengali Food' },
+  { key: 'travel', label: 'Travel & Transport' },
+  { key: 'emergency', label: 'Emergency Help' },
+  { key: 'community', label: 'Community Groups' },
+  { key: 'services', label: 'Services' },
+  { key: 'blog', label: 'Blog' },
+];
 
 export default function AdminUsersPage() {
-  const { profile } = useAuth();
+  const { profile, firebaseUser } = useAuth();
   const [users, setUsers] = useState<UserProfile[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterRole, setFilterRole] = useState<string>('all');
   const isSuperAdmin = profile?.role === 'superadmin';
+
+  // Create Admin State
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [createForm, setCreateForm] = useState({ full_name: '', email: '', password: '' });
+  const [selectedModules, setSelectedModules] = useState<Record<string, boolean>>({});
+  const [creating, setCreating] = useState(false);
+  const [createError, setCreateError] = useState('');
 
   useEffect(() => { loadUsers(); }, []);
 
@@ -35,11 +55,59 @@ export default function AdminUsersPage() {
 
   async function changeRole(uid: string, newRole: 'user' | 'admin') {
     if (!isSuperAdmin) return;
-    const none = { stay:'none',food:'none',travel:'none',emergency:'none',community:'none',services:'none',blog:'none',users:'none' };
     const upd: Record<string,unknown> = { role: newRole, updated_at: new Date().toISOString() };
-    if (newRole === 'user') upd.permissions = none;
+    const perms = newRole === 'admin' ? ADMIN_DEFAULT_PERMISSIONS : USER_DEFAULT_PERMISSIONS;
+    upd.permissions = perms;
+    
     await updateDoc(doc(db, 'users', uid), upd);
-    setUsers((p) => p.map((u) => u.uid === uid ? { ...u, role: newRole, ...(newRole === 'user' ? { permissions: none as UserProfile['permissions'] } : {}) } : u));
+    setUsers((p) => p.map((u) => u.uid === uid ? { ...u, role: newRole, permissions: perms as any } : u));
+  }
+
+  function openCreateModal() {
+    setCreateForm({ full_name: '', email: '', password: '' });
+    setSelectedModules(AVAILABLE_MODULES.reduce((acc, m) => ({ ...acc, [m.key]: true }), {}));
+    setCreateError('');
+    setShowCreateModal(true);
+  }
+
+  async function handleCreateAdmin(e: React.FormEvent) {
+    e.preventDefault();
+    if (!isSuperAdmin || !firebaseUser) return;
+    setCreateError('');
+    setCreating(true);
+    
+    try {
+      const perms: Record<string, string> = { ...USER_DEFAULT_PERMISSIONS };
+      for (const [mod, isSelected] of Object.entries(selectedModules)) {
+        if (isSelected) perms[mod] = 'edit';
+      }
+
+      const token = await firebaseUser.getIdToken();
+      const res = await fetch('/api/admin/users', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          ...createForm,
+          role: 'admin',
+          permissions: perms
+        })
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || 'Failed to create admin');
+      }
+
+      setShowCreateModal(false);
+      loadUsers();
+    } catch (err: any) {
+      setCreateError(err.message);
+    } finally {
+      setCreating(false);
+    }
   }
 
   const filtered = users.filter((u) => {
@@ -57,7 +125,16 @@ export default function AdminUsersPage() {
 
   return (
     <div className="space-y-6">
-      <div><h1 className="text-2xl font-bold text-text-primary">User Management</h1><p className="text-text-muted text-sm mt-1">{users.length} total users</p></div>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-text-primary">User Management</h1>
+          <p className="text-text-muted text-sm mt-1">{users.length} total users</p>
+        </div>
+        <button onClick={openCreateModal} className="inline-flex items-center gap-2 px-4 py-2.5 bg-primary hover:bg-primary-dark text-white rounded-xl text-sm font-medium transition-colors shadow-md active:scale-95">
+          <UserPlus className="w-4 h-4" /> Create Admin
+        </button>
+      </div>
+
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
           <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" />
@@ -67,6 +144,7 @@ export default function AdminUsersPage() {
           <option value="all">All Roles</option><option value="superadmin">Super Admin</option><option value="admin">Admin</option><option value="user">User</option>
         </select>
       </div>
+      
       {loading ? <div className="flex justify-center py-20"><Loader2 className="w-6 h-6 animate-spin text-primary" /></div> : (
         <div className="bg-white rounded-2xl border border-border overflow-hidden shadow-sm">
           <table className="w-full">
@@ -101,6 +179,57 @@ export default function AdminUsersPage() {
               {filtered.length===0 && <tr><td colSpan={5} className="px-5 py-12 text-center text-text-muted text-sm italic">No users found</td></tr>}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {/* Create Admin Modal */}
+      {showCreateModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setShowCreateModal(false)} />
+          <div className="relative bg-white rounded-3xl border border-border w-full max-w-lg overflow-hidden shadow-2xl animate-fade-in max-h-[90vh] flex flex-col">
+            <div className="flex items-center justify-between p-6 border-b border-border shrink-0">
+              <h3 className="text-xl font-bold text-text-primary">Create Admin</h3>
+              <button onClick={() => setShowCreateModal(false)} className="p-2 rounded-xl hover:bg-surface text-text-muted transition-colors"><X className="w-5 h-5" /></button>
+            </div>
+            <div className="overflow-y-auto">
+              <form id="create-admin-form" onSubmit={handleCreateAdmin}>
+                <div className="p-6 space-y-4">
+                  {createError && <div className="p-3 rounded-xl bg-red-50 text-red-600 text-sm">{createError}</div>}
+                  <div>
+                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Full Name *</label>
+                    <input required type="text" value={createForm.full_name} onChange={(e) => setCreateForm({...createForm, full_name: e.target.value})} className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none transition-all" placeholder="John Doe" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Email Address *</label>
+                    <input required type="email" value={createForm.email} onChange={(e) => setCreateForm({...createForm, email: e.target.value})} className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none transition-all" placeholder="admin@example.com" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Password *</label>
+                    <input required type="password" minLength={6} value={createForm.password} onChange={(e) => setCreateForm({...createForm, password: e.target.value})} className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none transition-all" placeholder="Min 6 characters" />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-text-primary mb-2 mt-4">Module Access</label>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      {AVAILABLE_MODULES.map(m => (
+                        <label key={m.key} className="flex items-center gap-3 p-3 rounded-xl border border-border hover:bg-surface cursor-pointer transition-colors">
+                          <input type="checkbox" checked={selectedModules[m.key] || false} onChange={(e) => setSelectedModules({...selectedModules, [m.key]: e.target.checked})} className="w-4 h-4 accent-primary rounded cursor-pointer" />
+                          <span className="text-sm font-medium text-text-primary">{m.label}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+            <div className="p-6 border-t border-border flex justify-end gap-3 bg-surface/30 shrink-0">
+              <button type="button" onClick={() => setShowCreateModal(false)} className="px-6 py-2.5 rounded-xl text-sm font-semibold text-text-muted hover:bg-surface transition-colors">Cancel</button>
+              <button form="create-admin-form" type="submit" disabled={creating} className="inline-flex items-center gap-2 px-6 py-2.5 bg-primary hover:bg-primary-dark text-white rounded-xl text-sm font-bold disabled:opacity-50 transition-colors">
+                {creating ? <Loader2 className="w-4 h-4 animate-spin" /> : <UserPlus className="w-4 h-4" />}
+                {creating ? 'Creating...' : 'Create Admin'}
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
