@@ -3,9 +3,9 @@
 import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { Droplets, MapPin, Phone } from 'lucide-react';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/Badge';
-import { Card } from '@/components/ui/Card';
+import { Card } from '@/components/ui/card';
 import { sampleBloodBanks } from '@/data/sample-data';
 import { BLOOD_GROUPS, CITIES } from '@/lib/constants';
 

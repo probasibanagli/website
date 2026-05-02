@@ -4,9 +4,9 @@ import React from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { ArrowLeft, MapPin, GraduationCap, Briefcase, CheckCircle2, Lock, Heart, MessageCircle } from 'lucide-react';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/Badge';
-import { Card } from '@/components/ui/Card';
+import { Card } from '@/components/ui/card';
 import { sampleMatrimonialProfiles } from '@/data/sample-data';
 
 export default function MatrimonialDetailPage() {

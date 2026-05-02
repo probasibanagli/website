@@ -3,22 +3,31 @@
 import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { MapPin, Phone, MessageCircle, Search, CheckCircle2, ExternalLink } from 'lucide-react';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/Badge';
-import { Card } from '@/components/ui/Card';
+import { Card } from '@/components/ui/card';
 import { sampleFoodListings } from '@/data/sample-data';
 import { CITIES } from '@/lib/constants';
-import { getWhatsAppUrl } from '@/lib/utils';
+import { getWhatsAppUrl, getZomatoSearchUrl, getSwiggySearchUrl, getMagicpinSearchUrl, getEatsureSearchUrl, getUberEatsSearchUrl } from '@/lib/utils';
+
+const FOOD_TYPE_LABELS: Record<string, string> = {
+  restaurant: 'Restaurant',
+  sweets: 'Sweets',
+  tiffin: 'Tiffin',
+  delivery: 'Delivery Partner',
+};
 
 export default function FoodPage() {
   const [activeType, setActiveType] = useState<string>('all');
   const [city, setCity] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
 
+  const sortedCities = useMemo(() => [...CITIES].sort((a, b) => a.localeCompare(b)), []);
+
   const filtered = useMemo(() => {
     return sampleFoodListings.filter((f) => {
       if (activeType !== 'all' && f.type !== activeType) return false;
-      if (city && f.city !== city) return false;
+      if (city && f.city !== city && f.type !== 'delivery') return false;
       if (searchQuery && !f.name.toLowerCase().includes(searchQuery.toLowerCase())) return false;
       return true;
     });
@@ -42,7 +51,6 @@ export default function FoodPage() {
               { value: 'restaurant', label: '🍽️ Restaurants' },
               { value: 'sweets', label: '🍬 Sweets' },
               { value: 'tiffin', label: '🍱 Tiffin' },
-              { value: 'delivery', label: '🛵 Delivery' },
             ].map((tab) => (
               <button key={tab.value} onClick={() => setActiveType(tab.value)}
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-all cursor-pointer ${activeType === tab.value ? 'bg-primary text-white shadow-md' : 'bg-white text-text-primary border border-border hover:border-primary'}`}>
@@ -58,7 +66,7 @@ export default function FoodPage() {
             </div>
             <select value={city} onChange={(e) => setCity(e.target.value)} className="px-4 py-2.5 rounded-xl border border-border text-sm cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30">
               <option value="">All Cities</option>
-              {CITIES.map((c) => <option key={c} value={c}>{c}</option>)}
+              {sortedCities.map((c) => <option key={c} value={c}>{c}</option>)}
             </select>
           </div>
         </div>
@@ -72,7 +80,7 @@ export default function FoodPage() {
               <div className="relative h-40 bg-gradient-to-br from-orange-50 to-amber-50 flex items-center justify-center">
                 <span className="text-5xl opacity-30">{food.type === 'restaurant' ? '🍽️' : food.type === 'sweets' ? '🍬' : food.type === 'tiffin' ? '🍱' : '🛵'}</span>
                 <div className="absolute top-3 left-3">
-                  <Badge variant="amber">{food.type}</Badge>
+                  <Badge variant="amber">{FOOD_TYPE_LABELS[food.type as string] || food.type}</Badge>
                 </div>
                 {food.verified && <div className="absolute top-3 right-3"><Badge variant="verified"><CheckCircle2 className="w-3 h-3 mr-1" />Verified</Badge></div>}
               </div>
@@ -83,9 +91,12 @@ export default function FoodPage() {
                   {food.specialties.slice(0, 4).map((s) => (<span key={s} className="px-2 py-0.5 bg-surface rounded-md text-xs text-text-muted">{s}</span>))}
                 </div>
                 <div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
-                  <div className="flex gap-2">
-                    {food.zomato_url && <a href={food.zomato_url} target="_blank" rel="noopener noreferrer"><Badge variant="red">Zomato <ExternalLink className="w-2.5 h-2.5 ml-1" /></Badge></a>}
-                    {food.swiggy_url && <a href={food.swiggy_url} target="_blank" rel="noopener noreferrer"><Badge variant="amber">Swiggy <ExternalLink className="w-2.5 h-2.5 ml-1" /></Badge></a>}
+                  <div className="flex flex-wrap gap-2">
+                    {food.zomato_url && <a href={getZomatoSearchUrl(food.name, food.city)} target="_blank" rel="noopener noreferrer"><Badge variant="red">Zomato <ExternalLink className="w-2.5 h-2.5 ml-1" /></Badge></a>}
+                    {food.swiggy_url && <a href={getSwiggySearchUrl(food.name, food.city)} target="_blank" rel="noopener noreferrer"><Badge variant="amber">Swiggy <ExternalLink className="w-2.5 h-2.5 ml-1" /></Badge></a>}
+                    {food.magicpin_url && <a href={getMagicpinSearchUrl(food.name, food.city)} target="_blank" rel="noopener noreferrer"><Badge variant="teal">Magicpin <ExternalLink className="w-2.5 h-2.5 ml-1" /></Badge></a>}
+                    {food.eatsure_url && <a href={getEatsureSearchUrl(food.name)} target="_blank" rel="noopener noreferrer"><Badge variant="red">EatSure <ExternalLink className="w-2.5 h-2.5 ml-1" /></Badge></a>}
+                    {food.uber_eats_url && <a href={getUberEatsSearchUrl(food.name, food.city)} target="_blank" rel="noopener noreferrer"><Badge variant="amber">Uber Eats <ExternalLink className="w-2.5 h-2.5 ml-1" /></Badge></a>}
                   </div>
                   <div className="flex gap-2">
                     {food.google_maps_url && <a href={food.google_maps_url} target="_blank" rel="noopener noreferrer"><Button variant="ghost" size="sm"><MapPin className="w-4 h-4" /></Button></a>}

@@ -27,3 +27,28 @@ export function getWhatsAppUrl(phone: string, message?: string): string {
 export function truncate(str: string, length: number): string {
   return str.length > length ? str.substring(0, length) + '...' : str;
 }
+
+export function getZomatoSearchUrl(name: string, city: string): string {
+  const query = encodeURIComponent(`${name} ${city}`);
+  return `https://www.zomato.com/search?q=${query}`;
+}
+
+export function getSwiggySearchUrl(name: string, city: string): string {
+  const query = encodeURIComponent(`${name} ${city}`);
+  return `https://www.swiggy.com/search?query=${query}`;
+}
+
+export function getMagicpinSearchUrl(name: string, city: string): string {
+  const query = encodeURIComponent(`${name} ${city}`);
+  return `https://magicpin.in/search/?q=${query}`;
+}
+
+export function getEatsureSearchUrl(name: string): string {
+  const query = encodeURIComponent(name);
+  return `https://www.eatsure.com/search?q=${query}`;
+}
+
+export function getUberEatsSearchUrl(name: string, city: string): string {
+  const query = encodeURIComponent(`${name} ${city}`);
+  return `https://www.ubereats.com/search?q=${query}`;
+}

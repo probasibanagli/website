@@ -83,14 +83,18 @@ export interface FoodListing {
   phone?: string;
   whatsapp?: string;
   google_maps_url?: string;
+  magicpin_url?: string;
+  dunzo_url?: string;
+  eatsure_url?: string;
+  uber_eats_url?: string;
   lat?: number;
   lng?: number;
   specialties: string[];
   zomato_url?: string;
   swiggy_url?: string;
-  images: string[];
+  images?: string[];
   verified: boolean;
-  created_at: string;
+  created_at?: string;
 }
 
 export interface Hospital {

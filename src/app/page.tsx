@@ -4,8 +4,8 @@ import React from 'react';
 import Link from 'next/link';
 import { T } from '@/lib/contexts/LanguageContext';
 import { ArrowRight, Home, UtensilsCrossed, Bus, Users, Heart, Calendar, GraduationCap, Landmark, Hospital, Droplets, Siren, Phone, MapPin, Shield, Zap } from 'lucide-react';
-import { Button } from '@/components/ui/Button';
-import { Card } from '@/components/ui/Card';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/Badge';
 
 export default function HomePage() {

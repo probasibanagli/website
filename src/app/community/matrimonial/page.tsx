@@ -4,8 +4,8 @@ import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { Search, MapPin, GraduationCap, Briefcase, CheckCircle2, Lock } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
-import { Card } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
+import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { sampleMatrimonialProfiles } from '@/data/sample-data';
 import { CITIES } from '@/lib/constants';
 
