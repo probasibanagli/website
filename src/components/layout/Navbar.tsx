@@ -2,17 +2,12 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-<<<<<<< HEAD
 import { T } from '@/lib/contexts/LanguageContext';
 import { usePathname, useRouter } from 'next/navigation';
 import {
   Menu, X, ChevronDown, Phone, Globe, User, Shield, LogOut,
 } from 'lucide-react';
-import { Button } from '@/components/ui/Button';
-=======
-import { Menu, X, ChevronDown, Phone, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
->>>>>>> origin/main
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { useLanguage } from '@/lib/contexts/LanguageContext';
@@ -106,7 +101,6 @@ export function Navbar() {
                   <ChevronDown className={cn('w-3.5 h-3.5 transition-transform', activeDropdown === link.label && 'rotate-180')} />
                 </button>
                 {activeDropdown === link.label && (
-<<<<<<< HEAD
                   <div className="absolute top-full left-0 mt-1 w-64 bg-white rounded-2xl shadow-xl border border-border py-2 animate-fade-in">
                     {link.children.map((child) => (
                       <Link
@@ -118,21 +112,6 @@ export function Navbar() {
                         <T>{child.label}</T>
                       </Link>
                     ))}
-=======
-                  <div className="absolute top-full left-0 pt-2 w-64">
-                    <div className="bg-white rounded-2xl shadow-xl border border-border py-2 animate-fade-in">
-                      {link.children.map((child) => (
-                        <Link
-                          key={child.href}
-                          href={child.href}
-                          className="flex items-center gap-3 px-4 py-2.5 text-sm text-text-primary hover:bg-surface hover:text-primary transition-colors"
-                        >
-                          <span className="text-lg">{child.icon}</span>
-                          {child.label}
-                        </Link>
-                      ))}
-                    </div>
->>>>>>> origin/main
                   </div>
                 )}
               </div>

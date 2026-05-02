@@ -2,16 +2,10 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-<<<<<<< HEAD
 import { useRouter } from 'next/navigation';
 import { UserPlus, Eye, EyeOff, Loader2 } from 'lucide-react';
-import { Button } from '@/components/ui/Button';
-import { Card } from '@/components/ui/Card';
-=======
-import { UserPlus, Eye, EyeOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
->>>>>>> origin/main
 import { Input } from '@/components/ui/Input';
 import { useAuth } from '@/lib/auth/AuthContext';
 

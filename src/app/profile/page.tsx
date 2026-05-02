@@ -2,18 +2,12 @@
 
 import React from 'react';
 import Link from 'next/link';
-<<<<<<< HEAD
 import { useRouter } from 'next/navigation';
 import { User, Settings, LogOut, Shield, Loader2, Crown } from 'lucide-react';
-import { Button } from '@/components/ui/Button';
-import { Card } from '@/components/ui/Card';
-import { Badge } from '@/components/ui/Badge';
-import { useAuth } from '@/lib/auth/AuthContext';
-=======
-import { User, Settings, LogOut, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
->>>>>>> origin/main
+import { Badge } from '@/components/ui/Badge';
+import { useAuth } from '@/lib/auth/AuthContext';
 
 export default function ProfilePage() {
   const router = useRouter();
