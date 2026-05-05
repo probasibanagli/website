@@ -44,7 +44,7 @@ export const CITIES = [
 export const LISTING_TYPES = ['pg', 'hotel', 'rental'] as const;
 export type ListingType = (typeof LISTING_TYPES)[number];
 
-export const FOOD_TYPES = ['restaurant', 'sweets', 'tiffin', 'delivery'] as const;
+export const FOOD_TYPES = ['restaurant', 'sweets', 'tiffin', 'delivery partner'] as const;
 export type FoodType = (typeof FOOD_TYPES)[number];
 
 export const BLOOD_GROUPS = ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'] as const;

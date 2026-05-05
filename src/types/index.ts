@@ -76,10 +76,11 @@ export interface Listing {
 export interface FoodListing {
   id: string;
   name: string;
-  type?: 'restaurant' | 'sweets' | 'tiffin' | 'delivery';
+  type?: 'restaurant' | 'sweets' | 'tiffin' | 'delivery partner';
   city: string;
-  area?: string;
+  area: string;
   address?: string;
+  pincode?: string;
   phone?: string;
   whatsapp?: string;
   google_maps_url?: string;
@@ -92,9 +93,10 @@ export interface FoodListing {
   specialties: string[];
   zomato_url?: string;
   swiggy_url?: string;
-  images?: string[];
+  images: string[];
   verified: boolean;
-  created_at?: string;
+  bengali_friendly?: boolean;
+  created_at: string;
 }
 
 export interface Hospital {

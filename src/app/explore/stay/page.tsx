@@ -114,7 +114,7 @@ export default function StayPage() {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
               <input
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
                 placeholder="Search by name or area..."
                 className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
               />
@@ -201,7 +201,7 @@ export default function StayPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filtered.map((listing) => (
-            <Card key={listing.id} className="p-0 overflow-hidden group">
+            <Card key={listing.id} padding="none" className="overflow-hidden group">
               {/* Image placeholder */}
               <div className="relative h-48 bg-gradient-to-br from-primary-light to-accent-light flex items-center justify-center">
                 <div className="text-primary opacity-40 scale-[3]">
