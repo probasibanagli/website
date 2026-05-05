@@ -9,9 +9,6 @@
     "lint": "eslint"
   },
   "dependencies": {
-<<<<<<< HEAD
-    "@untitledui/icons": "^0.0.22",
-=======
     "@protobufjs/aspromise": "^1.1.2",
     "@protobufjs/base64": "^1.1.2",
     "@protobufjs/eventemitter": "^1.1.0",
@@ -20,7 +17,6 @@
     "@protobufjs/path": "^1.1.2",
     "@protobufjs/pool": "^1.1.0",
     "@protobufjs/utf8": "^1.1.1",
->>>>>>> 217603e (feat: enhance Bengali Foods section with tiered filtering, interactive addresses, and premium UI)
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "firebase": "^12.12.1",

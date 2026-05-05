@@ -2,8 +2,7 @@
 
 import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { MapPin, Phone, MessageCircle, Wifi, Wind, UtensilsCrossed, CheckCircle2, Search, SlidersHorizontal, ChevronDown, Download } from 'lucide-react';
-import { Home01, Building01, Home04, SearchLg, Wifi as WifiIcon, Wind01, Gift01 } from '@untitledui/icons';
+import { MapPin, Phone, MessageCircle, Wifi, Wind, UtensilsCrossed, CheckCircle2, Search, SlidersHorizontal, ChevronDown, Download, Home, Building, Building2, Gift } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/card';
@@ -14,15 +13,15 @@ import { useFirestore } from '@/lib/hooks/useFirestore';
 import { Listing } from '@/types';
 
 const amenityIcons: Record<string, React.ReactNode> = {
-  'WiFi': <WifiIcon className="w-3 h-3" />,
-  'AC': <Wind01 className="w-3 h-3" />,
-  'Bengali Food': <Gift01 className="w-3 h-3" />,
+  'WiFi': <Wifi className="w-3 h-3" />,
+  'AC': <Wind className="w-3 h-3" />,
+  'Bengali Food': <Gift className="w-3 h-3" />,
 };
 
 const STAY_TYPE_ICONS: Record<string, React.ReactNode> = {
-  pg: <Home01 className="w-5 h-5" />,
-  hotel: <Building01 className="w-5 h-5" />,
-  rental: <Home04 className="w-5 h-5" />,
+  pg: <Home className="w-5 h-5" />,
+  hotel: <Building className="w-5 h-5" />,
+  rental: <Building2 className="w-5 h-5" />,
 };
 
 export default function StayPage() {
@@ -85,10 +84,10 @@ export default function StayPage() {
           {/* Type Tabs */}
           <div className="mt-6 flex flex-wrap gap-2">
             {[
-              { value: 'all', label: 'All', icon: <SearchLg className="w-4 h-4" /> },
-              { value: 'pg', label: 'PG', icon: <Home01 className="w-4 h-4" /> },
-              { value: 'hotel', label: 'Hotels', icon: <Building01 className="w-4 h-4" /> },
-              { value: 'rental', label: 'Rental House', icon: <Home04 className="w-4 h-4" /> },
+              { value: 'all', label: 'All', icon: <Search className="w-4 h-4" /> },
+              { value: 'pg', label: 'PG', icon: <Home className="w-4 h-4" /> },
+              { value: 'hotel', label: 'Hotels', icon: <Building className="w-4 h-4" /> },
+              { value: 'rental', label: 'Rental House', icon: <Building2 className="w-4 h-4" /> },
             ].map((tab) => (
               <button
                 key={tab.value}
@@ -205,7 +204,7 @@ export default function StayPage() {
               {/* Image placeholder */}
               <div className="relative h-48 bg-gradient-to-br from-primary-light to-accent-light flex items-center justify-center">
                 <div className="text-primary opacity-40 scale-[3]">
-                  {STAY_TYPE_ICONS[listing.type] || <Home01 />}
+                  {STAY_TYPE_ICONS[listing.type] || <Home />}
                 </div>
                 <div className="absolute top-3 left-3 flex gap-2">
                   <Badge variant={listing.type as 'pg' | 'hotel' | 'rental'}>
@@ -272,7 +271,7 @@ export default function StayPage() {
 
         {filtered.length === 0 && !loading && (
           <div className="text-center py-20">
-            <div className="flex justify-center mb-4 text-primary/40"><SearchLg className="w-16 h-16" /></div>
+            <div className="flex justify-center mb-4 text-primary/40"><Search className="w-16 h-16" /></div>
             <h3 className="text-xl font-bold text-text-primary mb-2">No listings found</h3>
             <p className="text-text-muted">Try adjusting your filters or search query.</p>
           </div>

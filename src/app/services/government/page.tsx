@@ -1,10 +1,18 @@
 import React from 'react';
 import Link from 'next/link';
-import { ExternalLink } from 'lucide-react';
-import * as UntitledIcons from '@untitledui/icons';
+import { ExternalLink, Building, Shield, Landmark, CreditCard, FileText, Globe } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { GOVT_SERVICES } from '@/lib/constants';
+
+const ICON_MAP: Record<string, any> = {
+  Building01: Building,
+  Shield01: Shield,
+  Landmark01: Landmark,
+  CreditCard01: CreditCard,
+  FileText01: FileText,
+  Globe01: Globe,
+};
 
 export default function GovernmentPage() {
   return (
@@ -23,7 +31,7 @@ export default function GovernmentPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {GOVT_SERVICES.map((service) => {
-            const IconComponent = (UntitledIcons as any)[service.icon] || UntitledIcons.Building01;
+            const IconComponent = ICON_MAP[service.icon] || Building;
             return (
               <Card key={service.id} className="group flex flex-col">
                 <div className="flex items-start gap-4">

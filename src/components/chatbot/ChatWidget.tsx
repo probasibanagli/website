@@ -1,8 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { MessageCircle, X, Send, Sparkles } from 'lucide-react';
-import { HomeLine } from '@untitledui/icons';
+import { MessageCircle, X, Send, Sparkles, Home } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const suggestedPrompts = [
@@ -76,7 +75,7 @@ export function ChatWidget() {
             {messages.length === 0 && (
               <div className="space-y-3">
                 <p className="text-sm text-text-muted text-center py-4 flex flex-col items-center gap-2">
-                  <HomeLine className="w-10 h-10 text-primary/30 mb-1" />
+                  <Home className="w-10 h-10 text-primary/30 mb-1" />
                   Hi! I can help you find PGs, food, hospitals, and more in Tamil Nadu.
                 </p>
                 <div className="space-y-2">

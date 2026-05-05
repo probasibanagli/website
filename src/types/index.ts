@@ -93,10 +93,10 @@ export interface FoodListing {
   specialties: string[];
   zomato_url?: string;
   swiggy_url?: string;
-  images: string[];
+  images?: string[];
   verified: boolean;
   bengali_friendly?: boolean;
-  created_at: string;
+  created_at?: string;
 }
 
 export interface Hospital {

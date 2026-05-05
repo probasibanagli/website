@@ -2,11 +2,10 @@
 
 import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { MapPin, Phone, MessageCircle, Search, CheckCircle2, ExternalLink, Download } from 'lucide-react';
-import { Gift01, Home01, ShoppingBag01, Bus, SearchLg } from '@untitledui/icons';
-import { Button } from '@/components/ui/Button';
+import { MapPin, Phone, MessageCircle, Search, CheckCircle2, ExternalLink, Download, Gift, Home, ShoppingBag, Truck } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/Badge';
-import { Card } from '@/components/ui/Card';
+import { Card } from '@/components/ui/card';
 import { sampleFoodListings, cityRestaurants } from '@/data/sample-data';
 import { CITIES } from '@/lib/constants';
 import { getWhatsAppUrl, getZomatoSearchUrl, getSwiggySearchUrl, getMagicpinSearchUrl, getEatsureSearchUrl, getUberEatsSearchUrl } from '@/lib/utils';
@@ -21,10 +20,10 @@ const FOOD_TYPE_LABELS: Record<string, string> = {
 };
 
 const FOOD_TYPE_ICONS: Record<string, React.ReactNode> = {
-  restaurant: <Home01 className="w-5 h-5" />,
-  sweets: <Gift01 className="w-5 h-5" />,
-  tiffin: <ShoppingBag01 className="w-5 h-5" />,
-  delivery: <Bus className="w-5 h-5" />,
+  restaurant: <Home className="w-5 h-5" />,
+  sweets: <Gift className="w-5 h-5" />,
+  tiffin: <ShoppingBag className="w-5 h-5" />,
+  delivery: <Truck className="w-5 h-5" />,
 };
 
 export default function FoodPage() {
@@ -97,11 +96,11 @@ export default function FoodPage() {
 
           <div className="mt-6 flex flex-wrap gap-2">
             {[
-              { value: 'all', label: 'All', icon: <SearchLg className="w-4 h-4" /> },
-              { value: 'restaurant', label: 'Restaurants', icon: <Home01 className="w-4 h-4" /> },
-              { value: 'sweets', label: 'Sweets', icon: <Gift01 className="w-4 h-4" /> },
-              { value: 'tiffin', label: 'Tiffin', icon: <ShoppingBag01 className="w-4 h-4" /> },
-              { value: 'delivery partner', label: 'Delivery', icon: <Bus className="w-4 h-4" /> },
+              { value: 'all', label: 'All', icon: <Search className="w-4 h-4" /> },
+              { value: 'restaurant', label: 'Restaurants', icon: <Home className="w-4 h-4" /> },
+              { value: 'sweets', label: 'Sweets', icon: <Gift className="w-4 h-4" /> },
+              { value: 'tiffin', label: 'Tiffin', icon: <ShoppingBag className="w-4 h-4" /> },
+              { value: 'delivery partner', label: 'Delivery', icon: <Truck className="w-4 h-4" /> },
             ].map((tab) => (
               <button key={tab.value} onClick={() => setActiveType(tab.value as any)}
                 className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all cursor-pointer ${activeType === tab.value ? 'bg-primary text-white shadow-md' : 'bg-white text-text-primary border border-border hover:border-primary'}`}>
@@ -161,7 +160,7 @@ export default function FoodPage() {
             <Card key={food.id} padding="none" className="overflow-hidden group">
               <div className="relative h-40 bg-gradient-to-br from-orange-50 to-amber-50 flex items-center justify-center">
                 <div className="text-primary opacity-40 scale-[2.5]">
-                  {FOOD_TYPE_ICONS[food.type as string] || <Home01 />}
+                  {FOOD_TYPE_ICONS[food.type as string] || <Home />}
                 </div>
                 <div className="absolute top-3 left-3 flex flex-col gap-1">
                   <Badge variant="amber">{food.type ? FOOD_TYPE_LABELS[food.type] ?? food.type : 'Food'}</Badge>
@@ -258,7 +257,7 @@ export default function FoodPage() {
         </div>
         {filtered.length === 0 && !loading && (
           <div className="text-center py-20">
-            <div className="flex justify-center mb-4 text-primary/40"><SearchLg className="w-16 h-16" /></div>
+            <div className="flex justify-center mb-4 text-primary/40"><Search className="w-16 h-16" /></div>
             <h3 className="text-xl font-bold text-text-primary mb-2">No food listings found</h3>
             <p className="text-text-muted">Try adjusting your filters.</p>
           </div>

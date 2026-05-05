@@ -2,8 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { MapPin, Navigation, Bus, Train, Car, Bike, ExternalLink, Loader2, AlertCircle, Download } from 'lucide-react';
-import { Bus as BusIcon, Car01, Announcement01, Map01, NavigationPointer01, SearchLg } from '@untitledui/icons';
+import { MapPin, Navigation, Bus, Train, Car, Bike, ExternalLink, Loader2, AlertCircle, Download, Search, Megaphone, Map } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/Badge';
@@ -11,8 +10,8 @@ import { TAMIL_WORDS } from '@/lib/constants';
 import { checkRouteAvailability, RouteResponse, TransportCategory, PrivateMode } from '@/lib/routingService';
 
 const transportCategories = [
-  { id: 'public', label: 'Public Transport', icon: <BusIcon className="w-5 h-5" />, desc: 'Bus, Metro, Train' },
-  { id: 'private', label: 'Private Transport', icon: <Car01 className="w-5 h-5" />, desc: 'Auto, Cab, Bike' }
+  { id: 'public', label: 'Public Transport', icon: <Bus className="w-5 h-5" />, desc: 'Bus, Metro, Train' },
+  { id: 'private', label: 'Private Transport', icon: <Car className="w-5 h-5" />, desc: 'Auto, Cab, Bike' }
 ] as const;
 
 const privateSubModes = [
@@ -253,7 +252,7 @@ export default function TravelPage() {
           <div>
             <Card className="sticky top-20">
               <h3 className="text-lg font-bold mb-4 inline-flex items-center gap-2">
-                <Announcement01 className="w-5 h-5 text-primary" /> Tamil Word Helper
+                <Megaphone className="w-5 h-5 text-primary" /> Tamil Word Helper
               </h3>
               <p className="text-sm text-text-muted mb-4">Common Tamil words you&apos;ll need while traveling:</p>
               <div className="space-y-3">

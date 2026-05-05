@@ -947,7 +947,7 @@ export const sampleFoodListings: FoodListing[] = [
   {
     id: "food-49",
     name: "Bengali Delivery Partner",
-    type: "delivery",
+    type: "delivery partner",
     verified: true,
     city: "Chennai",
     area: "Central",
@@ -964,7 +964,7 @@ export const sampleFoodListings: FoodListing[] = [
   {
     id: "food-50",
     name: "Delivery Didi",
-    type: "delivery",
+    type: "delivery partner",
     verified: true,
     city: "Coimbatore",
     area: "Townhall",
@@ -980,7 +980,7 @@ export const sampleFoodListings: FoodListing[] = [
   {
     id: "food-51",
     name: "Bengali Express Delivery",
-    type: "delivery",
+    type: "delivery partner",
     verified: true,
     city: "Madurai",
     area: "Anna Nagar",
@@ -1039,7 +1039,7 @@ export const sampleFoodListings: FoodListing[] = [
   {
     id: "food-55",
     name: "Bengali Delivery Wheels",
-    type: "delivery",
+    type: "delivery partner",
     verified: true,
     city: "Vellore",
     area: "Katpadi",
@@ -1084,7 +1084,7 @@ export const sampleFoodListings: FoodListing[] = [
   {
     id: "food-58",
     name: "Delivery Shakti",
-    type: "delivery",
+    type: "delivery partner",
     verified: true,
     city: "Salem",
     area: "Fairlands",
@@ -1130,7 +1130,7 @@ export const sampleFoodListings: FoodListing[] = [
   {
     id: "food-61",
     name: "Hometown Delivery",
-    type: "delivery",
+    type: "delivery partner",
     verified: true,
     city: "Thanjavur",
     area: "Old Bus Stand",
@@ -1174,7 +1174,7 @@ export const sampleFoodListings: FoodListing[] = [
   {
     id: "food-64",
     name: "Express Food Delivery",
-    type: "delivery",
+    type: "delivery partner",
     verified: true,
     city: "Cuddalore",
     area: "Town",
@@ -1220,7 +1220,7 @@ export const sampleFoodListings: FoodListing[] = [
   {
     id: "food-67",
     name: "Delivery Adda",
-    type: "delivery",
+    type: "delivery partner",
     verified: true,
     city: "Krishnagiri",
     area: "Kotagiri Road",
@@ -1265,7 +1265,7 @@ export const sampleFoodListings: FoodListing[] = [
   {
     id: "food-70",
     name: "Speedy Delivery",
-    type: "delivery",
+    type: "delivery partner",
     verified: true,
     city: "Nagercoil",
     area: "West Gate",
