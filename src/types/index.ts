@@ -78,10 +78,11 @@ export interface Listing {
 export interface FoodListing {
   id: string;
   name: string;
-  type?: 'restaurant' | 'sweets' | 'tiffin' | 'delivery';
+  type?: 'restaurant' | 'sweets' | 'tiffin' | 'delivery partner';
   city: string;
-  area?: string;
+  area: string;
   address?: string;
+  pincode?: string;
   phone?: string;
   whatsapp?: string;
   google_maps_url?: string;
@@ -97,7 +98,6 @@ export interface FoodListing {
   images?: string[];
   verified: boolean;
   bengali_friendly?: boolean;
-  pincode?: string;
   created_at?: string;
 }
 

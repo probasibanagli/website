@@ -1,4 +1,5 @@
 'use client';
+export const dynamic = 'force-dynamic';
 import AdminModulePage from '@/components/admin/AdminModulePage';
 
 export default function AdminCommunityPage() {

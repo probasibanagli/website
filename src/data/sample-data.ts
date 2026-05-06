@@ -1,6 +1,25 @@
 import { Listing, FoodListing, Hospital, BloodBank, CommunityGroup, MatrimonialProfile, College, Event, BlogPost } from '@/types';
 
-export const sampleListings: Listing[] = [
+export const cityRestaurants: Record<string, string[]> = {
+  'Chennai': ['Kolkata Kitchen', 'Mishti Hub', 'Banglar Rannaghar', 'Bong Bites', 'Petuk', 'Kolkata Mithai'],
+  'Coimbatore': ['Barir Ranna', 'Bengal Flavours'],
+  'Vellore': ['Kolkata Sweets Palace', 'Bong Connection'],
+  'Madurai': ['Meenaxi Bengali Bhoj', 'Temple City Mishti'],
+  'Salem': ['Salem Bengali Hotel', 'East Bengal Tiffin'],
+  'Tiruchirappalli': ['Trichy Bong Kitchen', 'Cauvery Sweets'],
+  'Tiruppur': ['Kolkata Fashion & Food'],
+  'Erode': ['Bong Tiffin Erode'],
+  'Hosur': ['Bangalore-Bong Express'],
+  'Ambur': ['Ambur Biryani & Bengali Sweets'],
+};
+
+// Add empty arrays for other cities to prevent UI issues
+['Ariyalur', 'Chengalpattu', 'Cuddalore', 'Dharmapuri', 'Dindigul', 'Kanchipuram', 'Kanyakumari', 'Karur', 'Krishnagiri', 'Mayiladuthurai', 'Nagapattinam', 'Nagercoil', 'Namakkal', 'Nilgiris', 'Perambalur', 'Pudukkottai', 'Ramanathapuram', 'Ranipet', 'Sivaganga', 'Tenkasi', 'Thanjavur', 'Theni', 'Thoothukudi', 'Tirunelveli', 'Tirupathur', 'Tiruvallur', 'Tiruvannamalai', 'Tiruvarur', 'Viluppuram', 'Virudhunagar'].forEach(city => {
+  if (!cityRestaurants[city]) cityRestaurants[city] = [];
+});
+
+
+export const sampleStayListings: Listing[] = [
   {
     id: '1', type: 'pg', name: 'Kolkata Home PG', description: 'Bengali-friendly PG with home-cooked Bengali food. Located near Guindy metro station. Clean rooms with AC and WiFi. Separate floors for boys and girls.', city: 'Chennai', area: 'Guindy', address: '45, 2nd Cross Street, Guindy, Chennai - 600032',
     price_per_month: 8500, room_type: 'double', gender: 'male', amenities: ['Bengali Food', 'AC', 'WiFi', 'Laundry', 'Power Backup'], bengali_friendly: true, bengali_food: true,
@@ -930,7 +949,7 @@ export const sampleFoodListings: FoodListing[] = [
   {
     id: "food-49",
     name: "Bengali Delivery Partner",
-    type: "delivery",
+    type: "delivery partner",
     verified: true,
     bengali_friendly: true,
     city: "Chennai",
@@ -948,7 +967,7 @@ export const sampleFoodListings: FoodListing[] = [
   {
     id: "food-50",
     name: "Delivery Didi",
-    type: "delivery",
+    type: "delivery partner",
     verified: true,
     city: "Coimbatore",
     area: "Townhall",
@@ -964,7 +983,7 @@ export const sampleFoodListings: FoodListing[] = [
   {
     id: "food-51",
     name: "Bengali Express Delivery",
-    type: "delivery",
+    type: "delivery partner",
     verified: true,
     city: "Madurai",
     area: "Anna Nagar",
@@ -1025,7 +1044,7 @@ export const sampleFoodListings: FoodListing[] = [
   {
     id: "food-55",
     name: "Bengali Delivery Wheels",
-    type: "delivery",
+    type: "delivery partner",
     verified: true,
     bengali_friendly: true,
     city: "Vellore",
@@ -1072,7 +1091,7 @@ export const sampleFoodListings: FoodListing[] = [
   {
     id: "food-58",
     name: "Delivery Shakti",
-    type: "delivery",
+    type: "delivery partner",
     verified: true,
     city: "Salem",
     area: "Fairlands",
@@ -1118,7 +1137,7 @@ export const sampleFoodListings: FoodListing[] = [
   {
     id: "food-61",
     name: "Hometown Delivery",
-    type: "delivery",
+    type: "delivery partner",
     verified: true,
     city: "Thanjavur",
     area: "Old Bus Stand",
@@ -1163,7 +1182,7 @@ export const sampleFoodListings: FoodListing[] = [
   {
     id: "food-64",
     name: "Express Food Delivery",
-    type: "delivery",
+    type: "delivery partner",
     verified: true,
     city: "Cuddalore",
     area: "Town",
@@ -1209,7 +1228,7 @@ export const sampleFoodListings: FoodListing[] = [
   {
     id: "food-67",
     name: "Delivery Adda",
-    type: "delivery",
+    type: "delivery partner",
     verified: true,
     city: "Krishnagiri",
     area: "Kotagiri Road",
@@ -1254,7 +1273,7 @@ export const sampleFoodListings: FoodListing[] = [
   {
     id: "food-70",
     name: "Speedy Delivery",
-    type: "delivery",
+    type: "delivery partner",
     verified: true,
     city: "Nagercoil",
     area: "West Gate",
@@ -1298,7 +1317,22 @@ export const sampleFoodListings: FoodListing[] = [
   },
 
   // Additional food listings can be added here to match the full PDF dataset.
+  
+  // ================= BENGALI FOODS =================
+  { id: '1', name: 'Kolkata Kitchen', type: 'restaurant', city: 'Chennai', area: 'T. Nagar', address: '34, South Usman Road, T. Nagar', pincode: '600017', phone: '9876543220', whatsapp: '9876543220', specialties: ['Hilsa Fish', 'Kosha Mangsho', 'Luchi Alur Dom', 'Chingri Malaikari'], zomato_url: 'https://zomato.com', swiggy_url: 'https://swiggy.com', images: [], verified: true, bengali_friendly: true, created_at: '2025-01-01', google_maps_url: 'https://maps.google.com/?q=T.Nagar,Chennai' },
+  { id: '2', name: 'Mishti Hub', type: 'sweets', city: 'Chennai', area: 'Anna Nagar', address: '56, 2nd Avenue, Anna Nagar', pincode: '600040', phone: '9876543221', whatsapp: '9876543221', specialties: ['Rosogolla', 'Mishti Doi', 'Sandesh', 'Pantua', 'Chomchom'], swiggy_url: 'https://swiggy.com', magicpin_url: 'https://magicpin.in', images: [], verified: true, bengali_friendly: true, created_at: '2025-01-10', google_maps_url: 'https://maps.google.com/?q=Anna+Nagar,Chennai' },
+  { id: '3', name: 'Banglar Rannaghar', type: 'tiffin', city: 'Chennai', area: 'Guindy', address: 'Home delivery only - Guindy area', pincode: '600032', phone: '9876543222', whatsapp: '9876543222', specialties: ['Bengali Thali', 'Fish Curry', 'Dal-Bhaat', 'Shukto'], magicpin_url: 'https://magicpin.in', dunzo_url: 'https://dunzo.com', images: [], verified: true, bengali_friendly: true, created_at: '2025-02-01', google_maps_url: 'https://maps.google.com/?q=Guindy,Chennai' },
+  { id: '4', name: 'Bong Bites', type: 'delivery partner', city: 'Chennai', area: 'Velachery', address: 'Online delivery - Chennai wide', pincode: '600042', phone: '9876543223', whatsapp: '9876543223', specialties: ['Kathi Rolls', 'Egg Devil', 'Mughlai Paratha', 'Chicken Chaap'], zomato_url: 'https://zomato.com', swiggy_url: 'https://swiggy.com', magicpin_url: 'https://magicpin.in', dunzo_url: 'https://dunzo.com', eatsure_url: 'https://eatsure.com', images: [], verified: false, bengali_friendly: false, created_at: '2025-02-15', google_maps_url: 'https://maps.google.com/?q=Velachery,Chennai' },
+  { id: '5', name: 'Barir Ranna', type: 'restaurant', city: 'Coimbatore', area: 'Gandhipuram', address: '12, Cross Cut Road, Gandhipuram', pincode: '641012', phone: '9876543224', whatsapp: '9876543224', specialties: ['Bengali Thali', 'Chingri Bhapa', 'Begun Bhaja', 'Payesh'], zomato_url: 'https://zomato.com', swiggy_url: 'https://swiggy.com', images: [], verified: true, bengali_friendly: true, created_at: '2025-03-01', google_maps_url: 'https://maps.google.com/?q=Gandhipuram,Coimbatore' },
+  { id: '6', name: 'Kolkata Sweets Palace', type: 'sweets', city: 'Vellore', area: 'Katpadi', address: 'Near VIT Main Gate, Katpadi', pincode: '632006', phone: '9876543225', whatsapp: '9876543225', specialties: ['Rosogolla', 'Langcha', 'Mihidana', 'Sitabhog'], swiggy_url: 'https://swiggy.com', images: [], verified: true, bengali_friendly: true, created_at: '2025-02-20', google_maps_url: 'https://maps.google.com/?q=Katpadi,Vellore' },
+  { id: '7', name: 'Petuk', type: 'restaurant', city: 'Chennai', area: 'Adyar', address: '15, 1st Cross Street, Adyar', pincode: '600020', phone: '9876543226', whatsapp: '9876543226', specialties: ['Fish Kabiraji', 'Mutton Kosha', 'Basanti Pulao'], zomato_url: 'https://zomato.com', swiggy_url: 'https://swiggy.com', images: [], verified: true, bengali_friendly: true, created_at: '2025-03-10', google_maps_url: 'https://maps.google.com/?q=Adyar,Chennai' },
+  { id: '8', name: 'Kolkata Mithai', type: 'sweets', city: 'Chennai', area: 'Egmore', address: '42, Gandhi Irwin Road, Egmore', pincode: '600008', phone: '9876543227', whatsapp: '9876543227', specialties: ['Kanchagolla', 'Sita Bhog', 'Nolen Gur Sandesh'], zomato_url: 'https://zomato.com', images: [], verified: true, bengali_friendly: true, created_at: '2025-02-25', google_maps_url: 'https://maps.google.com/?q=Egmore,Chennai' },
+  { id: '9', name: 'Meenaxi Bengali Bhoj', type: 'restaurant', city: 'Madurai', area: 'Simmakkal', address: 'Near Meenakshi Temple, Madurai', pincode: '625001', phone: '9876543228', whatsapp: '9876543228', specialties: ['Temple City Thali', 'Bhetki Macher Jhal'], zomato_url: 'https://zomato.com', swiggy_url: 'https://swiggy.com', images: [], verified: true, bengali_friendly: true, created_at: '2025-03-15', google_maps_url: 'https://maps.google.com/?q=Simmakkal,Madurai' },
+  { id: '10', name: 'Salem Bengali Hotel', type: 'restaurant', city: 'Salem', area: 'Fairlands', address: 'Salem - 636016', pincode: '636016', phone: '9876543229', whatsapp: '9876543229', specialties: ['Bengali Style Fish', 'Macher Chopp'], zomato_url: 'https://zomato.com', swiggy_url: 'https://swiggy.com', images: [], verified: true, bengali_friendly: true, created_at: '2025-03-20', google_maps_url: 'https://maps.google.com/?q=Fairlands,Salem' },
 ];
+
+export const sampleListings = sampleStayListings;
+
 
 export const sampleHospitals: Hospital[] = [
   { id: '1', name: 'Apollo Hospital', city: 'Chennai', area: 'Greams Road', address: '21, Greams Lane, Off Greams Road, Chennai - 600006', phone: '044-28290200', emergency_phone: '044-28293333', specializations: ['Cardiology', 'Orthopedic', 'General Medicine', 'Emergency'], is_24_7: true, has_bengali_doctor: true, google_maps_url: 'https://maps.google.com/?q=Apollo+Hospital+Chennai', lat: 13.0604, lng: 80.2496, created_at: '2025-01-01' },

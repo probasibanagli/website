@@ -22,7 +22,7 @@ export default function AdminModulePage({ moduleKey, collectionName, columns, fo
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
-  const [formData, setFormData] = useState<Record<string, string>>({});
+  const [formData, setFormData] = useState<Record<string, unknown>>({});
   const [saving, setSaving] = useState(false);
 
   const canView = canAccess(profile?.role || 'user', profile?.permissions, moduleKey, 'view');
@@ -35,7 +35,7 @@ export default function AdminModulePage({ moduleKey, collectionName, columns, fo
     try {
       const snap = await getDocs(collection(db, collectionName));
       setItems(snap.docs.map(d => ({ id: d.id, ...d.data() })));
-    } catch (e) { console.error(e); }
+    } catch (e: any) { console.error(e); }
     finally { setLoading(false); }
   }
 
@@ -47,8 +47,10 @@ export default function AdminModulePage({ moduleKey, collectionName, columns, fo
 
   function openEdit(item: Record<string, unknown>) {
     setEditId(item.id as string);
-    const data: Record<string, string> = {};
-    formFields.forEach(f => { data[f.key] = String(item[f.key] || ''); });
+    const data: Record<string, unknown> = {};
+    formFields.forEach(f => { 
+      data[f.key] = f.type === 'checkbox' ? !!item[f.key] : item[f.key] ?? ''; 
+    });
     setFormData(data);
     setShowForm(true);
   }
@@ -60,13 +62,18 @@ export default function AdminModulePage({ moduleKey, collectionName, columns, fo
       if (editId) {
         await updateDoc(doc(db, collectionName, editId), { ...formData, updated_at: now });
         setItems(prev => prev.map(i => i.id === editId ? { ...i, ...formData } : i));
+        alert('Item updated successfully!');
       } else {
         const id = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
         await setDoc(doc(db, collectionName, id), { ...formData, id, created_at: now });
         setItems(prev => [{ id, ...formData, created_at: now }, ...prev]);
+        alert('Item added successfully!');
       }
       setShowForm(false);
-    } catch (e) { console.error(e); }
+    } catch (e) {
+      console.error(e);
+      alert('Error saving item. Please check your connection and permissions.');
+    }
     finally { setSaving(false); }
   }
 
@@ -75,7 +82,11 @@ export default function AdminModulePage({ moduleKey, collectionName, columns, fo
     try {
       await deleteDoc(doc(db, collectionName, id));
       setItems(prev => prev.filter(i => i.id !== id));
-    } catch (e) { console.error(e); }
+      alert('Item deleted successfully!');
+    } catch (e) {
+      console.error(e);
+      alert('Error deleting item.');
+    }
   }
 
   if (!canView) return (
@@ -130,14 +141,25 @@ export default function AdminModulePage({ moduleKey, collectionName, columns, fo
                 <div key={f.key}>
                   <label className="block text-sm font-semibold text-text-primary mb-1.5">{f.label}{f.required && <span className="text-primary"> *</span>}</label>
                   {f.type === 'textarea' ? (
-                    <textarea value={formData[f.key] || ''} onChange={e => setFormData({ ...formData, [f.key]: e.target.value })} rows={4} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none" placeholder={`Enter ${f.label.toLowerCase()}...`} />
+                    <textarea value={String(formData[f.key] || '')} onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setFormData({ ...formData, [f.key]: e.target.value })} rows={4} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none" placeholder={`Enter ${f.label.toLowerCase()}...`} />
                   ) : f.type === 'select' && f.options ? (
-                    <select value={formData[f.key] || ''} onChange={e => setFormData({ ...formData, [f.key]: e.target.value })} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all cursor-pointer">
+                    <select value={String(formData[f.key] || '')} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setFormData({ ...formData, [f.key]: e.target.value })} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all cursor-pointer">
                       <option value="">Select {f.label}...</option>
                       {f.options.map(o => <option key={o} value={o}>{o}</option>)}
                     </select>
+                  ) : f.type === 'checkbox' ? (
+                    <div className="flex items-center gap-3 py-2">
+                      <input 
+                        type="checkbox" 
+                        id={f.key}
+                        checked={!!formData[f.key]} 
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, [f.key]: e.target.checked })} 
+                        className="w-5 h-5 rounded border-border text-primary focus:ring-primary/20 transition-all cursor-pointer" 
+                      />
+                      <span className="text-sm text-text-muted">Enable {f.label.toLowerCase()}</span>
+                    </div>
                   ) : (
-                    <input type={f.type || 'text'} value={formData[f.key] || ''} onChange={e => setFormData({ ...formData, [f.key]: e.target.value })} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" placeholder={`Enter ${f.label.toLowerCase()}...`} />
+                    <input type={f.type || 'text'} value={String(formData[f.key] || '')} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, [f.key]: e.target.value })} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" placeholder={`Enter ${f.label.toLowerCase()}...`} />
                   )}
                 </div>
               ))}
