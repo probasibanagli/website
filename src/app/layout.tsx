@@ -5,6 +5,7 @@ import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { ChatWidget } from '@/components/chatbot/ChatWidget';
 import { AuthProvider } from '@/lib/auth/AuthContext';
+import { GlobalLoader } from '@/components/layout/GlobalLoader';
 
 export const metadata: Metadata = {
   title: 'ProbasiBangali – Bengali Community in Tamil Nadu',
@@ -33,6 +34,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="min-h-screen flex flex-col">
         <LanguageProvider>
           <AuthProvider>
+            <GlobalLoader />
             <Navbar />
             <main className="flex-1">{children}</main>
             <Footer />
