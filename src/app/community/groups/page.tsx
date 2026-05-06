@@ -7,6 +7,8 @@ import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { sampleCommunityGroups } from '@/data/sample-data';
+import { useFirestore } from '@/lib/hooks/useFirestore';
+import { CommunityGroup } from '@/types';
 
 /* ── Platform config ── */
 const PLATFORMS = [
@@ -49,18 +51,25 @@ function getPlatformButtonLabel(platform: string) {
 }
 
 export default function GroupsPage() {
+  const { data: firestoreGroups, loading } = useFirestore<CommunityGroup>('community_groups');
   const [selectedPlatform, setSelectedPlatform] = useState('');
   const [selectedRegion, setSelectedRegion] = useState('');
   const [search, setSearch] = useState('');
 
+  const combinedGroups = useMemo(() => {
+    const firestoreIds = new Set(firestoreGroups.map((g) => g.id));
+    const dedupedSample = sampleCommunityGroups.filter((g) => !firestoreIds.has(g.id));
+    return [...firestoreGroups, ...dedupedSample];
+  }, [firestoreGroups]);
+
   const filtered = useMemo(() => {
-    return sampleCommunityGroups.filter((g) => {
+    return combinedGroups.filter((g) => {
       if (selectedPlatform && g.platform !== selectedPlatform) return false;
       if (selectedRegion && g.region !== selectedRegion) return false;
       if (search && !g.name.toLowerCase().includes(search.toLowerCase()) && !(g.description || '').toLowerCase().includes(search.toLowerCase())) return false;
       return true;
     });
-  }, [selectedPlatform, selectedRegion, search]);
+  }, [combinedGroups, selectedPlatform, selectedRegion, search]);
 
   const handlePlatformChange = (platform: string) => {
     setSelectedPlatform(platform === selectedPlatform ? '' : platform);

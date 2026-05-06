@@ -16,12 +16,17 @@ export default function AdminCommunityPage() {
       ]}
       formFields={[
         { key: 'name', label: 'Group Name', required: true },
-        { key: 'platform', label: 'Platform', type: 'select', options: ['whatsapp', 'telegram', 'facebook', 'instagram'], required: true },
+        { key: 'platform', label: 'Platform', type: 'select', options: ['whatsapp', 'telegram', 'facebook', 'instagram', 'linkedin', 'website'], required: true },
         { key: 'city', label: 'City' },
+        { key: 'region', label: 'Region', type: 'select', options: ['tamil_nadu', 'india', 'all'] },
         { key: 'description', label: 'Description', type: 'textarea' },
         { key: 'member_count', label: 'Member Count', type: 'number' },
         { key: 'join_url', label: 'Join URL' },
-        { key: 'category', label: 'Category', type: 'select', options: ['general', 'students', 'professionals', 'women', 'seniors'] },
+        { key: 'website_url', label: 'Website URL' },
+        { key: 'facebook_url', label: 'Facebook URL' },
+        { key: 'instagram_url', label: 'Instagram URL' },
+        { key: 'linkedin_url', label: 'LinkedIn URL' },
+        { key: 'category', label: 'Category', type: 'select', options: ['general', 'students', 'professionals', 'women', 'seniors', 'cultural', 'religious'] },
       ]}
     />
   );
