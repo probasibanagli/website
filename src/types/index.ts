@@ -29,6 +29,8 @@ export interface UserProfile {
   updated_at: string;
   created_by?: string;
   is_active: boolean;
+  phone_verified?: boolean;
+  email_verified?: boolean;
 }
 
 /* ──────────────── Module Labels (for UI) ──────────────── */
@@ -94,6 +96,8 @@ export interface FoodListing {
   swiggy_url?: string;
   images?: string[];
   verified: boolean;
+  bengali_friendly?: boolean;
+  pincode?: string;
   created_at?: string;
 }
 
@@ -129,11 +133,16 @@ export interface BloodBank {
 export interface CommunityGroup {
   id: string;
   name: string;
-  platform?: 'whatsapp' | 'telegram' | 'facebook' | 'instagram';
+  platform?: 'whatsapp' | 'telegram' | 'facebook' | 'instagram' | 'linkedin' | 'website';
   city?: string;
+  region?: 'tamil_nadu' | 'india' | 'all';
   description?: string;
   member_count?: number;
   join_url?: string;
+  instagram_url?: string;
+  facebook_url?: string;
+  linkedin_url?: string;
+  website_url?: string;
   category?: string;
 }
 

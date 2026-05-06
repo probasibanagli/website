@@ -418,6 +418,7 @@ export const sampleFoodListings: FoodListing[] = [
     name: "Bangla Bhojanalay",
     type: "restaurant",
     verified: true,
+    bengali_friendly: true,
     city: "Vellore",
     area: "Anna Nagar",
     address: "Anna Nagar, Vellore",
@@ -915,6 +916,7 @@ export const sampleFoodListings: FoodListing[] = [
     name: "Sweet Bengal",
     type: "sweets",
     verified: true,
+    bengali_friendly: true,
     city: "Chennai",
     area: "Anna Nagar",
     address: "Anna Nagar, Chennai",
@@ -930,6 +932,7 @@ export const sampleFoodListings: FoodListing[] = [
     name: "Bengali Delivery Partner",
     type: "delivery",
     verified: true,
+    bengali_friendly: true,
     city: "Chennai",
     area: "Central",
     address: "Chennai Central",
@@ -992,6 +995,7 @@ export const sampleFoodListings: FoodListing[] = [
     name: "Kolkata Mishti Corner",
     type: "sweets",
     verified: true,
+    bengali_friendly: true,
     city: "Chennai",
     area: "T. Nagar",
     address: "T. Nagar, Chennai",
@@ -1007,6 +1011,7 @@ export const sampleFoodListings: FoodListing[] = [
     name: "Kolkata Home Meals",
     type: "tiffin",
     verified: true,
+    bengali_friendly: true,
     city: "Chennai",
     area: "Nungambakkam",
     address: "Nungambakkam, Chennai",
@@ -1022,6 +1027,7 @@ export const sampleFoodListings: FoodListing[] = [
     name: "Bengali Delivery Wheels",
     type: "delivery",
     verified: true,
+    bengali_friendly: true,
     city: "Vellore",
     area: "Katpadi",
     address: "Katpadi, Vellore",
@@ -1052,6 +1058,7 @@ export const sampleFoodListings: FoodListing[] = [
     name: "Bengali Lunch Box",
     type: "tiffin",
     verified: true,
+    bengali_friendly: true,
     city: "Madurai",
     area: "Simmakkal",
     address: "Simmakkal, Madurai",
@@ -1142,6 +1149,7 @@ export const sampleFoodListings: FoodListing[] = [
     name: "Bengali Box",
     type: "tiffin",
     verified: true,
+    bengali_friendly: true,
     city: "Vellore",
     area: "Anna Nagar",
     address: "Anna Nagar, Vellore",
@@ -1310,12 +1318,39 @@ export const sampleBloodBanks: BloodBank[] = [
 ];
 
 export const sampleCommunityGroups: CommunityGroup[] = [
-  { id: '1', name: 'Bengalis in Chennai', platform: 'whatsapp', city: 'Chennai', description: 'Main WhatsApp group for all Bengalis in Chennai. Share tips, find help, and connect!', member_count: 450, join_url: 'https://chat.whatsapp.com/example1', category: 'general' },
-  { id: '2', name: 'Bengali Students TN', platform: 'telegram', city: 'Chennai', description: 'Students from Bengal studying in Tamil Nadu colleges. Exam tips, notes, and fun!', member_count: 320, join_url: 'https://t.me/example2', category: 'students' },
-  { id: '3', name: 'Bengali Professionals Chennai', platform: 'whatsapp', city: 'Chennai', description: 'Working professionals group for networking, job referrals and meetups.', member_count: 180, join_url: 'https://chat.whatsapp.com/example3', category: 'professionals' },
-  { id: '4', name: 'Bangali Mohila Sangha', platform: 'whatsapp', city: 'Chennai', description: 'Women-only group for Bengali women in Chennai. Support, recipes, and community.', member_count: 200, join_url: 'https://chat.whatsapp.com/example4', category: 'women' },
-  { id: '5', name: 'VIT Bengali Students', platform: 'whatsapp', city: 'Vellore', description: 'Bengali students at VIT Vellore. Campus life, events, and help.', member_count: 280, join_url: 'https://chat.whatsapp.com/example5', category: 'students' },
-  { id: '6', name: 'Bangali Adda Coimbatore', platform: 'facebook', city: 'Coimbatore', description: 'Facebook group for Bengalis in Coimbatore. Events, food finds, and meetups.', member_count: 150, join_url: 'https://facebook.com/groups/example6', category: 'general' },
+  // ── WhatsApp Groups ──
+  { id: '1', name: 'Bengalis in Chennai', platform: 'whatsapp', city: 'Chennai', region: 'tamil_nadu', description: 'Main WhatsApp group for all Bengalis in Chennai. Share tips, find help, and connect!', member_count: 450, join_url: 'https://chat.whatsapp.com/example1', category: 'general' },
+  { id: '2', name: 'Bengali Students TN', platform: 'telegram', city: 'Chennai', region: 'tamil_nadu', description: 'Students from Bengal studying in Tamil Nadu colleges. Exam tips, notes, and fun!', member_count: 320, join_url: 'https://t.me/example2', category: 'students' },
+  { id: '3', name: 'Bengali Professionals Chennai', platform: 'whatsapp', city: 'Chennai', region: 'tamil_nadu', description: 'Working professionals group for networking, job referrals and meetups.', member_count: 180, join_url: 'https://chat.whatsapp.com/example3', category: 'professionals' },
+  { id: '4', name: 'Bangali Mohila Sangha', platform: 'whatsapp', city: 'Chennai', region: 'tamil_nadu', description: 'Women-only group for Bengali women in Chennai. Support, recipes, and community.', member_count: 200, join_url: 'https://chat.whatsapp.com/example4', category: 'women' },
+  { id: '5', name: 'VIT Bengali Students', platform: 'whatsapp', city: 'Vellore', region: 'tamil_nadu', description: 'Bengali students at VIT Vellore. Campus life, events, and help.', member_count: 280, join_url: 'https://chat.whatsapp.com/example5', category: 'students' },
+  { id: '6', name: 'Bangali Adda Coimbatore', platform: 'facebook', city: 'Coimbatore', region: 'tamil_nadu', description: 'Facebook group for Bengalis in Coimbatore. Events, food finds, and meetups.', member_count: 150, join_url: 'https://facebook.com/groups/example6', facebook_url: 'https://facebook.com/groups/example6', category: 'general' },
+
+  // ── Bengali Association Instagram ──
+  { id: 'ig-1', name: 'Bengali Association Chennai', platform: 'instagram', city: 'Chennai', region: 'tamil_nadu', description: 'Official Instagram of Bengali Association Chennai. Cultural updates, Durga Puja photos, community news.', member_count: 2800, join_url: 'https://instagram.com/bengali_assoc_chennai', instagram_url: 'https://instagram.com/bengali_assoc_chennai', category: 'general' },
+  { id: 'ig-2', name: 'Probasi Bangali TN', platform: 'instagram', city: 'Chennai', region: 'tamil_nadu', description: 'Tamil Nadu-wide Bengali community on Instagram. Events, meetups, and cultural showcases.', member_count: 5200, join_url: 'https://instagram.com/probasibangali_tn', instagram_url: 'https://instagram.com/probasibangali_tn', category: 'general' },
+  { id: 'ig-3', name: 'Bengali Students Tamil Nadu', platform: 'instagram', city: 'Chennai', region: 'tamil_nadu', description: 'Student life in TN — campus stories, exam prep, and Bengali nostalgia.', member_count: 1500, join_url: 'https://instagram.com/bengali_students_tn', instagram_url: 'https://instagram.com/bengali_students_tn', category: 'students' },
+  { id: 'ig-4', name: 'Bengalis in Coimbatore', platform: 'instagram', city: 'Coimbatore', region: 'tamil_nadu', description: 'Coimbatore Bengali community Instagram. Food, culture, and networking.', member_count: 900, join_url: 'https://instagram.com/bengalis_coimbatore', instagram_url: 'https://instagram.com/bengalis_coimbatore', category: 'general' },
+  { id: 'ig-5', name: 'Bengali Association India', platform: 'instagram', region: 'india', description: 'Pan-India Bengali community page. Connecting Bengalis across all states.', member_count: 15000, join_url: 'https://instagram.com/bengali_assoc_india', instagram_url: 'https://instagram.com/bengali_assoc_india', category: 'general' },
+  { id: 'ig-6', name: 'NRI Bangali Network', platform: 'instagram', region: 'all', description: 'Global Bengali diaspora network. Connecting Bengalis worldwide through culture and heritage.', member_count: 25000, join_url: 'https://instagram.com/nri_bangali', instagram_url: 'https://instagram.com/nri_bangali', category: 'general' },
+  { id: 'ig-7', name: 'Probasi Bangali Worldwide', platform: 'instagram', region: 'all', description: 'International platform for Bengalis living outside Bengal. Events, culture, and connections.', member_count: 18000, join_url: 'https://instagram.com/probasibangali_world', instagram_url: 'https://instagram.com/probasibangali_world', category: 'general' },
+
+  // ── Bengali Association Facebook ──
+  { id: 'fb-1', name: 'Bengali Association Chennai', platform: 'facebook', city: 'Chennai', region: 'tamil_nadu', description: 'Official Facebook group of Bengali Association Chennai. Community events, discussions, and help.', member_count: 3500, join_url: 'https://facebook.com/groups/bengali_chennai', facebook_url: 'https://facebook.com/groups/bengali_chennai', category: 'general' },
+  { id: 'fb-2', name: 'Bangali Samaj Tamil Nadu', platform: 'facebook', region: 'tamil_nadu', description: 'Tamil Nadu-wide Bengali Samaj community. Puja committees, cultural events, and support network.', member_count: 4200, join_url: 'https://facebook.com/groups/bangali_samaj_tn', facebook_url: 'https://facebook.com/groups/bangali_samaj_tn', category: 'general' },
+  { id: 'fb-3', name: 'Bengalis in India', platform: 'facebook', region: 'india', description: 'Pan-India Facebook community for Bengalis. Job posts, cultural discussions, and networking.', member_count: 28000, join_url: 'https://facebook.com/groups/bengalis_india', facebook_url: 'https://facebook.com/groups/bengalis_india', category: 'general' },
+  { id: 'fb-4', name: 'Global Bengali Forum', platform: 'facebook', region: 'all', description: 'Worldwide forum for Bengali diaspora. Heritage, literature, and global meetups.', member_count: 45000, join_url: 'https://facebook.com/groups/global_bengali', facebook_url: 'https://facebook.com/groups/global_bengali', category: 'general' },
+
+  // ── Bengali Association LinkedIn ──
+  { id: 'li-1', name: 'Bengali Professionals TN', platform: 'linkedin', city: 'Chennai', region: 'tamil_nadu', description: 'Professional networking for Bengalis in Tamil Nadu. Job opportunities, career advice, and industry connections.', member_count: 1200, join_url: 'https://linkedin.com/groups/bengali-professionals-tn', linkedin_url: 'https://linkedin.com/groups/bengali-professionals-tn', category: 'professionals' },
+  { id: 'li-2', name: 'Bengali Entrepreneurs India', platform: 'linkedin', region: 'india', description: 'Network of Bengali entrepreneurs and business professionals across India. Startups, investments, and mentorship.', member_count: 5600, join_url: 'https://linkedin.com/groups/bengali-entrepreneurs', linkedin_url: 'https://linkedin.com/groups/bengali-entrepreneurs', category: 'professionals' },
+  { id: 'li-3', name: 'Bengali Tech Network', platform: 'linkedin', region: 'all', description: 'Global community of Bengali tech professionals. Hiring, projects, and knowledge sharing.', member_count: 8900, join_url: 'https://linkedin.com/groups/bengali-tech', linkedin_url: 'https://linkedin.com/groups/bengali-tech', category: 'professionals' },
+
+  // ── Bengali Association Websites ──
+  { id: 'web-1', name: 'ProbasiBangali.in', platform: 'website', region: 'tamil_nadu', description: 'Official website for Bengalis in Tamil Nadu. PG listings, food guides, emergency services, and community resources.', member_count: 10000, join_url: 'https://probasibangali.in', website_url: 'https://probasibangali.in', category: 'general' },
+  { id: 'web-2', name: 'Chennai Bengali Association', platform: 'website', city: 'Chennai', region: 'tamil_nadu', description: 'Official website of Chennai Bengali Association. Durga Puja schedules, membership, and cultural events.', member_count: 5000, join_url: 'https://chennaibengali.org', website_url: 'https://chennaibengali.org', category: 'general' },
+  { id: 'web-3', name: 'Bengal Foundation India', platform: 'website', region: 'india', description: 'Pan-India Bengali foundation website. Scholarships, cultural programs, and community support.', member_count: 20000, join_url: 'https://bengalfoundation.in', website_url: 'https://bengalfoundation.in', category: 'general' },
+  { id: 'web-4', name: 'Global Bangali Portal', platform: 'website', region: 'all', description: 'International web portal connecting the Bengali diaspora. News, events, and community directory.', member_count: 50000, join_url: 'https://globalbangali.com', website_url: 'https://globalbangali.com', category: 'general' },
 ];
 
 export const sampleMatrimonialProfiles: MatrimonialProfile[] = [
