@@ -60,9 +60,7 @@ export default function TravelPage() {
     }
   };
 
-  const handleDownloadPDF = () => {
-    window.print();
-  };
+
 
   return (
     <div className="min-h-screen bg-surface">
@@ -84,9 +82,7 @@ export default function TravelPage() {
             <Card padding="lg">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-bold">Route Planner</h2>
-                <button onClick={handleDownloadPDF} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium bg-surface text-text-muted hover:text-text-primary transition-all cursor-pointer">
-                  <Download className="w-3.5 h-3.5" /> Save PDF
-                </button>
+
               </div>
               <div className="space-y-4">
                 <div>
@@ -220,16 +216,30 @@ export default function TravelPage() {
               <h3 className="text-lg font-bold mb-4">Chennai Transport Guide</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {[
-                  { title: 'MTC Bus', desc: 'Metropolitan Transport Corp — covers all of Chennai. Fare: ₹5-₹30', color: 'bg-green-50 text-green-700' },
-                  { title: 'Chennai Metro', desc: '2 lines covering major areas. Fare: ₹10-₹60', color: 'bg-blue-50 text-blue-700' },
+                  { title: 'MTC Bus', desc: 'Metropolitan Transport Corp — covers all of Chennai. Fare: ₹5-₹30', color: 'bg-green-50 text-green-700', url: 'https://chalo.com/app/' },
+                  { title: 'Chennai Metro', desc: '2 lines covering major areas. Fare: ₹10-₹60', color: 'bg-blue-50 text-blue-700', url: 'https://chennai.metroroute.co.in/' },
                   { title: 'MRTS', desc: 'Beach to Velachery elevated rail. Fare: ₹5-₹15', color: 'bg-purple-50 text-purple-700' },
-                  { title: 'Suburban Train', desc: 'Southern Railway suburban. Cheapest option.', color: 'bg-amber-50 text-amber-700' },
-                ].map((t) => (
-                  <div key={t.title} className={`p-4 rounded-xl ${t.color}`}>
-                    <h4 className="font-bold text-sm">{t.title}</h4>
-                    <p className="text-xs mt-1 opacity-80">{t.desc}</p>
-                  </div>
-                ))}
+                  { title: 'Suburban Train', desc: 'Southern Railway suburban. Cheapest option.', color: 'bg-amber-50 text-amber-700', url: 'https://play.google.com/store/apps/details?id=com.whereismytrain.android' },
+                ].map((t) => {
+                  const content = (
+                    <>
+                      <h4 className="font-bold text-sm flex items-center gap-1.5">
+                        {t.title} {t.url && <ExternalLink className="w-3 h-3 opacity-70" />}
+                      </h4>
+                      <p className="text-xs mt-1 opacity-80">{t.desc}</p>
+                    </>
+                  );
+                  
+                  return t.url ? (
+                    <a key={t.title} href={t.url} target="_blank" rel="noopener noreferrer" className={`block p-4 rounded-xl hover:scale-[1.02] transition-transform cursor-pointer ${t.color}`}>
+                      {content}
+                    </a>
+                  ) : (
+                    <div key={t.title} className={`p-4 rounded-xl ${t.color}`}>
+                      {content}
+                    </div>
+                  );
+                })}
               </div>
             </Card>
 

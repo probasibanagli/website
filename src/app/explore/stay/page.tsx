@@ -65,7 +65,7 @@ export default function StayPage() {
     setIsCityOpen(false);
   };
 
-  const handleDownloadPDF = () => { window.print(); };
+
 
   const filtered = useMemo(() => {
     return combinedListings.filter((l) => {
@@ -155,25 +155,23 @@ export default function StayPage() {
                 {tab.label}
               </button>
             ))}
-            <button onClick={handleDownloadPDF} className="ml-auto inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-white text-text-primary border border-border hover:bg-surface transition-all cursor-pointer">
-              <Download className="w-4 h-4" /> Download PDF
-            </button>
+
           </div>
 
           {/* ── STEP 1: City Selection ── */}
-          <div className="mt-5 p-4 bg-gradient-to-r from-primary/5 to-accent/5 rounded-2xl border border-primary/10">
+          <div className={`mt-5 p-4 bg-gradient-to-r from-primary/5 to-accent/5 rounded-2xl border border-primary/10 ${isCityOpen ? 'relative z-50' : 'relative z-30'}`}>
             <p className="text-xs font-semibold text-primary uppercase tracking-wider mb-3 flex items-center gap-1.5">
               <MapPin className="w-3.5 h-3.5" /> Step 1 — Select City
             </p>
-            <div className="relative w-full sm:max-w-xs">
+            <div className={`relative w-full sm:max-w-xs ${isCityOpen ? 'z-50' : ''}`}>
               <button onClick={() => setIsCityOpen(!isCityOpen)} className="flex items-center justify-between w-full px-4 py-2.5 rounded-xl border border-border bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary/30">
                 <span className="truncate">{city || 'Choose a City...'}</span>
                 <ChevronDown className={`w-4 h-4 text-text-muted transition-transform ${isCityOpen ? 'rotate-180' : ''}`} />
               </button>
               {isCityOpen && (
                 <>
-                  <div className="fixed inset-0 z-10" onClick={() => setIsCityOpen(false)} />
-                  <div className="absolute top-full left-0 w-full mt-1 bg-white border border-border rounded-xl shadow-lg z-20 max-h-60 overflow-y-auto">
+                  <div className="fixed inset-0 z-40" onClick={() => setIsCityOpen(false)} />
+                  <div className="absolute top-full left-0 w-full mt-1 bg-white border border-border rounded-xl shadow-lg z-50 max-h-60 overflow-y-auto">
                     <button onClick={() => handleCityChange('')} className={`w-full text-left px-4 py-2 text-sm hover:bg-surface transition-colors ${!city ? 'bg-primary/5 font-medium text-primary' : 'text-text-primary'}`}>All Cities</button>
                     {CITIES.map((c) => (
                       <button key={c} onClick={() => handleCityChange(c)} className={`w-full text-left px-4 py-2 text-sm hover:bg-surface transition-colors ${city === c ? 'bg-primary/5 font-medium text-primary' : 'text-text-primary'}`}>{c}</button>
@@ -186,10 +184,10 @@ export default function StayPage() {
 
           {/* ── STEP 2: Area + Subcategory ── */}
           {city && (
-            <div className="mt-3 p-4 bg-white rounded-2xl border border-border space-y-4 animate-fade-in">
+            <div className={`mt-3 p-4 bg-white rounded-2xl border border-border space-y-4 animate-fade-in ${isAreaOpen || isSubcatOpen ? 'relative z-50' : 'relative z-20'}`}>
               <div className="flex flex-col md:flex-row md:flex-wrap items-start md:items-center gap-3">
                 {/* Area Dropdown */}
-                <div className="relative min-w-[180px]">
+                <div className={`relative min-w-[180px] ${isAreaOpen ? 'z-50' : ''}`}>
                   <p className="text-[10px] font-semibold text-text-muted uppercase tracking-wider mb-1">Area</p>
                   <button onClick={() => setIsAreaOpen(!isAreaOpen)} className="flex items-center justify-between w-full px-4 py-2.5 rounded-xl border border-border bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary/30">
                     <span className="truncate">{area || 'All Areas'}</span>
@@ -197,8 +195,8 @@ export default function StayPage() {
                   </button>
                   {isAreaOpen && (
                     <>
-                      <div className="fixed inset-0 z-10" onClick={() => setIsAreaOpen(false)} />
-                      <div className="absolute top-full left-0 w-full mt-1 bg-white border border-border rounded-xl shadow-lg z-20 max-h-48 overflow-y-auto">
+                      <div className="fixed inset-0 z-40" onClick={() => setIsAreaOpen(false)} />
+                      <div className="absolute top-full left-0 w-full mt-1 bg-white border border-border rounded-xl shadow-lg z-50 max-h-48 overflow-y-auto">
                         <button onClick={() => { setArea(''); setIsAreaOpen(false); }} className={`w-full text-left px-4 py-2 text-sm hover:bg-surface transition-colors ${!area ? 'bg-primary/5 font-medium text-primary' : 'text-text-primary'}`}>All Areas</button>
                         {availableAreas.map((a) => (
                           <button key={a} onClick={() => { setArea(a); setIsAreaOpen(false); }} className={`w-full text-left px-4 py-2 text-sm hover:bg-surface transition-colors ${area === a ? 'bg-primary/5 font-medium text-primary' : 'text-text-primary'}`}>{a}</button>
@@ -209,7 +207,7 @@ export default function StayPage() {
                 </div>
 
                 {/* Subcategory Dropdown */}
-                <div className="relative min-w-[200px]">
+                <div className={`relative min-w-[200px] ${isSubcatOpen ? 'z-50' : ''}`}>
                   <p className="text-[10px] font-semibold text-text-muted uppercase tracking-wider mb-1">Nearby</p>
                   <button onClick={() => setIsSubcatOpen(!isSubcatOpen)} className="flex items-center justify-between w-full px-4 py-2.5 rounded-xl border border-border bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary/30">
                     <span className="truncate">
@@ -222,15 +220,20 @@ export default function StayPage() {
                   </button>
                   {isSubcatOpen && (
                     <>
-                      <div className="fixed inset-0 z-10" onClick={() => setIsSubcatOpen(false)} />
-                      <div className="absolute top-full left-0 w-full mt-1 bg-white border border-border rounded-xl shadow-lg z-20">
+                      <div className="fixed inset-0 z-40" onClick={() => setIsSubcatOpen(false)} />
+                      <div className="absolute top-full left-0 w-full mt-1 bg-white border border-border rounded-xl shadow-lg z-50">
                         {[
                           { value: '', label: 'All Categories' },
                           { value: 'hospital', label: '🏥 Hospital Nearby' },
                           { value: 'college', label: '🎓 College/Uni Nearby' },
                           { value: 'metro', label: '🚆 Metro/Transport' },
                         ].map((opt) => (
-                          <button key={opt.value} onClick={() => { setSubcategory(opt.value); setSelectedHospital(''); setSelectedCollege(''); setSelectedMetroRoute(''); setIsSubcatOpen(false); }}
+                          <button key={opt.value} onClick={() => { 
+                            if (opt.value === 'metro') {
+                              window.open('https://chennai.metroroute.co.in/', '_blank');
+                            }
+                            setSubcategory(opt.value); setSelectedHospital(''); setSelectedCollege(''); setSelectedMetroRoute(''); setIsSubcatOpen(false); 
+                          }}
                             className={`w-full text-left px-4 py-2 text-sm hover:bg-surface transition-colors ${subcategory === opt.value ? 'bg-primary/5 font-medium text-primary' : 'text-text-primary'}`}>{opt.label}</button>
                         ))}
                       </div>
@@ -282,7 +285,12 @@ export default function StayPage() {
               {/* Metro Routes */}
               {subcategory === 'metro' && (
                 <div className="pt-3 border-t border-border">
-                  <p className="text-xs font-semibold text-text-muted mb-2 flex items-center gap-1.5"><Train className="w-3.5 h-3.5" /> Metro / Transport Routes</p>
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-xs font-semibold text-text-muted flex items-center gap-1.5"><Train className="w-3.5 h-3.5" /> Metro / Transport Routes</p>
+                    <a href="https://chennai.metroroute.co.in/" target="_blank" rel="noopener noreferrer" className="text-[10px] bg-primary/5 text-primary px-2 py-1 rounded border border-primary/20 hover:bg-primary/10 transition-colors flex items-center gap-1">
+                      View Metro Map
+                    </a>
+                  </div>
                   <div className="flex flex-wrap gap-2">
                     <button onClick={() => setSelectedMetroRoute('')} className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${!selectedMetroRoute ? 'bg-green-600 text-white shadow-sm' : 'bg-green-50 text-green-700 border border-green-200 hover:bg-green-100'}`}>All Routes</button>
                     {METRO_ROUTES.map((route) => (
@@ -304,7 +312,7 @@ export default function StayPage() {
           )}
 
           {/* Search + Price Filters */}
-          <div className="mt-4 flex flex-col md:flex-row md:flex-wrap items-start md:items-center gap-3">
+          <div className="mt-4 flex flex-col md:flex-row md:flex-wrap items-start md:items-center gap-3 relative z-10">
             <div className="relative flex-1 w-full md:min-w-[200px] md:max-w-sm">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
               <input value={searchQuery} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)} placeholder="Search by name or area..." className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
