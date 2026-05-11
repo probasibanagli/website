@@ -1,7 +1,6 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { translateText } from '@/lib/translate';
 
 type Language = 'en' | 'bn' | 'ta';
 
@@ -20,17 +19,50 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     const saved = localStorage.getItem('pb_lang') as Language;
     if (saved) {
       setLanguage(saved);
+      applyGoogleTranslate(saved);
     } else {
       // Auto-detect browser language
       const browserLang = navigator.language.split('-')[0];
-      if (browserLang === 'bn') setLanguage('bn');
-      else if (browserLang === 'ta') setLanguage('ta');
+      let initialLang: Language = 'en';
+      if (browserLang === 'bn') initialLang = 'bn';
+      else if (browserLang === 'ta') initialLang = 'ta';
+      
+      setLanguage(initialLang);
+      if (initialLang !== 'en') {
+        applyGoogleTranslate(initialLang);
+      }
     }
   }, []);
+
+  const applyGoogleTranslate = (lang: Language) => {
+    // Google Translate uses 'googtrans' cookie
+    // Format: /source/target
+    const cookieValue = lang === 'en' ? '' : `/en/${lang}`;
+    document.cookie = `googtrans=${cookieValue}; path=/`;
+    document.cookie = `googtrans=${cookieValue}; path=/; domain=${window.location.hostname}`;
+    
+    // Trigger reload if needed or just wait for the widget to pick it up
+    // Most reliable way is to reload or use the widget API if loaded
+    if (typeof window !== 'undefined') {
+      const googleTranslateCombo = document.querySelector('.goog-te-combo') as HTMLSelectElement;
+      if (googleTranslateCombo) {
+        googleTranslateCombo.value = lang;
+        googleTranslateCombo.dispatchEvent(new Event('change'));
+      } else if (localStorage.getItem('pb_lang') !== lang) {
+        // If switching for the first time and widget not ready, reload
+        // window.location.reload(); 
+      }
+    }
+  };
 
   const handleSetLanguage = (lang: Language) => {
     setLanguage(lang);
     localStorage.setItem('pb_lang', lang);
+    applyGoogleTranslate(lang);
+    
+    // For a smooth experience, we can reload or just let the widget handle it
+    // Reloading ensures all dynamic content is also translated correctly
+    window.location.reload();
   };
 
   return (
@@ -49,46 +81,9 @@ export function useLanguage() {
 }
 
 /**
- * Component to wrap text for auto-translation with Caching
+ * Component to wrap text. 
+ * Now a simple pass-through as Google Translate handles the DOM.
  */
-export function T({ children }: { children: string }) {
-  const { language } = useLanguage();
-  const [translated, setTranslated] = useState(children);
-
-  useEffect(() => {
-    if (language === 'en') {
-      setTranslated(children);
-      return;
-    }
-
-    const performTranslation = async () => {
-      console.log(`T component triggering for: "${children}" to ${language}`);
-      try {
-        // Check cache first
-        const cacheKey = `trans_${language}_${children}`;
-        const cached = localStorage.getItem(cacheKey);
-        
-        if (cached) {
-          console.log(`Cache hit for: "${children}"`);
-          setTranslated(cached);
-          return;
-        }
-
-        const result = await translateText(children, language);
-        if (result) {
-          setTranslated(result);
-          // Save to cache
-          localStorage.setItem(cacheKey, result);
-        }
-      } catch (error) {
-        console.error('T Component Error:', error);
-        // Fallback to original text on error
-        setTranslated(children);
-      }
-    };
-
-    performTranslation();
-  }, [children, language]);
-
-  return <>{translated}</>;
+export function T({ children }: { children: React.ReactNode }) {
+  return <>{children}</>;
 }

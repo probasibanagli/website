@@ -118,7 +118,78 @@ body {
   animation: slideDown 0.3s ease-out forwards;
 }
 
+/* Shimmer animation */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(226, 232, 240, 0) 0%,
+    rgba(226, 232, 240, 0.8) 50%,
+    rgba(226, 232, 240, 0) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite linear;
+}
+
 /* Bengali script styling */
 .bengali-text {
   font-family: var(--font-bengali);
+}
+
+/* ============================================================
+   GOOGLE TRANSLATE HIDING (AGRESSIVE)
+   ============================================================ */
+
+/* Hide the main toolbar banner */
+.goog-te-banner-frame, 
+#goog-gt-tt, 
+.goog-te-balloon-frame, 
+.goog-te-menu-frame,
+.goog-tooltip,
+.goog-tooltip:hover {
+    display: none !important;
+}
+
+/* Hide the "original text" tooltip on hover */
+.goog-text-highlight {
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* Force body to top because Google adds 'top: 40px' */
+body {
+    top: 0 !important;
+    position: relative !important;
+}
+
+/* Hide the widget container itself */
+#google_translate_element {
+    display: none !important;
+}
+
+/* Hide any skiptranslate elements Google injects */
+.skiptranslate {
+    display: none !important;
+}
+
+/* Hide the attribution images/labels */
+.goog-logo-link, 
+.goog-te-gadget span,
+.goog-te-gadget-icon {
+    display: none !important;
+}
+
+/* Hide the bottom-right attribution if it appears */
+.VIpgJd-Zvi9dn-OR9uAe-AS9uAe {
+    display: none !important;
+}
+
+/* Ensure no whitespace is added at the top */
+.goog-te-banner {
+    display: none !important;
 }

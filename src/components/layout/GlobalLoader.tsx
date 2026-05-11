@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
-import Loader from '@/components/ui/loader';
+import { PageSkeleton } from '@/components/ui/Skeleton';
 import { useAuth } from '@/lib/auth/AuthContext';
 
 export function GlobalLoader() {
@@ -13,7 +13,9 @@ export function GlobalLoader() {
 
   useEffect(() => {
     if (!authLoading) {
-      setIsLoading(false);
+      // Small delay to prevent flashing for very fast loads
+      const timer = setTimeout(() => setIsLoading(false), 300);
+      return () => clearTimeout(timer);
     }
   }, [pathname, searchParams, authLoading]);
 
@@ -26,11 +28,11 @@ export function GlobalLoader() {
         const href = anchor.getAttribute('href');
         const targetAttr = anchor.getAttribute('target');
         
-        if (href && href.startsWith('/') && targetAttr !== '_blank') {
+        if (href && href.startsWith('/') && targetAttr !== '_blank' && !href.includes('#')) {
           const currentUrl = new URL(window.location.href);
           const targetUrl = new URL(href, window.location.origin);
 
-          if (currentUrl.origin === targetUrl.origin && currentUrl.pathname !== targetUrl.pathname) {
+          if (currentUrl.origin === targetUrl.origin && (currentUrl.pathname !== targetUrl.pathname || currentUrl.search !== targetUrl.search)) {
             setIsLoading(true);
           }
         }
@@ -44,5 +46,7 @@ export function GlobalLoader() {
     };
   }, [pathname]);
 
-  return isLoading || authLoading ? <Loader /> : null;
+  if (!isLoading && !authLoading) return null;
+
+  return <PageSkeleton />;
 }

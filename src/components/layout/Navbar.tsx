@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { useLanguage } from '@/lib/contexts/LanguageContext';
-import Loader from '@/components/ui/loader';
+import { PageSkeleton } from '@/components/ui/Skeleton';
 
 const navLinks = [
   {
@@ -88,16 +88,14 @@ export function Navbar() {
 
   return (
     <>
-      {isLoading && <Loader />}
+      {isLoading && <PageSkeleton />}
       <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-2.5 group">
-              <div className="w-9 h-9 bg-primary rounded-xl flex items-center justify-center text-white font-bold text-lg bengali-text group-hover:scale-105 transition-transform">
-                প
-              </div>
-              <span className="text-lg font-bold text-text-primary hidden sm:block">
+            <Link href="/" className="flex items-center gap-2 group notranslate">
+              <img src="/logo.png" alt="ProbasiBangali Logo" className="w-10 h-10 object-contain group-hover:scale-105 transition-transform" />
+              <span className="text-xl font-bold text-text-primary hidden sm:block tracking-tight">
                 Probasi<span className="text-primary">Bangali</span>
               </span>
             </Link>
@@ -145,7 +143,7 @@ export function Navbar() {
               <div className="relative">
                 <button
                   onClick={() => setLangMenuOpen(!langMenuOpen)}
-                  className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-text-muted hover:text-primary border border-border rounded-full hover:border-primary transition-all cursor-pointer bg-white"
+                  className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-text-muted hover:text-primary border border-border rounded-full hover:border-primary transition-all cursor-pointer bg-white notranslate"
                 >
                   <Globe className="w-3.5 h-3.5" />
                   {language === 'en' ? 'EN' : language === 'bn' ? 'বাংলা' : 'தமிழ்'}
@@ -166,7 +164,7 @@ export function Navbar() {
                           setLangMenuOpen(false);
                         }}
                         className={cn(
-                          "w-full text-left px-4 py-2 text-sm hover:bg-surface transition-colors",
+                          "w-full text-left px-4 py-2 text-sm hover:bg-surface transition-colors notranslate",
                           language === l.code ? "text-primary font-bold" : "text-text-primary"
                         )}
                       >
@@ -208,7 +206,7 @@ export function Navbar() {
                         <p className="text-sm font-semibold text-text-primary">{profile.full_name}</p>
                         <p className="text-xs text-text-muted">{profile.email}</p>
                         <span className="inline-block mt-1 px-2 py-0.5 text-[10px] font-semibold rounded-full bg-primary/10 text-primary capitalize">
-                          {profile.role === 'superadmin' ? 'Super Admin' : profile.role}
+                          <T>{profile.role === 'superadmin' ? 'Super Admin' : profile.role}</T>
                         </span>
                       </div>
 
@@ -220,7 +218,7 @@ export function Navbar() {
                         }}
                         className="flex items-center gap-3 px-4 py-2.5 text-sm text-text-primary hover:bg-surface transition-colors"
                       >
-                        <User className="w-4 h-4" /> My Profile
+                        <User className="w-4 h-4" /> <T>My Profile</T>
                       </Link>
                       {isAdmin && (
                         <Link
@@ -231,14 +229,14 @@ export function Navbar() {
                           }}
                           className="flex items-center gap-3 px-4 py-2.5 text-sm text-text-primary hover:bg-surface transition-colors"
                         >
-                          <Shield className="w-4 h-4" /> Admin Panel
+                          <Shield className="w-4 h-4" /> <T>Admin Panel</T>
                         </Link>
                       )}
                       <button
                         onClick={handleLogout}
                         className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50/50 transition-colors"
                       >
-                        <LogOut className="w-4 h-4" /> Logout
+                        <LogOut className="w-4 h-4" /> <T>Logout</T>
                       </button>
                     </div>
                   )}
