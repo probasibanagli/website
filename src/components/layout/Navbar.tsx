@@ -50,7 +50,7 @@ const navLinks = [
 export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
-  const { language, setLanguage } = useLanguage();
+  const { language, setLanguage, isMounted } = useLanguage();
   const [langMenuOpen, setLangMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -146,8 +146,8 @@ export function Navbar() {
                   className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-text-muted hover:text-primary border border-border rounded-full hover:border-primary transition-all cursor-pointer bg-white notranslate"
                 >
                   <Globe className="w-3.5 h-3.5" />
-                  {language === 'en' ? 'EN' : language === 'bn' ? 'বাংলা' : 'தமிழ்'}
-                  <ChevronDown className={cn('w-3 h-3 transition-transform', langMenuOpen && 'rotate-180')} />
+                  {!isMounted ? 'EN' : language === 'en' ? 'EN' : language === 'bn' ? 'বাংলা' : 'தமிழ்'}
+                  <ChevronDown className={cn("w-3 h-3 transition-transform", langMenuOpen && "rotate-180")} />
                 </button>
 
                 {langMenuOpen && (
