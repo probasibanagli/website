@@ -259,3 +259,66 @@ export const TAMIL_WORDS = [
   { tamil: 'Puriyala', meaning: 'I don\'t understand', script: 'புரியல' },
   { tamil: 'Oru nimisham', meaning: 'One moment', script: 'ஒரு நிமிஷம்' },
 ];
+
+/* ──────────────── Matrimony Constants ──────────────── */
+
+export const HEIGHTS = [
+  "4'6\"", "4'7\"", "4'8\"", "4'9\"", "4'10\"", "4'11\"",
+  "5'0\"", "5'1\"", "5'2\"", "5'3\"", "5'4\"", "5'5\"", "5'6\"", "5'7\"", "5'8\"", "5'9\"", "5'10\"", "5'11\"",
+  "6'0\"", "6'1\"", "6'2\"", "6'3\"", "6'4\"", "6'5\"", "6'6\"",
+] as const;
+
+export const MARITAL_STATUSES = ['Never Married', 'Divorced', 'Widowed', 'Awaiting Divorce'] as const;
+
+export const COMPLEXIONS = ['Very Fair', 'Fair', 'Wheatish', 'Wheatish Brown', 'Dark'] as const;
+
+export const FAMILY_TYPES = ['Joint', 'Nuclear', 'Semi-Joint'] as const;
+export const FAMILY_VALUES = ['Orthodox', 'Moderate', 'Liberal'] as const;
+export const FAMILY_STATUS = ['Middle Class', 'Upper Middle Class', 'Rich', 'Affluent'] as const;
+
+export const DIET_TYPES = ['Vegetarian', 'Non-Vegetarian', 'Eggetarian', 'Vegan'] as const;
+
+export const EDUCATION_LEVELS = [
+  'High School', '12th Pass', 'Diploma', 'Bachelor\'s (B.A/B.Sc/B.Com)',
+  'B.Tech / B.E.', 'BBA / BCA', 'MBBS', 'BDS', 'B.Pharm',
+  'Master\'s (M.A/M.Sc/M.Com)', 'M.Tech / M.E.', 'MBA', 'MD / MS',
+  'M.Pharm', 'CA / CS / ICWA', 'LLB / LLM', 'Ph.D / Doctorate', 'Other',
+] as const;
+
+export const INCOME_RANGES = [
+  'Below 2 LPA', '2-4 LPA', '4-6 LPA', '6-8 LPA', '8-10 LPA',
+  '10-15 LPA', '15-20 LPA', '20-30 LPA', '30-50 LPA', '50+ LPA',
+  'Not Disclosed',
+] as const;
+
+export const BENGALI_SUBCASTES = [
+  'Brahmin', 'Kayastha', 'Baidya', 'Namasudra', 'Mahishya',
+  'Sadgop', 'Tili', 'Tambuli', 'Suri', 'Kansari', 'Aguri',
+  'Rajput', 'Baishya / Vaishya', 'Muslim – Sheikh', 'Muslim – Syed',
+  'Muslim – Pathan', 'Christian', 'Buddhist', 'Jain', 'Sikh', 'Other',
+] as const;
+
+export const WEST_BENGAL_DISTRICTS = [
+  'Kolkata', 'Howrah', 'Hooghly', 'North 24 Parganas', 'South 24 Parganas',
+  'Nadia', 'Murshidabad', 'Burdwan (Purba)', 'Burdwan (Paschim)',
+  'Birbhum', 'Bankura', 'Purulia', 'Medinipur (East)', 'Medinipur (West)',
+  'Jhargram', 'Malda', 'North Dinajpur (Uttar)', 'South Dinajpur (Dakshin)',
+  'Darjeeling', 'Kalimpong', 'Jalpaiguri', 'Alipurduar', 'Cooch Behar',
+  'Siliguri', 'Durgapur', 'Asansol', 'Other',
+] as const;
+
+export const SMOKING_HABITS = ['No', 'Occasionally', 'Yes'] as const;
+export const DRINKING_HABITS = ['No', 'Socially', 'Occasionally', 'Yes'] as const;
+
+export const MANGLIK_OPTIONS = ['No', 'Yes', 'Anshik (Partial)', 'Don\'t Know'] as const;
+
+export const HOBBIES_LIST = [
+  'Reading', 'Cooking', 'Music', 'Dancing', 'Painting', 'Photography',
+  'Traveling', 'Sports', 'Yoga & Fitness', 'Movies', 'Writing',
+  'Gardening', 'Gaming', 'Singing', 'Playing Instruments', 'Social Work',
+  'Bengali Literature', 'Rabindra Sangeet', 'Cooking Bengali Food',
+  'Durga Puja Organizing', 'Adda (Group Conversations)',
+] as const;
+
+export const RELIGIONS = ['Hindu', 'Muslim', 'Christian', 'Buddhist', 'Jain', 'Sikh', 'Other'] as const;
+

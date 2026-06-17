@@ -70,7 +70,7 @@ export default function StayDetailPage() {
             <Card>
               <h3 className="text-lg font-bold mb-3">Amenities</h3>
               <div className="flex flex-wrap gap-2">
-                {listing.amenities.map((a) => (
+                {(listing.amenities || []).map((a) => (
                   <Badge key={a} variant="teal">{a}</Badge>
                 ))}
                 {listing.bengali_food && <Badge variant="bengali">🍛 Bengali Food Available</Badge>}

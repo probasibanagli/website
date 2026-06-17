@@ -6,10 +6,15 @@ import { PageSkeleton } from '@/components/ui/Skeleton';
 import { useAuth } from '@/lib/auth/AuthContext';
 
 export function GlobalLoader() {
+  const [mounted, setMounted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { loading: authLoading } = useAuth();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (!authLoading) {
@@ -46,6 +51,7 @@ export function GlobalLoader() {
     };
   }, [pathname]);
 
+  if (!mounted) return null;
   if (!isLoading && !authLoading) return null;
 
   return <PageSkeleton />;

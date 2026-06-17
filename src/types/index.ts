@@ -149,23 +149,88 @@ export interface CommunityGroup {
 export interface MatrimonialProfile {
   id: string;
   user_id: string;
+  profile_id?: string; // e.g. PB-0001
+
+  // Personal
   full_name?: string;
+  date_of_birth?: string;
   age?: number;
   gender?: string;
-  city?: string;
-  native_district?: string;
+  height?: string;
+  weight?: string;
+  complexion?: string;
+  blood_group?: string;
+  marital_status?: string;
+  mother_tongue?: string;
+  physical_disability?: string;
+
+  // Location
+  city?: string; // Current city in TN
+  native_district?: string; // District in West Bengal
+
+  // Family
+  father_name?: string;
+  father_occupation?: string;
+  mother_name?: string;
+  mother_occupation?: string;
+  siblings?: string;
+  family_type?: string;
+  family_values?: string;
+  family_status?: string;
+
+  // Education & Career
   education?: string;
+  field_of_study?: string;
+  institution?: string;
   profession?: string;
+  company?: string;
   annual_income?: string;
+  work_city?: string;
+
+  // Religious & Cultural
   religion?: string;
   caste?: string;
+  sub_caste?: string;
+  gotra?: string;
+  manglik?: string;
+
+  // Lifestyle
+  diet?: string;
+  smoking?: string;
+  drinking?: string;
+  hobbies?: string[];
+
+  // About
   about_me?: string;
+
+  // Partner Preferences
   partner_preference?: string;
+  pref_age_min?: number;
+  pref_age_max?: number;
+  pref_height_min?: string;
+  pref_height_max?: string;
+  pref_education?: string;
+  pref_profession?: string;
+  pref_city?: string;
+  pref_income_min?: string;
+  pref_diet?: string;
+  pref_marital_status?: string;
+
+  // Contact
+  phone?: string;
+  email?: string;
+  whatsapp?: string;
+
+  // Photos
   profile_photo?: string;
+
+  // System
   verified: boolean;
   published: boolean;
+  status?: 'draft' | 'pending' | 'approved' | 'rejected';
   contact_visible_after_login: boolean;
   created_at: string;
+  updated_at?: string;
 }
 
 export interface College {

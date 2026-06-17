@@ -226,7 +226,7 @@ export default function FoodPage() {
                 <Link href={`/explore/food/${food.id}`}><h3 className="text-lg font-bold text-text-primary group-hover:text-primary transition-colors">{food.name}</h3></Link>
                 <div className="flex items-center gap-1.5 mt-1 text-sm text-text-muted"><MapPin className="w-3.5 h-3.5" />{food.area}, {food.city}</div>
                 <div className="flex flex-wrap gap-1.5 mt-3">
-                  {food.specialties.slice(0, 4).map((s) => (<span key={s} className="px-2 py-0.5 bg-surface rounded-md text-xs text-text-muted">{s}</span>))}
+                  {(food.specialties || []).slice(0, 4).map((s) => (<span key={s} className="px-2 py-0.5 bg-surface rounded-md text-xs text-text-muted">{s}</span>))}
                 </div>
 
                 <div className="flex flex-col gap-4 mt-5 pt-4 border-t border-border">

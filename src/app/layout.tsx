@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next';
+import { Suspense } from 'react';
 import './globals.css';
 import Script from 'next/script';
 import { Navbar } from '@/components/layout/Navbar';
@@ -80,7 +81,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
         <LanguageProvider>
           <AuthProvider>
-            <GlobalLoader />
+            <Suspense fallback={null}>
+              <GlobalLoader />
+            </Suspense>
             <Navbar />
             <main className="flex-1">{children}</main>
             <Footer />

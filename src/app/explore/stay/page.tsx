@@ -25,7 +25,7 @@ const STAY_TYPE_ICONS: Record<string, React.ReactNode> = {
 };
 
 export default function StayPage() {
-  const { data: firestoreListings, loading } = useFirestore<Listing>('stay_listings');
+  const { data: firestoreListings, loading } = useFirestore<Listing>('listings');
   const [activeType, setActiveType] = useState<string>('all');
   const [city, setCity] = useState('');
   const [isCityOpen, setIsCityOpen] = useState(false);
@@ -69,47 +69,55 @@ export default function StayPage() {
 
   const filtered = useMemo(() => {
     return combinedListings.filter((l) => {
-      if (activeType !== 'all' && l.type !== activeType) return false;
+      const type = l.type || '';
+      const name = l.name || '';
+      const area = l.area || '';
+      const amenities = l.amenities || [];
+      const description = l.description || '';
+      const address = l.address || '';
+      const price = l.price_per_month || 0;
+
+      if (activeType !== 'all' && type !== activeType) return false;
       if (city && l.city !== city) return false;
       if (area && l.area !== area) return false;
       if (bengaliOnly && !l.bengali_friendly) return false;
-      if (searchQuery && !l.name.toLowerCase().includes(searchQuery.toLowerCase()) && !l.area.toLowerCase().includes(searchQuery.toLowerCase())) return false;
-      if (minPrice && l.price_per_month && l.price_per_month < parseInt(minPrice)) return false;
-      if (maxPrice && l.price_per_month && l.price_per_month > parseInt(maxPrice)) return false;
+      if (searchQuery && !name.toLowerCase().includes(searchQuery.toLowerCase()) && !area.toLowerCase().includes(searchQuery.toLowerCase())) return false;
+      if (minPrice && price && price < parseInt(minPrice)) return false;
+      if (maxPrice && price && price > parseInt(maxPrice)) return false;
 
       if (subcategory === 'hospital' && selectedHospital) {
-        const searchTarget = ((l.description || '') + ' ' + l.name + ' ' + l.area + ' ' + (l.address || '')).toLowerCase();
+        const searchTarget = (description + ' ' + name + ' ' + area + ' ' + address).toLowerCase();
         const hospitalData = cityHospitals.find(h => h.name === selectedHospital);
         if (hospitalData) {
           const hospitalArea = hospitalData.area.toLowerCase();
           if (!searchTarget.includes(hospitalArea) && !searchTarget.includes('hospital')) return false;
         }
       } else if (subcategory === 'hospital') {
-        const searchTarget = ((l.description || '') + ' ' + l.name + ' ' + l.amenities.join(' ')).toLowerCase();
+        const searchTarget = (description + ' ' + name + ' ' + amenities.join(' ')).toLowerCase();
         if (!searchTarget.includes('hospital')) return false;
       }
 
       if (subcategory === 'college' && selectedCollege) {
-        const searchTarget = ((l.description || '') + ' ' + l.name + ' ' + l.area + ' ' + (l.address || '')).toLowerCase();
+        const searchTarget = (description + ' ' + name + ' ' + area + ' ' + address).toLowerCase();
         const collegeData = cityColleges.find(c => c.name === selectedCollege);
         if (collegeData) {
           const collegeArea = collegeData.area.toLowerCase();
           if (!searchTarget.includes(collegeArea) && !searchTarget.includes('college') && !searchTarget.includes('university') && !searchTarget.includes('campus')) return false;
         }
       } else if (subcategory === 'college') {
-        const searchTarget = ((l.description || '') + ' ' + l.name + ' ' + l.amenities.join(' ')).toLowerCase();
+        const searchTarget = (description + ' ' + name + ' ' + amenities.join(' ')).toLowerCase();
         if (!searchTarget.includes('college') && !searchTarget.includes('university') && !searchTarget.includes('campus')) return false;
       }
 
       if (subcategory === 'metro' && selectedMetroRoute) {
-        const searchTarget = ((l.description || '') + ' ' + l.name + ' ' + l.area + ' ' + (l.address || '')).toLowerCase();
+        const searchTarget = (description + ' ' + name + ' ' + area + ' ' + address).toLowerCase();
         const route = METRO_ROUTES.find(r => r.id === selectedMetroRoute);
         if (route) {
           const routeName = route.name.toLowerCase();
           if (!searchTarget.includes(routeName) && !searchTarget.includes('station') && !searchTarget.includes('bus') && !searchTarget.includes('metro')) return false;
         }
       } else if (subcategory === 'metro') {
-        const searchTarget = ((l.description || '') + ' ' + l.name + ' ' + l.amenities.join(' ')).toLowerCase();
+        const searchTarget = (description + ' ' + name + ' ' + amenities.join(' ')).toLowerCase();
         if (!searchTarget.includes('metro') && !searchTarget.includes('station') && !searchTarget.includes('bus') && !searchTarget.includes('terminus')) return false;
       }
 
@@ -365,7 +373,7 @@ export default function StayPage() {
                   </div>
                 )}
                 <div className="flex flex-wrap gap-1.5 mt-3">
-                  {listing.amenities.slice(0, 4).map((a) => (
+                  {(listing.amenities || []).slice(0, 4).map((a) => (
                     <span key={a} className="inline-flex items-center gap-1 px-2 py-0.5 bg-surface rounded-md text-xs text-text-muted">
                       {amenityIcons[a] || null} {a}
                     </span>

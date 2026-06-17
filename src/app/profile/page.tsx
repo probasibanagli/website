@@ -286,9 +286,9 @@ export default function ProfilePage() {
                 <div className="flex items-center gap-2">
                   <h3 className="font-bold text-text-primary">Email Address</h3>
                   {profile.email_verified ? (
-                    <Badge variant="verified" className="gap-1"><CheckCircle2 className="w-3 h-3" /> Verified</Badge>
+                    <Badge variant="verified" className="gap-1"><CheckCircle2 className="w-3 h-3"/> Verified</Badge>
                   ) : (
-                    <Badge variant="amber" className="gap-1"><AlertCircle className="w-3 h-3" /> Unverified</Badge>
+                    <Badge variant="amber" className="gap-1"><AlertCircle className="w-3 h-3"/> Pending</Badge>
                   )}
                 </div>
                 <p className="text-sm text-text-muted">{profile.email}</p>
@@ -318,9 +318,9 @@ export default function ProfilePage() {
                 <div className="flex items-center gap-2">
                   <h3 className="font-bold text-text-primary">Phone Number</h3>
                   {profile.phone_verified ? (
-                    <Badge variant="verified" className="gap-1"><CheckCircle2 className="w-3 h-3" /> Verified</Badge>
+                    <Badge variant="verified" className="gap-1"><CheckCircle2 className="w-3 h-3"/> Verified</Badge>
                   ) : (
-                    <Badge variant="amber" className="gap-1"><AlertCircle className="w-3 h-3" /> Unverified</Badge>
+                    <Badge variant="amber" className="gap-1"><AlertCircle className="w-3 h-3"/> Not Linked</Badge>
                   )}
                 </div>
                 <p className="text-sm text-text-muted">{profile.phone || 'No phone number linked'}</p>
