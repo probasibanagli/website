@@ -21,7 +21,7 @@ const OTP_RESEND_COOLDOWN = 30; // seconds
 
 export default function LoginPage() {
   const router = useRouter();
-  const { signIn, sendPhoneOtp, verifyPhoneOtp } = useAuth();
+  const { signIn, sendPhoneOtp, verifyPhoneOtp, firebaseUser, profile } = useAuth();
 
   const [mode, setMode] = useState<LoginMode>('email');
   const [showPassword, setShowPassword] = useState(false);
@@ -72,6 +72,36 @@ export default function LoginPage() {
 
     try {
       await signIn(email, password);
+
+      // Re-read the current Firebase user to get fresh emailVerified status
+      const { auth } = await import('@/lib/firebase');
+      await auth.currentUser?.reload();
+      const currentUser = auth.currentUser;
+
+      // Block if email not verified
+      if (!currentUser?.emailVerified) {
+        setError('Your email is not verified. Please check your inbox and click the verification link before logging in.');
+        setLoading(false);
+        // Sign them out so session is not created
+        const { getAuth, signOut } = await import('firebase/auth');
+        await signOut(getAuth());
+        return;
+      }
+
+      // Fetch Firestore profile to check phone_verified
+      const { db } = await import('@/lib/firebase');
+      const { doc, getDoc } = await import('firebase/firestore');
+      const snap = await getDoc(doc(db, 'users', currentUser.uid));
+      const userProfile = snap.data();
+
+      if (!userProfile?.phone_verified) {
+        setError('Your phone number is not verified. Please complete phone verification to login.');
+        const { getAuth, signOut } = await import('firebase/auth');
+        await signOut(getAuth());
+        setLoading(false);
+        return;
+      }
+
       const params = new URLSearchParams(window.location.search);
       const redirect = params.get('redirect') || '/';
       router.push(redirect);
@@ -152,7 +182,26 @@ export default function LoginPage() {
     setLoading(true);
     try {
       await verifyPhoneOtp(confirmationResult, code);
-      setSuccess('Phone verified successfully! Redirecting...');
+
+      // Phone OTP login = phone is verified. Check if email is also verified via Firestore profile
+      const { auth } = await import('@/lib/firebase');
+      const currentUser = auth.currentUser;
+      if (currentUser) {
+        const { db } = await import('@/lib/firebase');
+        const { doc, getDoc } = await import('firebase/firestore');
+        const snap = await getDoc(doc(db, 'users', currentUser.uid));
+        const userProfile = snap.data();
+
+        if (!userProfile?.email_verified && !currentUser.emailVerified) {
+          setError('Your email is not verified. Please check your inbox and verify your email before logging in.');
+          const { getAuth, signOut } = await import('firebase/auth');
+          await signOut(getAuth());
+          setLoading(false);
+          return;
+        }
+      }
+
+      setSuccess('Verified successfully! Redirecting...');
       setTimeout(() => {
         const params = new URLSearchParams(window.location.search);
         const redirect = params.get('redirect') || '/';

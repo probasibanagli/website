@@ -28,7 +28,7 @@ interface AuthState {
 
 interface AuthContextType extends AuthState {
   signIn: (email: string, password: string) => Promise<void>;
-  signUp: (email: string, password: string, fullName: string, phone?: string) => Promise<void>;
+  signUp: (email: string, password: string, fullName: string, phone?: string, phoneVerified?: boolean) => Promise<void>;
   logOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
   sendPhoneOtp: (phoneNumber: string, recaptchaContainerId: string) => Promise<ConfirmationResult>;
@@ -112,7 +112,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await signInWithEmailAndPassword(auth, email, password);
   };
 
-  const signUp = async (email: string, password: string, fullName: string, phone?: string) => {
+  const signUp = async (email: string, password: string, fullName: string, phone?: string, phoneVerified = false) => {
     const credential = await createUserWithEmailAndPassword(auth, email, password);
     const user = credential.user;
 
@@ -131,9 +131,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       updated_at: now,
       is_active: true,
       email_verified: false,
-      phone_verified: false,
+      phone_verified: phoneVerified,
     };
 
+    await updateProfile(user, { displayName: fullName });
     await setDoc(doc(db, 'users', user.uid), profile);
 
     // Send email verification automatically

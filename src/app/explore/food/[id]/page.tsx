@@ -77,7 +77,7 @@ export default function FoodDetailPage() {
             <Card>
               <h3 className="text-lg font-bold mb-3">Specialties</h3>
               <div className="flex flex-wrap gap-2">
-                {food.specialties.map((s) => <Badge key={s} variant="bengali">{s}</Badge>)}
+                {(food.specialties || []).map((s) => <Badge key={s} variant="bengali">{s}</Badge>)}
               </div>
             </Card>
 
