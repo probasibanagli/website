@@ -145,22 +145,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   /* ── Phone OTP Login ── */
-  const sendPhoneOtp = async (phoneNumber: string, recaptchaContainerId: string): Promise<ConfirmationResult> => {
-    // Clean up any existing recaptcha
-    if ((window as unknown as Record<string, unknown>).recaptchaVerifier) {
-      try {
-        ((window as unknown as Record<string, unknown>).recaptchaVerifier as RecaptchaVerifier).clear();
-      } catch { /* ignore */ }
+  const getRecaptchaVerifier = (containerId: string) => {
+    if (!(window as any).recaptchaVerifier) {
+      (window as any).recaptchaVerifier = new RecaptchaVerifier(auth, containerId, {
+        size: 'invisible',
+        callback: () => { /* reCAPTCHA solved */ },
+      });
     }
+    return (window as any).recaptchaVerifier;
+  };
 
-    const recaptchaVerifier = new RecaptchaVerifier(auth, recaptchaContainerId, {
-      size: 'invisible',
-      callback: () => { /* reCAPTCHA solved */ },
-    });
-
-    (window as unknown as Record<string, unknown>).recaptchaVerifier = recaptchaVerifier;
-
-    const confirmation = await signInWithPhoneNumber(auth, phoneNumber, recaptchaVerifier);
+  const sendPhoneOtp = async (phoneNumber: string, recaptchaContainerId: string): Promise<ConfirmationResult> => {
+    const verifier = getRecaptchaVerifier(recaptchaContainerId);
+    const confirmation = await signInWithPhoneNumber(auth, phoneNumber, verifier);
     return confirmation;
   };
 
@@ -201,20 +198,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   /* ── Link Phone to Existing Account ── */
   const linkPhoneToAccount = async (phoneNumber: string, recaptchaContainerId: string): Promise<ConfirmationResult> => {
-    if ((window as unknown as Record<string, unknown>).recaptchaVerifier) {
-      try {
-        ((window as unknown as Record<string, unknown>).recaptchaVerifier as RecaptchaVerifier).clear();
-      } catch { /* ignore */ }
-    }
-
-    const recaptchaVerifier = new RecaptchaVerifier(auth, recaptchaContainerId, {
-      size: 'invisible',
-      callback: () => { /* reCAPTCHA solved */ },
-    });
-
-    (window as unknown as Record<string, unknown>).recaptchaVerifier = recaptchaVerifier;
-
-    const confirmation = await signInWithPhoneNumber(auth, phoneNumber, recaptchaVerifier);
+    const verifier = getRecaptchaVerifier(recaptchaContainerId);
+    const confirmation = await signInWithPhoneNumber(auth, phoneNumber, verifier);
     return confirmation;
   };
 

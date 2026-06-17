@@ -23,7 +23,7 @@ export default function LoginPage() {
   const router = useRouter();
   const { signIn, sendPhoneOtp, verifyPhoneOtp } = useAuth();
 
-  const [mode, setMode] = useState<LoginMode>('email');
+  const [mode, setMode] = useState<LoginMode>('phone');
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
@@ -115,11 +115,7 @@ export default function LoginPage() {
       setConfirmationResult(result);
       setPhoneStep('otp');
       startResendTimer();
-      setSuccess(
-        otpMethod === 'sms'
-          ? `OTP sent via SMS to ${formatted}`
-          : `OTP sent via WhatsApp to ${formatted}`
-      );
+      setSuccess(`OTP sent via SMS to ${formatted}`);
       // Auto-focus first OTP input
       setTimeout(() => otpRefs.current[0]?.focus(), 100);
     } catch (err: unknown) {
@@ -263,16 +259,6 @@ export default function LoginPage() {
           {/* Mode Tabs */}
           <div className="flex rounded-xl border border-border p-1 mb-6 bg-surface/50">
             <button
-              onClick={() => { setMode('email'); resetPhone(); setError(''); }}
-              className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 cursor-pointer ${
-                mode === 'email'
-                  ? 'bg-primary text-white shadow-md shadow-primary/25'
-                  : 'text-text-muted hover:text-text-primary'
-              }`}
-            >
-              <Mail className="w-4 h-4" /> Email
-            </button>
-            <button
               onClick={() => { setMode('phone'); setError(''); }}
               className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 cursor-pointer ${
                 mode === 'phone'
@@ -281,6 +267,16 @@ export default function LoginPage() {
               }`}
             >
               <Phone className="w-4 h-4" /> Phone OTP
+            </button>
+            <button
+              onClick={() => { setMode('email'); resetPhone(); setError(''); }}
+              className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 cursor-pointer ${
+                mode === 'email'
+                  ? 'bg-primary text-white shadow-md shadow-primary/25'
+                  : 'text-text-muted hover:text-text-primary'
+              }`}
+            >
+              <Mail className="w-4 h-4" /> Email
             </button>
           </div>
 
@@ -339,33 +335,6 @@ export default function LoginPage() {
             <div className="space-y-4">
               {phoneStep === 'input' && (
                 <>
-                  {/* OTP method selection */}
-                  <div>
-                    <label className="block text-sm font-semibold text-text-primary mb-2">Receive OTP via</label>
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => setOtpMethod('sms')}
-                        className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-medium transition-all duration-300 cursor-pointer border-2 ${
-                          otpMethod === 'sms'
-                            ? 'border-primary bg-primary/5 text-primary shadow-sm shadow-primary/10'
-                            : 'border-border text-text-muted hover:border-primary/40'
-                        }`}
-                      >
-                        <Smartphone className="w-4 h-4" /> SMS
-                      </button>
-                      <button
-                        onClick={() => setOtpMethod('whatsapp')}
-                        className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-medium transition-all duration-300 cursor-pointer border-2 ${
-                          otpMethod === 'whatsapp'
-                            ? 'border-green-500 bg-green-50 text-green-700 shadow-sm shadow-green-500/10'
-                            : 'border-border text-text-muted hover:border-green-300'
-                        }`}
-                      >
-                        <MessageCircle className="w-4 h-4" /> WhatsApp
-                      </button>
-                    </div>
-                  </div>
-
                   <Input
                     label="Phone Number"
                     id="login-phone"
@@ -379,8 +348,7 @@ export default function LoginPage() {
                   <div className="flex items-start gap-2 p-3 rounded-xl bg-blue-50/70 border border-blue-100">
                     <Fingerprint className="w-4 h-4 text-blue-500 mt-0.5 shrink-0" />
                     <p className="text-xs text-blue-700 leading-relaxed">
-                      We&apos;ll send a <strong>6-digit verification code</strong> to your phone
-                      {otpMethod === 'whatsapp' ? ' via WhatsApp' : ' via SMS'}.
+                      We&apos;ll send a <strong>6-digit verification code</strong> to your phone via SMS.
                       Standard messaging rates may apply.
                     </p>
                   </div>
@@ -474,8 +442,8 @@ export default function LoginPage() {
                   {/* Delivery info */}
                   <div className="text-center">
                     <p className="text-[11px] text-text-muted leading-relaxed">
-                      Didn&apos;t receive the code? Check your {otpMethod === 'whatsapp' ? 'WhatsApp' : 'SMS'} inbox
-                      or try a different method.
+                      Didn&apos;t receive the code? Check your SMS inbox
+                      or try again.
                     </p>
                   </div>
                 </>
