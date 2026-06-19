@@ -10,6 +10,7 @@ import { MapPin, Phone, Globe, Star, Mail, ArrowLeft, Building2, UserRound, Chec
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/card';
+import { sampleHospitals } from '@/data/sample-data';
 
 const SAMPLE_HOSPITALS: Hospital[] = [
   { id: 'h1', name: 'Apollo Hospital Chennai', city: 'Chennai', area: 'Greams Road', emergency_phone: '1066', phone: '044-28293333', is_24_7: true, has_bengali_doctor: true, main_branch: true, specializations: ['Cardiology', 'Neurology', 'Oncology'], description: 'Leading multi-specialty hospital.', images: ['/images/hospitals/apollo-chennai.jpg'], created_at: '' },
@@ -38,7 +39,7 @@ export default function HospitalDetailsPage({ params }: { params: { id: string }
   }, [params.id]);
 
   async function loadData() {
-    const foundHospital = SAMPLE_HOSPITALS.find(h => h.id === params.id) || sampleHospitals.find(h => h.id === params.id) as Hospital;
+    const foundHospital = SAMPLE_HOSPITALS.find((h: Hospital) => h.id === params.id) || sampleHospitals.find((h: Hospital) => h.id === params.id) as Hospital;
     setHospital(foundHospital || null);
     
     const foundDoctors = SAMPLE_DOCTORS.filter(d => d.hospital_id === params.id);
