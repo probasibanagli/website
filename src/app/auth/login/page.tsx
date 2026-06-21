@@ -77,6 +77,11 @@ export default function LoginPage() {
       const { auth } = await import('@/lib/firebase');
       await auth.currentUser?.reload();
       const currentUser = auth.currentUser;
+      if (!currentUser) {
+        setError('Failed to retrieve user session.');
+        setLoading(false);
+        return;
+      }
 
       // Fetch Firestore profile to check phone_verified
       const { db } = await import('@/lib/firebase');
@@ -429,7 +434,7 @@ export default function LoginPage() {
                     variant="primary"
                     size="lg"
                     className="w-full"
-                    onClick={handleVerifyOtp}
+                    onClick={() => handleVerifyOtp()}
                     disabled={loading || otp.join('').length !== 6}
                   >
                     {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}

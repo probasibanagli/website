@@ -380,7 +380,7 @@ export default function RegisterPage() {
 
             <Button
               variant="primary" size="lg" className="w-full mb-3"
-              onClick={handleVerifyOtp}
+              onClick={() => handleVerifyOtp()}
               disabled={loading || otp.join('').length !== 6}
             >
               {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
