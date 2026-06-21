@@ -5,7 +5,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { GOVT_SERVICES } from '@/lib/constants';
 
-const ICON_MAP: Record<string, any> = {
+const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   Building01: Building,
   Shield01: Shield,
   Landmark01: Landmark,

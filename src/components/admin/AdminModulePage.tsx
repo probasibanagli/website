@@ -1,13 +1,13 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { collection, getDocs, doc, setDoc, updateDoc, deleteDoc, query, orderBy } from 'firebase/firestore';
+import { collection, getDocs, doc, setDoc, updateDoc, deleteDoc, query } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { canAccess } from '@/lib/permissions';
-import type { ModuleKey, PermissionLevel } from '@/types';
+import type { ModuleKey } from '@/types';
 import { MODULE_LABELS } from '@/types';
-import { Plus, Pencil, Trash2, X, Loader2, Shield, Eye } from 'lucide-react';
+import { Plus, Pencil, Trash2, X, Loader2, Shield } from 'lucide-react';
 
 interface AdminModulePageProps {
   moduleKey: ModuleKey;
@@ -29,15 +29,20 @@ export default function AdminModulePage({ moduleKey, collectionName, columns, fo
   const canEdit = canAccess(profile?.role || 'user', profile?.permissions, moduleKey, 'edit');
   const canManage = canAccess(profile?.role || 'user', profile?.permissions, moduleKey, 'manage');
 
-  useEffect(() => { loadItems(); }, []);
+  useEffect(() => {
+    async function loadItems() {
+      try {
+        const snap = await getDocs(collection(db, collectionName));
+        setItems(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+      } catch (e: unknown) { console.error(e); }
+      finally { setLoading(false); }
+    }
 
-  async function loadItems() {
-    try {
-      const snap = await getDocs(collection(db, collectionName));
-      setItems(snap.docs.map(d => ({ id: d.id, ...d.data() })));
-    } catch (e: any) { console.error(e); }
-    finally { setLoading(false); }
-  }
+    const handle = requestAnimationFrame(() => {
+      loadItems();
+    });
+    return () => cancelAnimationFrame(handle);
+  }, [collectionName]);
 
   function openAdd() {
     setEditId(null);
@@ -90,7 +95,7 @@ export default function AdminModulePage({ moduleKey, collectionName, columns, fo
   }
 
   if (!canView) return (
-    <div className="text-center py-20"><Shield className="w-12 h-12 text-red-500 mx-auto mb-4" /><h2 className="text-xl font-bold text-text-primary mb-2">No Access</h2><p className="text-text-muted">You don't have permission to access this module.</p></div>
+    <div className="text-center py-20"><Shield className="w-12 h-12 text-red-500 mx-auto mb-4" /><h2 className="text-xl font-bold text-text-primary mb-2">No Access</h2><p className="text-text-muted">You don&apos;t have permission to access this module.</p></div>
   );
 
   return (

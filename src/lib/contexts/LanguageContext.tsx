@@ -16,26 +16,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [language, setLanguage] = useState<Language>('en');
   const [isMounted, setIsMounted] = useState(false);
 
-  useEffect(() => {
-    setIsMounted(true);
-    const saved = localStorage.getItem('pb_lang') as Language;
-    if (saved) {
-      setLanguage(saved);
-      applyGoogleTranslate(saved);
-    } else {
-      const browserLang = navigator.language.split('-')[0];
-      let initialLang: Language = 'en';
-      if (browserLang === 'bn') initialLang = 'bn';
-      else if (browserLang === 'ta') initialLang = 'ta';
-      
-      setLanguage(initialLang);
-      if (initialLang !== 'en') {
-        applyGoogleTranslate(initialLang);
-      }
-    }
-  }, []);
-
-  const applyGoogleTranslate = (lang: Language) => {
+  function applyGoogleTranslate(lang: Language) {
     const cookieValue = lang === 'en' ? '' : `/en/${lang}`;
     document.cookie = `googtrans=${cookieValue}; path=/`;
     document.cookie = `googtrans=${cookieValue}; path=/; domain=${window.location.hostname}`;
@@ -47,7 +28,29 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
         googleTranslateCombo.dispatchEvent(new Event('change'));
       }
     }
-  };
+  }
+
+  useEffect(() => {
+    const saved = localStorage.getItem('pb_lang') as Language;
+    let initialLang: Language = 'en';
+    if (saved) {
+      initialLang = saved;
+    } else {
+      const browserLang = navigator.language.split('-')[0];
+      if (browserLang === 'bn') initialLang = 'bn';
+      else if (browserLang === 'ta') initialLang = 'ta';
+    }
+
+    const handle = requestAnimationFrame(() => {
+      setIsMounted(true);
+      setLanguage(initialLang);
+      if (initialLang !== 'en') {
+        applyGoogleTranslate(initialLang);
+      }
+    });
+
+    return () => cancelAnimationFrame(handle);
+  }, []);
 
   const handleSetLanguage = (lang: Language) => {
     setLanguage(lang);

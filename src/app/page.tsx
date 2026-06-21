@@ -70,7 +70,7 @@ export default function HomePage() {
               <T>Everything You Need</T>
             </h2>
             <p className="mt-3 text-text-muted max-w-xl mx-auto">
-              <T>From finding a Bengali-friendly PG to authentic fish curry — we've got you covered.</T>
+              <T>From finding a Bengali-friendly PG to authentic fish curry — we&apos;ve got you covered.</T>
             </p>
           </div>
 
@@ -206,7 +206,7 @@ export default function HomePage() {
             <T>Join the ProbasiBangali Community</T>
           </h2>
           <p className="text-text-muted mb-8 max-w-lg mx-auto">
-            <T>Whether you're a student, professional, or family — connect with fellow Bengalis and make Tamil Nadu feel like home.</T>
+            <T>Whether you&apos;re a student, professional, or family — connect with fellow Bengalis and make Tamil Nadu feel like home.</T>
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link href="/auth/register">

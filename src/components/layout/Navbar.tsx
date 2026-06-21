@@ -59,11 +59,11 @@ export function Navbar() {
   const { firebaseUser, profile, loading, logOut } = useAuth();
 
   React.useEffect(() => {
-    setMounted(true);
+    const handle = requestAnimationFrame(() => {
+      setMounted(true);
+    });
+    return () => cancelAnimationFrame(handle);
   }, []);
-
-  // Don't show navbar on admin pages (admin has its own layout)
-  if (pathname.startsWith('/admin')) return null;
 
   const isLoggedIn = !!firebaseUser && !!profile;
   const isAdmin = profile?.role === 'admin' || profile?.role === 'superadmin';
@@ -83,8 +83,14 @@ export function Navbar() {
   };
 
   React.useEffect(() => {
-    setIsLoading(false);
+    const handle = requestAnimationFrame(() => {
+      setIsLoading(false);
+    });
+    return () => cancelAnimationFrame(handle);
   }, [pathname]);
+
+  // Don't show navbar on admin pages (admin has its own layout)
+  if (pathname.startsWith('/admin')) return null;
 
   return (
     <>
@@ -160,7 +166,7 @@ export function Navbar() {
                       <button
                         key={l.code}
                         onClick={() => {
-                          setLanguage(l.code as any);
+                          setLanguage(l.code as 'en' | 'bn' | 'ta');
                           setLangMenuOpen(false);
                         }}
                         className={cn(

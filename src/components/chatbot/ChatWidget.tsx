@@ -25,7 +25,10 @@ export function ChatWidget() {
   const [mounted, setMounted] = React.useState(false);
 
   React.useEffect(() => {
-    setMounted(true);
+    const handle = requestAnimationFrame(() => {
+      setMounted(true);
+    });
+    return () => cancelAnimationFrame(handle);
   }, []);
 
   const sendMessage = async (text: string) => {

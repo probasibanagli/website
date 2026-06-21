@@ -27,13 +27,15 @@ export default function BengaliHospitalsPage() {
   const [cityFilter, setCityFilter] = useState('');
 
   useEffect(() => {
-    loadHospitals();
+    async function loadHospitals() {
+      setHospitals(SAMPLE_HOSPITALS);
+      setLoading(false);
+    }
+    const handle = requestAnimationFrame(() => {
+      loadHospitals();
+    });
+    return () => cancelAnimationFrame(handle);
   }, []);
-
-  async function loadHospitals() {
-    setHospitals(SAMPLE_HOSPITALS);
-    setLoading(false);
-  }
 
   const cities = useMemo(() => Array.from(new Set(hospitals.map(h => h.city).filter(Boolean))), [hospitals]);
 

@@ -100,12 +100,12 @@ export default function FoodDetailPage() {
                 {food.phone && <a href={`tel:${food.phone}`} className="block"><Button variant="primary" className="w-full h-12 text-base shadow-sm"><Phone className="w-4 h-4" /> Call to Order</Button></a>}
                 {food.whatsapp && <a href={getWhatsAppUrl(food.whatsapp)} target="_blank" rel="noopener noreferrer" className="block"><Button variant="secondary" className="w-full h-12 text-base shadow-sm"><MessageCircle className="w-4 h-4" /> WhatsApp Chat</Button></a>}
                 
-                {DELIVERY_PARTNERS.some(p => (food as any)[p.key]) && (
+                {DELIVERY_PARTNERS.some(p => (food as unknown as Record<string, unknown>)[p.key]) && (
                   <div className="pt-4 mt-4 border-t border-orange-100">
                     <p className="text-xs font-semibold text-orange-800 uppercase tracking-wider mb-3">Delivery Partner</p>
                     <div className="space-y-2">
                       {DELIVERY_PARTNERS.map((partner) => {
-                        const url = (food as any)[partner.key] as string | undefined;
+                        const url = (food as unknown as Record<string, unknown>)[partner.key] as string | undefined;
                         return url ? (
                           <a key={partner.key} href={url} target="_blank" rel="noopener noreferrer" className="block">
                             <Button variant="outline" className="w-full border-orange-100 hover:bg-orange-50 text-orange-700 hover:text-orange-800 transition-all font-semibold">

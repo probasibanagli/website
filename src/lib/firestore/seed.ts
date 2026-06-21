@@ -18,6 +18,7 @@ config({ path: '.env.local' });
 
 import { initializeApp, cert, getApps } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
+import { getAuth } from 'firebase-admin/auth';
 
 // Initialize admin
 if (getApps().length === 0) {
@@ -52,7 +53,6 @@ async function seed() {
   if (!SUPER_ADMIN_UID) {
     console.log('No UID provided. Attempting to create default super admin in Firebase Auth...');
     try {
-      const { getAuth } = require('firebase-admin/auth');
       const userRecord = await getAuth().createUser({
         email: 'admin@probasibangali.in',
         password: 'SuperAdmin123!',
@@ -60,14 +60,14 @@ async function seed() {
       });
       SUPER_ADMIN_UID = userRecord.uid;
       console.log(`✅ Created default super admin with UID: ${SUPER_ADMIN_UID}`);
-    } catch (error: any) {
-      if (error.code === 'auth/email-already-exists') {
-        const { getAuth } = require('firebase-admin/auth');
+    } catch (error: unknown) {
+      const err = error as { code?: string; message?: string };
+      if (err.code === 'auth/email-already-exists') {
         const userRecord = await getAuth().getUserByEmail('admin@probasibangali.in');
         SUPER_ADMIN_UID = userRecord.uid;
         console.log(`✅ Found existing super admin with UID: ${SUPER_ADMIN_UID}`);
       } else {
-        console.error('❌ Failed to create super admin user in Auth:', error.message);
+        console.error('❌ Failed to create super admin user in Auth:', err.message);
         console.log('\nPlease create a user manually in the Firebase Console and pass their UID:');
         console.log('npx tsx src/lib/firestore/seed.ts <UID>\n');
         return;

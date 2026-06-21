@@ -147,13 +147,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   /* ── Phone OTP Login ── */
   const getRecaptchaVerifier = (containerId: string) => {
-    if (!(window as any).recaptchaVerifier) {
-      (window as any).recaptchaVerifier = new RecaptchaVerifier(auth, containerId, {
+    const win = window as unknown as { recaptchaVerifier?: RecaptchaVerifier };
+    if (!win.recaptchaVerifier) {
+      win.recaptchaVerifier = new RecaptchaVerifier(auth, containerId, {
         size: 'invisible',
         callback: () => { /* reCAPTCHA solved */ },
       });
     }
-    return (window as any).recaptchaVerifier;
+    return win.recaptchaVerifier;
   };
 
   const sendPhoneOtp = async (phoneNumber: string, recaptchaContainerId: string): Promise<ConfirmationResult> => {

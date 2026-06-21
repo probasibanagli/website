@@ -39,12 +39,18 @@ export default function TravelPage() {
 
   useEffect(() => {
     // Detect if user is on a mobile device to correctly format deep links
-    setIsMobile(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
+    const handle = requestAnimationFrame(() => {
+      setIsMobile(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
+    });
+    return () => cancelAnimationFrame(handle);
   }, []);
 
   // Clear route result when inputs change
   useEffect(() => {
-    setRouteResult(null);
+    const handle = requestAnimationFrame(() => {
+      setRouteResult(null);
+    });
+    return () => cancelAnimationFrame(handle);
   }, [from, to, category, privateMode]);
 
   const handleGetRoute = async () => {

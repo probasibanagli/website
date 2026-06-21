@@ -13,7 +13,10 @@ export function GlobalLoader() {
   const { loading: authLoading } = useAuth();
 
   useEffect(() => {
-    setMounted(true);
+    const handle = requestAnimationFrame(() => {
+      setMounted(true);
+    });
+    return () => cancelAnimationFrame(handle);
   }, []);
 
   useEffect(() => {

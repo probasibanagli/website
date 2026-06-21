@@ -36,14 +36,16 @@ export default function BengaliDoctorsPage() {
   const [langFilter, setLangFilter] = useState('');
 
   useEffect(() => {
-    loadData();
+    async function loadData() {
+      setDoctors(SAMPLE_DOCTORS);
+      setHospitals(SAMPLE_HOSPITALS);
+      setLoading(false);
+    }
+    const handle = requestAnimationFrame(() => {
+      loadData();
+    });
+    return () => cancelAnimationFrame(handle);
   }, []);
-
-  async function loadData() {
-    setDoctors(SAMPLE_DOCTORS);
-    setHospitals(SAMPLE_HOSPITALS);
-    setLoading(false);
-  }
 
   const specialties = useMemo(() => Array.from(new Set(doctors.map(d => d.specialization).filter(Boolean))), [doctors]);
   const allLangs = useMemo(() => {
