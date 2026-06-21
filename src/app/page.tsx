@@ -3,166 +3,94 @@
 import React from 'react';
 import Link from 'next/link';
 import { T } from '@/lib/contexts/LanguageContext';
-import {
-  ArrowRight, Home, UtensilsCrossed, Bus, Hospital, Users,
-  Phone, MapPin, Droplets, Siren, Stethoscope, Search,
-  Star, CheckCircle2, Building, Wifi, Shield,
-} from 'lucide-react';
+import { ArrowRight, Home, UtensilsCrossed, Bus, Users, Heart, Calendar, GraduationCap, Landmark, Hospital, Droplets, Siren, Phone, MapPin, Shield, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { PlaceImage } from '@/components/ui/PlaceImage';
-import { sampleStayListings, sampleFoodListings } from '@/data/sample-data';
-import { formatPrice } from '@/lib/utils';
-
-/* ── Quick access category data ── */
-const CATEGORIES = [
-  {
-    title: 'Stay & Accommodation',
-    desc: 'PGs, hotels & rentals',
-    href: '/explore/stay',
-    icon: <Home className="w-6 h-6" />,
-    color: 'from-blue-600 to-indigo-700',
-    imageName: 'PG accommodation hostel',
-    imageCity: 'Chennai',
-  },
-  {
-    title: 'Bengali Food',
-    desc: 'Restaurants & tiffin',
-    href: '/explore/food',
-    icon: <UtensilsCrossed className="w-6 h-6" />,
-    color: 'from-orange-500 to-red-600',
-    imageName: 'Bengali restaurant food',
-    imageCity: 'Chennai',
-  },
-  {
-    title: 'Travel & Transport',
-    desc: 'Bus, metro & cab routes',
-    href: '/explore/travel',
-    icon: <Bus className="w-6 h-6" />,
-    color: 'from-emerald-500 to-teal-600',
-    imageName: 'Chennai metro bus station',
-    imageCity: 'Chennai',
-  },
-  {
-    title: 'Hospitals',
-    desc: 'Emergency & specialists',
-    href: '/emergency/hospitals',
-    icon: <Hospital className="w-6 h-6" />,
-    color: 'from-red-500 to-rose-600',
-    imageName: 'Hospital emergency',
-    imageCity: 'Chennai',
-  },
-  {
-    title: 'Community Groups',
-    desc: 'WhatsApp, Telegram & more',
-    href: '/community/groups',
-    icon: <Users className="w-6 h-6" />,
-    color: 'from-violet-500 to-purple-600',
-    imageName: 'Community gathering Bengali',
-    imageCity: 'Tamil Nadu',
-  },
-  {
-    title: 'Emergency Help',
-    desc: 'Ambulance, blood & SOS',
-    href: '/emergency/ambulance',
-    icon: <Siren className="w-6 h-6" />,
-    color: 'from-rose-600 to-red-700',
-    imageName: 'Ambulance emergency services',
-    imageCity: 'Chennai',
-  },
-];
-
-/* ── Get featured listings ── */
-const featuredStays = sampleStayListings.filter(l => l.verified).slice(0, 3);
-const featuredFood = sampleFoodListings.filter(f => f.verified).slice(0, 3);
+import { Badge } from '@/components/ui/Badge';
 
 export default function HomePage() {
   return (
     <div className="overflow-hidden">
       {/* ====== HERO SECTION ====== */}
-      <section className="relative bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 py-20 sm:py-28 lg:py-36 overflow-hidden">
-        {/* Subtle pattern overlay */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute inset-0" style={{
-            backgroundImage: `radial-gradient(circle at 1px 1px, rgba(255,255,255,0.15) 1px, transparent 0)`,
-            backgroundSize: '40px 40px',
-          }} />
-        </div>
-        {/* Accent glow */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[120px]" />
+      <section className="relative bg-gradient-to-br from-white via-primary-light/30 to-accent-light/20 py-20 sm:py-28 lg:py-36">
+        {/* Decorative blobs */}
+        <div className="absolute top-10 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-10 right-10 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold font-display text-white leading-tight animate-fade-in">
-            <T>Your Bengali</T>{' '}
-            <span className="bg-gradient-to-r from-primary to-orange-400 bg-clip-text text-transparent">
-              <T>Guide</T>
-            </span>
-            <br />
-            <T>in Tamil Nadu</T>
+          <Badge variant="teal" className="mb-6 animate-fade-in">
+            <T>Bengali community platform for Tamil Nadu</T>
+          </Badge>
+
+          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold font-display text-text-primary leading-tight animate-fade-in delay-100">
+            <T>Feel at</T> <em className="text-primary not-italic"><T>Home</T></em>,<br />
+            <T>Wherever You Are</T>
           </h1>
 
-          <p className="mt-6 text-lg sm:text-xl text-slate-300 max-w-2xl mx-auto leading-relaxed animate-fade-in delay-100">
-            <T>Find accommodation, food, hospitals, transport & community — everything a Bengali needs in Tamil Nadu, in one place.</T>
+          <p className="mt-6 text-lg sm:text-xl text-text-muted max-w-2xl mx-auto leading-relaxed animate-fade-in delay-200">
+            <T>Find Bengali food, safe accommodation, travel help, and community connections — built for Bengalis living in Tamil Nadu.</T>
           </p>
 
-          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in delay-200">
+          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in delay-300">
             <Link href="/explore/stay">
               <Button variant="primary" size="lg">
-                <Search className="w-5 h-5" /> <T>Find Accommodation</T>
+                <T>Explore Services</T> <ArrowRight className="w-5 h-5" />
               </Button>
             </Link>
-            <Link href="/explore/food">
-              <Button variant="outline" size="lg" className="border-slate-500 text-white hover:bg-white/10">
-                <UtensilsCrossed className="w-5 h-5" /> <T>Find Bengali Food</T>
+            <Link href="/community/groups">
+              <Button variant="outline" size="lg">
+                <T>Join Community</T>
               </Button>
             </Link>
+          </div>
+
+          {/* Stats Bar */}
+          <div className="mt-16 grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl mx-auto animate-fade-in delay-400">
+            {[
+              { icon: <MapPin className="w-5 h-5" />, label: '4+ Cities', color: 'text-primary' },
+              { icon: <Zap className="w-5 h-5" />, label: '6 Core Services', color: 'text-accent' },
+              { icon: <Shield className="w-5 h-5" />, label: '24/7 Emergency', color: 'text-red-500' },
+              { icon: <Heart className="w-5 h-5" />, label: 'Free Basic Access', color: 'text-purple-500' },
+            ].map((stat) => (
+              <div key={stat.label} className="flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-white/80 backdrop-blur-sm border border-border shadow-sm">
+                <span className={stat.color}>{stat.icon}</span>
+                <span className="text-sm font-semibold text-text-primary"><T>{stat.label}</T></span>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* ====== QUICK ACCESS GRID ====== */}
-      <section className="py-16 lg:py-24 bg-white">
+      {/* ====== EXPLORE SECTION ====== */}
+      <section className="py-20 lg:py-28 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-2xl sm:text-3xl font-bold font-display text-text-primary">
-              <T>What do you need?</T>
+          <div className="text-center mb-14">
+            <Badge variant="bengali" className="mb-4"><T>Explore</T></Badge>
+            <h2 className="text-3xl sm:text-4xl font-bold font-display text-text-primary">
+              <T>Everything You Need</T>
             </h2>
-            <p className="mt-2 text-text-muted">
-              <T>Quick access to everything — tap to explore</T>
+            <p className="mt-3 text-text-muted max-w-xl mx-auto">
+              <T>From finding a Bengali-friendly PG to authentic fish curry — we've got you covered.</T>
             </p>
           </div>
 
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-            {CATEGORIES.map((cat) => (
-              <Link key={cat.title} href={cat.href} className="group">
-                <div className="relative rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 group-hover:-translate-y-1">
-                  {/* Image */}
-                  <PlaceImage
-                    name={cat.imageName}
-                    city={cat.imageCity}
-                    type="stay"
-                    className="h-36 sm:h-44"
-                  />
-                  {/* Dark overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/10 group-hover:from-black/80 transition-all" />
-                  {/* Icon badge */}
-                  <div className={`absolute top-3 left-3 w-10 h-10 rounded-xl bg-gradient-to-br ${cat.color} text-white flex items-center justify-center shadow-lg`}>
-                    {cat.icon}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[
+              { icon: <Home className="w-7 h-7" />, title: 'Stay & Accommodation', desc: 'Find Bengali-friendly PGs, hotels, and rental houses across Tamil Nadu cities.', href: '/explore/stay', color: 'bg-blue-50 text-blue-600', borderColor: 'hover:border-blue-300' },
+              { icon: <UtensilsCrossed className="w-7 h-7" />, title: 'Bengali Food & Sweets', desc: 'Discover Bengali restaurants, sweet shops, tiffin services, and delivery partners.', href: '/explore/food', color: 'bg-orange-50 text-orange-600', borderColor: 'hover:border-orange-300' },
+              { icon: <Bus className="w-7 h-7" />, title: 'Travel & Transport', desc: 'Plan your route with bus, metro, auto, and cab options. Common Tamil words included.', href: '/explore/travel', color: 'bg-green-50 text-green-600', borderColor: 'hover:border-green-300' },
+            ].map((item) => (
+              <Link key={item.title} href={item.href}>
+                <Card className={`h-full border-2 border-transparent ${item.borderColor} transition-all group`}>
+                  <div className={`w-14 h-14 rounded-2xl ${item.color} flex items-center justify-center mb-5 group-hover:scale-110 transition-transform`}>
+                    {item.icon}
                   </div>
-                  {/* Text */}
-                  <div className="absolute bottom-0 left-0 right-0 p-4">
-                    <h3 className="text-white font-bold text-sm sm:text-base">
-                      <T>{cat.title}</T>
-                    </h3>
-                    <p className="text-white/70 text-xs sm:text-sm mt-0.5">
-                      <T>{cat.desc}</T>
-                    </p>
-                  </div>
-                  {/* Arrow */}
-                  <div className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                    <ArrowRight className="w-4 h-4 text-white" />
-                  </div>
-                </div>
+                  <h3 className="text-xl font-bold text-text-primary mb-2"><T>{item.title}</T></h3>
+                  <p className="text-sm text-text-muted leading-relaxed mb-4"><T>{item.desc}</T></p>
+                  <span className="text-sm font-semibold text-primary flex items-center gap-1 group-hover:gap-2 transition-all">
+                    <T>View</T> <ArrowRight className="w-4 h-4" />
+                  </span>
+                </Card>
               </Link>
             ))}
           </div>
@@ -170,105 +98,63 @@ export default function HomePage() {
       </section>
 
       {/* ====== EMERGENCY STRIP ====== */}
-      <section className="bg-gradient-to-r from-red-600 to-rose-700 py-10 lg:py-14">
+      <section className="bg-gradient-to-r from-primary to-primary-dark py-14 lg:py-20 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSA2MCAwIEwgMCAwIDAgNjAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNTUsMjU1LDI1NSwwLjA1KSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')] opacity-30" />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl sm:text-4xl font-bold font-display text-white mb-3">
+            <T>Emergency Services</T>
+          </h2>
+          <p className="text-white/80 max-w-xl mx-auto mb-10">
+            <T>Immediate help when you need it most — hospitals, blood banks, and emergency contacts.</T>
+          </p>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl mx-auto">
+            {[
+              { icon: <Hospital className="w-6 h-6" />, label: 'Hospitals', href: '/emergency/hospitals' },
+              { icon: <Droplets className="w-6 h-6" />, label: 'Blood Help', href: '/emergency/blood' },
+              { icon: <Siren className="w-6 h-6" />, label: 'Ambulance', href: '/emergency/ambulance' },
+              { icon: <Phone className="w-6 h-6" />, label: 'SOS Button', href: '/emergency/ambulance', special: true },
+            ].map((item) => (
+              <Link key={item.label} href={item.href}>
+                <div className={`flex flex-col items-center gap-3 px-4 py-5 rounded-2xl transition-all cursor-pointer ${item.special
+                    ? 'bg-red-600 hover:bg-red-700 text-white shadow-lg hover:scale-105'
+                    : 'bg-white/15 hover:bg-white/25 text-white backdrop-blur-sm'
+                  }`}>
+                  {item.icon}
+                  <span className="text-sm font-semibold"><T>{item.label}</T></span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ====== COMMUNITY SECTION ====== */}
+      <section className="py-20 lg:py-28 bg-surface">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
-            <div>
-              <h2 className="text-2xl font-bold text-white">
-                <T>Emergency?</T>
-              </h2>
-              <p className="text-red-100 text-sm mt-1">
-                <T>Immediate help — hospitals, ambulance, blood banks</T>
-              </p>
-            </div>
-            <div className="flex flex-wrap gap-3">
-              {[
-                { icon: <Stethoscope className="w-5 h-5" />, label: 'Hospitals', href: '/emergency/hospitals' },
-                { icon: <Droplets className="w-5 h-5" />, label: 'Blood Help', href: '/emergency/blood' },
-                { icon: <Siren className="w-5 h-5" />, label: 'Ambulance', href: '/emergency/ambulance' },
-              ].map((item) => (
-                <Link key={item.label} href={item.href}>
-                  <button className="flex items-center gap-2 px-5 py-3 rounded-xl bg-white/15 hover:bg-white/25 text-white backdrop-blur-sm transition-all font-medium text-sm cursor-pointer">
+          <div className="text-center mb-14">
+            <Badge variant="teal" className="mb-4"><T>Community</T></Badge>
+            <h2 className="text-3xl sm:text-4xl font-bold font-display text-text-primary">
+              <T>Connect with Your People</T>
+            </h2>
+            <p className="mt-3 text-text-muted max-w-xl mx-auto">
+              <T>Join groups, find life partners, celebrate festivals, and stay connected.</T>
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              { icon: <Users className="w-7 h-7" />, title: 'Community Groups', desc: 'WhatsApp, Telegram & Facebook groups for Bengalis.', href: '/community/groups', color: 'bg-indigo-50 text-indigo-600' },
+              { icon: <Heart className="w-7 h-7" />, title: 'Matrimonial', desc: 'Find your Bengali life partner in Tamil Nadu.', href: '/community/matrimonial', color: 'bg-pink-50 text-pink-600' },
+              { icon: <Calendar className="w-7 h-7" />, title: 'Events & Festivals', desc: 'Durga Puja, Saraswati Puja & community meetups.', href: '/community/events', color: 'bg-amber-50 text-amber-600' },
+              { icon: <span className="text-2xl bengali-text">📅</span>, title: 'Bengali Calendar', desc: 'View Bengali dates and Panjika online.', href: '/community/events', color: 'bg-teal-50 text-teal-600' },
+            ].map((item) => (
+              <Link key={item.title} href={item.href}>
+                <Card className="h-full text-center group border-2 border-transparent hover:border-accent/30 transition-all">
+                  <div className={`w-14 h-14 rounded-2xl ${item.color} flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform`}>
                     {item.icon}
-                    <T>{item.label}</T>
-                  </button>
-                </Link>
-              ))}
-              <a href="tel:108">
-                <button className="flex items-center gap-2 px-5 py-3 rounded-xl bg-white text-red-600 font-bold text-sm hover:bg-red-50 transition-all shadow-lg cursor-pointer">
-                  <Phone className="w-5 h-5" />
-                  <T>Call 108</T>
-                </button>
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ====== FEATURED STAYS ====== */}
-      <section className="py-16 lg:py-24 bg-surface">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between mb-10">
-            <div>
-              <h2 className="text-2xl sm:text-3xl font-bold font-display text-text-primary">
-                <T>Popular Stays</T>
-              </h2>
-              <p className="mt-1 text-text-muted text-sm">
-                <T>Verified accommodation options</T>
-              </p>
-            </div>
-            <Link href="/explore/stay">
-              <Button variant="outline" size="sm">
-                <T>View all</T> <ArrowRight className="w-4 h-4" />
-              </Button>
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {featuredStays.map((listing) => (
-              <Link key={listing.id} href={`/explore/stay/${listing.id}`}>
-                <Card padding="none" className="overflow-hidden group hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-                  <PlaceImage
-                    name={listing.name}
-                    city={listing.city}
-                    type={listing.type as 'pg' | 'hotel' | 'rental'}
-                    mapsUrl={listing.google_maps_url}
-                    className="h-44"
-                  />
-                  <div className="p-4">
-                    <div className="flex items-start justify-between gap-2">
-                      <div>
-                        <h3 className="font-bold text-text-primary group-hover:text-primary transition-colors line-clamp-1">
-                          {listing.name}
-                        </h3>
-                        <div className="flex items-center gap-1 mt-1 text-xs text-text-muted">
-                          <MapPin className="w-3 h-3" />
-                          {listing.area}, {listing.city}
-                        </div>
-                      </div>
-                      {listing.verified && (
-                        <CheckCircle2 className="w-4 h-4 text-green-500 shrink-0 mt-1" />
-                      )}
-                    </div>
-
-                    <div className="flex flex-wrap gap-1 mt-3">
-                      {(listing.amenities || []).slice(0, 3).map((a) => (
-                        <span key={a} className="px-2 py-0.5 bg-surface rounded-md text-[11px] text-text-muted">
-                          {a}
-                        </span>
-                      ))}
-                    </div>
-
-                    <div className="flex items-center justify-between mt-3 pt-3 border-t border-border">
-                      <div>
-                        <span className="text-lg font-bold text-primary">{formatPrice(listing.price_per_month || 0)}</span>
-                        <span className="text-xs text-text-muted ml-1">/mo</span>
-                      </div>
-                      <span className="text-xs font-medium text-text-muted uppercase tracking-wider px-2 py-1 bg-surface rounded-lg">
-                        {listing.type}
-                      </span>
-                    </div>
                   </div>
+                  <h3 className="text-lg font-bold text-text-primary mb-2"><T>{item.title}</T></h3>
+                  <p className="text-sm text-text-muted"><T>{item.desc}</T></p>
                 </Card>
               </Link>
             ))}
@@ -276,62 +162,63 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ====== FEATURED FOOD ====== */}
-      <section className="py-16 lg:py-24 bg-white">
+      {/* ====== SERVICES SECTION ====== */}
+      <section className="py-20 lg:py-28 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between mb-10">
-            <div>
-              <h2 className="text-2xl sm:text-3xl font-bold font-display text-text-primary">
-                <T>Popular Restaurants</T>
-              </h2>
-              <p className="mt-1 text-text-muted text-sm">
-                <T>Eat well, eat local</T>
-              </p>
-            </div>
-            <Link href="/explore/food">
-              <Button variant="outline" size="sm">
-                <T>View all</T> <ArrowRight className="w-4 h-4" />
-              </Button>
-            </Link>
+          <div className="text-center mb-14">
+            <Badge variant="bengali" className="mb-4">Services</Badge>
+            <h2 className="text-3xl sm:text-4xl font-bold font-display text-text-primary">
+              Campus & Government Help
+            </h2>
+            <p className="mt-3 text-text-muted max-w-xl mx-auto">
+              Find colleges and access government services easily.
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {featuredFood.map((food) => (
-              <Link key={food.id} href={`/explore/food/${food.id}`}>
-                <Card padding="none" className="overflow-hidden group hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-                  <PlaceImage
-                    name={food.name}
-                    city={food.city}
-                    type={(food.type as 'restaurant' | 'sweets' | 'tiffin') || 'restaurant'}
-                    mapsUrl={food.google_maps_url}
-                    className="h-40"
-                  />
-                  <div className="p-4">
-                    <div className="flex items-start justify-between gap-2">
-                      <div>
-                        <h3 className="font-bold text-text-primary group-hover:text-primary transition-colors line-clamp-1">
-                          {food.name}
-                        </h3>
-                        <div className="flex items-center gap-1 mt-1 text-xs text-text-muted">
-                          <MapPin className="w-3 h-3" />
-                          {food.area}, {food.city}
-                        </div>
-                      </div>
-                      {food.verified && (
-                        <CheckCircle2 className="w-4 h-4 text-green-500 shrink-0 mt-1" />
-                      )}
-                    </div>
-                    <div className="flex flex-wrap gap-1 mt-3">
-                      {(food.specialties || []).slice(0, 3).map((s) => (
-                        <span key={s} className="px-2 py-0.5 bg-surface rounded-md text-[11px] text-text-muted">
-                          {s}
-                        </span>
-                      ))}
-                    </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+            {[
+              { icon: <GraduationCap className="w-8 h-8" />, title: 'College Finder', desc: 'Search engineering, medical, arts, and management colleges across Tamil Nadu. Includes integrated travel planner.', href: '/services/college', color: 'from-blue-500 to-indigo-600' },
+              { icon: <Landmark className="w-8 h-8" />, title: 'Government Services', desc: 'Quick access to Aadhaar, Ration Card, Passport, Health Schemes and more Tamil Nadu government portals.', href: '/services/government', color: 'from-emerald-500 to-teal-600' },
+            ].map((item) => (
+              <Link key={item.title} href={item.href}>
+                <Card className="h-full group border-2 border-transparent hover:border-primary/20 transition-all relative overflow-hidden" padding="lg">
+                  <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${item.color} opacity-10 rounded-bl-full group-hover:opacity-20 transition-opacity`} />
+                  <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${item.color} text-white flex items-center justify-center mb-5 group-hover:scale-110 transition-transform shadow-lg`}>
+                    {item.icon}
                   </div>
+                  <h3 className="text-xl font-bold text-text-primary mb-2">{item.title}</h3>
+                  <p className="text-sm text-text-muted leading-relaxed mb-4">{item.desc}</p>
+                  <span className="text-sm font-semibold text-primary flex items-center gap-1 group-hover:gap-2 transition-all">
+                    Explore <ArrowRight className="w-4 h-4" />
+                  </span>
                 </Card>
               </Link>
             ))}
+          </div>
+        </div>
+      </section>
+
+
+      {/* ====== CTA SECTION ====== */}
+      <section className="py-20 bg-gradient-to-br from-accent-light via-white to-primary-light">
+        <div className="max-w-3xl mx-auto px-4 text-center">
+          <h2 className="text-3xl sm:text-4xl font-bold font-display text-text-primary mb-4">
+            <T>Join the ProbasiBangali Community</T>
+          </h2>
+          <p className="text-text-muted mb-8 max-w-lg mx-auto">
+            <T>Whether you're a student, professional, or family — connect with fellow Bengalis and make Tamil Nadu feel like home.</T>
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Link href="/auth/register">
+              <Button variant="primary" size="lg">
+                <T>Create Free Account</T> <ArrowRight className="w-5 h-5" />
+              </Button>
+            </Link>
+            <Link href="/community/groups">
+              <Button variant="secondary" size="lg">
+                <T>Browse Community Groups</T>
+              </Button>
+            </Link>
           </div>
         </div>
       </section>

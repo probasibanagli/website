@@ -45,7 +45,7 @@ export function getAccessibleModules(
 ): ModuleKey[] {
   const ALL_MODULES: ModuleKey[] = [
     'stay', 'food', 'travel', 'emergency',
-    'community', 'services', 'blog', 'users',
+    'community', 'services', 'blog', 'users'
   ];
 
   if (role === 'superadmin') return ALL_MODULES;
@@ -97,7 +97,7 @@ export function getDefaultPermissions(role: UserRole): ModulePermissions {
  */
 export const ALL_MODULES: ModuleKey[] = [
   'stay', 'food', 'travel', 'emergency',
-  'community', 'services', 'blog', 'users',
+  'community', 'services', 'blog', 'users'
 ];
 
 /**

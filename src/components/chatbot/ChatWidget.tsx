@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { MessageCircle, X, Send, Sparkles, Home } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import Image from 'next/image';
 
 const suggestedPrompts = [
   'Find Bengali PG in Chennai',
@@ -145,19 +146,50 @@ export function ChatWidget() {
       {mounted && (
         <button
           onClick={() => setIsOpen(!isOpen)}
+          aria-label="Tamil Word Helper — Ask in Bengali, Tamil, or English"
+          title="Tamil Word Helper"
           className={cn(
-            'fixed bottom-5 right-4 sm:right-6 z-50 w-14 h-14 rounded-full shadow-xl flex items-center justify-center transition-all duration-300 cursor-pointer',
-            isOpen ? 'bg-gray-700 rotate-90' : 'bg-primary animate-pulse-glow hover:scale-110'
+            'fixed bottom-5 right-4 sm:right-6 z-50 w-14 h-14 rounded-full shadow-2xl shadow-primary/25 flex items-center justify-center transition-all duration-300 cursor-pointer ring-1 ring-primary/10 hover:ring-primary/20',
+            isOpen
+              ? 'bg-primary-dark rotate-90 text-white'
+              : 'bg-gradient-to-br from-primary via-primary to-accent text-white hover:scale-110'
           )}
-          title="Ask in Bengali, Tamil, or English"
         >
           {isOpen ? (
             <X className="w-6 h-6 text-white" />
           ) : (
-            <MessageCircle className="w-6 h-6 text-white" />
+            <svg viewBox="0 0 64 64" className="w-full h-full p-[2px]">
+              <defs>
+                <filter id="premium-shadow" x="-30%" y="-30%" width="160%" height="160%">
+                  <feDropShadow dx="0" dy="3" stdDeviation="3.5" floodColor="#000" floodOpacity="0.22" />
+                </filter>
+                <linearGradient id="bubble-back" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#FAFAFA" />
+                  <stop offset="100%" stopColor="#E2E2E2" />
+                </linearGradient>
+                <linearGradient id="bubble-front" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#FFFFFF" />
+                  <stop offset="100%" stopColor="#F0F0F0" />
+                </linearGradient>
+              </defs>
+              <g filter="url(#premium-shadow)">
+                {/* Back bubble (Tamil) - Tail on right */}
+                <g transform="translate(26, 12)">
+                  <path d="M8 0h12a8 8 0 0 1 8 8v12a8 8 0 0 1-8 8h-2l6 6l-10-6h-6a8 8 0 0 1-8-8V8a8 8 0 0 1 8-8z" fill="url(#bubble-back)" />
+                  <text x="14" y="15" textAnchor="middle" dominantBaseline="middle" fill="#C04820" fontSize="15" fontWeight="900" fontFamily="sans-serif">அ</text>
+                </g>
+
+                {/* Front bubble (English) - Tail on left */}
+                <g transform="translate(10, 18)">
+                  <path d="M8 0h12a8 8 0 0 1 8 8v12a8 8 0 0 1-8 8h-6l-10 6l6-6h-2a8 8 0 0 1-8-8V8a8 8 0 0 1 8-8z" fill="url(#bubble-front)" />
+                  <text x="14" y="15" textAnchor="middle" dominantBaseline="middle" fill="#D85A30" fontSize="17" fontWeight="900" fontFamily="sans-serif">A</text>
+                </g>
+              </g>
+            </svg>
           )}
         </button>
       )}
     </>
   );
 }
+

@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/Input';
 import { useAuth } from '@/lib/auth/AuthContext';
+import type { ConfirmationResult } from 'firebase/auth';
 
 type LoginMode = 'email' | 'phone';
 type PhoneStep = 'input' | 'otp';
@@ -22,7 +23,7 @@ export default function LoginPage() {
   const router = useRouter();
   const { signIn, sendPhoneOtp, verifyPhoneOtp, firebaseUser, profile } = useAuth();
 
-  const [mode, setMode] = useState<LoginMode>('email');
+  const [mode, setMode] = useState<LoginMode>('phone');
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
@@ -34,7 +35,7 @@ export default function LoginPage() {
   // Phone OTP state
   const [phoneStep, setPhoneStep] = useState<PhoneStep>('input');
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
-  const [otpSent, setOtpSent] = useState(false);
+  const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
   const [otpMethod, setOtpMethod] = useState<'sms' | 'whatsapp'>('sms');
   const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
 
@@ -140,15 +141,11 @@ export default function LoginPage() {
 
     setLoading(true);
     try {
-      await sendPhoneOtp(formatted);
-      setOtpSent(true);
+      const result = await sendPhoneOtp(formatted, 'recaptcha-container');
+      setConfirmationResult(result);
       setPhoneStep('otp');
       startResendTimer();
-      setSuccess(
-        otpMethod === 'sms'
-          ? `OTP sent via SMS to ${formatted}`
-          : `OTP sent via WhatsApp to ${formatted}`
-      );
+      setSuccess(`OTP sent via SMS to ${formatted}`);
       // Auto-focus first OTP input
       setTimeout(() => otpRefs.current[0]?.focus(), 100);
     } catch (err: unknown) {
@@ -166,13 +163,13 @@ export default function LoginPage() {
   };
 
   /* ── Phone OTP: Verify ── */
-  const handleVerifyOtp = async (codeStr?: string) => {
-    const code = codeStr || otp.join('');
+  const handleVerifyOtp = async () => {
+    const code = otp.join('');
     if (code.length !== 6) {
       setError('Please enter the complete 6-digit OTP.');
       return;
     }
-    if (!otpSent) {
+    if (!confirmationResult) {
       setError('Session expired. Please request a new OTP.');
       return;
     }
@@ -180,13 +177,7 @@ export default function LoginPage() {
     setError('');
     setLoading(true);
     try {
-      let formatted = phone.trim();
-      if (!formatted.startsWith('+')) {
-        formatted = formatted.replace(/^0+/, '');
-        formatted = '+91' + formatted.replace(/\s/g, '');
-      }
-
-      await verifyPhoneOtp(formatted, code);
+      await verifyPhoneOtp(confirmationResult, code);
 
       // Phone OTP login = phone is verified. Check if email is also verified via Firestore profile
       const { auth } = await import('@/lib/firebase');
@@ -214,7 +205,7 @@ export default function LoginPage() {
       }, 1000);
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'OTP verification failed';
-      if (message.includes('invalid-verification-code') || message.includes('Invalid or expired OTP') || message.includes('OTP verification failed')) {
+      if (message.includes('invalid-verification-code')) {
         setError('Invalid OTP. Please check and try again.');
         setOtp(['', '', '', '', '', '']);
         otpRefs.current[0]?.focus();
@@ -245,8 +236,8 @@ export default function LoginPage() {
     // Auto-submit when all 6 digits are entered
     if (value && index === 5) {
       const code = newOtp.join('');
-      if (code.length === 6 && otpSent) {
-        setTimeout(() => handleVerifyOtp(code), 200);
+      if (code.length === 6 && confirmationResult) {
+        setTimeout(() => handleVerifyOtp(), 200);
       }
     }
   };
@@ -274,7 +265,7 @@ export default function LoginPage() {
   const resetPhone = () => {
     setPhoneStep('input');
     setOtp(['', '', '', '', '', '']);
-    setOtpSent(false);
+    setConfirmationResult(null);
     setError('');
     setSuccess('');
     setResendTimer(0);
@@ -317,16 +308,6 @@ export default function LoginPage() {
           {/* Mode Tabs */}
           <div className="flex rounded-xl border border-border p-1 mb-6 bg-surface/50">
             <button
-              onClick={() => { setMode('email'); resetPhone(); setError(''); }}
-              className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 cursor-pointer ${
-                mode === 'email'
-                  ? 'bg-primary text-white shadow-md shadow-primary/25'
-                  : 'text-text-muted hover:text-text-primary'
-              }`}
-            >
-              <Mail className="w-4 h-4" /> Email
-            </button>
-            <button
               onClick={() => { setMode('phone'); setError(''); }}
               className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 cursor-pointer ${
                 mode === 'phone'
@@ -335,6 +316,16 @@ export default function LoginPage() {
               }`}
             >
               <Phone className="w-4 h-4" /> Phone OTP
+            </button>
+            <button
+              onClick={() => { setMode('email'); resetPhone(); setError(''); }}
+              className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 cursor-pointer ${
+                mode === 'email'
+                  ? 'bg-primary text-white shadow-md shadow-primary/25'
+                  : 'text-text-muted hover:text-text-primary'
+              }`}
+            >
+              <Mail className="w-4 h-4" /> Email
             </button>
           </div>
 
@@ -393,33 +384,6 @@ export default function LoginPage() {
             <div className="space-y-4">
               {phoneStep === 'input' && (
                 <>
-                  {/* OTP method selection */}
-                  <div>
-                    <label className="block text-sm font-semibold text-text-primary mb-2">Receive OTP via</label>
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => setOtpMethod('sms')}
-                        className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-medium transition-all duration-300 cursor-pointer border-2 ${
-                          otpMethod === 'sms'
-                            ? 'border-primary bg-primary/5 text-primary shadow-sm shadow-primary/10'
-                            : 'border-border text-text-muted hover:border-primary/40'
-                        }`}
-                      >
-                        <Smartphone className="w-4 h-4" /> SMS
-                      </button>
-                      <button
-                        onClick={() => setOtpMethod('whatsapp')}
-                        className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-medium transition-all duration-300 cursor-pointer border-2 ${
-                          otpMethod === 'whatsapp'
-                            ? 'border-green-500 bg-green-50 text-green-700 shadow-sm shadow-green-500/10'
-                            : 'border-border text-text-muted hover:border-green-300'
-                        }`}
-                      >
-                        <MessageCircle className="w-4 h-4" /> WhatsApp
-                      </button>
-                    </div>
-                  </div>
-
                   <Input
                     label="Phone Number"
                     id="login-phone"
@@ -433,8 +397,7 @@ export default function LoginPage() {
                   <div className="flex items-start gap-2 p-3 rounded-xl bg-blue-50/70 border border-blue-100">
                     <Fingerprint className="w-4 h-4 text-blue-500 mt-0.5 shrink-0" />
                     <p className="text-xs text-blue-700 leading-relaxed">
-                      We&apos;ll send a <strong>6-digit verification code</strong> to your phone
-                      {otpMethod === 'whatsapp' ? ' via WhatsApp' : ' via SMS'}.
+                      We&apos;ll send a <strong>6-digit verification code</strong> to your phone via SMS.
                       Standard messaging rates may apply.
                     </p>
                   </div>
@@ -528,14 +491,17 @@ export default function LoginPage() {
                   {/* Delivery info */}
                   <div className="text-center">
                     <p className="text-[11px] text-text-muted leading-relaxed">
-                      Didn&apos;t receive the code? Check your {otpMethod === 'whatsapp' ? 'WhatsApp' : 'SMS'} inbox
-                      or try a different method.
+                      Didn&apos;t receive the code? Check your SMS inbox
+                      or try again.
                     </p>
                   </div>
                 </>
               )}
             </div>
           )}
+
+          {/* reCAPTCHA container (invisible) */}
+          <div id="recaptcha-container" />
 
           <p className="text-center text-sm text-text-muted mt-6">
             Don&apos;t have an account?{' '}

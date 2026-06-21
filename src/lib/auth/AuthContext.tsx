@@ -31,11 +31,11 @@ interface AuthContextType extends AuthState {
   signUp: (email: string, password: string, fullName: string, phone?: string, phoneVerified?: boolean) => Promise<void>;
   logOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
-  sendPhoneOtp: (phoneNumber: string) => Promise<void>;
-  verifyPhoneOtp: (phoneNumber: string, otp: string) => Promise<void>;
+  sendPhoneOtp: (phoneNumber: string, recaptchaContainerId: string) => Promise<ConfirmationResult>;
+  verifyPhoneOtp: (confirmationResult: ConfirmationResult, otp: string) => Promise<void>;
   sendVerificationEmail: () => Promise<void>;
-  linkPhoneToAccount: (phoneNumber: string) => Promise<void>;
-  confirmLinkPhone: (phoneNumber: string, otp: string) => Promise<void>;
+  linkPhoneToAccount: (phoneNumber: string, recaptchaContainerId: string) => Promise<ConfirmationResult>;
+  confirmLinkPhone: (confirmationResult: ConfirmationResult, otp: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -146,56 +146,72 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   /* ── Phone OTP Login ── */
-  const sendPhoneOtp = async (phoneNumber: string): Promise<void> => {
-    const res = await fetch('/api/auth/otp/send', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ phone: phoneNumber }),
-    });
-    const data = await res.json();
-    if (!res.ok) {
-      throw new Error(data.error || 'Failed to send OTP');
+  const getRecaptchaVerifier = (containerId: string) => {
+    if (!(window as any).recaptchaVerifier) {
+      (window as any).recaptchaVerifier = new RecaptchaVerifier(auth, containerId, {
+        size: 'invisible',
+        callback: () => { /* reCAPTCHA solved */ },
+      });
     }
+    return (window as any).recaptchaVerifier;
   };
 
-  const verifyPhoneOtp = async (phoneNumber: string, otp: string): Promise<void> => {
-    const res = await fetch('/api/auth/otp/verify', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ phone: phoneNumber, code: otp }),
-    });
-    const data = await res.json();
-    if (!res.ok) {
-      throw new Error(data.error || 'Failed to verify OTP');
-    }
+  const sendPhoneOtp = async (phoneNumber: string, recaptchaContainerId: string): Promise<ConfirmationResult> => {
+    const verifier = getRecaptchaVerifier(recaptchaContainerId);
+    const confirmation = await signInWithPhoneNumber(auth, phoneNumber, verifier);
+    return confirmation;
+  };
 
-    if (data.customToken) {
-      const { signInWithCustomToken } = await import('firebase/auth');
-      await signInWithCustomToken(auth, data.customToken);
+  const verifyPhoneOtp = async (confirmationResult: ConfirmationResult, otp: string): Promise<void> => {
+    const result = await confirmationResult.confirm(otp);
+    const user = result.user;
+
+    // Check if profile exists, if not create one (first-time phone login)
+    const existingProfile = await fetchProfile(user);
+    if (!existingProfile) {
+      const role: UserRole = 'user';
+      const permissions: ModulePermissions = getDefaultPermissions(role);
+      const now = new Date().toISOString();
+
+      const profile: UserProfile = {
+        uid: user.uid,
+        email: user.email || '',
+        phone: user.phoneNumber || '',
+        full_name: user.displayName || 'Phone User',
+        role,
+        permissions,
+        created_at: now,
+        updated_at: now,
+        is_active: true,
+        phone_verified: true,
+        email_verified: false,
+      };
+      await setDoc(doc(db, 'users', user.uid), profile);
+    } else {
+      // Update phone_verified
+      await updateDoc(doc(db, 'users', user.uid), {
+        phone_verified: true,
+        phone: user.phoneNumber || existingProfile.phone,
+        updated_at: new Date().toISOString(),
+      });
     }
   };
 
   /* ── Link Phone to Existing Account ── */
-  const linkPhoneToAccount = async (phoneNumber: string): Promise<void> => {
-    await sendPhoneOtp(phoneNumber);
+  const linkPhoneToAccount = async (phoneNumber: string, recaptchaContainerId: string): Promise<ConfirmationResult> => {
+    const verifier = getRecaptchaVerifier(recaptchaContainerId);
+    const confirmation = await signInWithPhoneNumber(auth, phoneNumber, verifier);
+    return confirmation;
   };
 
-  const confirmLinkPhone = async (phoneNumber: string, otp: string): Promise<void> => {
-    const res = await fetch('/api/auth/otp/verify', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ phone: phoneNumber, code: otp }),
-    });
-    const data = await res.json();
-    if (!res.ok) {
-      throw new Error(data.error || 'Failed to verify OTP');
-    }
-
+  const confirmLinkPhone = async (confirmationResult: ConfirmationResult, otp: string): Promise<void> => {
+    const credential = PhoneAuthProvider.credential(confirmationResult.verificationId, otp);
     const user = auth.currentUser;
     if (user) {
+      await linkWithCredential(user, credential);
       await updateDoc(doc(db, 'users', user.uid), {
         phone_verified: true,
-        phone: phoneNumber,
+        phone: user.phoneNumber,
         updated_at: new Date().toISOString(),
       });
     }
@@ -229,3 +245,4 @@ export function useAuth() {
   if (!ctx) throw new Error('useAuth must be used within <AuthProvider>');
   return ctx;
 }
+
