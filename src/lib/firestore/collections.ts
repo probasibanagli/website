@@ -17,6 +17,7 @@ export const COLLECTIONS = {
   events: 'events',
   blog_posts: 'blog_posts',
   travel_info: 'travel_info',
+  bengali_doctors: 'bengali_doctors',
 } as const;
 
 /**

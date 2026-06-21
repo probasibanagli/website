@@ -39,7 +39,7 @@ export const MODULE_LABELS: Record<ModuleKey, string> = {
   stay: 'Stay & Accommodation',
   food: 'Bengali Food & Sweets',
   travel: 'Travel & Transport',
-  emergency: 'Emergency Services',
+  emergency: 'Hospital Management',
   community: 'Community',
   services: 'Campus & Government',
   blog: 'Blog Posts',
@@ -116,6 +116,27 @@ export interface Hospital {
   lat?: number;
   lng?: number;
   created_at: string;
+  // New Enhanced Fields
+  website?: string;
+  email?: string;
+  description?: string;
+  main_branch?: boolean;
+  images?: string[];
+  updated_at?: string;
+}
+
+export interface BengaliDoctor {
+  id: string;
+  doctor_name: string;
+  specialization: string;
+  hospital_id: string;
+  experience: string;
+  languages: string[];
+  photo: string;
+  phone: string;
+  email: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface BloodBank {
