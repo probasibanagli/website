@@ -65,6 +65,13 @@ export function Navbar() {
     return () => cancelAnimationFrame(handle);
   }, []);
 
+  React.useEffect(() => {
+    const handle = requestAnimationFrame(() => {
+      setIsLoading(false);
+    });
+    return () => cancelAnimationFrame(handle);
+  }, [pathname]);
+
   const isLoggedIn = !!firebaseUser && !!profile;
   const isAdmin = profile?.role === 'admin' || profile?.role === 'superadmin';
 
@@ -81,13 +88,6 @@ export function Navbar() {
       router.push(href);
     }
   };
-
-  React.useEffect(() => {
-    const handle = requestAnimationFrame(() => {
-      setIsLoading(false);
-    });
-    return () => cancelAnimationFrame(handle);
-  }, [pathname]);
 
   // Don't show navbar on admin pages (admin has its own layout)
   if (pathname.startsWith('/admin')) return null;

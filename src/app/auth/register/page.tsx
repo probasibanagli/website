@@ -85,12 +85,8 @@ export default function RegisterPage() {
 
   // Format phone to E.164
   const formatPhone = (raw: string) => {
-    let f = raw.trim();
-    if (!f.startsWith('+')) {
-      f = f.replace(/^0+/, '');
-      f = '+91' + f.replace(/\s/g, '');
-    }
-    return f;
+    const digits = raw.replace(/\D/g, '');
+    return '+91' + digits;
   };
 
   /* ── Step 1: Validate Form & Send Phone OTP ── */
@@ -102,14 +98,15 @@ export default function RegisterPage() {
     if (!form.full_name.trim()) { setError('Please enter your full name.'); return; }
     if (!form.email.trim()) { setError('Please enter your email address.'); return; }
     if (!form.phone.trim()) { setError('Phone number is required.'); return; }
-    const formatted = formatPhone(form.phone);
-    if (formatted.length < 12) { setError('Please enter a valid phone number (e.g., +91 98765 43210).'); return; }
+    const digits = form.phone.replace(/\D/g, '');
+    if (digits.length !== 10) { setError('Please enter a valid 10-digit phone number.'); return; }
+    const formatted = '+91' + digits;
     if (form.password.length < 6) { setError('Password must be at least 6 characters.'); return; }
     if (!form.agree) { setError('Please accept the Terms of Service to continue.'); return; }
 
     setLoading(true);
     try {
-      const result = await sendPhoneOtp(formatted, 'recaptcha-container');
+      const result = await sendPhoneOtp(formatted, 'recaptcha-container', 'register');
       setConfirmationResult(result);
       setStep('phone-otp');
       startTimer(setOtpTimer, otpTimerRef, OTP_RESEND_COOLDOWN);
@@ -125,8 +122,8 @@ export default function RegisterPage() {
   };
 
   /* ── Step 2: Verify Phone OTP → Create Account ── */
-  const handleVerifyOtp = async () => {
-    const code = otp.join('');
+  const handleVerifyOtp = async (codeOverride?: string) => {
+    const code = codeOverride || otp.join('');
     if (code.length !== 6) { setError('Please enter the complete 6-digit OTP.'); return; }
     if (!confirmationResult) { setError('Session expired. Please go back and try again.'); return; }
 
@@ -140,9 +137,10 @@ export default function RegisterPage() {
       const formatted = formatPhone(form.phone);
       await signUp(form.email, form.password, form.full_name, formatted, true);
 
-      // Move to email verification screen
-      setStep('email-sent');
-      startTimer(setEmailTimer, emailTimerRef, EMAIL_RESEND_COOLDOWN);
+      setSuccess('Account created successfully! Redirecting...');
+      setTimeout(() => {
+        router.push('/');
+      }, 1500);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Verification failed';
       if (msg.includes('invalid-verification-code')) {
@@ -167,7 +165,7 @@ export default function RegisterPage() {
     setLoading(true);
     try {
       const formatted = formatPhone(form.phone);
-      const result = await sendPhoneOtp(formatted, 'recaptcha-container');
+      const result = await sendPhoneOtp(formatted, 'recaptcha-container', 'register');
       setConfirmationResult(result);
       setOtp(['', '', '', '', '', '']);
       startTimer(setOtpTimer, otpTimerRef, OTP_RESEND_COOLDOWN);
@@ -189,7 +187,7 @@ export default function RegisterPage() {
     if (value && index < 5) otpRefs.current[index + 1]?.focus();
     if (value && index === 5) {
       const code = newOtp.join('');
-      if (code.length === 6 && confirmationResult) setTimeout(() => handleVerifyOtp(), 200);
+      if (code.length === 6 && confirmationResult) setTimeout(() => handleVerifyOtp(code), 200);
     }
   };
 
@@ -332,7 +330,7 @@ export default function RegisterPage() {
               <span className="text-xl font-bold">Probasi<span className="text-primary">Bangali</span></span>
             </Link>
             <h1 className="text-2xl font-bold font-display text-text-primary">Verify Your Phone</h1>
-            <p className="text-text-muted mt-1 text-sm">Step 1 of 2 — Phone verification</p>
+            <p className="text-text-muted mt-1 text-sm">Phone verification</p>
           </div>
 
           <Card padding="lg">
@@ -441,9 +439,9 @@ export default function RegisterPage() {
               <Shield className="w-4 h-4 text-blue-500" />
             </div>
             <div>
-              <p className="font-semibold text-sm text-blue-800">2-step verification required</p>
+              <p className="font-semibold text-sm text-blue-800">Phone verification required</p>
               <p className="mt-0.5 leading-relaxed">
-                1. Verify phone via OTP &nbsp;→&nbsp; 2. Verify email via link. Both are required to login.
+                We will send a 6-digit OTP code to verify your phone number.
               </p>
             </div>
           </div>
@@ -471,7 +469,7 @@ export default function RegisterPage() {
                 type="tel"
                 value={form.phone}
                 onChange={e => update('phone', e.target.value)}
-                placeholder="+91 98765 43210"
+                placeholder="98765 43210"
               />
               <p className="text-[11px] text-text-muted mt-1 flex items-center gap-1">
                 <Phone className="w-3 h-3" />

@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { MessageCircle, X, Send, Sparkles, Home } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 
 const suggestedPrompts = [
   'Find Bengali PG in Chennai',
@@ -18,6 +19,7 @@ interface Message {
 }
 
 export function ChatWidget() {
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
@@ -52,6 +54,8 @@ export function ChatWidget() {
     }
     setLoading(false);
   };
+
+  if (pathname?.startsWith('/admin')) return null;
 
   return (
     <>

@@ -1,9 +1,16 @@
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
 import { Heart } from 'lucide-react';
 import { T } from '@/lib/contexts/LanguageContext';
+import { usePathname } from 'next/navigation';
 
 export function Footer() {
+  const pathname = usePathname();
+
+  // Don't show footer on admin pages (admin has its own layout)
+  if (pathname?.startsWith('/admin')) return null;
   return (
     <footer className="bg-text-primary text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">

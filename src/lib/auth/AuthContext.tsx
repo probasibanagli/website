@@ -31,7 +31,7 @@ interface AuthContextType extends AuthState {
   signUp: (email: string, password: string, fullName: string, phone?: string, phoneVerified?: boolean) => Promise<void>;
   logOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
-  sendPhoneOtp: (phoneNumber: string, recaptchaContainerId: string) => Promise<ConfirmationResult>;
+  sendPhoneOtp: (phoneNumber: string, recaptchaContainerId: string, flow?: 'login' | 'register') => Promise<ConfirmationResult>;
   verifyPhoneOtp: (confirmationResult: ConfirmationResult, otp: string) => Promise<void>;
   sendVerificationEmail: () => Promise<void>;
   linkPhoneToAccount: (phoneNumber: string, recaptchaContainerId: string) => Promise<ConfirmationResult>;
@@ -130,19 +130,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       created_at: now,
       updated_at: now,
       is_active: true,
-      email_verified: false,
+      email_verified: true,
       phone_verified: phoneVerified,
     };
 
     await updateProfile(user, { displayName: fullName });
     await setDoc(doc(db, 'users', user.uid), profile);
-
-    // Send email verification automatically
-    try {
-      await sendEmailVerification(user);
-    } catch (err) {
-      console.error('Failed to send verification email:', err);
-    }
   };
 
   /* ── Phone OTP Login ── */
@@ -157,10 +150,35 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return win.recaptchaVerifier;
   };
 
-  const sendPhoneOtp = async (phoneNumber: string, recaptchaContainerId: string): Promise<ConfirmationResult> => {
-    const verifier = getRecaptchaVerifier(recaptchaContainerId);
-    const confirmation = await signInWithPhoneNumber(auth, phoneNumber, verifier);
-    return confirmation;
+  const sendPhoneOtp = async (phoneNumber: string, recaptchaContainerId: string, flow?: 'login' | 'register'): Promise<ConfirmationResult> => {
+    const res = await fetch('/api/auth/otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'send', phone: phoneNumber, flow }),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data.error || 'Failed to send OTP');
+    }
+
+    return {
+      verificationId: phoneNumber,
+      confirm: async (otpCode: string) => {
+        const verifyRes = await fetch('/api/auth/otp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'verify', phone: phoneNumber, otp: otpCode }),
+        });
+        const verifyData = await verifyRes.json();
+        if (!verifyRes.ok) {
+          throw new Error(verifyData.error || 'Failed to verify OTP');
+        }
+
+        const { signInWithCustomToken } = await import('firebase/auth');
+        const userCredential = await signInWithCustomToken(auth, verifyData.customToken);
+        return userCredential;
+      }
+    } as unknown as ConfirmationResult;
   };
 
   const verifyPhoneOtp = async (confirmationResult: ConfirmationResult, otp: string): Promise<void> => {
@@ -200,16 +218,42 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   /* ── Link Phone to Existing Account ── */
   const linkPhoneToAccount = async (phoneNumber: string, recaptchaContainerId: string): Promise<ConfirmationResult> => {
-    const verifier = getRecaptchaVerifier(recaptchaContainerId);
-    const confirmation = await signInWithPhoneNumber(auth, phoneNumber, verifier);
-    return confirmation;
+    const res = await fetch('/api/auth/otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'send', phone: phoneNumber }),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data.error || 'Failed to send OTP');
+    }
+
+    return {
+      verificationId: phoneNumber,
+      confirm: async (otpCode: string) => {
+        const user = auth.currentUser;
+        const verifyRes = await fetch('/api/auth/otp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'verify', phone: phoneNumber, otp: otpCode, uid: user?.uid }),
+        });
+        const verifyData = await verifyRes.json();
+        if (!verifyRes.ok) {
+          throw new Error(verifyData.error || 'Failed to verify OTP');
+        }
+
+        if (user) {
+          await user.reload();
+        }
+        return { user: auth.currentUser };
+      }
+    } as unknown as ConfirmationResult;
   };
 
   const confirmLinkPhone = async (confirmationResult: ConfirmationResult, otp: string): Promise<void> => {
-    const credential = PhoneAuthProvider.credential(confirmationResult.verificationId, otp);
+    await confirmationResult.confirm(otp);
     const user = auth.currentUser;
     if (user) {
-      await linkWithCredential(user, credential);
       await updateDoc(doc(db, 'users', user.uid), {
         phone_verified: true,
         phone: user.phoneNumber,
