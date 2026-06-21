@@ -256,6 +256,37 @@ export default function TravelPage() {
                 ))}
               </div>
             </Card>
+
+            {/* Outstation Travel */}
+            <Card>
+              <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
+                <Map className="w-5 h-5 text-primary" /> Outstation Travel
+              </h3>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                {[
+                  { name: 'Kolkata', desc: 'Direct Trains/Flights', icon: <Train className="w-4 h-4" />, color: 'bg-orange-50 text-orange-700 border-orange-100 hover:border-orange-300' },
+                  { name: 'Bangalore', desc: 'Shatabdi / Bus', icon: <Bus className="w-4 h-4" />, color: 'bg-blue-50 text-blue-700 border-blue-100 hover:border-blue-300' },
+                  { name: 'Pondicherry', desc: 'AC Buses / Car', icon: <Car className="w-4 h-4" />, color: 'bg-green-50 text-green-700 border-green-100 hover:border-green-300' },
+                  { name: 'Tirupati', desc: 'Buses / Trains', icon: <MapPin className="w-4 h-4" />, color: 'bg-yellow-50 text-yellow-700 border-yellow-100 hover:border-yellow-300' },
+                  { name: 'Coimbatore', desc: 'Vande Bharat / Flights', icon: <Train className="w-4 h-4" />, color: 'bg-purple-50 text-purple-700 border-purple-100 hover:border-purple-300' },
+                  { name: 'Madurai', desc: 'Tejas / Flights', icon: <Train className="w-4 h-4" />, color: 'bg-red-50 text-red-700 border-red-100 hover:border-red-300' },
+                  { name: 'Kanyakumari', desc: 'Overnight Trains', icon: <Train className="w-4 h-4" />, color: 'bg-cyan-50 text-cyan-700 border-cyan-100 hover:border-cyan-300' },
+                  { name: 'Ooty', desc: 'Bus via Coimbatore', icon: <Bus className="w-4 h-4" />, color: 'bg-emerald-50 text-emerald-700 border-emerald-100 hover:border-emerald-300' },
+                  { name: 'Kodaikanal', desc: 'Overnight Buses', icon: <Bus className="w-4 h-4" />, color: 'bg-indigo-50 text-indigo-700 border-indigo-100 hover:border-indigo-300' },
+                  { name: 'Hyderabad', desc: 'Flights / Trains', icon: <Navigation className="w-4 h-4" />, color: 'bg-pink-50 text-pink-700 border-pink-100 hover:border-pink-300' },
+                  { name: 'Rameswaram', desc: 'Trains / Buses', icon: <Train className="w-4 h-4" />, color: 'bg-rose-50 text-rose-700 border-rose-100 hover:border-rose-300' },
+                  { name: 'Kochi', desc: 'Trains / Flights', icon: <Navigation className="w-4 h-4" />, color: 'bg-teal-50 text-teal-700 border-teal-100 hover:border-teal-300' }
+                ].map((dest) => (
+                  <div key={dest.name} className={`flex flex-col p-3 rounded-xl ${dest.color} border transition-all cursor-pointer hover:-translate-y-1 hover:shadow-sm`}>
+                    <div className="flex items-center gap-2 mb-1">
+                      {dest.icon}
+                      <span className="text-sm font-bold">{dest.name}</span>
+                    </div>
+                    <span className="text-xs opacity-80">{dest.desc}</span>
+                  </div>
+                ))}
+              </div>
+            </Card>
           </div>
 
           {/* Tamil Words Helper */}

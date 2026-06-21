@@ -12,7 +12,6 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/Input';
 import { useAuth } from '@/lib/auth/AuthContext';
-import type { ConfirmationResult } from 'firebase/auth';
 
 const EMAIL_RESEND_COOLDOWN = 60;
 const OTP_RESEND_COOLDOWN = 30;
@@ -21,7 +20,7 @@ type Step = 'form' | 'phone-otp' | 'email-sent';
 
 export default function RegisterPage() {
   const router = useRouter();
-  const { signUp, sendPhoneOtp, sendVerificationEmail } = useAuth();
+  const { signUp, sendPhoneOtp, verifyPhoneOtp, sendVerificationEmail } = useAuth();
 
   const [step, setStep] = useState<Step>('form');
   const [showPassword, setShowPassword] = useState(false);
@@ -33,7 +32,7 @@ export default function RegisterPage() {
 
   // Phone OTP state
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
-  const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
+  const [otpSent, setOtpSent] = useState(false);
   const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   // Resend timers
@@ -107,8 +106,9 @@ export default function RegisterPage() {
 
     setLoading(true);
     try {
-      const result = await sendPhoneOtp(formatted, 'recaptcha-container');
-      setConfirmationResult(result);
+      const formatted = formatPhone(form.phone);
+      await sendPhoneOtp(formatted);
+      setOtpSent(true);
       setStep('phone-otp');
       startTimer(setOtpTimer, otpTimerRef, OTP_RESEND_COOLDOWN);
       setTimeout(() => otpRefs.current[0]?.focus(), 100);
@@ -123,19 +123,19 @@ export default function RegisterPage() {
   };
 
   /* ── Step 2: Verify Phone OTP → Create Account ── */
-  const handleVerifyOtp = async () => {
-    const code = otp.join('');
+  const handleVerifyOtp = async (codeStr?: string) => {
+    const code = codeStr || otp.join('');
     if (code.length !== 6) { setError('Please enter the complete 6-digit OTP.'); return; }
-    if (!confirmationResult) { setError('Session expired. Please go back and try again.'); return; }
+    if (!otpSent) { setError('Session expired. Please go back and try again.'); return; }
 
     setError('');
     setLoading(true);
     try {
-      // Verify OTP first — this signs the user in with just phone
-      await confirmationResult.confirm(code);
+      // Verify OTP first via backend
+      const formatted = formatPhone(form.phone);
+      await verifyPhoneOtp(formatted, code);
 
       // Now create the full account (email + password) which re-authenticates and sets up Firestore profile
-      const formatted = formatPhone(form.phone);
       await signUp(form.email, form.password, form.full_name, formatted, true);
 
       // Move to email verification screen
@@ -143,7 +143,7 @@ export default function RegisterPage() {
       startTimer(setEmailTimer, emailTimerRef, EMAIL_RESEND_COOLDOWN);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Verification failed';
-      if (msg.includes('invalid-verification-code')) {
+      if (msg.includes('invalid-verification-code') || msg.includes('Invalid or expired OTP') || msg.includes('OTP verification failed')) {
         setError('Invalid OTP. Please check and try again.');
         setOtp(['', '', '', '', '', '']);
         otpRefs.current[0]?.focus();
@@ -165,8 +165,7 @@ export default function RegisterPage() {
     setLoading(true);
     try {
       const formatted = formatPhone(form.phone);
-      const result = await sendPhoneOtp(formatted, 'recaptcha-container');
-      setConfirmationResult(result);
+      await sendPhoneOtp(formatted);
       setOtp(['', '', '', '', '', '']);
       startTimer(setOtpTimer, otpTimerRef, OTP_RESEND_COOLDOWN);
       setTimeout(() => otpRefs.current[0]?.focus(), 100);
@@ -187,7 +186,7 @@ export default function RegisterPage() {
     if (value && index < 5) otpRefs.current[index + 1]?.focus();
     if (value && index === 5) {
       const code = newOtp.join('');
-      if (code.length === 6 && confirmationResult) setTimeout(() => handleVerifyOtp(), 200);
+      if (code.length === 6 && otpSent) setTimeout(() => handleVerifyOtp(code), 200);
     }
   };
 
@@ -412,9 +411,6 @@ export default function RegisterPage() {
               </button>
             </div>
           </Card>
-
-          {/* reCAPTCHA container */}
-          <div id="recaptcha-container" />
         </div>
       </div>
     );
@@ -550,9 +546,6 @@ export default function RegisterPage() {
             <Link href="/auth/login" className="text-primary font-medium hover:underline">Login</Link>
           </p>
         </Card>
-
-        {/* reCAPTCHA container for the form step */}
-        <div id="recaptcha-container" />
 
         <div className="flex items-center justify-center gap-1.5 mt-4">
           <Shield className="w-3.5 h-3.5 text-green-500" />

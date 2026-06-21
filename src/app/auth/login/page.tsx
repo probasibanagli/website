@@ -12,7 +12,6 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/Input';
 import { useAuth } from '@/lib/auth/AuthContext';
-import type { ConfirmationResult } from 'firebase/auth';
 
 type LoginMode = 'email' | 'phone';
 type PhoneStep = 'input' | 'otp';
@@ -35,7 +34,7 @@ export default function LoginPage() {
   // Phone OTP state
   const [phoneStep, setPhoneStep] = useState<PhoneStep>('input');
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
-  const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
+  const [otpSent, setOtpSent] = useState(false);
   const [otpMethod, setOtpMethod] = useState<'sms' | 'whatsapp'>('sms');
   const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
 
@@ -141,8 +140,8 @@ export default function LoginPage() {
 
     setLoading(true);
     try {
-      const result = await sendPhoneOtp(formatted, 'recaptcha-container');
-      setConfirmationResult(result);
+      await sendPhoneOtp(formatted);
+      setOtpSent(true);
       setPhoneStep('otp');
       startResendTimer();
       setSuccess(
@@ -167,13 +166,13 @@ export default function LoginPage() {
   };
 
   /* ── Phone OTP: Verify ── */
-  const handleVerifyOtp = async () => {
-    const code = otp.join('');
+  const handleVerifyOtp = async (codeStr?: string) => {
+    const code = codeStr || otp.join('');
     if (code.length !== 6) {
       setError('Please enter the complete 6-digit OTP.');
       return;
     }
-    if (!confirmationResult) {
+    if (!otpSent) {
       setError('Session expired. Please request a new OTP.');
       return;
     }
@@ -181,7 +180,13 @@ export default function LoginPage() {
     setError('');
     setLoading(true);
     try {
-      await verifyPhoneOtp(confirmationResult, code);
+      let formatted = phone.trim();
+      if (!formatted.startsWith('+')) {
+        formatted = formatted.replace(/^0+/, '');
+        formatted = '+91' + formatted.replace(/\s/g, '');
+      }
+
+      await verifyPhoneOtp(formatted, code);
 
       // Phone OTP login = phone is verified. Check if email is also verified via Firestore profile
       const { auth } = await import('@/lib/firebase');
@@ -209,7 +214,7 @@ export default function LoginPage() {
       }, 1000);
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'OTP verification failed';
-      if (message.includes('invalid-verification-code')) {
+      if (message.includes('invalid-verification-code') || message.includes('Invalid or expired OTP') || message.includes('OTP verification failed')) {
         setError('Invalid OTP. Please check and try again.');
         setOtp(['', '', '', '', '', '']);
         otpRefs.current[0]?.focus();
@@ -240,8 +245,8 @@ export default function LoginPage() {
     // Auto-submit when all 6 digits are entered
     if (value && index === 5) {
       const code = newOtp.join('');
-      if (code.length === 6 && confirmationResult) {
-        setTimeout(() => handleVerifyOtp(), 200);
+      if (code.length === 6 && otpSent) {
+        setTimeout(() => handleVerifyOtp(code), 200);
       }
     }
   };
@@ -269,7 +274,7 @@ export default function LoginPage() {
   const resetPhone = () => {
     setPhoneStep('input');
     setOtp(['', '', '', '', '', '']);
-    setConfirmationResult(null);
+    setOtpSent(false);
     setError('');
     setSuccess('');
     setResendTimer(0);
@@ -531,9 +536,6 @@ export default function LoginPage() {
               )}
             </div>
           )}
-
-          {/* reCAPTCHA container (invisible) */}
-          <div id="recaptcha-container" />
 
           <p className="text-center text-sm text-text-muted mt-6">
             Don&apos;t have an account?{' '}
