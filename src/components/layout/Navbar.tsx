@@ -62,8 +62,9 @@ export function Navbar() {
     setMounted(true);
   }, []);
 
-  // Don't show navbar on admin pages (admin has its own layout)
-  if (pathname.startsWith('/admin')) return null;
+  React.useEffect(() => {
+    setIsLoading(false);
+  }, [pathname]);
 
   const isLoggedIn = !!firebaseUser && !!profile;
   const isAdmin = profile?.role === 'admin' || profile?.role === 'superadmin';
@@ -82,9 +83,8 @@ export function Navbar() {
     }
   };
 
-  React.useEffect(() => {
-    setIsLoading(false);
-  }, [pathname]);
+  // Don't show navbar on admin pages (admin has its own layout)
+  if (pathname.startsWith('/admin')) return null;
 
   return (
     <>

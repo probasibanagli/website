@@ -17,6 +17,10 @@ export function GlobalLoader() {
   }, []);
 
   useEffect(() => {
+    if (pathname?.startsWith('/admin')) {
+      setIsLoading(false);
+      return;
+    }
     if (!authLoading) {
       // Small delay to prevent flashing for very fast loads
       const timer = setTimeout(() => setIsLoading(false), 300);
@@ -26,6 +30,7 @@ export function GlobalLoader() {
 
   useEffect(() => {
     const handleAnchorClick = (event: MouseEvent) => {
+      if (pathname?.startsWith('/admin')) return;
       const target = event.target as HTMLElement;
       const anchor = target.closest('a');
 
@@ -52,6 +57,7 @@ export function GlobalLoader() {
   }, [pathname]);
 
   if (!mounted) return null;
+  if (pathname?.startsWith('/admin')) return null;
   if (!isLoading && !authLoading) return null;
 
   return <PageSkeleton />;
