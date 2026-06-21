@@ -78,16 +78,6 @@ export default function LoginPage() {
       await auth.currentUser?.reload();
       const currentUser = auth.currentUser;
 
-      // Block if email not verified
-      if (!currentUser?.emailVerified) {
-        setError('Your email is not verified. Please check your inbox and click the verification link before logging in.');
-        setLoading(false);
-        // Sign them out so session is not created
-        const { getAuth, signOut } = await import('firebase/auth');
-        await signOut(getAuth());
-        return;
-      }
-
       // Fetch Firestore profile to check phone_verified
       const { db } = await import('@/lib/firebase');
       const { doc, getDoc } = await import('firebase/firestore');
@@ -122,26 +112,22 @@ export default function LoginPage() {
     setError('');
     setSuccess('');
 
-    let formatted = phone.trim();
-    if (!formatted) {
+    let rawPhone = phone.trim();
+    if (!rawPhone) {
       setError('Please enter your phone number.');
       return;
     }
 
-    // Auto-format: add +91 if not present
-    if (!formatted.startsWith('+')) {
-      formatted = formatted.replace(/^0+/, '');
-      formatted = '+91' + formatted.replace(/\s/g, '');
-    }
-
-    if (formatted.length < 12) {
-      setError('Please enter a valid phone number with country code (e.g., +91 98765 43210).');
+    const digits = rawPhone.replace(/\D/g, '');
+    if (digits.length !== 10) {
+      setError('Please enter a valid 10-digit phone number.');
       return;
     }
+    const formatted = '+91' + digits;
 
     setLoading(true);
     try {
-      const result = await sendPhoneOtp(formatted, 'recaptcha-container');
+      const result = await sendPhoneOtp(formatted, 'recaptcha-container', 'login');
       setConfirmationResult(result);
       setPhoneStep('otp');
       startResendTimer();
@@ -163,8 +149,8 @@ export default function LoginPage() {
   };
 
   /* ── Phone OTP: Verify ── */
-  const handleVerifyOtp = async () => {
-    const code = otp.join('');
+  const handleVerifyOtp = async (codeOverride?: string) => {
+    const code = codeOverride || otp.join('');
     if (code.length !== 6) {
       setError('Please enter the complete 6-digit OTP.');
       return;
@@ -178,24 +164,6 @@ export default function LoginPage() {
     setLoading(true);
     try {
       await verifyPhoneOtp(confirmationResult, code);
-
-      // Phone OTP login = phone is verified. Check if email is also verified via Firestore profile
-      const { auth } = await import('@/lib/firebase');
-      const currentUser = auth.currentUser;
-      if (currentUser) {
-        const { db } = await import('@/lib/firebase');
-        const { doc, getDoc } = await import('firebase/firestore');
-        const snap = await getDoc(doc(db, 'users', currentUser.uid));
-        const userProfile = snap.data();
-
-        if (!userProfile?.email_verified && !currentUser.emailVerified) {
-          setError('Your email is not verified. Please check your inbox and verify your email before logging in.');
-          const { getAuth, signOut } = await import('firebase/auth');
-          await signOut(getAuth());
-          setLoading(false);
-          return;
-        }
-      }
 
       setSuccess('Verified successfully! Redirecting...');
       setTimeout(() => {
@@ -237,7 +205,7 @@ export default function LoginPage() {
     if (value && index === 5) {
       const code = newOtp.join('');
       if (code.length === 6 && confirmationResult) {
-        setTimeout(() => handleVerifyOtp(), 200);
+        setTimeout(() => handleVerifyOtp(code), 200);
       }
     }
   };
@@ -390,7 +358,7 @@ export default function LoginPage() {
                     type="tel"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    placeholder="+91 98765 43210"
+                    placeholder="98765 43210"
                   />
 
                   {/* Security info */}
