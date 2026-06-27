@@ -12,7 +12,44 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { sampleMatrimonialProfiles } from '@/data/sample-data';
 import { CITIES, MARITAL_STATUSES, DIET_TYPES, EDUCATION_LEVELS, RELIGIONS } from '@/lib/constants';
-import { getMyProfile, searchProfiles, sortProfiles, type MatrimonyFilters, type SortOption } from '@/lib/matrimony-service';
+import { getMyProfile, searchProfiles, sortProfiles, type MatrimonyFilters, type SortOption, getMedia } from '@/lib/matrimony-service';
+
+function ProfileCardAvatar({ profile, className = "w-16 h-16" }: { profile: any; className?: string }) {
+  const [photoUrl, setPhotoUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    const loadAvatar = async () => {
+      if (profile.photos && Array.isArray(profile.photos)) {
+        const key = profile.photos.find((k: string) => k);
+        if (key) {
+          const url = await getMedia(key);
+          if (url) {
+            setPhotoUrl(url);
+          }
+        }
+      }
+    };
+    loadAvatar();
+  }, [profile.photos]);
+
+  if (photoUrl) {
+    return (
+      <div className={`${className} rounded-2xl overflow-hidden shrink-0 border border-border shadow-sm`}>
+        <img src={photoUrl} alt={profile.full_name} className="w-full h-full object-cover" />
+      </div>
+    );
+  }
+
+  return (
+    <div className={`${className} rounded-2xl flex items-center justify-center text-xl font-bold shrink-0 shadow-sm ${
+      profile.gender === 'male'
+        ? 'bg-gradient-to-br from-blue-100 to-blue-200 text-blue-600'
+        : 'bg-gradient-to-br from-pink-100 to-pink-200 text-pink-600'
+    }`}>
+      {profile.full_name?.split(' ').map((n: string) => n[0]).join('').slice(0, 2)}
+    </div>
+  );
+}
 
 export default function MatrimonialPage() {
   const [hasProfile, setHasProfile] = useState<boolean | null>(null);
@@ -53,10 +90,11 @@ export default function MatrimonialPage() {
   const citiesCount = new Set(sampleMatrimonialProfiles.map(p => p.city)).size;
 
   return (
-    <div className="min-h-screen bg-surface">
+    <div className="min-h-screen bg-surface bg-alpana">
       {/* Hero Section */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-primary via-primary-dark to-[#7a2d14]">
-        <div className="absolute inset-0 opacity-10">
+      <div className="relative overflow-hidden bg-gradient-to-br from-primary via-primary-dark to-[#7a2d14] border-b border-border/10">
+        <div className="absolute inset-0 bg-[url('/images/bengali_wedding_background.png')] bg-cover bg-center opacity-25 mix-blend-overlay" />
+        <div className="absolute inset-0 opacity-15">
           <div className="absolute top-10 left-10 w-40 h-40 rounded-full bg-white/20 blur-3xl" />
           <div className="absolute bottom-10 right-10 w-60 h-60 rounded-full bg-accent/30 blur-3xl" />
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-white/5 blur-3xl" />
@@ -334,13 +372,7 @@ export default function MatrimonialPage() {
                   <div className="pt-2">
                     {/* Header */}
                     <div className="flex items-start gap-4">
-                      <div className={`w-16 h-16 rounded-2xl flex items-center justify-center text-xl font-bold shrink-0 ${
-                        profile.gender === 'male'
-                          ? 'bg-gradient-to-br from-blue-100 to-blue-200 text-blue-600'
-                          : 'bg-gradient-to-br from-pink-100 to-pink-200 text-pink-600'
-                      }`}>
-                        {profile.full_name?.split(' ').map(n => n[0]).join('').slice(0, 2)}
-                      </div>
+                      <ProfileCardAvatar profile={profile} />
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-1.5">
                           <h3 className="text-lg font-bold text-text-primary truncate">{profile.full_name}</h3>

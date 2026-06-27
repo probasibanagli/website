@@ -24,6 +24,39 @@ const STAY_TYPE_ICONS: Record<string, React.ReactNode> = {
   rental: <Building2 className="w-5 h-5" />,
 };
 
+function ListingCoverImage({ name, city, mapsUrl, type, fallbackIcon }: { 
+  name: string; 
+  city?: string; 
+  mapsUrl?: string; 
+  type: string;
+  fallbackIcon: React.ReactNode;
+}) {
+  const [imgSrc, setImgSrc] = useState<string | null>(
+    `/api/public/place-photo?name=${encodeURIComponent(name)}&city=${encodeURIComponent(city || '')}&mapsUrl=${encodeURIComponent(mapsUrl || '')}`
+  );
+  const [error, setError] = useState(false);
+
+  if (error || !imgSrc) {
+    return (
+      <div className="absolute inset-0 bg-gradient-to-br from-primary-light to-accent-light flex items-center justify-center">
+        <div className="text-primary opacity-40 scale-[3]">
+          {fallbackIcon}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <img
+      src={imgSrc}
+      alt={name}
+      onError={() => setError(true)}
+      className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+      loading="lazy"
+    />
+  );
+}
+
 export default function StayPage() {
   const { data: firestoreListings, loading } = useFirestore<Listing>('listings');
   const [activeType, setActiveType] = useState<string>('all');
@@ -347,10 +380,14 @@ export default function StayPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filtered.map((listing) => (
             <Card key={listing.id} padding="none" className="overflow-hidden group">
-              <div className="relative h-48 bg-gradient-to-br from-primary-light to-accent-light flex items-center justify-center">
-                <div className="text-primary opacity-40 scale-[3]">
-                  {STAY_TYPE_ICONS[listing.type] || <Home />}
-                </div>
+              <div className="relative h-48 bg-gradient-to-br from-primary-light to-accent-light overflow-hidden">
+                <ListingCoverImage
+                  name={listing.name}
+                  city={listing.city}
+                  mapsUrl={listing.google_maps_url}
+                  type={listing.type}
+                  fallbackIcon={STAY_TYPE_ICONS[listing.type] || <Home />}
+                />
                 <div className="absolute top-3 left-3 flex gap-2">
                   <Badge variant={listing.type as 'pg' | 'hotel' | 'rental'}>{listing.type.toUpperCase()}</Badge>
                   {listing.verified && <Badge variant="verified"><CheckCircle2 className="w-3 h-3 mr-1" /> Verified</Badge>}

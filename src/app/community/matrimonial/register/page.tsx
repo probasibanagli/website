@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
   ArrowLeft, ArrowRight, User, Users, GraduationCap, Heart, Camera,
-  Briefcase, CheckCircle, BookOpen, Sparkles, Shield, Save,
+  Briefcase, CheckCircle, BookOpen, Sparkles, Shield, Save, Video, Trash2, AlertTriangle
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -15,7 +15,7 @@ import {
   DIET_TYPES, EDUCATION_LEVELS, INCOME_RANGES, BENGALI_SUBCASTES, WEST_BENGAL_DISTRICTS,
   SMOKING_HABITS, DRINKING_HABITS, MANGLIK_OPTIONS, HOBBIES_LIST, RELIGIONS, BLOOD_GROUPS,
 } from '@/lib/constants';
-import { saveMyProfile, generateProfileId, getMyProfile } from '@/lib/matrimony-service';
+import { saveMyProfile, generateProfileId, getMyProfile, storeMedia, getMedia } from '@/lib/matrimony-service';
 import type { MatrimonialProfile } from '@/types';
 
 const steps = [
@@ -66,6 +66,63 @@ export default function MatrimonialRegisterPage() {
   const [submitted, setSubmitted] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [profileId, setProfileId] = useState('');
+  
+  // Matrimonial ID generated at mount for media key stability
+  const [realId] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const draft = localStorage.getItem('pb_matrimony_draft');
+      if (draft) {
+        try {
+          const parsed = JSON.parse(draft);
+          if (parsed.photos && Array.isArray(parsed.photos)) {
+            const firstPhoto = parsed.photos.find((p: string) => p && p.startsWith('profile_'));
+            if (firstPhoto) {
+              const match = firstPhoto.match(/^profile_(user-\d+)_photo_\d+$/);
+              if (match) return match[1];
+            }
+          }
+          if (parsed.video && typeof parsed.video === 'string' && parsed.video.startsWith('profile_')) {
+            const match = parsed.video.match(/^profile_(user-\d+)_video$/);
+            if (match) return match[1];
+          }
+        } catch { /* ignore */ }
+      }
+    }
+    return `user-${Date.now()}`;
+  });
+  const [photoPreviews, setPhotoPreviews] = useState<(string | null)[]>([null, null, null, null, null]);
+  const [videoPreview, setVideoPreview] = useState<string | null>(null);
+  const [uploadError, setUploadError] = useState('');
+
+  // Load media from IndexedDB if we have a draft with photos/videos
+  useEffect(() => {
+    const loadMediaFromDraft = async () => {
+      if (formData.photos && Array.isArray(formData.photos)) {
+        const previews = [null, null, null, null, null] as (string | null)[];
+        let updated = false;
+        for (let i = 0; i < 5; i++) {
+          const key = formData.photos[i];
+          if (key) {
+            const url = await getMedia(key);
+            if (url) {
+              previews[i] = url;
+              updated = true;
+            }
+          }
+        }
+        if (updated) {
+          setPhotoPreviews(previews);
+        }
+      }
+      if (formData.video && typeof formData.video === 'string') {
+        const url = await getMedia(formData.video);
+        if (url) {
+          setVideoPreview(url);
+        }
+      }
+    };
+    loadMediaFromDraft();
+  }, [formData.photos, formData.video]);
 
   const updateField = useCallback((field: string, value: string | number) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -82,6 +139,104 @@ export default function MatrimonialRegisterPage() {
     localStorage.setItem('pb_matrimony_draft', JSON.stringify({ ...formData, hobbies: selectedHobbies }));
     alert('Draft saved successfully! You can continue later.');
   }, [formData, selectedHobbies]);
+
+  const handlePhotoChange = async (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      setUploadError('Only image files are allowed.');
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setUploadError('Photo size must be less than 5MB.');
+      return;
+    }
+    
+    try {
+      const url = await storeMedia(`profile_${realId}_photo_${index}`, file);
+      
+      setPhotoPreviews(prev => {
+        const next = [...prev];
+        next[index] = url;
+        return next;
+      });
+      
+      setFormData(prev => {
+        const nextPhotos = [...((prev.photos as string[]) || [])];
+        nextPhotos[index] = `profile_${realId}_photo_${index}`;
+        return { ...prev, photos: nextPhotos };
+      });
+      
+      setUploadError('');
+    } catch (err) {
+      console.error(err);
+      setUploadError('Failed to upload photo.');
+    }
+  };
+
+  const handlePhotoRemove = (index: number) => {
+    setPhotoPreviews(prev => {
+      const next = [...prev];
+      next[index] = null;
+      return next;
+    });
+    
+    setFormData(prev => {
+      const nextPhotos = [...((prev.photos as string[]) || [])];
+      nextPhotos[index] = '';
+      return { ...prev, photos: nextPhotos };
+    });
+  };
+
+  const handleVideoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('video/')) {
+      setUploadError('Only video files are allowed.');
+      return;
+    }
+    
+    const MAX_VIDEO_SIZE = 10 * 1024 * 1024; // 10MB optimized limit
+    if (file.size > MAX_VIDEO_SIZE) {
+      setUploadError(`Video size (${(file.size / (1024 * 1024)).toFixed(1)}MB) exceeds 10MB limit. Please compress your video or upload a smaller one.`);
+      return;
+    }
+    
+    try {
+      setUploadError('');
+      // Check video duration client-side
+      const duration = await new Promise<number>((resolve) => {
+        const video = document.createElement('video');
+        video.preload = 'metadata';
+        video.onloadedmetadata = () => {
+          window.URL.revokeObjectURL(video.src);
+          resolve(video.duration);
+        };
+        video.onerror = () => {
+          resolve(0); // fallback
+        };
+        video.src = URL.createObjectURL(file);
+      });
+
+      if (duration > 30) {
+        setUploadError(`Video is too long (${Math.round(duration)} seconds). Please upload a video under 30 seconds for faster loading.`);
+        return;
+      }
+
+      const url = await storeMedia(`profile_${realId}_video`, file);
+      setVideoPreview(url);
+      setFormData(prev => ({ ...prev, video: `profile_${realId}_video` }));
+      setUploadError('');
+    } catch (err) {
+      console.error(err);
+      setUploadError('Failed to process video file.');
+    }
+  };
+
+  const handleVideoRemove = () => {
+    setVideoPreview(null);
+    setFormData(prev => ({ ...prev, video: '' }));
+  };
 
   const validateStep = useCallback((stepIndex: number): boolean => {
     const newErrors: Record<string, string> = {};
@@ -135,7 +290,7 @@ export default function MatrimonialRegisterPage() {
     const now = new Date().toISOString();
 
     const profile: MatrimonialProfile = {
-      id: `user-${Date.now()}`,
+      id: realId,
       user_id: `local-${Date.now()}`,
       profile_id: id,
       full_name: formData.full_name as string,
@@ -190,8 +345,10 @@ export default function MatrimonialRegisterPage() {
       phone: formData.phone as string,
       email: formData.email as string,
       whatsapp: formData.whatsapp as string,
+      photos: (formData.photos as string[]) || [],
+      video: (formData.video as string) || '',
       verified: false,
-      published: true,
+      published: false,
       status: 'pending',
       contact_visible_after_login: true,
       created_at: now,
@@ -207,7 +364,7 @@ export default function MatrimonialRegisterPage() {
   // Success screen
   if (submitted) {
     return (
-      <div className="min-h-screen bg-surface flex items-center justify-center px-4">
+      <div className="min-h-screen bg-surface bg-alpana flex items-center justify-center px-4">
         <div className="max-w-lg w-full text-center animate-fade-in">
           <div className="w-20 h-20 rounded-full bg-accent-light flex items-center justify-center mx-auto mb-6">
             <CheckCircle className="w-10 h-10 text-accent" />
@@ -273,7 +430,7 @@ export default function MatrimonialRegisterPage() {
   );
 
   return (
-    <div className="min-h-screen bg-surface">
+    <div className="min-h-screen bg-surface bg-alpana">
       <div className="max-w-3xl mx-auto px-4 py-8 sm:py-12">
         {/* Header */}
         <Link href="/community/matrimonial" className="inline-flex items-center gap-2 text-sm text-text-muted hover:text-primary mb-6 transition-colors">
@@ -534,14 +691,85 @@ export default function MatrimonialRegisterPage() {
                 </div>
               </div>
 
-              {/* Photo Upload placeholder */}
-              <div className="text-center py-6 border-2 border-dashed border-border rounded-xl bg-surface">
-                <div className="w-20 h-20 rounded-full bg-white border-2 border-dashed border-primary/30 mx-auto flex items-center justify-center mb-3">
-                  <Camera className="w-8 h-8 text-text-muted" />
+              {/* Photo & Video Upload Section */}
+              <div className="space-y-4">
+                <div>
+                  <h3 className="text-sm font-semibold text-text-primary mb-2">Upload Photos (Up to 5)</h3>
+                  <p className="text-xs text-text-muted mb-3">Add clear, high-quality photos. JPG or PNG, max 5MB each.</p>
+                  
+                  <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+                    {Array.from({ length: 5 }).map((_, i) => {
+                      const preview = photoPreviews[i];
+                      return (
+                        <div key={i} className="aspect-square bg-surface border border-border rounded-xl flex flex-col items-center justify-center relative overflow-hidden group">
+                          {preview ? (
+                            <>
+                              <img src={preview} alt={`Preview ${i + 1}`} className="w-full h-full object-cover" />
+                              <button
+                                type="button"
+                                onClick={() => handlePhotoRemove(i)}
+                                className="absolute top-1.5 right-1.5 p-1 rounded-full bg-red-500 text-white hover:bg-red-600 transition-colors shadow-sm"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            </>
+                          ) : (
+                            <label htmlFor={`photo-upload-${i}`} className="w-full h-full flex flex-col items-center justify-center cursor-pointer hover:bg-primary-light/10 transition-colors">
+                              <Camera className="w-6 h-6 text-text-muted mb-1 group-hover:scale-110 transition-transform" />
+                              <span className="text-[10px] font-semibold text-text-muted">Slot {i + 1}</span>
+                              <input
+                                type="file"
+                                accept="image/*"
+                                onChange={(e) => handlePhotoChange(i, e)}
+                                id={`photo-upload-${i}`}
+                                className="hidden"
+                              />
+                            </label>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
-                <h3 className="text-sm font-bold mb-1">Upload Profile Photo</h3>
-                <p className="text-xs text-text-muted mb-3">JPG or PNG, max 5MB</p>
-                <Button variant="outline" size="sm">Choose Photo</Button>
+
+                <div>
+                  <h3 className="text-sm font-semibold text-text-primary mb-2">Upload Profile Video (1 Video)</h3>
+                  <p className="text-xs text-text-muted mb-3">Upload a short intro video. Size must be optimized and under 10MB (max 30 seconds).</p>
+                  
+                  {videoPreview ? (
+                    <div className="p-3 border border-border rounded-xl bg-surface flex flex-col items-center gap-3 max-w-sm">
+                      <video src={videoPreview} controls className="w-full rounded-lg max-h-40 bg-black" />
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={handleVideoRemove}
+                        className="text-red-500 hover:text-red-600 border-red-200"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" /> Remove Video
+                      </Button>
+                    </div>
+                  ) : (
+                    <label htmlFor="video-upload" className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-border rounded-xl bg-surface cursor-pointer hover:bg-primary-light/10 transition-all max-w-sm">
+                      <Video className="w-8 h-8 text-text-muted mb-2" />
+                      <span className="text-xs font-bold text-text-primary">Choose Intro Video</span>
+                      <span className="text-[10px] text-text-muted mt-1">MP4 or WebM, max 10MB, under 30s</span>
+                      <input
+                        type="file"
+                        accept="video/*"
+                        onChange={handleVideoChange}
+                        id="video-upload"
+                        className="hidden"
+                      />
+                    </label>
+                  )}
+                </div>
+
+                {uploadError && (
+                  <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-xs text-red-600 flex items-center gap-2">
+                    <AlertTriangle className="w-4 h-4" /> {uploadError}
+                  </div>
+                )}
               </div>
 
               {/* About Me */}

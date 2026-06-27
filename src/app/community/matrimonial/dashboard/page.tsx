@@ -11,18 +11,49 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/Badge';
 import {
   getMyProfile, getInterestsSent, getInterestsReceived, getShortlist,
-  getProfile, getViewCount, deleteMyProfile, toggleShortlist,
+  getProfile, getViewCount, deleteMyProfile, toggleShortlist, getMedia
 } from '@/lib/matrimony-service';
 import type { MatrimonialProfile } from '@/types';
+
+function ProfileCardAvatar({ profile, className = "w-12 h-12" }: { profile: any; className?: string }) {
+  const [photoUrl, setPhotoUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    const loadAvatar = async () => {
+      if (profile.photos && Array.isArray(profile.photos)) {
+        const key = profile.photos.find((k: string) => k);
+        if (key) {
+          const url = await getMedia(key);
+          if (url) {
+            setPhotoUrl(url);
+          }
+        }
+      }
+    };
+    loadAvatar();
+  }, [profile.photos]);
+
+  if (photoUrl) {
+    return (
+      <div className={`${className} rounded-xl overflow-hidden shrink-0 border border-border shadow-sm`}>
+        <img src={photoUrl} alt={profile.full_name} className="w-full h-full object-cover" />
+      </div>
+    );
+  }
+
+  return (
+    <div className={`${className} rounded-xl flex items-center justify-center text-sm font-bold shrink-0 shadow-sm ${
+      profile.gender === 'male' ? 'bg-blue-100 text-blue-600' : 'bg-pink-100 text-pink-600'
+    }`}>
+      {profile.full_name?.split(' ').map((n: string) => n[0]).join('').slice(0, 2)}
+    </div>
+  );
+}
 
 function ProfileMiniCard({ profile, action }: { profile: MatrimonialProfile; action?: React.ReactNode }) {
   return (
     <div className="flex items-center gap-3 p-3 rounded-xl bg-surface border border-border/50 hover:border-primary/30 transition-all">
-      <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-sm font-bold shrink-0 ${
-        profile.gender === 'male' ? 'bg-blue-100 text-blue-600' : 'bg-pink-100 text-pink-600'
-      }`}>
-        {profile.full_name?.split(' ').map(n => n[0]).join('').slice(0, 2)}
-      </div>
+      <ProfileCardAvatar profile={profile} />
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-1.5">
           <p className="text-sm font-semibold truncate">{profile.full_name}</p>
@@ -124,7 +155,9 @@ export default function MatrimonialDashboard() {
     draft: { icon: Edit3, color: 'text-gray-500', bg: 'bg-gray-50', border: 'border-gray-200', label: 'Draft', desc: 'Complete your profile and submit for review.' },
     pending: { icon: Clock, color: 'text-amber-600', bg: 'bg-amber-50', border: 'border-amber-200', label: 'Pending Review', desc: 'Your profile is being reviewed by our admin team.' },
     approved: { icon: CheckCircle, color: 'text-accent', bg: 'bg-accent-light', border: 'border-emerald-200', label: 'Approved & Live', desc: 'Your profile is live and visible to other members.' },
+    verified: { icon: CheckCircle, color: 'text-accent', bg: 'bg-accent-light', border: 'border-emerald-200', label: 'Verified & Live', desc: 'Your profile is verified and visible to other members.' },
     rejected: { icon: XCircle, color: 'text-red-500', bg: 'bg-red-50', border: 'border-red-200', label: 'Rejected', desc: 'Your profile was rejected. Please update and resubmit.' },
+    married: { icon: Heart, color: 'text-pink-500', bg: 'bg-pink-50', border: 'border-pink-200', label: 'Matched & Married', desc: 'Congratulations! Your profile has been retired from public view.' },
   };
 
   const status = statusConfig[myProfile.status || 'pending'];
@@ -149,11 +182,7 @@ export default function MatrimonialDashboard() {
         <Card padding="lg" hover={false} className="mb-6 relative overflow-hidden">
           <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary to-accent" />
           <div className="flex flex-col sm:flex-row items-start gap-5 pt-2">
-            <div className={`w-20 h-20 rounded-2xl flex items-center justify-center text-2xl font-bold shrink-0 ${
-              myProfile.gender === 'male' ? 'bg-gradient-to-br from-blue-100 to-blue-200 text-blue-600' : 'bg-gradient-to-br from-pink-100 to-pink-200 text-pink-600'
-            }`}>
-              {myProfile.full_name?.split(' ').map(n => n[0]).join('').slice(0, 2)}
-            </div>
+            <ProfileCardAvatar profile={myProfile} className="w-20 h-20" />
             <div className="flex-1">
               <div className="flex items-center gap-2">
                 <h2 className="text-xl font-bold">{myProfile.full_name}</h2>

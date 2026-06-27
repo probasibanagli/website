@@ -12,7 +12,8 @@ export type ModuleKey =
   | 'community'
   | 'services'
   | 'blog'
-  | 'users';
+  | 'users'
+  | 'matrimony';
 
 export type ModulePermissions = Record<ModuleKey, PermissionLevel>;
 
@@ -44,6 +45,7 @@ export const MODULE_LABELS: Record<ModuleKey, string> = {
   services: 'Campus & Government',
   blog: 'Blog Posts',
   users: 'User Management',
+  matrimony: 'Matrimonial',
 };
 
 /* ──────────────── Data Models ──────────────── */
@@ -242,13 +244,15 @@ export interface MatrimonialProfile {
   email?: string;
   whatsapp?: string;
 
-  // Photos
+  // Photos & Videos
   profile_photo?: string;
+  photos?: string[];
+  video?: string;
 
   // System
   verified: boolean;
   published: boolean;
-  status?: 'draft' | 'pending' | 'approved' | 'rejected';
+  status?: 'draft' | 'pending' | 'approved' | 'rejected' | 'married' | 'verified';
   contact_visible_after_login: boolean;
   created_at: string;
   updated_at?: string;

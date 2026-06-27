@@ -32,4 +32,5 @@ export const MODULE_TO_COLLECTION: Record<ModuleKey, string> = {
   services: COLLECTIONS.colleges,
   blog: COLLECTIONS.blog_posts,
   users: COLLECTIONS.users,
+  matrimony: COLLECTIONS.matrimonial_profiles,
 };

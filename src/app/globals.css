@@ -140,6 +140,12 @@ body {
   font-family: var(--font-bengali);
 }
 
+/* Traditional Bengali Alpana Repeating Pattern Watermark */
+.bg-alpana {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120' fill='none' stroke='%23D85A30' stroke-width='0.6' stroke-opacity='0.08'%3E%3Ccircle cx='60' cy='60' r='12' /%3E%3Ccircle cx='60' cy='60' r='24' stroke-dasharray='3 3' /%3E%3Ccircle cx='60' cy='60' r='36' /%3E%3Cpath d='M60 12 C 55 24, 45 24, 40 36 C 45 40, 55 40, 60 48 C 65 40, 75 40, 80 36 C 75 24, 65 24, 60 12 Z' /%3E%3Cpath d='M60 108 C 55 96, 45 96, 40 84 C 45 80, 55 80, 60 72 C 65 80, 75 80, 80 84 C 75 96, 65 96, 60 108 Z' /%3E%3Cpath d='M12 60 C 24 55, 24 45, 36 40 C 40 45, 40 55, 48 60 C 40 65, 40 75, 36 80 C 24 75, 24 65, 12 60 Z' /%3E%3Cpath d='M108 60 C 96 55, 96 45, 84 40 C 80 45, 80 55, 72 60 C 80 65, 80 75, 84 80 C 96 75, 96 65, 108 60 Z' /%3E%3Cpath d='M60 48 L 48 60 L 60 72 L 72 60 Z' /%3E%3C/svg%3E");
+  background-repeat: repeat;
+}
+
 /* ============================================================
    GOOGLE TRANSLATE HIDING (AGRESSIVE)
    ============================================================ */

@@ -9,6 +9,38 @@ import { Card } from '@/components/ui/card';
 import { sampleHospitals } from '@/data/sample-data';
 import { CITIES, TREATMENT_TYPES } from '@/lib/constants';
 
+function ListingCoverImage({ name, city, mapsUrl, fallbackIcon }: { 
+  name: string; 
+  city?: string; 
+  mapsUrl?: string; 
+  fallbackIcon: React.ReactNode;
+}) {
+  const [imgSrc, setImgSrc] = useState<string | null>(
+    `/api/public/place-photo?name=${encodeURIComponent(name)}&city=${encodeURIComponent(city || '')}&mapsUrl=${encodeURIComponent(mapsUrl || '')}`
+  );
+  const [error, setError] = useState(false);
+
+  if (error || !imgSrc) {
+    return (
+      <div className="absolute inset-0 bg-gradient-to-br from-red-50 to-orange-50 flex items-center justify-center">
+        <div className="text-red-500 opacity-40 scale-[2.5]">
+          {fallbackIcon}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <img
+      src={imgSrc}
+      alt={name}
+      onError={() => setError(true)}
+      className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+      loading="lazy"
+    />
+  );
+}
+
 export default function EmergencyHospitalsPage() {
   const [city, setCity] = useState('');
   const [treatment, setTreatment] = useState('');
@@ -122,46 +154,53 @@ export default function EmergencyHospitalsPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filtered.map((hospital) => (
-            <Card key={hospital.id} className="group">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-2xl bg-red-50 flex items-center justify-center shrink-0">
-                  <Stethoscope className="w-6 h-6 text-red-500" />
+            <Card key={hospital.id} padding="none" className="overflow-hidden group flex flex-col h-full">
+              {/* Header Image */}
+              <div className="relative h-40 bg-gradient-to-br from-red-50 to-orange-50 overflow-hidden">
+                <ListingCoverImage
+                  name={hospital.name}
+                  city={hospital.city}
+                  mapsUrl={hospital.google_maps_url}
+                  fallbackIcon={<Stethoscope className="w-8 h-8 text-red-500" />}
+                />
+                <div className="absolute top-3 left-3 flex gap-2">
+                  {hospital.is_24_7 && <Badge variant="red"><Clock className="w-3 h-3 mr-1" />24/7</Badge>}
+                  {hospital.has_bengali_doctor && <Badge variant="bengali">🗣️ Bengali Doctor</Badge>}
                 </div>
-                <div className="flex-1">
+              </div>
+
+              {/* Card Body */}
+              <div className="p-5 flex-1 flex flex-col justify-between">
+                <div>
                   <Link href={`/emergency/hospitals/${hospital.id}`}>
                     <h3 className="text-lg font-bold text-text-primary group-hover:text-primary transition-colors">{hospital.name}</h3>
                   </Link>
                   <div className="flex items-center gap-1.5 mt-1 text-sm text-text-muted">
                     <MapPin className="w-3.5 h-3.5" />{hospital.area}, {hospital.city}
                   </div>
+                  
+                  <div className="flex flex-wrap gap-1.5 mt-3">
+                    {hospital.specializations.slice(0, 4).map((s) => (
+                      <span key={s} className="px-2 py-0.5 bg-surface rounded-md text-xs text-text-muted">{s}</span>
+                    ))}
+                  </div>
                 </div>
-              </div>
 
-              <div className="flex flex-wrap gap-1.5 mt-3">
-                {hospital.is_24_7 && <Badge variant="red"><Clock className="w-3 h-3 mr-1" />24/7</Badge>}
-                {hospital.has_bengali_doctor && <Badge variant="bengali">🗣️ Bengali Doctor</Badge>}
-              </div>
-
-              <div className="flex flex-wrap gap-1.5 mt-2">
-                {hospital.specializations.slice(0, 4).map((s) => (
-                  <span key={s} className="px-2 py-0.5 bg-surface rounded-md text-xs text-text-muted">{s}</span>
-                ))}
-              </div>
-
-              <div className="flex items-center gap-2 mt-4 pt-4 border-t border-border">
-                {hospital.emergency_phone && (
-                  <a href={`tel:${hospital.emergency_phone}`} className="flex-1">
-                    <Button variant="danger" size="sm" className="w-full"><Phone className="w-3.5 h-3.5 mr-1.5" /> Emergency</Button>
-                  </a>
-                )}
-                {hospital.google_maps_url && (
-                  <a href={hospital.google_maps_url} target="_blank" rel="noopener noreferrer">
-                    <Button variant="ghost" size="sm"><MapPin className="w-4 h-4" /></Button>
-                  </a>
-                )}
-                <Link href={`/emergency/hospitals/${hospital.id}`}>
-                  <Button variant="outline" size="sm">Details</Button>
-                </Link>
+                <div className="flex items-center gap-2 mt-6 pt-4 border-t border-border">
+                  {hospital.emergency_phone && (
+                    <a href={`tel:${hospital.emergency_phone}`} className="flex-1">
+                      <Button variant="danger" size="sm" className="w-full"><Phone className="w-3.5 h-3.5 mr-1.5" /> Emergency</Button>
+                    </a>
+                  )}
+                  {hospital.google_maps_url && (
+                    <a href={hospital.google_maps_url} target="_blank" rel="noopener noreferrer">
+                      <Button variant="ghost" size="sm"><MapPin className="w-4 h-4" /></Button>
+                    </a>
+                  )}
+                  <Link href={`/emergency/hospitals/${hospital.id}`}>
+                    <Button variant="outline" size="sm">Details</Button>
+                  </Link>
+                </div>
               </div>
             </Card>
           ))}

@@ -45,7 +45,7 @@ export function getAccessibleModules(
 ): ModuleKey[] {
   const ALL_MODULES: ModuleKey[] = [
     'stay', 'food', 'travel', 'emergency',
-    'community', 'services', 'blog', 'users'
+    'community', 'services', 'blog', 'users', 'matrimony'
   ];
 
   if (role === 'superadmin') return ALL_MODULES;
@@ -67,6 +67,7 @@ export function getDefaultPermissions(role: UserRole): ModulePermissions {
     services: 'none',
     blog: 'none',
     users: 'none',
+    matrimony: 'none',
   };
 
   const full: ModulePermissions = {
@@ -78,6 +79,7 @@ export function getDefaultPermissions(role: UserRole): ModulePermissions {
     services: 'manage',
     blog: 'manage',
     users: 'manage',
+    matrimony: 'manage',
   };
 
   switch (role) {
@@ -97,7 +99,7 @@ export function getDefaultPermissions(role: UserRole): ModulePermissions {
  */
 export const ALL_MODULES: ModuleKey[] = [
   'stay', 'food', 'travel', 'emergency',
-  'community', 'services', 'blog', 'users'
+  'community', 'services', 'blog', 'users', 'matrimony'
 ];
 
 /**

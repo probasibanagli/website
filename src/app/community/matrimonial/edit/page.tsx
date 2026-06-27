@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
   ArrowLeft, Save, User, Users, GraduationCap, Heart, BookOpen, Sparkles, Utensils, CheckCircle,
+  Camera, Video, Trash2, AlertTriangle
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -13,7 +14,7 @@ import {
   DIET_TYPES, EDUCATION_LEVELS, INCOME_RANGES, BENGALI_SUBCASTES, WEST_BENGAL_DISTRICTS,
   SMOKING_HABITS, DRINKING_HABITS, MANGLIK_OPTIONS, HOBBIES_LIST, RELIGIONS, BLOOD_GROUPS,
 } from '@/lib/constants';
-import { getMyProfile, saveMyProfile } from '@/lib/matrimony-service';
+import { getMyProfile, saveMyProfile, storeMedia, getMedia } from '@/lib/matrimony-service';
 import type { MatrimonialProfile } from '@/types';
 
 interface FormData {
@@ -29,6 +30,11 @@ export default function EditMatrimonialProfile() {
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<MatrimonialProfile | null>(null);
 
+  // Media states
+  const [photoPreviews, setPhotoPreviews] = useState<(string | null)[]>([null, null, null, null, null]);
+  const [videoPreview, setVideoPreview] = useState<string | null>(null);
+  const [uploadError, setUploadError] = useState('');
+
   useEffect(() => {
     const myProfile = getMyProfile();
     if (!myProfile) {
@@ -39,9 +45,24 @@ export default function EditMatrimonialProfile() {
     setSelectedHobbies(myProfile.hobbies || []);
     const data: FormData = {};
     Object.entries(myProfile).forEach(([key, value]) => {
-      if (typeof value === 'string' || typeof value === 'number') data[key] = value;
+      if (typeof value === 'string' || typeof value === 'number' || Array.isArray(value)) data[key] = value;
     });
     setFormData(data);
+
+    // Load media from IndexedDB
+    const loadMedia = async () => {
+      const previews: (string | null)[] = [null, null, null, null, null];
+      for (let i = 0; i < 5; i++) {
+        const url = await getMedia(`profile_${myProfile.id}_photo_${i}`);
+        if (url) previews[i] = url;
+      }
+      setPhotoPreviews(previews);
+
+      const vUrl = await getMedia(`profile_${myProfile.id}_video`);
+      if (vUrl) setVideoPreview(vUrl);
+    };
+
+    loadMedia();
     setLoading(false);
   }, [router]);
 
@@ -56,6 +77,111 @@ export default function EditMatrimonialProfile() {
     );
     setSaved(false);
   }, []);
+
+  const handlePhotoChange = async (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!profile) return;
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      setUploadError('Only image files are allowed.');
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setUploadError('Photo size must be less than 5MB.');
+      return;
+    }
+    
+    try {
+      const url = await storeMedia(`profile_${profile.id}_photo_${index}`, file);
+      
+      setPhotoPreviews(prev => {
+        const next = [...prev];
+        next[index] = url;
+        return next;
+      });
+      
+      setFormData(prev => {
+        const nextPhotos = [...((prev.photos as string[]) || [])];
+        nextPhotos[index] = `profile_${profile.id}_photo_${index}`;
+        return { ...prev, photos: nextPhotos };
+      });
+      
+      setUploadError('');
+      setSaved(false);
+    } catch (err) {
+      console.error(err);
+      setUploadError('Failed to upload photo.');
+    }
+  };
+
+  const handlePhotoRemove = (index: number) => {
+    if (!profile) return;
+    setPhotoPreviews(prev => {
+      const next = [...prev];
+      next[index] = null;
+      return next;
+    });
+    
+    setFormData(prev => {
+      const nextPhotos = [...((prev.photos as string[]) || [])];
+      nextPhotos[index] = '';
+      return { ...prev, photos: nextPhotos };
+    });
+    setSaved(false);
+  };
+
+  const handleVideoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!profile) return;
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('video/')) {
+      setUploadError('Only video files are allowed.');
+      return;
+    }
+    
+    const MAX_VIDEO_SIZE = 10 * 1024 * 1024; // 10MB limit
+    if (file.size > MAX_VIDEO_SIZE) {
+      setUploadError(`Video size (${(file.size / (1024 * 1024)).toFixed(1)}MB) exceeds 10MB limit. Please compress your video or upload a smaller one.`);
+      return;
+    }
+    
+    try {
+      setUploadError('');
+      // Check video duration client-side
+      const duration = await new Promise<number>((resolve) => {
+        const video = document.createElement('video');
+        video.preload = 'metadata';
+        video.onloadedmetadata = () => {
+          window.URL.revokeObjectURL(video.src);
+          resolve(video.duration);
+        };
+        video.onerror = () => {
+          resolve(0); // fallback
+        };
+        video.src = URL.createObjectURL(file);
+      });
+
+      if (duration > 30) {
+        setUploadError(`Video is too long (${Math.round(duration)} seconds). Please upload a video under 30 seconds for faster loading.`);
+        return;
+      }
+
+      const url = await storeMedia(`profile_${profile.id}_video`, file);
+      setVideoPreview(url);
+      setFormData(prev => ({ ...prev, video: `profile_${profile.id}_video` }));
+      setUploadError('');
+      setSaved(false);
+    } catch (err) {
+      console.error(err);
+      setUploadError('Failed to process video file.');
+    }
+  };
+
+  const handleVideoRemove = () => {
+    setVideoPreview(null);
+    setFormData(prev => ({ ...prev, video: '' }));
+    setSaved(false);
+  };
 
   const handleSave = useCallback(() => {
     if (!profile) return;
@@ -113,6 +239,8 @@ export default function EditMatrimonialProfile() {
       phone: formData.phone as string,
       email: formData.email as string,
       whatsapp: formData.whatsapp as string,
+      photos: (formData.photos as string[]) || profile.photos || [],
+      video: (formData.video as string) || profile.video || '',
       updated_at: new Date().toISOString(),
     };
 
@@ -149,10 +277,11 @@ export default function EditMatrimonialProfile() {
     { key: 'religion', label: 'Religion & Lifestyle', icon: BookOpen },
     { key: 'preferences', label: 'Preferences', icon: Sparkles },
     { key: 'about', label: 'About', icon: Heart },
+    { key: 'media', label: 'Photos & Video', icon: Camera },
   ];
 
   return (
-    <div className="min-h-screen bg-surface">
+    <div className="min-h-screen bg-surface bg-alpana">
       <div className="max-w-4xl mx-auto px-4 py-8 sm:py-12">
         <div className="flex items-center justify-between mb-8">
           <div>
@@ -324,6 +453,101 @@ export default function EditMatrimonialProfile() {
               <div>
                 <label className="block text-sm font-medium text-text-primary mb-1.5">Tell potential matches about yourself</label>
                 <textarea value={(formData.about_me as string) || ''} onChange={(e) => updateField('about_me', e.target.value)} rows={6} className="w-full px-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none" placeholder="Your personality, values, interests, what makes you unique..." />
+              </div>
+            </div>
+          )}
+
+          {/* Photos & Video */}
+          {activeSection === 'media' && (
+            <div className="space-y-6 animate-fade-in">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-10 h-10 rounded-xl bg-primary-light flex items-center justify-center">
+                  <Camera className="w-5 h-5 text-primary" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-bold">Photos & Video</h2>
+                  <p className="text-xs text-text-muted">Manage your profile media</p>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <h3 className="text-sm font-semibold text-text-primary mb-2">Upload Photos (Up to 5)</h3>
+                  <p className="text-xs text-text-muted mb-3">Add clear, high-quality photos. JPG or PNG, max 5MB each.</p>
+                  
+                  <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+                    {Array.from({ length: 5 }).map((_, i) => {
+                      const preview = photoPreviews[i];
+                      return (
+                        <div key={i} className="aspect-square bg-surface border border-border rounded-xl flex flex-col items-center justify-center relative overflow-hidden group">
+                          {preview ? (
+                            <>
+                              <img src={preview} alt={`Preview ${i + 1}`} className="w-full h-full object-cover" />
+                              <button
+                                type="button"
+                                onClick={() => handlePhotoRemove(i)}
+                                className="absolute top-1.5 right-1.5 p-1 rounded-full bg-red-500 text-white hover:bg-red-600 transition-colors shadow-sm cursor-pointer"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            </>
+                          ) : (
+                            <label htmlFor={`photo-upload-${i}`} className="w-full h-full flex flex-col items-center justify-center cursor-pointer hover:bg-primary-light/10 transition-colors">
+                              <Camera className="w-6 h-6 text-text-muted mb-1 group-hover:scale-110 transition-transform" />
+                              <span className="text-[10px] font-semibold text-text-muted">Slot {i + 1}</span>
+                              <input
+                                type="file"
+                                accept="image/*"
+                                onChange={(e) => handlePhotoChange(i, e)}
+                                id={`photo-upload-${i}`}
+                                className="hidden"
+                              />
+                            </label>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-sm font-semibold text-text-primary mb-2">Upload Profile Video (1 Video)</h3>
+                  <p className="text-xs text-text-muted mb-3">Upload a short intro video. Size must be optimized and under 10MB (max 30 seconds).</p>
+                  
+                  {videoPreview ? (
+                    <div className="p-3 border border-border rounded-xl bg-surface flex flex-col items-center gap-3 max-w-sm">
+                      <video src={videoPreview} controls className="w-full rounded-lg max-h-40 bg-black" />
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={handleVideoRemove}
+                        className="text-red-500 hover:text-red-600 border-red-200 cursor-pointer"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" /> Remove Video
+                      </Button>
+                    </div>
+                  ) : (
+                    <label htmlFor="video-upload" className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-border rounded-xl bg-surface cursor-pointer hover:bg-primary-light/10 transition-all max-w-sm">
+                      <Video className="w-8 h-8 text-text-muted mb-2" />
+                      <span className="text-xs font-bold text-text-primary">Choose Intro Video</span>
+                      <span className="text-[10px] text-text-muted mt-1">MP4 or WebM, max 10MB, under 30s</span>
+                      <input
+                        type="file"
+                        accept="video/*"
+                        onChange={handleVideoChange}
+                        id="video-upload"
+                        className="hidden"
+                      />
+                    </label>
+                  )}
+                </div>
+
+                {uploadError && (
+                  <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-xs text-red-600 flex items-center gap-2">
+                    <AlertTriangle className="w-4 h-4" /> {uploadError}
+                  </div>
+                )}
               </div>
             </div>
           )}

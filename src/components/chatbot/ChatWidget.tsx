@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { MessageCircle, X, Send, Sparkles, Home } from 'lucide-react';
+import { MessageCircle, X, Send, Sparkles, Home, Mic, MicOff, Volume2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
@@ -25,6 +25,77 @@ export function ChatWidget() {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [mounted, setMounted] = React.useState(false);
+  const [isListening, setIsListening] = useState(false);
+
+  // Text-To-Speech Playback
+  const speakMessage = (text: string) => {
+    if (typeof window === 'undefined' || !window.speechSynthesis) return;
+
+    if (window.speechSynthesis.speaking) {
+      window.speechSynthesis.cancel();
+      return;
+    }
+
+    // Clean up markdown markers for better readout
+    const cleanText = text.replace(/[*#_`]/g, '');
+    const utterance = new SpeechSynthesisUtterance(cleanText);
+    
+    let lang = 'en-US';
+    if (/[\u0980-\u09FF]/.test(text)) {
+      lang = 'bn-IN';
+    } else if (/[\u0B80-\u0BFF]/.test(text)) {
+      lang = 'ta-IN';
+    }
+    utterance.lang = lang;
+
+    const voices = window.speechSynthesis.getVoices();
+    const matchingVoice = voices.find(v => v.lang.startsWith(lang));
+    if (matchingVoice) {
+      utterance.voice = matchingVoice;
+    }
+
+    window.speechSynthesis.speak(utterance);
+  };
+
+  // Speech-To-Text Recognition
+  const handleVoiceInput = () => {
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      alert("Speech recognition is not supported in this browser. Please try Google Chrome or Safari.");
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.continuous = false;
+    recognition.interimResults = false;
+
+    const savedLang = typeof window !== 'undefined' ? localStorage.getItem('pb_lang') : 'en';
+    recognition.lang = savedLang === 'bn' ? 'bn-IN' : savedLang === 'ta' ? 'ta-IN' : 'en-US';
+
+    recognition.onstart = () => {
+      setIsListening(true);
+    };
+
+    recognition.onresult = (event: any) => {
+      const resultText = event.results[0][0].transcript;
+      setInput(resultText);
+    };
+
+    recognition.onerror = (event: any) => {
+      console.error("Speech recognition error:", event.error);
+      setIsListening(false);
+    };
+
+    recognition.onend = () => {
+      setIsListening(false);
+    };
+
+    if (isListening) {
+      recognition.stop();
+    } else {
+      recognition.start();
+    }
+  };
 
   React.useEffect(() => {
     const handle = requestAnimationFrame(() => {
@@ -100,12 +171,22 @@ export function ChatWidget() {
               </div>
             )}
             {messages.map((msg, i) => (
-              <div key={i} className={cn('flex', msg.role === 'user' ? 'justify-end' : 'justify-start')}>
+              <div key={i} className={cn('flex items-end gap-1.5', msg.role === 'user' ? 'justify-end' : 'justify-start')}>
+                {msg.role === 'assistant' && (
+                  <button
+                    type="button"
+                    onClick={() => speakMessage(msg.content)}
+                    className="p-1.5 rounded-lg border border-border bg-white text-text-muted hover:text-primary hover:border-primary/30 cursor-pointer shadow-sm shrink-0 mb-1"
+                    title="Speak message"
+                  >
+                    <Volume2 className="w-3.5 h-3.5" />
+                  </button>
+                )}
                 <div className={cn(
-                  'max-w-[80%] px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed',
+                  'max-w-[80%] px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed shadow-sm',
                   msg.role === 'user'
-                    ? 'bg-primary text-white rounded-br-md'
-                    : 'bg-surface text-text-primary rounded-bl-md'
+                    ? 'bg-primary text-white rounded-br-sm'
+                    : 'bg-surface text-text-primary rounded-bl-sm border border-border/40'
                 )}>
                   {msg.content}
                 </div>
@@ -113,7 +194,7 @@ export function ChatWidget() {
             ))}
             {loading && (
               <div className="flex justify-start">
-                <div className="bg-surface px-4 py-3 rounded-2xl rounded-bl-md">
+                <div className="bg-surface px-4 py-3 rounded-2xl rounded-bl-md border border-border/40 shadow-sm">
                   <div className="flex gap-1">
                     <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
                     <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
@@ -133,14 +214,27 @@ export function ChatWidget() {
               <input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="Type your message..."
+                placeholder={isListening ? "Listening..." : "Type your message..."}
                 className="flex-1 text-sm px-4 py-2.5 rounded-xl border border-border bg-surface focus:outline-none focus:ring-2 focus:ring-primary/30"
                 disabled={loading}
               />
               <button
+                type="button"
+                onClick={handleVoiceInput}
+                className={cn(
+                  "p-2.5 rounded-xl border transition-all cursor-pointer",
+                  isListening 
+                    ? "bg-red-500 text-white border-red-500 animate-pulse" 
+                    : "bg-surface text-text-muted border-border hover:bg-primary-light hover:text-primary hover:border-primary/30"
+                )}
+                title="Voice Input (English, Bengali, Tamil)"
+              >
+                {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+              </button>
+              <button
                 type="submit"
                 disabled={loading || !input.trim()}
-                className="p-2.5 bg-primary text-white rounded-xl hover:bg-primary-dark transition-colors disabled:opacity-50 cursor-pointer"
+                className="p-2.5 bg-primary text-white rounded-xl hover:bg-primary-dark transition-colors disabled:opacity-50 cursor-pointer shrink-0"
               >
                 <Send className="w-4 h-4" />
               </button>

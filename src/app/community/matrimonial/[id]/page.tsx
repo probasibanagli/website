@@ -6,14 +6,14 @@ import { useParams } from 'next/navigation';
 import {
   ArrowLeft, MapPin, GraduationCap, Briefcase, CheckCircle2, Lock, Heart,
   MessageCircle, Star, Share2, Flag, User, Users, BookOpen, Utensils,
-  Ruler, Droplets, Phone, Mail, Sparkles, ChevronRight, Eye,
+  Ruler, Droplets, Phone, Mail, Sparkles, ChevronRight, Eye, Video
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/card';
 import {
   getProfile, getAllProfiles, recordView, getViewCount,
-  isShortlisted, toggleShortlist, hasInterest, sendInterest, getMyProfile,
+  isShortlisted, toggleShortlist, hasInterest, sendInterest, getMyProfile, getMedia
 } from '@/lib/matrimony-service';
 import type { MatrimonialProfile } from '@/types';
 
@@ -53,6 +53,11 @@ export default function MatrimonialDetailPage() {
   const [loading, setLoading] = useState(true);
   const [hasProfile, setHasProfile] = useState<boolean | null>(null);
 
+  // Media states
+  const [photoPreviews, setPhotoPreviews] = useState<(string | null)[]>([null, null, null, null, null]);
+  const [videoPreview, setVideoPreview] = useState<string | null>(null);
+  const [activePhotoIndex, setActivePhotoIndex] = useState<number>(0);
+
   useEffect(() => {
     const id = params.id as string;
     const p = getProfile(id);
@@ -68,6 +73,36 @@ export default function MatrimonialDetailPage() {
       if (myProfile) {
         setInterestSent(hasInterest(myProfile.id, id));
       }
+
+      // Load media from IndexedDB
+      const loadMedia = async () => {
+        const previews: (string | null)[] = [null, null, null, null, null];
+        let hasAnyPhoto = false;
+        if (p.photos && Array.isArray(p.photos)) {
+          for (let i = 0; i < 5; i++) {
+            const key = p.photos[i];
+            if (key) {
+              const url = await getMedia(key);
+              if (url) {
+                previews[i] = url;
+                hasAnyPhoto = true;
+              }
+            }
+          }
+        }
+        setPhotoPreviews(previews);
+
+        const firstPhotoIdx = previews.findIndex(url => url !== null);
+        if (firstPhotoIdx !== -1) {
+          setActivePhotoIndex(firstPhotoIdx);
+        }
+
+        if (p.video) {
+          const vUrl = await getMedia(p.video);
+          if (vUrl) setVideoPreview(vUrl);
+        }
+      };
+      loadMedia();
     }
     setLoading(false);
   }, [params.id]);
@@ -171,7 +206,7 @@ export default function MatrimonialDetailPage() {
   };
 
   return (
-    <div className="min-h-screen bg-surface">
+    <div className="min-h-screen bg-surface bg-alpana">
       {/* Hero Banner */}
       <div className="bg-gradient-to-r from-primary via-primary-dark to-[#7a2d14] py-6">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -186,38 +221,101 @@ export default function MatrimonialDetailPage() {
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
             {/* Profile Header Card */}
-            <Card padding="lg" hover={false} className="relative overflow-hidden">
+            <Card padding="lg" hover={false} className="relative overflow-hidden border border-primary/10">
               <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary to-accent" />
-              <div className="flex flex-col sm:flex-row items-start gap-5 pt-2">
-                <div className={`w-24 h-24 rounded-2xl flex items-center justify-center text-3xl font-bold shrink-0 ${
-                  profile.gender === 'male'
-                    ? 'bg-gradient-to-br from-blue-100 to-blue-200 text-blue-600'
-                    : 'bg-gradient-to-br from-pink-100 to-pink-200 text-pink-600'
-                }`}>
-                  {profile.full_name?.split(' ').map(n => n[0]).join('').slice(0, 2)}
+              
+              {photoPreviews.some(photo => photo !== null) ? (
+                <div className="flex flex-col md:flex-row gap-6 pt-2">
+                  {/* Photo Gallery Column */}
+                  <div className="w-full md:w-56 shrink-0 flex flex-col items-center">
+                    <div className="w-full aspect-[3/4] rounded-2xl overflow-hidden bg-surface border border-border relative group shadow-sm">
+                      <img 
+                        src={photoPreviews[activePhotoIndex] || ''} 
+                        alt={profile.full_name} 
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                      {profile.verified && (
+                        <div className="absolute top-3 left-3 bg-accent text-white px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase shadow flex items-center gap-1">
+                          ✓ Verified
+                        </div>
+                      )}
+                    </div>
+                    
+                    {/* Thumbnails strip */}
+                    <div className="flex gap-1.5 mt-2 justify-center max-w-full overflow-x-auto py-1">
+                      {photoPreviews.map((photo, idx) => {
+                        if (!photo) return null;
+                        return (
+                          <button
+                            key={idx}
+                            onClick={() => setActivePhotoIndex(idx)}
+                            className={`w-9 h-12 rounded-lg overflow-hidden border-2 transition-all cursor-pointer shrink-0 ${
+                              activePhotoIndex === idx ? 'border-primary scale-105 shadow-sm' : 'border-transparent opacity-75 hover:opacity-100'
+                            }`}
+                          >
+                            <img src={photo} alt="" className="w-full h-full object-cover" />
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                  
+                  {/* Profile Header Info */}
+                  <div className="flex-1 min-w-0 flex flex-col justify-between py-1">
+                    <div>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <h1 className="text-2xl sm:text-3xl font-bold font-display">{profile.full_name}</h1>
+                        {profile.verified && <CheckCircle2 className="w-6 h-6 text-accent" />}
+                      </div>
+                      <p className="text-text-muted mt-1">
+                        {profile.age} years old • {profile.gender === 'male' ? 'Male' : 'Female'} • {profile.city}
+                      </p>
+                      <div className="flex flex-wrap gap-2 mt-3">
+                        {profile.verified ? <Badge variant="verified">Admin Verified</Badge> : <Badge variant="amber">Verification Pending</Badge>}
+                        {profile.profile_id && <Badge variant="bengali">{profile.profile_id}</Badge>}
+                        {profile.religion && <Badge variant="default">{profile.religion}</Badge>}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-4 mt-4 text-xs text-text-muted border-t border-border/50 pt-3">
+                      <span className="flex items-center gap-1"><Eye className="w-3.5 h-3.5 text-primary/70" /> {viewCount} views</span>
+                      <span>Member since {new Date(profile.created_at).toLocaleDateString('en-IN', { month: 'short', year: 'numeric' })}</span>
+                    </div>
+                  </div>
                 </div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <h1 className="text-2xl sm:text-3xl font-bold font-display">{profile.full_name}</h1>
-                    {profile.verified && <CheckCircle2 className="w-6 h-6 text-accent" />}
+              ) : (
+                <div className="flex flex-col sm:flex-row items-start gap-5 pt-2">
+                  <div className={`w-24 h-24 sm:w-28 sm:h-36 rounded-2xl flex flex-col items-center justify-center text-3xl font-bold shrink-0 relative overflow-hidden bg-gradient-to-br ${
+                    profile.gender === 'male'
+                      ? 'from-blue-50 via-blue-100 to-blue-200 text-blue-600'
+                      : 'from-pink-50 via-pink-100 to-pink-200 text-pink-600'
+                  } border border-dashed border-primary/20`}>
+                    <div className="absolute inset-1 border border-primary/5 rounded-xl" />
+                    <span className="text-4xl font-display">{profile.full_name?.split(' ').map(n => n[0]).join('').slice(0, 2)}</span>
+                    <span className="text-[10px] uppercase tracking-wider text-text-muted mt-2">No Photo</span>
                   </div>
-                  <p className="text-text-muted mt-1">
-                    {profile.age} years old • {profile.gender === 'male' ? 'Male' : 'Female'} • {profile.city}
-                  </p>
-                  <div className="flex flex-wrap gap-2 mt-3">
-                    {profile.verified ? <Badge variant="verified">Admin Verified</Badge> : <Badge variant="amber">Verification Pending</Badge>}
-                    {profile.profile_id && <Badge variant="bengali">{profile.profile_id}</Badge>}
-                    {profile.religion && <Badge variant="default">{profile.religion}</Badge>}
-                  </div>
-                  <div className="flex items-center gap-4 mt-3 text-xs text-text-muted">
-                    <span className="flex items-center gap-1"><Eye className="w-3 h-3" /> {viewCount} views</span>
-                    <span>Member since {new Date(profile.created_at).toLocaleDateString('en-IN', { month: 'short', year: 'numeric' })}</span>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <h1 className="text-2xl sm:text-3xl font-bold font-display">{profile.full_name}</h1>
+                      {profile.verified && <CheckCircle2 className="w-6 h-6 text-accent" />}
+                    </div>
+                    <p className="text-text-muted mt-1">
+                      {profile.age} years old • {profile.gender === 'male' ? 'Male' : 'Female'} • {profile.city}
+                    </p>
+                    <div className="flex flex-wrap gap-2 mt-3">
+                      {profile.verified ? <Badge variant="verified">Admin Verified</Badge> : <Badge variant="amber">Verification Pending</Badge>}
+                      {profile.profile_id && <Badge variant="bengali">{profile.profile_id}</Badge>}
+                      {profile.religion && <Badge variant="default">{profile.religion}</Badge>}
+                    </div>
+                    <div className="flex items-center gap-4 mt-3 text-xs text-text-muted">
+                      <span className="flex items-center gap-1"><Eye className="w-3.5 h-3.5 text-primary/70" /> {viewCount} views</span>
+                      <span>Member since {new Date(profile.created_at).toLocaleDateString('en-IN', { month: 'short', year: 'numeric' })}</span>
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
 
               {/* Quick Facts Strip */}
-              <div className="mt-6 flex flex-wrap gap-2">
+              <div className="mt-6 flex flex-wrap gap-2 pt-4 border-t border-border/40">
                 {[
                   profile.height && `📏 ${profile.height}`,
                   profile.weight && `⚖️ ${profile.weight}`,
@@ -326,6 +424,28 @@ export default function MatrimonialDetailPage() {
                 <div className="border-l-3 border-primary/30 pl-4">
                   <p className="text-text-muted leading-relaxed italic">&ldquo;{profile.about_me}&rdquo;</p>
                 </div>
+              </Card>
+            )}
+
+            {/* Intro Video Card */}
+            {videoPreview && (
+              <Card hover={false} className="overflow-hidden border border-primary/10">
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="w-8 h-8 rounded-lg bg-red-50 flex items-center justify-center">
+                    <Video className="w-4 h-4 text-red-500" />
+                  </div>
+                  <h3 className="text-lg font-bold">Intro Video</h3>
+                </div>
+                <div className="max-w-md mx-auto aspect-video rounded-2xl overflow-hidden bg-black border border-border shadow-inner relative group">
+                  <video 
+                    src={videoPreview} 
+                    controls 
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+                <p className="text-xs text-text-muted text-center mt-2.5">
+                  🎥 Listen to {profile.full_name}&apos;s personal introduction
+                </p>
               </Card>
             )}
 

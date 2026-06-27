@@ -26,6 +26,39 @@ const FOOD_TYPE_ICONS: Record<string, React.ReactNode> = {
   delivery: <Truck className="w-5 h-5" />,
 };
 
+function ListingCoverImage({ name, city, mapsUrl, type, fallbackIcon }: { 
+  name: string; 
+  city?: string; 
+  mapsUrl?: string; 
+  type?: string;
+  fallbackIcon: React.ReactNode;
+}) {
+  const [imgSrc, setImgSrc] = useState<string | null>(
+    `/api/public/place-photo?name=${encodeURIComponent(name)}&city=${encodeURIComponent(city || '')}&mapsUrl=${encodeURIComponent(mapsUrl || '')}`
+  );
+  const [error, setError] = useState(false);
+
+  if (error || !imgSrc) {
+    return (
+      <div className="absolute inset-0 bg-gradient-to-br from-orange-50 to-amber-50 flex items-center justify-center">
+        <div className="text-primary opacity-40 scale-[3]">
+          {fallbackIcon}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <img
+      src={imgSrc}
+      alt={name}
+      onError={() => setError(true)}
+      className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+      loading="lazy"
+    />
+  );
+}
+
 export default function FoodPage() {
   const { data: firestoreListings, loading } = useFirestore<FoodListing>('food_listings');
   const [activeType, setActiveType] = useState<string>('all');
@@ -215,8 +248,18 @@ export default function FoodPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filtered.map((food) => (
             <Card key={food.id} padding="none" className="overflow-hidden group">
-              <div className="relative h-40 bg-gradient-to-br from-orange-50 to-amber-50 flex items-center justify-center">
-                <span className="text-5xl opacity-30">{food.type === 'restaurant' ? '🍽️' : food.type === 'sweets' ? '🍬' : food.type === 'tiffin' ? '🍱' : '🛵'}</span>
+              <div className="relative h-40 bg-gradient-to-br from-orange-50 to-amber-50 overflow-hidden">
+                <ListingCoverImage
+                  name={food.name}
+                  city={food.city}
+                  mapsUrl={food.google_maps_url}
+                  type={food.type}
+                  fallbackIcon={
+                    <span className="text-5xl opacity-35 select-none">
+                      {food.type === 'restaurant' ? '🍽️' : food.type === 'sweets' ? '🍬' : food.type === 'tiffin' ? '🍱' : '🛵'}
+                    </span>
+                  }
+                />
                 <div className="absolute top-3 left-3">
                   <Badge variant="amber">{FOOD_TYPE_LABELS[food.type as string] || food.type}</Badge>
                 </div>

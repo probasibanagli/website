@@ -6,7 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import {
   LayoutDashboard, Home, UtensilsCrossed, Bus, AlertTriangle,
   Users, GraduationCap, FileText, UserCog, LogOut, Menu, X,
-  ChevronRight, Crown, Shield,
+  ChevronRight, Crown, Shield, Heart
 } from 'lucide-react';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { getAccessibleModules } from '@/lib/permissions';
@@ -22,6 +22,7 @@ const moduleIcons: Record<ModuleKey, React.ReactNode> = {
   services: <GraduationCap className="w-4 h-4" />,
   blog: <FileText className="w-4 h-4" />,
   users: <UserCog className="w-4 h-4" />,
+  matrimony: <Heart className="w-4 h-4 text-pink-500 animate-pulse" />,
 };
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {

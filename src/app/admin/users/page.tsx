@@ -9,8 +9,8 @@ import type { UserProfile } from '@/types';
 import { MODULE_LABELS } from '@/types';
 import { Shield, Crown, Search, ChevronRight, Check, X, Loader2, UserPlus } from 'lucide-react';
 
-const ADMIN_DEFAULT_PERMISSIONS = { stay:'edit', food:'edit', travel:'edit', emergency:'edit', community:'edit', services:'edit', blog:'edit', users:'none' };
-const USER_DEFAULT_PERMISSIONS = { stay:'none', food:'none', travel:'none', emergency:'none', community:'none', services:'none', blog:'none', users:'none' };
+const ADMIN_DEFAULT_PERMISSIONS = { stay:'edit', food:'edit', travel:'edit', emergency:'edit', community:'edit', services:'edit', blog:'edit', users:'none', matrimony:'edit' };
+const USER_DEFAULT_PERMISSIONS = { stay:'none', food:'none', travel:'none', emergency:'none', community:'none', services:'none', blog:'none', users:'none', matrimony:'none' };
 
 const AVAILABLE_MODULES = [
   { key: 'stay', label: 'Stay & Accommodation' },
@@ -20,6 +20,7 @@ const AVAILABLE_MODULES = [
   { key: 'community', label: 'Community Groups' },
   { key: 'services', label: 'Services' },
   { key: 'blog', label: 'Blog' },
+  { key: 'matrimony', label: 'Matrimonial' },
 ];
 
 export default function AdminUsersPage() {
