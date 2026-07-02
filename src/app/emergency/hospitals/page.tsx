@@ -8,6 +8,10 @@ import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/card';
 import { sampleHospitals } from '@/data/sample-data';
 import { CITIES, TREATMENT_TYPES } from '@/lib/constants';
+import { db } from '@/lib/firebase';
+import { collection, getDocs } from 'firebase/firestore';
+import { COLLECTIONS } from '@/lib/firestore/collections';
+import type { Hospital } from '@/types';
 
 function ListingCoverImage({ name, city, mapsUrl, fallbackIcon }: { 
   name: string; 
@@ -45,15 +49,34 @@ export default function EmergencyHospitalsPage() {
   const [city, setCity] = useState('');
   const [treatment, setTreatment] = useState('');
   const [search, setSearch] = useState('');
+  const [hospitals, setHospitals] = useState<Hospital[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  React.useEffect(() => {
+    const fetchHospitals = async () => {
+      try {
+        const snap = await getDocs(collection(db, COLLECTIONS.hospitals));
+        const data = snap.docs.map(doc => doc.data() as Hospital);
+        // If DB is empty, fallback to sample data for display
+        setHospitals(data.length > 0 ? data : sampleHospitals);
+      } catch (err) {
+        console.error("Error fetching hospitals", err);
+        setHospitals(sampleHospitals);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchHospitals();
+  }, []);
 
   const filtered = useMemo(() => {
-    return sampleHospitals.filter((h) => {
+    return hospitals.filter((h) => {
       if (city && h.city !== city) return false;
-      if (treatment && !h.specializations.includes(treatment)) return false;
-      if (search && !h.name.toLowerCase().includes(search.toLowerCase())) return false;
+      if (treatment && h.specializations && !h.specializations.includes(treatment)) return false;
+      if (search && h.name && !h.name.toLowerCase().includes(search.toLowerCase())) return false;
       return true;
     });
-  }, [city, treatment, search]);
+  }, [city, treatment, search, hospitals]);
 
   return (
     <div className="min-h-screen bg-surface">
@@ -163,8 +186,11 @@ export default function EmergencyHospitalsPage() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filtered.map((hospital) => (
+        {loading ? (
+           <div className="text-center py-20 animate-pulse"><div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div><p className="text-text-muted">Loading hospitals...</p></div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filtered.map((hospital) => (
             <Card key={hospital.id} padding="none" className="overflow-hidden group flex flex-col h-full">
               {/* Header Image */}
               <div className="relative h-40 bg-gradient-to-br from-red-50 to-orange-50 overflow-hidden">
@@ -216,7 +242,8 @@ export default function EmergencyHospitalsPage() {
             </Card>
           ))}
         </div>
-        {filtered.length === 0 && (<div className="text-center py-20"><p className="text-5xl mb-4">🏥</p><h3 className="text-xl font-bold mb-2">No hospitals found</h3><p className="text-text-muted">Try different filters.</p></div>)}
+        )}
+        {!loading && filtered.length === 0 && (<div className="text-center py-20"><p className="text-5xl mb-4">🏥</p><h3 className="text-xl font-bold mb-2">No hospitals found</h3><p className="text-text-muted">Try different filters.</p></div>)}
       </div>
     </div>
   );

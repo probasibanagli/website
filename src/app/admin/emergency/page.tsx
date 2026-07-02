@@ -9,7 +9,7 @@ import { COLLECTIONS } from '@/lib/firestore/collections';
 import type { Hospital, BengaliDoctor, BengaliStaff } from '@/types';
 import { Plus, Pencil, Trash2, X, Loader2, Shield, Building2, UserRound, PhoneCall, CheckCircle, Users } from 'lucide-react';
 
-const CHENNAI_AREAS = ['Adyar', 'Alandur', 'Ambattur', 'Anna Nagar', 'Ashok Nagar', 'Aminjikarai', 'Avadi', 'Besant Nagar', 'Broadway', 'Chromepet', 'Egmore', 'Guindy', 'Kilpauk', 'Kodambakkam', 'Kolathur', 'Madipakkam', 'Madhavaram', 'Mambalam', 'Manapakkam', 'Medavakkam', 'Mogappair', 'Nanganallur', 'OMR', 'Pallavaram', 'Perambur', 'Porur', 'Royapettah', 'Saidapet', 'Sholinganallur', 'Tambaram', 'T Nagar', 'Thiruvanmiyur', 'Triplicane', 'Vadapalani', 'Velachery', 'Villivakkam', 'Virugambakkam', 'West Mambalam', 'Greams Road', 'Gandhi Nagar', 'Koyambedu', 'Mylapore', 'Perungudi'];
+const CHENNAI_AREAS = ['Adyar', 'Alandur', 'Ambattur', 'Anna Nagar', 'Ashok Nagar', 'Aminjikarai', 'Avadi', 'Besant Nagar', 'Broadway', 'Chromepet', 'Egmore', 'Guindy', 'Kilpauk', 'Kodambakkam', 'Kolathur', 'Madipakkam', 'Madhavaram', 'Mambalam', 'Manapakkam', 'Medavakkam', 'Mogappair', 'Nanganallur', 'OMR', 'Pallavaram', 'Perambur', 'Porur', 'Royapettah', 'Saidapet', 'Sholinganallur', 'Tambaram', 'T Nagar', 'Thiruvanmiyur', 'Triplicane', 'Vadapalani', 'Velachery', 'Villivakkam', 'Virugambakkam', 'West Mambalam', 'Greams Road', 'Gandhi Nagar', 'Koyambedu', 'Mylapore', 'Perungudi'].sort();
 const LANGUAGES = ['Bengali', 'Tamil', 'English', 'Hindi', 'Telugu', 'Malayalam', 'Kannada', 'Urdu'];
 
 const SAMPLE_HOSPITALS = [
@@ -42,6 +42,7 @@ export default function AdminEmergencyPage() {
   const [formData, setFormData] = useState<any>({});
   const [saving, setSaving] = useState(false);
   const [seeding, setSeeding] = useState(false);
+  const [selectedHospitalFilter, setSelectedHospitalFilter] = useState<string>('all');
 
   const moduleKey = 'emergency';
   const canView = canAccess(profile?.role || 'user', profile?.permissions, moduleKey, 'view');
@@ -151,8 +152,8 @@ export default function AdminEmergencyPage() {
         }
       }
 
+      // OPTIMISTIC UI UPDATE
       if (editId) {
-        await updateDoc(doc(db, collectionName, editId), { ...payload, updated_at: now });
         if (activeTab === 'hospitals') {
           setHospitals(prev => prev.map(i => i.id === editId ? { ...i, ...payload } as Hospital : i));
         } else if (activeTab === 'doctors') {
@@ -162,21 +163,34 @@ export default function AdminEmergencyPage() {
         }
       } else {
         const id = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
-        await setDoc(doc(db, collectionName, id), { ...payload, id, created_at: now });
+        payload.id = id;
+        payload.created_at = now;
+        
         if (activeTab === 'hospitals') {
-          setHospitals(prev => [{ id, ...payload, created_at: now } as Hospital, ...prev]);
+          setHospitals(prev => [{ ...payload } as Hospital, ...prev]);
         } else if (activeTab === 'doctors') {
-          setDoctors(prev => [{ id, ...payload, created_at: now } as BengaliDoctor, ...prev]);
+          setDoctors(prev => [{ ...payload } as BengaliDoctor, ...prev]);
         } else {
-          setStaff(prev => [{ id, ...payload, created_at: now } as BengaliStaff, ...prev]);
+          setStaff(prev => [{ ...payload } as BengaliStaff, ...prev]);
         }
       }
+      
+      // Close form immediately for fast UX
       setShowForm(false);
+      setSaving(false);
+
+      // BACKGROUND SYNC TO FIRESTORE
+      if (editId) {
+        await updateDoc(doc(db, collectionName, editId), { ...payload, updated_at: now });
+      } else {
+        await setDoc(doc(db, collectionName, payload.id), { ...payload });
+      }
     } catch (e) {
       console.error(e);
-      alert('Error saving item.');
+      alert('Error saving item to database.');
     } finally {
-      setSaving(false);
+      // setSaving(false) already called for optimistic UI
+
     }
   }
 
@@ -246,22 +260,24 @@ export default function AdminEmergencyPage() {
         >
           <Users className="w-4 h-4" /> Bengali Staff
         </button>
-        <button
-          onClick={() => setActiveTab('contacts')}
-          className={`px-4 py-3 text-sm font-semibold border-b-2 transition-colors cursor-pointer flex items-center gap-2 whitespace-nowrap ${activeTab === 'contacts' ? 'border-primary text-primary' : 'border-transparent text-text-muted hover:text-text-primary'}`}
-        >
-          <PhoneCall className="w-4 h-4" /> Emergency Contacts
-        </button>
       </div>
+
+      {(activeTab === 'doctors' || activeTab === 'staff') && hospitals.length > 0 && (
+        <div className="flex items-center gap-4 bg-white p-4 rounded-2xl border border-border shadow-sm">
+          <label className="text-sm font-bold text-text-primary whitespace-nowrap">Filter by Hospital:</label>
+          <select 
+            value={selectedHospitalFilter} 
+            onChange={e => setSelectedHospitalFilter(e.target.value)} 
+            className="w-full max-w-xs px-3 py-2 bg-surface border border-border rounded-lg text-sm cursor-pointer"
+          >
+            <option value="all">All Hospitals</option>
+            {hospitals.map(h => <option key={h.id} value={h.id}>{h.name} ({h.city})</option>)}
+          </select>
+        </div>
+      )}
 
       {loading ? (
         <div className="flex justify-center py-20"><Loader2 className="w-6 h-6 animate-spin text-primary" /></div>
-      ) : activeTab === 'contacts' ? (
-        <div className="bg-white rounded-2xl border border-border p-8 text-center shadow-sm">
-           <PhoneCall className="w-12 h-12 text-primary/40 mx-auto mb-4" />
-           <h3 className="text-xl font-bold text-text-primary mb-2">Emergency Contacts</h3>
-           <p className="text-text-muted max-w-md mx-auto">This section can be expanded to manage global emergency numbers, ambulance services, and direct helplines.</p>
-        </div>
       ) : (
         <div className="bg-white rounded-2xl border border-border overflow-hidden shadow-sm">
           <table className="w-full">
@@ -272,6 +288,7 @@ export default function AdminEmergencyPage() {
                     <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Hospital Name</th>
                     <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">City</th>
                     <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Phone</th>
+                    <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Emergency No</th>
                     <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Branch</th>
                   </>
                 ) : activeTab === 'doctors' ? (
@@ -292,13 +309,19 @@ export default function AdminEmergencyPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
-              {(activeTab === 'hospitals' ? hospitals : activeTab === 'doctors' ? doctors : staff).map((item: any) => (
+              {(activeTab === 'hospitals' 
+                 ? hospitals 
+                 : activeTab === 'doctors' 
+                   ? doctors.filter(d => selectedHospitalFilter === 'all' || d.hospital_id === selectedHospitalFilter) 
+                   : staff.filter(s => selectedHospitalFilter === 'all' || s.hospital_id === selectedHospitalFilter)
+              ).map((item: any) => (
                 <tr key={item.id} className="hover:bg-surface transition-colors">
                   {activeTab === 'hospitals' ? (
                     <>
                       <td className="px-5 py-4 text-sm text-text-primary font-medium">{item.name}</td>
                       <td className="px-5 py-4 text-sm text-text-muted">{item.city}</td>
                       <td className="px-5 py-4 text-sm text-text-muted">{item.phone}</td>
+                      <td className="px-5 py-4 text-sm font-bold text-red-600">{item.emergency_phone || '-'}</td>
                       <td className="px-5 py-4 text-sm text-text-muted">{item.main_branch ? <span className="text-emerald-600 font-semibold text-xs bg-emerald-50 px-2 py-1 rounded">Main</span> : <span className="text-text-muted text-xs">Branch</span>}</td>
                     </>
                   ) : activeTab === 'doctors' ? (
@@ -343,7 +366,7 @@ export default function AdminEmergencyPage() {
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setShowForm(false)} />
           <div className="relative bg-white rounded-3xl border border-border w-full max-w-2xl max-h-[85vh] overflow-hidden flex flex-col shadow-2xl animate-fade-in">
             <div className="flex items-center justify-between p-6 border-b border-border">
-              <h3 className="text-xl font-bold text-text-primary">{editId ? 'Edit' : 'Add'} {activeTab === 'hospitals' ? 'Hospital' : 'Doctor'}</h3>
+              <h3 className="text-xl font-bold text-text-primary">{editId ? 'Edit' : 'Add'} {activeTab === 'hospitals' ? 'Hospital' : activeTab === 'doctors' ? 'Doctor' : 'Staff'}</h3>
               <button onClick={() => setShowForm(false)} className="p-2 rounded-xl hover:bg-surface text-text-muted transition-colors cursor-pointer"><X className="w-5 h-5" /></button>
             </div>
             
@@ -360,8 +383,19 @@ export default function AdminEmergencyPage() {
                       <input type="text" value={formData.city || ''} onChange={e => setFormData({...formData, city: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
                     </div>
                     <div>
+                      <label className="block text-sm font-semibold text-text-primary mb-1.5">State *</label>
+                      <input type="text" value={formData.state || 'Tamil Nadu'} onChange={e => setFormData({...formData, state: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-text-primary mb-1.5">District *</label>
+                      <input type="text" value={formData.district || 'Chennai'} onChange={e => setFormData({...formData, district: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
+                    </div>
+                    <div>
                       <label className="block text-sm font-semibold text-text-primary mb-1.5">Area</label>
-                      <input type="text" value={formData.area || ''} onChange={e => setFormData({...formData, area: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
+                      <select value={formData.area || ''} onChange={e => setFormData({...formData, area: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm cursor-pointer">
+                        <option value="">Select Area...</option>
+                        {CHENNAI_AREAS.map(a => <option key={a} value={a}>{a}</option>)}
+                      </select>
                     </div>
                     <div>
                       <label className="block text-sm font-semibold text-text-primary mb-1.5">Full Address</label>
@@ -395,6 +429,10 @@ export default function AdminEmergencyPage() {
                       <div className="flex items-center gap-3">
                         <input type="checkbox" id="has_bengali_doctor" checked={!!formData.has_bengali_doctor} onChange={e => setFormData({...formData, has_bengali_doctor: e.target.checked})} className="w-5 h-5 rounded border-border" />
                         <label htmlFor="has_bengali_doctor" className="text-sm font-semibold text-text-primary cursor-pointer">Has Bengali Doctor</label>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <input type="checkbox" id="has_bengali_staff" checked={!!formData.has_bengali_staff} onChange={e => setFormData({...formData, has_bengali_staff: e.target.checked})} className="w-5 h-5 rounded border-border" />
+                        <label htmlFor="has_bengali_staff" className="text-sm font-semibold text-text-primary cursor-pointer">Has Bengali Staff</label>
                       </div>
                       <div className="flex items-center gap-3">
                         <input type="checkbox" id="main_branch" checked={!!formData.main_branch} onChange={e => setFormData({...formData, main_branch: e.target.checked})} className="w-5 h-5 rounded border-border" />
@@ -470,6 +508,25 @@ export default function AdminEmergencyPage() {
                             <span className="text-sm text-text-primary">{lang}</span>
                           </label>
                         ))}
+                      </div>
+                    </div>
+                    <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4 mt-2 p-4 bg-surface/50 rounded-xl border border-border">
+                      <h4 className="md:col-span-2 text-sm font-bold text-text-primary">Social Media Profiles</h4>
+                      <div>
+                        <label className="block text-xs font-semibold text-text-primary mb-1.5">LinkedIn URL</label>
+                        <input type="url" value={formData.social_links?.linkedin || ''} onChange={e => setFormData({...formData, social_links: {...formData.social_links, linkedin: e.target.value}})} className="w-full px-4 py-2 bg-white border border-border rounded-lg text-sm" />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-text-primary mb-1.5">Facebook URL</label>
+                        <input type="url" value={formData.social_links?.facebook || ''} onChange={e => setFormData({...formData, social_links: {...formData.social_links, facebook: e.target.value}})} className="w-full px-4 py-2 bg-white border border-border rounded-lg text-sm" />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-text-primary mb-1.5">Instagram URL</label>
+                        <input type="url" value={formData.social_links?.instagram || ''} onChange={e => setFormData({...formData, social_links: {...formData.social_links, instagram: e.target.value}})} className="w-full px-4 py-2 bg-white border border-border rounded-lg text-sm" />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-text-primary mb-1.5">X (Twitter) URL</label>
+                        <input type="url" value={formData.social_links?.x || ''} onChange={e => setFormData({...formData, social_links: {...formData.social_links, x: e.target.value}})} className="w-full px-4 py-2 bg-white border border-border rounded-lg text-sm" />
                       </div>
                     </div>
                   </div>

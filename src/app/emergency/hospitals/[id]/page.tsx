@@ -2,15 +2,16 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { collection, getDocs, query, where } from 'firebase/firestore';
+import { collection, getDocs, query, where, doc, getDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { COLLECTIONS } from '@/lib/firestore/collections';
 import type { Hospital, BengaliDoctor, BengaliStaff } from '@/types';
-import { MapPin, Phone, Globe, Star, Mail, ArrowLeft, Building2, UserRound, CheckCircle2, ChevronRight, AlertTriangle, Users, Clock, PlusSquare, MessageSquare, Ambulance } from 'lucide-react';
+import { MapPin, Phone, Globe, Star, Mail, ArrowLeft, Building2, UserRound, CheckCircle2, ChevronRight, AlertTriangle, Users, Clock, PlusSquare, MessageSquare, Ambulance, Search, ShieldAlert, Share2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/card';
-import { sampleHospitals } from '@/data/sample-data';
+import { useAuth } from '@/lib/auth/AuthContext';
+import { OtpVerificationModal } from '@/components/auth/OtpVerificationModal';
 
 const SAMPLE_HOSPITALS: Hospital[] = [
   { id: 'h1', name: 'Apollo Hospital Chennai', city: 'Chennai', area: 'Greams Road', emergency_phone: '1066', phone: '044-28293333', is_24_7: true, has_bengali_doctor: true, main_branch: true, specializations: ['Cardiology', 'Neurology', 'Oncology'], description: 'Leading multi-specialty hospital.', images: ['/images/hospitals/apollo-chennai.jpg'], created_at: '' },
@@ -28,35 +29,55 @@ const SAMPLE_DOCTORS: BengaliDoctor[] = [
   { id: 'd5', doctor_name: 'Dr. Priyanka Ghosh', specialization: 'Gynecologist', hospital_id: 'h5', experience: '10 years', languages: ['Bengali', 'English'], photo: '', phone: '', email: '' }
 ];
 
-export default function HospitalDetailsPage({ params }: { params: { id: string } }) {
+export default function HospitalDetailsPage({ params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = React.use(params);
+  const id = resolvedParams.id;
   const [hospital, setHospital] = useState<Hospital | null>(null);
   const [doctors, setDoctors] = useState<BengaliDoctor[]>([]);
   const [staff, setStaff] = useState<BengaliStaff[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeImage, setActiveImage] = useState(0);
   const [activeTab, setActiveTab] = useState<'doctors' | 'staff'>('doctors');
+  const [isVerified, setIsVerified] = useState(false);
+  const [showOtpModal, setShowOtpModal] = useState(false);
+  const [doctorSearch, setDoctorSearch] = useState('');
+  const { user } = useAuth();
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setIsVerified(localStorage.getItem('directory_verified') === 'true');
+    }
+  }, []);
+
+  const canViewDoctors = isVerified || !!user;
 
   useEffect(() => {
     loadData();
-  }, [params.id]);
+  }, [id]);
 
-  async function loadData() {
-    const foundHospital = SAMPLE_HOSPITALS.find((h: Hospital) => h.id === params.id) || sampleHospitals.find((h: Hospital) => h.id === params.id) as Hospital;
-    setHospital(foundHospital || null);
-    
-    const foundDoctors = SAMPLE_DOCTORS.filter(d => d.hospital_id === params.id);
-    
+  const loadData = async () => {
     try {
-      if (foundHospital) {
-        const dSnap = await getDocs(query(collection(db, COLLECTIONS.bengali_doctors), where("hospital_id", "==", params.id)));
-        const dDb = dSnap.docs.map(d => ({id: d.id, ...d.data()} as BengaliDoctor));
-        setDoctors(dDb.length > 0 ? dDb : foundDoctors);
-        
-        const sSnap = await getDocs(query(collection(db, COLLECTIONS.bengali_staff || 'bengali_staff'), where("hospital_id", "==", params.id)));
-        setStaff(sSnap.docs.map(d => ({id: d.id, ...d.data()} as BengaliStaff)));
+      let currentHospital = null;
+      
+      // Load Hospital Document from DB
+      const hSnap = await getDoc(doc(db, COLLECTIONS.hospitals, id));
+      if (hSnap.exists()) {
+         currentHospital = { id: hSnap.id, ...hSnap.data() } as Hospital;
+      } else {
+         currentHospital = SAMPLE_HOSPITALS.find(h => h.id === id) || null;
       }
+      setHospital(currentHospital);
+
+      // Load Doctors & Staff
+      const dSnap = await getDocs(query(collection(db, COLLECTIONS.bengali_doctors), where("hospital_id", "==", id)));
+      setDoctors(dSnap.docs.map(d => ({id: d.id, ...d.data()} as BengaliDoctor)));
+        
+      const sSnap = await getDocs(query(collection(db, COLLECTIONS.bengali_staff || 'bengali_staff'), where("hospital_id", "==", id)));
+      setStaff(sSnap.docs.map(d => ({id: d.id, ...d.data()} as BengaliStaff)));
     } catch (e) {
-      setDoctors(foundDoctors);
+      console.error(e);
+      const foundHospital = SAMPLE_HOSPITALS.find(h => h.id === id);
+      setHospital(foundHospital || null);
     }
     
     setLoading(false);
@@ -117,11 +138,36 @@ export default function HospitalDetailsPage({ params }: { params: { id: string }
                 <div className="pb-1 text-white">
                   <div className="flex flex-wrap gap-2 mb-2">
                     {hospital.is_24_7 && <Badge variant="red" className="shadow-sm">24/7 Service</Badge>}
-                    {hospital.has_bengali_doctor && <Badge variant="bengali" className="shadow-sm">🗣️ Bengali Support</Badge>}
+                    {hospital.has_bengali_doctor ? (
+                      <Badge variant="bengali" className="shadow-sm bg-emerald-100/90 text-emerald-900 border-emerald-200">🗣️ Bengali Doctors: Yes</Badge>
+                    ) : (
+                      <Badge variant="default" className="shadow-sm bg-black/30 text-white border-white/20">Bengali Doctors: No</Badge>
+                    )}
+                    {hospital.has_bengali_staff ? (
+                      <Badge variant="bengali" className="shadow-sm bg-blue-100/90 text-blue-900 border-blue-200">👥 Bengali Staff: Yes</Badge>
+                    ) : (
+                      <Badge variant="default" className="shadow-sm bg-black/30 text-white border-white/20">Bengali Staff: No</Badge>
+                    )}
                   </div>
                   <h1 className="text-3xl sm:text-5xl font-bold font-display tracking-tight drop-shadow-md">
                     {hospital.name}
                   </h1>
+                  <p className="mt-3 text-lg opacity-90 drop-shadow flex flex-wrap items-center gap-x-4 gap-y-2">
+                    <span className="flex items-center gap-1.5"><MapPin className="w-5 h-5"/> {hospital.area}, {hospital.city}</span>
+                  </p>
+                  
+                  {/* SEGREGATED EMERGENCY NUMBER */}
+                  {hospital.emergency_phone && (
+                    <div className="mt-6 inline-flex items-center gap-3 bg-red-600/90 hover:bg-red-600 backdrop-blur-md px-6 py-3 rounded-2xl border border-red-500 shadow-xl transition-colors cursor-pointer group">
+                      <div className="bg-white/20 p-2 rounded-full group-hover:scale-110 transition-transform">
+                        <Phone className="w-5 h-5 text-white animate-pulse" />
+                      </div>
+                      <div>
+                        <p className="text-xs text-red-100 font-bold uppercase tracking-wider">Emergency Number</p>
+                        <a href={`tel:${hospital.emergency_phone}`} className="text-2xl font-black text-white font-mono tracking-tight">{hospital.emergency_phone}</a>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
               {hospital.main_branch && (
@@ -277,23 +323,76 @@ export default function HospitalDetailsPage({ params }: { params: { id: string }
 
               <div className="p-6 sm:p-8">
                 {activeTab === 'doctors' ? (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {doctors.map(doc => (
-                      <Card key={doc.id} className="p-4 hover:shadow-md transition-all">
-                        <div className="flex items-start gap-3">
-                           <div className="w-14 h-14 rounded-full bg-surface border border-border overflow-hidden shrink-0">
-                             {doc.photo ? <img src={doc.photo} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center text-primary/30"><UserRound className="w-6 h-6"/></div>}
-                           </div>
-                           <div>
-                             <h4 className="font-bold text-text-primary">{doc.doctor_name}</h4>
-                             <p className="text-sm font-medium text-primary">{doc.specialization}</p>
-                             <p className="text-xs text-text-muted mt-1">{doc.experience || 'Experience N/A'}</p>
-                           </div>
-                        </div>
-                      </Card>
-                    ))}
-                    {doctors.length === 0 && <p className="text-text-muted col-span-2 py-4">No Bengali doctors listed yet.</p>}
-                  </div>
+                  !canViewDoctors ? (
+                    <div className="text-center py-12 px-4 bg-surface rounded-2xl border border-border">
+                      <ShieldAlert className="w-12 h-12 text-primary mx-auto mb-4" />
+                      <h3 className="text-xl font-bold text-text-primary mb-2">Verification Required</h3>
+                      <p className="text-text-muted mb-6 max-w-md mx-auto">
+                        For privacy reasons, doctor details are only visible to verified users. Please login to your account or verify your phone number and email.
+                      </p>
+                      <Button onClick={() => setShowOtpModal(true)} variant="primary" className="shadow-md">
+                        Verify Now to View Doctors
+                      </Button>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="mb-6 relative">
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted" />
+                        <input
+                          type="text"
+                          placeholder="Search doctors by name or specialization..."
+                          value={doctorSearch}
+                          onChange={e => setDoctorSearch(e.target.value)}
+                          className="w-full pl-12 pr-4 py-3 bg-surface border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/20 outline-none"
+                        />
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {doctors.filter(d => 
+                           d.doctor_name.toLowerCase().includes(doctorSearch.toLowerCase()) || 
+                           d.specialization.toLowerCase().includes(doctorSearch.toLowerCase())
+                        ).map(doc => (
+                          <Card key={doc.id} className="p-4 hover:shadow-md transition-all">
+                            <div className="flex items-start justify-between gap-3">
+                              <div className="flex items-start gap-3">
+                                <div className="w-14 h-14 rounded-full bg-surface border border-border overflow-hidden shrink-0">
+                                  {doc.photo ? <img src={doc.photo} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center text-primary/30"><UserRound className="w-6 h-6"/></div>}
+                                </div>
+                                <div>
+                                  <h4 className="font-bold text-text-primary">{doc.doctor_name}</h4>
+                                  <p className="text-sm font-medium text-primary">{doc.specialization}</p>
+                                  <p className="text-xs text-text-muted mt-1">{doc.experience || 'Experience N/A'}</p>
+                                  {doc.social_links && (
+                                    <div className="flex items-center gap-2 mt-2">
+                                      {doc.social_links.linkedin && <a href={doc.social_links.linkedin} target="_blank" rel="noreferrer" className="text-xs text-blue-600 hover:underline">LinkedIn</a>}
+                                      {doc.social_links.facebook && <a href={doc.social_links.facebook} target="_blank" rel="noreferrer" className="text-xs text-blue-600 hover:underline">Facebook</a>}
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                              <button onClick={() => {
+                                if (navigator.share) {
+                                  navigator.share({
+                                    title: `${doc.doctor_name} at ${hospital.name}`,
+                                    text: `Check out ${doc.doctor_name} (${doc.specialization}) at ${hospital.name}.`,
+                                    url: window.location.href,
+                                  });
+                                } else {
+                                  alert('Sharing not supported on this browser.');
+                                }
+                              }} className="p-2 text-text-muted hover:text-primary transition-colors cursor-pointer" title="Share Doctor">
+                                <Share2 className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </Card>
+                        ))}
+                        {doctors.length === 0 && <p className="text-text-muted col-span-2 py-4">No Bengali doctors listed yet.</p>}
+                        {doctors.length > 0 && doctors.filter(d => 
+                           d.doctor_name.toLowerCase().includes(doctorSearch.toLowerCase()) || 
+                           d.specialization.toLowerCase().includes(doctorSearch.toLowerCase())
+                        ).length === 0 && <p className="text-text-muted col-span-2 py-4">No doctors match your search.</p>}
+                      </div>
+                    </>
+                  )
                 ) : (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {staff.map(member => (
@@ -355,6 +454,15 @@ export default function HospitalDetailsPage({ params }: { params: { id: string }
           </div>
         </div>
       </div>
+
+      <OtpVerificationModal 
+        isOpen={showOtpModal} 
+        onClose={() => setShowOtpModal(false)} 
+        onSuccess={() => {
+          setIsVerified(true);
+          setShowOtpModal(false);
+        }} 
+      />
     </div>
   );
 }

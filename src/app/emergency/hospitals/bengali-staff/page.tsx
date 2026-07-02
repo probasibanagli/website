@@ -35,14 +35,37 @@ export default function BengaliStaffPage() {
 
   useEffect(() => {
     async function loadData() {
-      setStaffList(SAMPLE_STAFF);
-      setHospitals(SAMPLE_HOSPITALS);
-      setLoading(false);
+      try {
+        const staffSnap = await getDocs(collection(db, COLLECTIONS.bengali_staff || 'bengali_staff'));
+        const docsData = staffSnap.docs.map(doc => ({ id: doc.id, ...doc.data() } as BengaliStaff));
+        setStaffList(docsData.length > 0 ? docsData : SAMPLE_STAFF);
+        
+        const hospSnap = await getDocs(collection(db, COLLECTIONS.hospitals));
+        const hospData: Record<string, Hospital> = {};
+        hospSnap.docs.forEach(d => {
+          hospData[d.id] = { id: d.id, ...d.data() } as Hospital;
+        });
+        
+        let finalHospitals = { ...hospData };
+        // If we fell back to SAMPLE_STAFF, we need to ensure the sample hospitals exist in the mapping
+        if (docsData.length === 0) {
+           finalHospitals = { ...SAMPLE_HOSPITALS, ...finalHospitals };
+        }
+        
+        if (Object.keys(finalHospitals).length > 0) {
+          setHospitals(finalHospitals);
+        } else {
+          setHospitals(SAMPLE_HOSPITALS);
+        }
+      } catch (err) {
+        console.error(err);
+        setStaffList(SAMPLE_STAFF);
+        setHospitals(SAMPLE_HOSPITALS);
+      } finally {
+        setLoading(false);
+      }
     }
-    const handle = requestAnimationFrame(() => {
-      loadData();
-    });
-    return () => cancelAnimationFrame(handle);
+    loadData();
   }, []);
 
   const roles = useMemo(() => Array.from(new Set(staffList.map(s => s.role).filter(Boolean))), [staffList]);
@@ -200,16 +223,11 @@ export default function BengaliStaffPage() {
                   </div>
 
                   <div className="mt-6 pt-4 border-t border-border flex items-center gap-2">
-                    {staff.phone && (
-                      <a href={`tel:${staff.phone}`} className="flex-1">
-                        <Button variant="outline" size="sm" className="w-full"><Phone className="w-3.5 h-3.5 mr-1.5" /> Call</Button>
-                      </a>
-                    )}
-                    {staff.email && (
-                      <a href={`mailto:${staff.email}`} className="flex-1">
-                        <Button variant="ghost" size="sm" className="w-full bg-surface"><Mail className="w-3.5 h-3.5 mr-1.5" /> Email</Button>
-                      </a>
-                    )}
+                    <Link href={`/emergency/hospitals/bengali-staff/${staff.id}`} className="flex-1">
+                      <Button variant="primary" size="sm" className="w-full">
+                        View Profile
+                      </Button>
+                    </Link>
                   </div>
                 </Card>
               );

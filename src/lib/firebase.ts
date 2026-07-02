@@ -16,14 +16,7 @@ const firebaseConfig = {
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
 const auth = getAuth(app);
 
-// Initialize Firestore with options (singleton pattern)
-let db: Firestore;
-try {
-  db = initializeFirestore(app, {
-    experimentalForceLongPolling: true,
-  });
-} catch (e) {
-  db = getFirestore(app);
-}
+// Initialize Firestore (singleton pattern)
+const db = getFirestore(app);
 
 export { app, auth, db };

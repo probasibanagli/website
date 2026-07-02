@@ -28,13 +28,22 @@ export default function BengaliHospitalsPage() {
 
   useEffect(() => {
     async function loadHospitals() {
-      setHospitals(SAMPLE_HOSPITALS);
-      setLoading(false);
+      try {
+        const snap = await getDocs(collection(db, COLLECTIONS.hospitals));
+        const data = snap.docs.map(doc => doc.data() as Hospital);
+        
+        // Only show hospitals that have a bengali doctor OR bengali staff OR are explicitly bengali hospitals
+        const bengaliHospitals = data.filter(h => h.has_bengali_doctor || h.has_bengali_staff);
+        
+        setHospitals(bengaliHospitals.length > 0 ? bengaliHospitals : SAMPLE_HOSPITALS);
+      } catch (err) {
+        console.error(err);
+        setHospitals(SAMPLE_HOSPITALS);
+      } finally {
+        setLoading(false);
+      }
     }
-    const handle = requestAnimationFrame(() => {
-      loadHospitals();
-    });
-    return () => cancelAnimationFrame(handle);
+    loadHospitals();
   }, []);
 
   const cities = useMemo(() => Array.from(new Set(hospitals.map(h => h.city).filter(Boolean))), [hospitals]);

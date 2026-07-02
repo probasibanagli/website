@@ -107,6 +107,8 @@ export interface Hospital {
   id: string;
   name: string;
   city: string;
+  state?: string;
+  district?: string;
   area?: string;
   address?: string;
   phone?: string;
@@ -114,6 +116,7 @@ export interface Hospital {
   specializations: string[];
   is_24_7: boolean;
   has_bengali_doctor: boolean;
+  has_bengali_staff?: boolean;
   google_maps_url?: string;
   lat?: number;
   lng?: number;
@@ -137,6 +140,12 @@ export interface BengaliDoctor {
   photo: string;
   phone: string;
   email: string;
+  social_links?: {
+    linkedin?: string;
+    facebook?: string;
+    instagram?: string;
+    x?: string;
+  };
   created_at?: string;
   updated_at?: string;
 }
