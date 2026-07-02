@@ -21,7 +21,7 @@ export default function StaffDetailsPage({ params }: { params: Promise<{ id: str
   const [loading, setLoading] = useState(true);
   const [isVerified, setIsVerified] = useState(false);
   const [showOtpModal, setShowOtpModal] = useState(false);
-  const { user } = useAuth();
+  const { firebaseUser: user } = useAuth();
 
   useEffect(() => {
     if (typeof window !== 'undefined') {

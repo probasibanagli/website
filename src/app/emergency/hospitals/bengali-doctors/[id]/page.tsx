@@ -45,7 +45,7 @@ export default function DoctorDetailsPage({ params }: { params: Promise<{ id: st
   const [loading, setLoading] = useState(true);
   const [isVerified, setIsVerified] = useState(false);
   const [showOtpModal, setShowOtpModal] = useState(false);
-  const { user } = useAuth();
+  const { firebaseUser: user } = useAuth();
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
