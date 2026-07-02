@@ -173,6 +173,7 @@ export interface MatrimonialProfile {
   id: string;
   user_id: string;
   profile_id?: string; // e.g. PB-0001
+  profile_for?: string; // added
 
   // Personal
   full_name?: string;
@@ -216,6 +217,8 @@ export interface MatrimonialProfile {
   sub_caste?: string;
   gotra?: string;
   manglik?: string;
+  raasi?: string;
+  star?: string;
 
   // Lifestyle
   diet?: string;

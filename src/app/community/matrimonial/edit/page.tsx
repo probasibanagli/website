@@ -11,8 +11,8 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import {
   CITIES, HEIGHTS, MARITAL_STATUSES, COMPLEXIONS, FAMILY_TYPES, FAMILY_VALUES, FAMILY_STATUS,
-  DIET_TYPES, EDUCATION_LEVELS, INCOME_RANGES, BENGALI_SUBCASTES, WEST_BENGAL_DISTRICTS,
-  SMOKING_HABITS, DRINKING_HABITS, MANGLIK_OPTIONS, HOBBIES_LIST, RELIGIONS, BLOOD_GROUPS,
+  DIET_TYPES, EDUCATION_LEVELS, INCOME_RANGES, CASTE_MAPPING, WEST_BENGAL_DISTRICTS,
+  SMOKING_HABITS, DRINKING_HABITS, MANGLIK_OPTIONS, HOBBIES_LIST, RELIGIONS, BLOOD_GROUPS, NAKSHATRAS, SUBCASTE_MAPPING, RAASIS, RAASI_NAKSHATRAS_MAPPING,
 } from '@/lib/constants';
 import { getMyProfile, saveMyProfile, storeMedia, getMedia } from '@/lib/matrimony-service';
 import type { MatrimonialProfile } from '@/types';
@@ -67,7 +67,21 @@ export default function EditMatrimonialProfile() {
   }, [router]);
 
   const updateField = useCallback((field: string, value: string | number) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData(prev => {
+      const next = { ...prev, [field]: value };
+      if (field === 'religion') {
+        next.caste = '';
+        next.sub_caste = '';
+        next.gotra = '';
+        next.raasi = '';
+        next.star = '';
+      } else if (field === 'caste') {
+        next.sub_caste = '';
+      } else if (field === 'raasi') {
+        next.star = '';
+      }
+      return next;
+    });
     setSaved(false);
   }, []);
 
@@ -218,8 +232,11 @@ export default function EditMatrimonialProfile() {
       annual_income: formData.annual_income as string,
       work_city: formData.work_city as string,
       religion: formData.religion as string,
+      caste: formData.caste as string,
       sub_caste: formData.sub_caste as string,
-      gotra: formData.gotra as string,
+      gotra: (formData.religion === 'Hindu' ? formData.gotra : '') as string,
+      raasi: (formData.religion === 'Hindu' ? formData.raasi : '') as string,
+      star: (formData.religion === 'Hindu' ? formData.star : '') as string,
       manglik: formData.manglik as string,
       diet: formData.diet as string,
       smoking: formData.smoking as string,
@@ -393,12 +410,31 @@ export default function EditMatrimonialProfile() {
               <h2 className="text-lg font-bold mb-4">Religion & Lifestyle</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <FormSelect label="Religion" field="religion" options={RELIGIONS} />
-                <FormSelect label="Sub-Caste" field="sub_caste" options={BENGALI_SUBCASTES} />
+                <FormSelect 
+                  label="Caste" 
+                  field="caste" 
+                  options={formData.religion ? (CASTE_MAPPING[formData.religion as string] || []) : []} 
+                />
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <FormInput label="Gotra" field="gotra" />
+                <FormSelect 
+                  label="Sub-Caste" 
+                  field="sub_caste" 
+                  options={formData.caste ? (SUBCASTE_MAPPING[formData.caste as string] || []) : []} 
+                />
                 <FormSelect label="Manglik" field="manglik" options={MANGLIK_OPTIONS} />
               </div>
+              {formData.religion === 'Hindu' && (
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 rounded-xl bg-orange-50/30 border border-orange-100/50 animate-fade-in">
+                  <FormInput label="Gotra" field="gotra" placeholder="e.g. Kashyap" />
+                  <FormSelect label="Raasi (Zodiac Sign)" field="raasi" options={RAASIS} />
+                  <FormSelect 
+                    label="Star (Nakshatra)" 
+                    field="star" 
+                    options={formData.raasi ? (RAASI_NAKSHATRAS_MAPPING[formData.raasi as string] || []) : []} 
+                  />
+                </div>
+              )}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <FormSelect label="Diet" field="diet" options={DIET_TYPES} />
                 <FormSelect label="Smoking" field="smoking" options={SMOKING_HABITS} />

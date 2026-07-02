@@ -137,9 +137,10 @@ export default function RegisterPage() {
       const formatted = formatPhone(form.phone);
       await signUp(form.email, form.password, form.full_name, formatted, true);
 
-      setSuccess('Account created successfully! Redirecting...');
+      await sendVerificationEmail();
+      setSuccess('Account created! Verification email sent. Please check your inbox.');
       setTimeout(() => {
-        router.push('/');
+        setStep('email-sent');
       }, 1500);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Verification failed';

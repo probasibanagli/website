@@ -5,7 +5,7 @@ import Link from 'next/link';
 import {
   Search, MapPin, GraduationCap, Briefcase, CheckCircle2, Lock, Heart,
   SlidersHorizontal, X, ChevronDown, Users, Star, ArrowUpDown, Ruler,
-  Utensils, User,
+  Utensils, User, UserPlus, AlertCircle, Mail, Phone, ArrowRight,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/card';
@@ -13,6 +13,7 @@ import { Button } from '@/components/ui/button';
 import { sampleMatrimonialProfiles } from '@/data/sample-data';
 import { CITIES, MARITAL_STATUSES, DIET_TYPES, EDUCATION_LEVELS, RELIGIONS } from '@/lib/constants';
 import { getMyProfile, searchProfiles, sortProfiles, type MatrimonyFilters, type SortOption, getMedia } from '@/lib/matrimony-service';
+import { useAuth } from '@/lib/auth/AuthContext';
 
 function ProfileCardAvatar({ profile, className = "w-16 h-16" }: { profile: any; className?: string }) {
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
@@ -52,6 +53,7 @@ function ProfileCardAvatar({ profile, className = "w-16 h-16" }: { profile: any;
 }
 
 export default function MatrimonialPage() {
+  const { firebaseUser, profile: userProfile, loading: authLoading } = useAuth();
   const [hasProfile, setHasProfile] = useState<boolean | null>(null);
 
   useEffect(() => {
@@ -123,16 +125,41 @@ export default function MatrimonialPage() {
             </div>
 
             <div className="flex gap-3 animate-fade-in delay-200">
-              <Link href="/community/matrimonial/register">
-                <Button variant="secondary" size="lg" className="shadow-lg">
-                  <Heart className="w-5 h-5" /> Register Free
-                </Button>
-              </Link>
-              <Link href="/community/matrimonial/dashboard">
-                <Button variant="outline" size="lg" className="border-white/30 text-white hover:bg-white/10 hover:text-white">
-                  My Dashboard
-                </Button>
-              </Link>
+              {authLoading ? (
+                <div className="h-11 w-40 bg-white/10 animate-pulse rounded-xl" />
+              ) : !firebaseUser ? (
+                <>
+                  <Link href="/auth/register">
+                    <Button variant="secondary" size="lg" className="shadow-lg flex items-center gap-2">
+                      <UserPlus className="w-5 h-5" /> Sign Up
+                    </Button>
+                  </Link>
+                  <Link href="/auth/login">
+                    <Button variant="outline" size="lg" className="border-white/30 text-white hover:bg-white/10 hover:text-white">
+                      Login
+                    </Button>
+                  </Link>
+                </>
+              ) : (!userProfile?.email_verified || !userProfile?.phone_verified) ? (
+                <Link href="/profile">
+                  <Button variant="secondary" size="lg" className="shadow-lg flex items-center gap-2">
+                    <AlertCircle className="w-5 h-5" /> Verify Account
+                  </Button>
+                </Link>
+              ) : (
+                <>
+                  <Link href="/community/matrimonial/register">
+                    <Button variant="secondary" size="lg" className="shadow-lg">
+                      <Heart className="w-5 h-5" /> Register Free
+                    </Button>
+                  </Link>
+                  <Link href="/community/matrimonial/dashboard">
+                    <Button variant="outline" size="lg" className="border-white/30 text-white hover:bg-white/10 hover:text-white">
+                      My Dashboard
+                    </Button>
+                  </Link>
+                </>
+              )}
             </div>
           </div>
 
@@ -156,10 +183,116 @@ export default function MatrimonialPage() {
         </div>
       </div>
 
-      {hasProfile === null ? (
+      {hasProfile === null || authLoading ? (
         <div className="max-w-7xl mx-auto px-4 py-20 flex flex-col items-center justify-center gap-4">
           <div className="w-10 h-10 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
           <p className="text-sm text-text-muted">Loading profile status...</p>
+        </div>
+      ) : !firebaseUser ? (
+        <div className="max-w-4xl mx-auto px-4 py-16 animate-fade-in">
+          <Card className="relative overflow-hidden border border-primary/20 shadow-xl bg-white/80 backdrop-blur-md p-8 sm:p-12 text-center">
+            {/* Soft decorative background glow */}
+            <div className="absolute -top-20 -right-20 w-48 h-48 rounded-full bg-primary/10 blur-3xl" />
+            <div className="absolute -bottom-20 -left-20 w-48 h-48 rounded-full bg-accent/10 blur-3xl" />
+
+            <div className="relative z-10 flex flex-col items-center">
+              {/* Animated Lock Badge */}
+              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary-light to-accent-light flex items-center justify-center mb-6 shadow-md ring-4 ring-primary/10 animate-bounce">
+                <Lock className="w-8 h-8 text-primary" />
+              </div>
+
+              <h2 className="text-2xl sm:text-3xl font-bold font-display text-text-primary mb-3">
+                Unlock Matrimonial Profiles
+              </h2>
+              
+              <p className="text-text-muted max-w-xl mx-auto mb-8 text-sm sm:text-base leading-relaxed">
+                This matrimonial portal is exclusive to Bengali community members residing in Tamil Nadu. To protect the privacy of our brides and grooms, profile browsing is restricted to registered and verified members only.
+              </p>
+
+              {/* Feature Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-lg mx-auto mb-8 text-left">
+                {[
+                  { text: 'Browse 100+ verified profiles in Tamil Nadu', icon: '🔍' },
+                  { text: 'Filter by caste, profession, education, and city', icon: '🏛️' },
+                  { text: 'Send connection interests and chat directly', icon: '📩' },
+                  { text: 'Safe & secure environment with admin verification', icon: '🔒' },
+                ].map((item, idx) => (
+                  <div key={idx} className="flex items-start gap-2.5 p-3 rounded-xl bg-surface border border-border/50">
+                    <span className="text-lg shrink-0">{item.icon}</span>
+                    <span className="text-xs sm:text-sm text-text-muted leading-snug">{item.text}</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* Call to Actions */}
+              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center w-full max-w-md">
+                <Link href="/auth/register" className="w-full sm:w-auto">
+                  <Button variant="primary" size="lg" className="w-full sm:px-8 shadow-lg shadow-primary/20 hover:scale-105 transition-all flex items-center justify-center gap-2">
+                    <UserPlus className="w-5 h-5" /> Sign Up Now
+                  </Button>
+                </Link>
+                <Link href="/auth/login" className="w-full sm:w-auto">
+                  <Button variant="outline" size="lg" className="w-full sm:px-8 border-border text-text-primary hover:bg-surface">
+                    Login to Account
+                  </Button>
+                </Link>
+              </div>
+
+              <p className="text-[11px] text-text-muted mt-6 max-w-xs">
+                By registering, you agree to our terms of service and consent to email & phone verification.
+              </p>
+            </div>
+          </Card>
+        </div>
+      ) : (!userProfile?.email_verified || !userProfile?.phone_verified) ? (
+        <div className="max-w-4xl mx-auto px-4 py-16 animate-fade-in">
+          <Card className="relative overflow-hidden border border-amber-200/60 shadow-xl bg-white/80 backdrop-blur-md p-8 sm:p-12 text-center animate-fade-in">
+            {/* Soft decorative background glow */}
+            <div className="absolute -top-20 -right-20 w-48 h-48 rounded-full bg-amber-100/30 blur-3xl" />
+            <div className="absolute -bottom-20 -left-20 w-48 h-48 rounded-full bg-orange-100/20 blur-3xl" />
+
+            <div className="relative z-10 flex flex-col items-center">
+              {/* Animated Warning Badge */}
+              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-amber-100 to-orange-100 flex items-center justify-center mb-6 shadow-md ring-4 ring-amber-500/10 animate-pulse">
+                <AlertCircle className="w-8 h-8 text-amber-600" />
+              </div>
+
+              <h2 className="text-2xl sm:text-3xl font-bold font-display text-text-primary mb-3">
+                Verification Required
+              </h2>
+              
+              <p className="text-text-muted max-w-xl mx-auto mb-8 text-sm sm:text-base leading-relaxed">
+                To protect the privacy of our brides and grooms, both your <strong>Email ID</strong> and <strong>Phone Number</strong> must be verified before you can access the matrimonial section.
+              </p>
+
+              {/* Status List */}
+              <div className="flex flex-col gap-3 max-w-md w-full mb-8 text-left mx-auto">
+                <div className={`p-4 rounded-xl border flex items-center justify-between ${userProfile?.email_verified ? 'bg-green-50 border-green-200 text-green-700' : 'bg-red-50 border-red-200 text-red-700'}`}>
+                  <span className="text-sm font-semibold flex items-center gap-2.5">
+                    <Mail className="w-4 h-4" /> Email Address {userProfile?.email && `(${userProfile.email})`}
+                  </span>
+                  <span className="text-xs font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-white/55 shadow-sm border border-black/5">
+                    {userProfile?.email_verified ? 'Verified' : 'Pending'}
+                  </span>
+                </div>
+                <div className={`p-4 rounded-xl border flex items-center justify-between ${userProfile?.phone_verified ? 'bg-green-50 border-green-200 text-green-700' : 'bg-red-50 border-red-200 text-red-700'}`}>
+                  <span className="text-sm font-semibold flex items-center gap-2.5">
+                    <Phone className="w-4 h-4" /> Phone Number {userProfile?.phone && `(${userProfile.phone})`}
+                  </span>
+                  <span className="text-xs font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-white/55 shadow-sm border border-black/5">
+                    {userProfile?.phone_verified ? 'Verified' : 'Pending'}
+                  </span>
+                </div>
+              </div>
+
+              {/* Action Button */}
+              <Link href="/profile" className="w-full sm:w-auto">
+                <Button variant="primary" size="lg" className="w-full sm:px-8 shadow-lg shadow-primary/20 hover:scale-105 transition-all flex items-center justify-center gap-2">
+                  <ArrowRight className="w-5 h-5" /> Go to Profile to Verify
+                </Button>
+              </Link>
+            </div>
+          </Card>
         </div>
       ) : !hasProfile ? (
         <div className="max-w-4xl mx-auto px-4 py-16 animate-fade-in">
