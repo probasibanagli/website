@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { Droplets, MapPin, Phone } from 'lucide-react';
+import { Droplets, MapPin, Phone, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/card';
@@ -71,6 +71,7 @@ export default function BloodPage() {
               </div>
               <div className="flex items-center gap-2 mt-4 pt-4 border-t border-border">
                 {bank.phone && <a href={`tel:${bank.phone}`} className="flex-1"><Button variant="danger" size="sm" className="w-full"><Phone className="w-3.5 h-3.5" />Call</Button></a>}
+                {bank.website && <a href={bank.website} target="_blank" rel="noopener noreferrer"><Button variant="ghost" size="sm" title="Visit Website"><Globe className="w-4 h-4" /></Button></a>}
                 {bank.google_maps_url && <a href={bank.google_maps_url} target="_blank" rel="noopener noreferrer"><Button variant="ghost" size="sm"><MapPin className="w-4 h-4" /></Button></a>}
               </div>
             </Card>

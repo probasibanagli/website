@@ -149,6 +149,7 @@ export interface BloodBank {
   phone?: string;
   available_groups: string[];
   google_maps_url?: string;
+  website?: string;
   lat?: number;
   lng?: number;
 }
