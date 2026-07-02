@@ -6,7 +6,7 @@ import { useParams } from 'next/navigation';
 import {
   ArrowLeft, MapPin, GraduationCap, Briefcase, CheckCircle2, Lock, Heart,
   MessageCircle, Star, Share2, Flag, User, Users, BookOpen, Utensils,
-  Ruler, Droplets, Phone, Mail, Sparkles, ChevronRight, Eye, Video
+  Ruler, Droplets, Phone, Mail, Sparkles, ChevronRight, Eye, Video, UserPlus, ArrowRight, AlertCircle
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/Badge';
@@ -16,6 +16,7 @@ import {
   isShortlisted, toggleShortlist, hasInterest, sendInterest, getMyProfile, getMedia
 } from '@/lib/matrimony-service';
 import type { MatrimonialProfile } from '@/types';
+import { useAuth } from '@/lib/auth/AuthContext';
 
 function InfoRow({ icon: Icon, label, value }: { icon: React.ElementType; label: string; value?: string }) {
   if (!value) return null;
@@ -45,6 +46,7 @@ function SectionCard({ title, icon: Icon, children, className }: { title: string
 }
 
 export default function MatrimonialDetailPage() {
+  const { firebaseUser, profile: userProfile, loading: authLoading } = useAuth();
   const params = useParams();
   const [profile, setProfile] = useState<MatrimonialProfile | undefined>(undefined);
   const [shortlisted, setShortlisted] = useState(false);
@@ -115,10 +117,126 @@ export default function MatrimonialDetailPage() {
       .slice(0, 3);
   }, [profile]);
 
-  if (loading || hasProfile === null) {
+  if (loading || hasProfile === null || authLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-surface animate-fade-in">
         <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full" />
+      </div>
+    );
+  }
+
+  if (!firebaseUser) {
+    return (
+      <div className="min-h-screen bg-surface">
+        {/* Mock Hero Banner */}
+        <div className="bg-gradient-to-r from-primary via-primary-dark to-[#7a2d14] py-6">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <Link href="/community/matrimonial" className="inline-flex items-center gap-2 text-sm text-white/70 hover:text-white transition-colors mb-4">
+              <ArrowLeft className="w-4 h-4" /> Back to profiles
+            </Link>
+          </div>
+        </div>
+
+        <div className="max-w-4xl mx-auto px-4 -mt-8 pb-12 animate-fade-in">
+          <Card className="relative overflow-hidden border border-primary/20 shadow-xl bg-white/95 backdrop-blur-md p-8 sm:p-12 text-center">
+            <div className="absolute -top-20 -right-20 w-48 h-48 rounded-full bg-primary/10 blur-3xl" />
+            <div className="absolute -bottom-20 -left-20 w-48 h-48 rounded-full bg-accent/10 blur-3xl" />
+
+            <div className="relative z-10 flex flex-col items-center">
+              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary-light to-accent-light flex items-center justify-center mb-6 shadow-md ring-4 ring-primary/10 animate-bounce">
+                <Lock className="w-8 h-8 text-primary" />
+              </div>
+
+              <h2 className="text-2xl sm:text-3xl font-bold font-display text-text-primary mb-3">
+                Profile is Locked
+              </h2>
+              
+              <p className="text-text-muted max-w-xl mx-auto mb-8 text-sm sm:text-base leading-relaxed">
+                To protect the privacy of our members, you must sign up and verify your credentials to view full profile details, family backgrounds, and partner preferences.
+              </p>
+
+              {/* Call to Actions */}
+              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center w-full max-w-md">
+                <Link href="/auth/register" className="w-full sm:w-auto">
+                  <Button variant="primary" size="lg" className="w-full sm:px-8 shadow-lg shadow-primary/20 hover:scale-105 transition-all flex items-center justify-center gap-2">
+                    <UserPlus className="w-5 h-5" /> Sign Up Now
+                  </Button>
+                </Link>
+                <Link href="/community/matrimonial" className="w-full sm:w-auto">
+                  <Button variant="outline" size="lg" className="w-full sm:px-8 border-border text-text-primary hover:bg-surface">
+                    Cancel & Go Back
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
+  if (!userProfile?.email_verified || !userProfile?.phone_verified) {
+    return (
+      <div className="min-h-screen bg-surface">
+        {/* Mock Hero Banner */}
+        <div className="bg-gradient-to-r from-primary via-primary-dark to-[#7a2d14] py-6">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <Link href="/community/matrimonial" className="inline-flex items-center gap-2 text-sm text-white/70 hover:text-white transition-colors mb-4">
+              <ArrowLeft className="w-4 h-4" /> Back to profiles
+            </Link>
+          </div>
+        </div>
+
+        <div className="max-w-4xl mx-auto px-4 -mt-8 pb-12 animate-fade-in">
+          <Card className="relative overflow-hidden border border-amber-200/60 shadow-xl bg-white/95 backdrop-blur-md p-8 sm:p-12 text-center">
+            <div className="absolute -top-20 -right-20 w-48 h-48 rounded-full bg-amber-100/30 blur-3xl" />
+            <div className="absolute -bottom-20 -left-20 w-48 h-48 rounded-full bg-orange-100/20 blur-3xl" />
+
+            <div className="relative z-10 flex flex-col items-center">
+              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-amber-100 to-orange-100 flex items-center justify-center mb-6 shadow-md ring-4 ring-amber-500/10 animate-pulse">
+                <AlertCircle className="w-8 h-8 text-amber-600" />
+              </div>
+
+              <h2 className="text-2xl sm:text-3xl font-bold font-display text-text-primary mb-3">
+                Verification Required
+              </h2>
+              
+              <p className="text-text-muted max-w-xl mx-auto mb-8 text-sm sm:text-base leading-relaxed">
+                Both your Email ID and Phone Number must be verified to view matrimonial profile details.
+              </p>
+
+              {/* Status List */}
+              <div className="flex flex-col gap-3 max-w-md w-full mb-8 text-left mx-auto">
+                <div className={`p-4 rounded-xl border flex items-center justify-between ${userProfile?.email_verified ? 'bg-green-50 border-green-200 text-green-700' : 'bg-red-50 border-red-200 text-red-700'}`}>
+                  <span className="text-sm font-semibold flex items-center gap-2.5">
+                    <Mail className="w-4 h-4" /> Email Address
+                  </span>
+                  <span>{userProfile?.email_verified ? 'Verified' : 'Pending'}</span>
+                </div>
+                <div className={`p-4 rounded-xl border flex items-center justify-between ${userProfile?.phone_verified ? 'bg-green-50 border-green-200 text-green-700' : 'bg-red-50 border-red-200 text-red-700'}`}>
+                  <span className="text-sm font-semibold flex items-center gap-2.5">
+                    <Phone className="w-4 h-4" /> Phone Number
+                  </span>
+                  <span>{userProfile?.phone_verified ? 'Verified' : 'Pending'}</span>
+                </div>
+              </div>
+
+              {/* Call to Actions */}
+              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center w-full max-w-md">
+                <Link href="/profile" className="w-full sm:w-auto">
+                  <Button variant="primary" size="lg" className="w-full sm:px-8 shadow-lg shadow-primary/20 hover:scale-105 transition-all flex items-center justify-center gap-2">
+                    <ArrowRight className="w-5 h-5" /> Go to Profile to Verify
+                  </Button>
+                </Link>
+                <Link href="/community/matrimonial" className="w-full sm:w-auto">
+                  <Button variant="outline" size="lg" className="w-full sm:px-8 border-border text-text-primary hover:bg-surface">
+                    Cancel & Go Back
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </Card>
+        </div>
       </div>
     );
   }
@@ -377,13 +495,19 @@ export default function MatrimonialDetailPage() {
             </SectionCard>
 
             {/* Religious & Cultural */}
-            {(profile.religion || profile.sub_caste || profile.gotra) && (
+            {(profile.religion || profile.caste || profile.sub_caste || profile.gotra || profile.raasi || profile.star) && (
               <SectionCard title="Religious & Cultural" icon={BookOpen}>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6">
                   <InfoRow icon={BookOpen} label="Religion" value={profile.religion} />
                   <InfoRow icon={BookOpen} label="Caste" value={profile.caste} />
-                  <InfoRow icon={BookOpen} label="Sub-Caste / Community" value={profile.sub_caste} />
-                  <InfoRow icon={BookOpen} label="Gotra" value={profile.gotra} />
+                  <InfoRow icon={BookOpen} label="Sub-Caste" value={profile.sub_caste} />
+                  {profile.religion === 'Hindu' && (
+                    <>
+                      <InfoRow icon={BookOpen} label="Gotra" value={profile.gotra} />
+                      <InfoRow icon={BookOpen} label="Raasi (Zodiac Sign)" value={profile.raasi} />
+                      <InfoRow icon={BookOpen} label="Star (Nakshatra)" value={profile.star} />
+                    </>
+                  )}
                   <InfoRow icon={BookOpen} label="Manglik" value={profile.manglik} />
                 </div>
               </SectionCard>

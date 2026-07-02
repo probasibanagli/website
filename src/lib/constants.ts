@@ -244,22 +244,56 @@ export const GOVT_SERVICES = [
 ];
 
 export const TAMIL_WORDS = [
-  { tamil: 'Vanakkam', meaning: 'Hello / Welcome', script: 'வணக்கம்' },
-  { tamil: 'Nandri', meaning: 'Thank you', script: 'நன்றி' },
-  { tamil: 'Evvalavu', meaning: 'How much?', script: 'எவ்வளவு?' },
-  { tamil: 'Eppo varum?', meaning: 'When will it come?', script: 'எப்போ வரும்?' },
-  { tamil: 'Enge irukku?', meaning: 'Where is it?', script: 'எங்கே இருக்கு?' },
-  { tamil: 'Kaasu', meaning: 'Money', script: 'காசு' },
-  { tamil: 'Auto varumo?', meaning: 'Will auto come?', script: 'ஆட்டோ வருமா?' },
-  { tamil: 'Thanni venum', meaning: 'I need water', script: 'தண்ணி வேணும்' },
-  { tamil: 'Saapadu', meaning: 'Food / Meal', script: 'சாப்பாடு' },
-  { tamil: 'Bus nilayam', meaning: 'Bus station', script: 'பஸ் நிலையம்' },
-  { tamil: 'Maruthuvamani', meaning: 'Hospital', script: 'மருத்துவமனை' },
-  { tamil: 'Udavi', meaning: 'Help!', script: 'உதவி!' },
-  { tamil: 'Veetuku poganum', meaning: 'I need to go home', script: 'வீட்டுக்கு போகணும்' },
-  { tamil: 'Romba nalla irukku', meaning: 'Very good!', script: 'ரொம்ப நல்லா இருக்கு' },
-  { tamil: 'Puriyala', meaning: 'I don\'t understand', script: 'புரியல' },
-  { tamil: 'Oru nimisham', meaning: 'One moment', script: 'ஒரு நிமிஷம்' },
+  { meaning: 'Hello / Welcome', pronunciation: 'Vanakkam', tamil: 'வணக்கம்', bengali: 'ভানাক্কাম' },
+  { meaning: 'Thank you', pronunciation: 'Nandri', tamil: 'நன்றி', bengali: 'নানদ্রি' },
+  { meaning: 'How much?', pronunciation: 'Evvalavu?', tamil: 'எவ்வளவு?', bengali: 'এভভালাভু?' },
+  { meaning: 'When will it come?', pronunciation: 'Eppo varum?', tamil: 'எப்போ வரும்?', bengali: 'এপ্পো ভারুম?' },
+  { meaning: 'Where is it?', pronunciation: 'Enge irukku?', tamil: 'எங்கே இருக்கு?', bengali: 'এঙ্গে ইরুক্কু?' },
+  { meaning: 'Money', pronunciation: 'Kaasu', tamil: 'காசு', bengali: 'কাসু' },
+  { meaning: 'Will auto come?', pronunciation: 'Auto varuma?', tamil: 'ஆட்டோ வருமா?', bengali: 'অটো ভারুমা?' },
+  { meaning: 'I need water', pronunciation: 'Thanni venum', tamil: 'தண்ணি வேணும்', bengali: 'থান্নি ভেনুম' },
+  { meaning: 'Food / Meal', pronunciation: 'Saapadu', tamil: 'சாப்பாடு', bengali: 'সাপ্পাডু' },
+  { meaning: 'Bus station', pronunciation: 'Bus nilayam', tamil: 'பஸ் நிலையம்', bengali: 'বাস নিলাইয়াম' },
+  { meaning: 'Hospital', pronunciation: 'Maruthuvamanai', tamil: 'மருத்துவமனை', bengali: 'মারুথুভামানাই' },
+  { meaning: 'Help!', pronunciation: 'Udavi!', tamil: 'உদவி!', bengali: 'উদাবি!' },
+  { meaning: 'I need to go home', pronunciation: 'Veetuku poganum', tamil: 'வீட்டுக்கு போகணும்', bengali: 'ভেটুকু পোগানুমি' },
+  { meaning: 'Very good!', pronunciation: 'Romba nalla irukku', tamil: 'ரொம்ப நல்லা இருக்கு', bengali: 'রোম্বা নাল্লা ইরুক্কু' },
+  { meaning: "I don't understand", pronunciation: 'Puriyala', tamil: 'புரியல', bengali: 'পুরিয়ালা' },
+  { meaning: 'One moment', pronunciation: 'Oru nimisham', tamil: 'ஒரு நிমিஷம்', bengali: 'অরু নিমিশাম' },
+  { meaning: 'Right side', pronunciation: 'Valathu pakkam', tamil: 'வலது பக்கம்', bengali: 'ভালাথু পাক্কাম' },
+  { meaning: 'Left side', pronunciation: 'Idathu pakkam', tamil: 'இடது பக்கம்', bengali: 'ইডাথু পাক্কাম' },
+  { meaning: 'Stop here', pronunciation: 'Nillu / Niruthunga', tamil: 'நில்லு / நிறுத்துங்க', bengali: 'নিলু / নিরুথুঙ্গা' },
+  { meaning: 'Go straight', pronunciation: 'Nera ponga', tamil: 'நேரா போங்க', bengali: 'নেরা পোঙ্গা' },
+  { meaning: 'What happened?', pronunciation: 'Enna aachu?', tamil: 'என்ன ஆச்சு?', bengali: 'এন্না আচ্ছু?' },
+  { meaning: 'I know', pronunciation: 'Theriyum', tamil: 'தெரியும்', bengali: 'থেরিয়ুম' },
+  { meaning: "I don't know", pronunciation: 'Theriyaathu', tamil: 'தெரியாது', bengali: 'থেরিয়াদু' },
+  { meaning: 'Come here', pronunciation: 'Inga vaanga', tamil: 'இங்க வாங்க', bengali: 'ইঙ্গা ভাঙ্গা' },
+  { meaning: 'Go', pronunciation: 'Ponga', tamil: 'போங்க', bengali: 'পোঙ্গা' },
+  { meaning: 'Good', pronunciation: 'Nalla', tamil: 'நல்ல', bengali: 'নাল্লা' },
+  { meaning: 'Bad', pronunciation: 'Kettathu', tamil: 'கெட்டது', bengali: 'কেট্টাথু' },
+  { meaning: 'Please come', pronunciation: 'Vaanga', tamil: 'வாங்க', bengali: 'ভাঙ্গা' },
+  { meaning: 'Okay / Yes', pronunciation: 'Sari', tamil: 'சரி', bengali: 'সারি' },
+  { meaning: 'No', pronunciation: 'Illai', tamil: 'இல்லை', bengali: 'ইল্লাই' },
+  { meaning: 'Want / Need', pronunciation: 'Venum', tamil: 'வேண்டும்', bengali: 'ভেনুম' },
+  { meaning: "Don't want", pronunciation: 'Vendaam', tamil: 'வேண்டாம்', bengali: 'ভেন্ডাম' },
+  { meaning: 'Today', pronunciation: 'Inniku', tamil: 'இன்னைকে', bengali: 'ইন্নিক্কু' },
+  { meaning: 'Tomorrow', pronunciation: 'Nalaiku', tamil: 'நாளைக்கு', bengali: 'নালাইক্কু' },
+  { meaning: 'Yesterday', pronunciation: 'Nethu', tamil: 'நேற்று', bengali: 'নেথু' },
+  { meaning: 'Why?', pronunciation: 'Yen?', tamil: 'ஏன்?', bengali: 'য়েন?' },
+  { meaning: 'How?', pronunciation: 'Eppadi?', tamil: 'எப்படி?', bengali: 'এপ্পাডি?' },
+  { meaning: 'Who?', pronunciation: 'Yaaru?', tamil: 'யார்?', bengali: 'য়ারু?' },
+  { meaning: 'What?', pronunciation: 'Enna?', tamil: 'என்ன?', bengali: 'এন্না?' },
+  { meaning: 'When?', pronunciation: 'Eppo?', tamil: 'எப்போது?', bengali: 'এপ্পো?' },
+  { meaning: 'Where?', pronunciation: 'Enge?', tamil: 'எங்கே?', bengali: 'এঙ্গে?' },
+  { meaning: 'One', pronunciation: 'Onnu', tamil: 'ஒன்று', bengali: 'ওন্নু' },
+  { meaning: 'Two', pronunciation: 'Rendu', tamil: 'இரண்டு', bengali: 'রেন্ডু' },
+  { meaning: 'Very much / A lot', pronunciation: 'Romba', tamil: 'ரொம்ப', bengali: 'রোম্বা' },
+  { meaning: 'Shop / Store', pronunciation: 'Kada', tamil: 'கடை', bengali: 'কাডাই' },
+  { meaning: 'Way / Path', pronunciation: 'Vazhi', tamil: 'வழி', bengali: 'ভাজি' },
+  { meaning: 'What is the time?', pronunciation: 'Mani enna?', tamil: 'மணி என்ன?', bengali: 'মানি এন্না?' },
+  { meaning: 'First', pronunciation: 'Mudhala', tamil: 'முதலில்', bengali: 'মুদালিল' },
+  { meaning: 'Last', pronunciation: 'Kadaisi', tamil: 'கடைসি', bengali: 'কাডাইসি' },
+  { meaning: 'Friend', pronunciation: 'Nanban', tamil: 'நண்பன்', bengali: 'নানবান' },
 ];
 
 /* ──────────────── Matrimony Constants ──────────────── */
@@ -323,4 +357,145 @@ export const HOBBIES_LIST = [
 ] as const;
 
 export const RELIGIONS = ['Hindu', 'Muslim', 'Christian', 'Buddhist', 'Jain', 'Sikh', 'Other'] as const;
+
+export const CASTE_MAPPING: Record<string, readonly string[]> = {
+  Hindu: [
+    'Aguri',
+    'Baidya',
+    'Baishya / Vaishya',
+    'Brahmin',
+    'Kansari',
+    'Kayastha',
+    'Mahishya',
+    'Namasudra',
+    'Rajput',
+    'Sadgop',
+    'Suri',
+    'Tambuli',
+    'Tili',
+    'Other'
+  ],
+  Muslim: [
+    'Hanafi',
+    'Pathan',
+    'Shafi',
+    'Sheikh',
+    'Syed',
+    'Other'
+  ],
+  Christian: [
+    'Baptist',
+    'Methodist',
+    'Orthodox',
+    'Protestant',
+    'Roman Catholic',
+    'Other'
+  ],
+  Buddhist: [
+    'Mahayana',
+    'Theravada',
+    'Vajrayana',
+    'Other'
+  ],
+  Jain: [
+    'Digambara',
+    'Shvetambara',
+    'Other'
+  ],
+  Sikh: [
+    'Arora',
+    'Jat',
+    'Khatri',
+    'Ramgarhia',
+    'Other'
+  ],
+  Other: ['Other']
+} as const;
+
+export const NAKSHATRAS = [
+  'Ashwini', 'Bharani', 'Krittika', 'Rohini', 'Mrigashirsha', 'Ardra',
+  'Punarvasu', 'Pushya', 'Ashlesha', 'Magha', 'Purva Phalguni', 'Uttara Phalguni',
+  'Hasta', 'Chitra', 'Swati', 'Vishakha', 'Anuradha', 'Jyeshtha', 'Mula',
+  'Purva Ashadha', 'Uttara Ashadha', 'Shravana', 'Dhanishta', 'Shatabhisha',
+  'Purva Bhadrapada', 'Uttara Bhadrapada', 'Revati'
+] as const;
+
+export const SUBCASTE_MAPPING: Record<string, readonly string[]> = {
+  // Hindu
+  Brahmin: ['Barendra', 'Bhumihar', 'Kanyakubja', 'Kulin', 'Other', 'Rarhi', 'Saraswat', 'Srotriya', 'Vaidik'],
+  Kayastha: ['Bangaja', 'Dakshin Rarh', 'Kulin', 'Maulik', 'Other', 'Uttar Rarh'],
+  Baidya: ['Das', 'Gupta', 'Kulin', 'Other', 'Sen'],
+  Namasudra: ['Namasudra', 'Other'],
+  Mahishya: ['Mahishya', 'Other'],
+  Sadgop: ['Sadgop', 'Other'],
+  Tili: ['Tili', 'Other'],
+  Tambuli: ['Tambuli', 'Other'],
+  Suri: ['Suri', 'Other'],
+  Kansari: ['Kansari', 'Other'],
+  Aguri: ['Ugra Kshatriya', 'Other'],
+  Rajput: ['Rajput', 'Other'],
+  'Baishya / Vaishya': ['Banik', 'Other', 'Saha'],
+
+  // Muslim
+  Sheikh: ['Sheikh', 'Other'],
+  Syed: ['Syed', 'Other'],
+  Pathan: ['Pathan', 'Other'],
+  Hanafi: ['Hanafi', 'Other'],
+  Shafi: ['Shafi', 'Other'],
+
+  // Christian
+  'Roman Catholic': ['Roman Catholic', 'Other'],
+  Protestant: ['Protestant', 'Other'],
+  Orthodox: ['Orthodox', 'Other'],
+  Baptist: ['Baptist', 'Other'],
+  Methodist: ['Methodist', 'Other'],
+
+  // Buddhist
+  Mahayana: ['Mahayana', 'Other'],
+  Theravada: ['Theravada', 'Other'],
+  Vajrayana: ['Vajrayana', 'Other'],
+
+  // Jain
+  Digambara: ['Digambara', 'Other'],
+  Shvetambara: ['Shvetambara', 'Other'],
+
+  // Sikh
+  Arora: ['Arora', 'Other'],
+  Jat: ['Jat', 'Other'],
+  Khatri: ['Khatri', 'Other'],
+  Ramgarhia: ['Ramgarhia', 'Other'],
+
+  // Fallbacks / Other
+  Other: ['Other']
+} as const;
+
+export const RAASIS = [
+  'Mesha (Aries)',
+  'Vrishabha (Taurus)',
+  'Mithuna (Gemini)',
+  'Karka (Cancer)',
+  'Simha (Leo)',
+  'Kanya (Virgo)',
+  'Tula (Libra)',
+  'Vrishchika (Scorpio)',
+  'Dhanu (Sagittarius)',
+  'Makara (Capricorn)',
+  'Kumbha (Aquarius)',
+  'Meena (Pisces)'
+] as const;
+
+export const RAASI_NAKSHATRAS_MAPPING: Record<string, readonly string[]> = {
+  'Mesha (Aries)': ['Ashwini', 'Bharani', 'Krittika'],
+  'Vrishabha (Taurus)': ['Krittika', 'Rohini', 'Mrigashirsha'],
+  'Mithuna (Gemini)': ['Mrigashirsha', 'Ardra', 'Punarvasu'],
+  'Karka (Cancer)': ['Punarvasu', 'Pushya', 'Ashlesha'],
+  'Simha (Leo)': ['Magha', 'Purva Phalguni', 'Uttara Phalguni'],
+  'Kanya (Virgo)': ['Uttara Phalguni', 'Hasta', 'Chitra'],
+  'Tula (Libra)': ['Chitra', 'Swati', 'Vishakha'],
+  'Vrishchika (Scorpio)': ['Vishakha', 'Anuradha', 'Jyeshtha'],
+  'Dhanu (Sagittarius)': ['Mula', 'Purva Ashadha', 'Uttara Ashadha'],
+  'Makara (Capricorn)': ['Uttara Ashadha', 'Shravana', 'Dhanishta'],
+  'Kumbha (Aquarius)': ['Dhanishta', 'Shatabhisha', 'Purva Bhadrapada'],
+  'Meena (Pisces)': ['Purva Bhadrapada', 'Uttara Bhadrapada', 'Revati']
+} as const;
 

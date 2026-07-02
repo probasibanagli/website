@@ -1,10 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
-import { MessageCircle, X, Send, Sparkles, Home, Mic, MicOff, Volume2 } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import { MessageCircle, X, Send, Sparkles, Home, Mic, MicOff, Volume2, Search } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
+import { TAMIL_WORDS } from '@/lib/constants';
 
 const suggestedPrompts = [
   'Find Bengali PG in Chennai',
@@ -26,6 +27,19 @@ export function ChatWidget() {
   const [loading, setLoading] = useState(false);
   const [mounted, setMounted] = React.useState(false);
   const [isListening, setIsListening] = useState(false);
+  const [activeTab, setActiveTab] = useState<'chat' | 'helper'>('chat');
+  const [wordSearch, setWordSearch] = useState('');
+
+  const filteredWords = useMemo(() => {
+    if (!wordSearch) return TAMIL_WORDS;
+    const term = wordSearch.toLowerCase();
+    return TAMIL_WORDS.filter(w => 
+      w.meaning.toLowerCase().includes(term) ||
+      w.pronunciation.toLowerCase().includes(term) ||
+      w.bengali.toLowerCase().includes(term) ||
+      w.tamil.includes(term)
+    );
+  }, [wordSearch]);
 
   // Text-To-Speech Playback
   const speakMessage = (text: string) => {
@@ -149,97 +163,164 @@ export function ChatWidget() {
             </button>
           </div>
 
-          {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-3">
-            {messages.length === 0 && (
-              <div className="space-y-3">
-                <p className="text-sm text-text-muted text-center py-4 flex flex-col items-center gap-2">
-                  <Home className="w-10 h-10 text-primary/30 mb-1" />
-                  Hi! I can help you find PGs, food, hospitals, and more in Tamil Nadu.
-                </p>
-                <div className="space-y-2">
-                  {suggestedPrompts.map((prompt) => (
-                    <button
-                      key={prompt}
-                      onClick={() => sendMessage(prompt)}
-                      className="w-full text-left text-xs px-3 py-2 rounded-xl border border-border hover:border-primary hover:bg-primary-light text-text-primary transition-all cursor-pointer"
-                    >
-                      {prompt}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-            {messages.map((msg, i) => (
-              <div key={i} className={cn('flex items-end gap-1.5', msg.role === 'user' ? 'justify-end' : 'justify-start')}>
-                {msg.role === 'assistant' && (
-                  <button
-                    type="button"
-                    onClick={() => speakMessage(msg.content)}
-                    className="p-1.5 rounded-lg border border-border bg-white text-text-muted hover:text-primary hover:border-primary/30 cursor-pointer shadow-sm shrink-0 mb-1"
-                    title="Speak message"
-                  >
-                    <Volume2 className="w-3.5 h-3.5" />
-                  </button>
-                )}
-                <div className={cn(
-                  'max-w-[80%] px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed shadow-sm',
-                  msg.role === 'user'
-                    ? 'bg-primary text-white rounded-br-sm'
-                    : 'bg-surface text-text-primary rounded-bl-sm border border-border/40'
-                )}>
-                  {msg.content}
-                </div>
-              </div>
-            ))}
-            {loading && (
-              <div className="flex justify-start">
-                <div className="bg-surface px-4 py-3 rounded-2xl rounded-bl-md border border-border/40 shadow-sm">
-                  <div className="flex gap-1">
-                    <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                    <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                    <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
-                  </div>
-                </div>
-              </div>
-            )}
+          {/* Tab Selector */}
+          <div className="flex border-b border-border bg-surface text-xs font-semibold select-none">
+            <button
+              onClick={() => setActiveTab('chat')}
+              className={cn(
+                "flex-1 py-2.5 text-center transition-colors border-b-2 cursor-pointer",
+                activeTab === 'chat'
+                  ? "border-primary text-primary"
+                  : "border-transparent text-text-muted hover:text-text-primary"
+              )}
+            >
+              AI Assistant
+            </button>
+            <button
+              onClick={() => setActiveTab('helper')}
+              className={cn(
+                "flex-1 py-2.5 text-center transition-colors border-b-2 cursor-pointer",
+                activeTab === 'helper'
+                  ? "border-primary text-primary"
+                  : "border-transparent text-text-muted hover:text-text-primary"
+              )}
+            >
+              Tamil Word Helper
+            </button>
           </div>
 
-          {/* Input */}
-          <div className="p-3 border-t border-border">
-            <form
-              onSubmit={(e) => { e.preventDefault(); sendMessage(input); }}
-              className="flex items-center gap-2"
-            >
-              <input
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder={isListening ? "Listening..." : "Type your message..."}
-                className="flex-1 text-sm px-4 py-2.5 rounded-xl border border-border bg-surface focus:outline-none focus:ring-2 focus:ring-primary/30"
-                disabled={loading}
-              />
-              <button
-                type="button"
-                onClick={handleVoiceInput}
-                className={cn(
-                  "p-2.5 rounded-xl border transition-all cursor-pointer",
-                  isListening 
-                    ? "bg-red-500 text-white border-red-500 animate-pulse" 
-                    : "bg-surface text-text-muted border-border hover:bg-primary-light hover:text-primary hover:border-primary/30"
+          {activeTab === 'chat' ? (
+            <>
+              {/* Messages */}
+              <div className="flex-1 overflow-y-auto p-4 space-y-3">
+                {messages.length === 0 && (
+                  <div className="space-y-3">
+                    <p className="text-sm text-text-muted text-center py-4 flex flex-col items-center gap-2">
+                      <Home className="w-10 h-10 text-primary/30 mb-1" />
+                      Hi! I can help you find PGs, food, hospitals, and more in Tamil Nadu.
+                    </p>
+                    <div className="space-y-2">
+                      {suggestedPrompts.map((prompt) => (
+                        <button
+                          key={prompt}
+                          onClick={() => sendMessage(prompt)}
+                          className="w-full text-left text-xs px-3 py-2 rounded-xl border border-border hover:border-primary hover:bg-primary-light text-text-primary transition-all cursor-pointer"
+                        >
+                          {prompt}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                 )}
-                title="Voice Input (English, Bengali, Tamil)"
-              >
-                {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
-              </button>
-              <button
-                type="submit"
-                disabled={loading || !input.trim()}
-                className="p-2.5 bg-primary text-white rounded-xl hover:bg-primary-dark transition-colors disabled:opacity-50 cursor-pointer shrink-0"
-              >
-                <Send className="w-4 h-4" />
-              </button>
-            </form>
-          </div>
+                {messages.map((msg, i) => (
+                  <div key={i} className={cn('flex items-end gap-1.5', msg.role === 'user' ? 'justify-end' : 'justify-start')}>
+                    {msg.role === 'assistant' && (
+                      <button
+                        type="button"
+                        onClick={() => speakMessage(msg.content)}
+                        className="p-1.5 rounded-lg border border-border bg-white text-text-muted hover:text-primary hover:border-primary/30 cursor-pointer shadow-sm shrink-0 mb-1"
+                        title="Speak message"
+                      >
+                        <Volume2 className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                    <div className={cn(
+                      'max-w-[80%] px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed shadow-sm',
+                      msg.role === 'user'
+                        ? 'bg-primary text-white rounded-br-sm'
+                        : 'bg-surface text-text-primary rounded-bl-sm border border-border/40'
+                    )}>
+                      {msg.content}
+                    </div>
+                  </div>
+                ))}
+                {loading && (
+                  <div className="flex justify-start">
+                    <div className="bg-surface px-4 py-3 rounded-2xl rounded-bl-md border border-border/40 shadow-sm">
+                      <div className="flex gap-1">
+                        <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                        <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                        <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Input */}
+              <div className="p-3 border-t border-border">
+                <form
+                  onSubmit={(e) => { e.preventDefault(); sendMessage(input); }}
+                  className="flex items-center gap-2"
+                >
+                  <input
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    placeholder={isListening ? "Listening..." : "Type your message..."}
+                    className="flex-1 text-sm px-4 py-2.5 rounded-xl border border-border bg-surface focus:outline-none focus:ring-2 focus:ring-primary/30"
+                    disabled={loading}
+                  />
+                  <button
+                    type="button"
+                    onClick={handleVoiceInput}
+                    className={cn(
+                      "p-2.5 rounded-xl border transition-all cursor-pointer",
+                      isListening 
+                        ? "bg-red-500 text-white border-red-500 animate-pulse" 
+                        : "bg-surface text-text-muted border-border hover:bg-primary-light hover:text-primary hover:border-primary/30"
+                    )}
+                    title="Voice Input (English, Bengali, Tamil)"
+                  >
+                    {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={loading || !input.trim()}
+                    className="p-2.5 bg-primary text-white rounded-xl hover:bg-primary-dark transition-colors disabled:opacity-50 cursor-pointer shrink-0"
+                  >
+                    <Send className="w-4 h-4" />
+                  </button>
+                </form>
+              </div>
+            </>
+          ) : (
+            <div className="flex-1 flex flex-col min-h-0 bg-white">
+              {/* Search Bar */}
+              <div className="p-3 border-b border-border bg-surface/50">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
+                  <input
+                    value={wordSearch}
+                    onChange={(e) => setWordSearch(e.target.value)}
+                    placeholder="Search words or meanings..."
+                    className="w-full pl-9 pr-4 py-2 rounded-lg border border-border bg-white text-xs focus:outline-none focus:ring-2 focus:ring-primary/30"
+                  />
+                </div>
+              </div>
+
+              {/* Words List */}
+              <div className="flex-1 overflow-y-auto p-3 space-y-2 select-none">
+                {filteredWords.map((word, i) => (
+                  <div key={i} className="flex items-center justify-between p-2.5 bg-surface border border-border/40 rounded-xl hover:border-primary/20 transition-colors">
+                    <div className="flex-1 min-w-0 pr-2">
+                      <p className="text-xs font-bold text-text-primary truncate">{word.meaning}</p>
+                      <p className="text-[10px] text-text-muted mt-0.5">
+                        <span className="text-[9px] font-semibold text-primary uppercase tracking-wider mr-1">Speak:</span>
+                        <span className="italic">{word.pronunciation}</span>
+                      </p>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <span className="text-xs font-bold text-primary block bengali-text">{word.bengali}</span>
+                      <span className="text-[9px] text-text-muted block mt-0.5">{word.tamil}</span>
+                    </div>
+                  </div>
+                ))}
+                {filteredWords.length === 0 && (
+                  <p className="text-center text-xs text-text-muted py-8">No matching words found.</p>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       )}
 

@@ -3,29 +3,34 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { cn } from '@/lib/utils';
 import {
   ArrowLeft, ArrowRight, User, Users, GraduationCap, Heart, Camera,
-  Briefcase, CheckCircle, BookOpen, Sparkles, Shield, Save, Video, Trash2, AlertTriangle
+  Briefcase, CheckCircle, BookOpen, Sparkles, Shield, Save, Video, Trash2, AlertTriangle, MapPin, Info, Lock, Mail, Phone, AlertCircle as AlertCircleIcon, UserPlus, Sliders
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/Input';
 import {
   CITIES, HEIGHTS, MARITAL_STATUSES, COMPLEXIONS, FAMILY_TYPES, FAMILY_VALUES, FAMILY_STATUS,
-  DIET_TYPES, EDUCATION_LEVELS, INCOME_RANGES, BENGALI_SUBCASTES, WEST_BENGAL_DISTRICTS,
-  SMOKING_HABITS, DRINKING_HABITS, MANGLIK_OPTIONS, HOBBIES_LIST, RELIGIONS, BLOOD_GROUPS,
+  DIET_TYPES, EDUCATION_LEVELS, INCOME_RANGES, CASTE_MAPPING, WEST_BENGAL_DISTRICTS,
+  SMOKING_HABITS, DRINKING_HABITS, MANGLIK_OPTIONS, HOBBIES_LIST, RELIGIONS, BLOOD_GROUPS, NAKSHATRAS, SUBCASTE_MAPPING, RAASIS, RAASI_NAKSHATRAS_MAPPING,
 } from '@/lib/constants';
 import { saveMyProfile, generateProfileId, getMyProfile, storeMedia, getMedia } from '@/lib/matrimony-service';
 import type { MatrimonialProfile } from '@/types';
+import { useAuth } from '@/lib/auth/AuthContext';
 
 const steps = [
-  { label: 'Account', icon: User },
-  { label: 'Personal', icon: Heart },
-  { label: 'Family', icon: Users },
-  { label: 'Education', icon: GraduationCap },
-  { label: 'Religion', icon: BookOpen },
-  { label: 'Preferences', icon: Sparkles },
-  { label: 'Photo & Review', icon: Camera },
+  { label: 'Account', icon: Shield },
+  { label: 'Profile For', icon: Users },
+  { label: 'Gender', icon: User },
+  { label: 'Basics', icon: Heart },
+  { label: 'Community', icon: BookOpen },
+  { label: 'Location', icon: MapPin },
+  { label: 'Career', icon: Briefcase },
+  { label: 'Lifestyle', icon: Sparkles },
+  { label: 'Media', icon: Camera },
+  { label: 'Preferences', icon: Sliders },
 ];
 
 interface FormData {
@@ -33,6 +38,7 @@ interface FormData {
 }
 
 const initialFormData: FormData = {
+  profile_for: '',
   full_name: '', email: '', phone: '', whatsapp: '',
   date_of_birth: '', gender: '', height: '', weight: '', complexion: '', blood_group: '',
   marital_status: '', mother_tongue: 'Bengali', physical_disability: 'None',
@@ -49,8 +55,66 @@ const initialFormData: FormData = {
   pref_diet: '', pref_marital_status: '',
 };
 
+
+interface FormFieldProps {
+  label: string;
+  field: string;
+  required?: boolean;
+  formData: any;
+  errors: Record<string, string>;
+  updateField: (field: string, value: string | number) => void;
+}
+
+interface FormSelectProps extends FormFieldProps {
+  options: readonly string[] | string[];
+}
+
+const FormSelect = ({ label, field, options, required, formData, errors, updateField }: FormSelectProps) => (
+  <div className="space-y-1.5">
+    <label className="block text-sm font-medium text-text-primary">
+      {label}{required && <span className="text-red-500 ml-0.5">*</span>}
+    </label>
+    <select
+      value={(formData[field] as string) || ''}
+      onChange={(e) => updateField(field, e.target.value)}
+      className={`w-full px-4 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all cursor-pointer ${
+        errors[field] ? 'border-red-400' : 'border-border'
+      }`}
+    >
+      <option value="">Select {label}</option>
+      {options.map(o => <option key={o} value={o}>{o}</option>)}
+    </select>
+    {errors[field] && <p className="text-xs text-red-500">{errors[field]}</p>}
+  </div>
+);
+
+interface FormInputProps extends FormFieldProps {
+  type?: string;
+  placeholder?: string;
+  disabled?: boolean;
+}
+
+const FormInput = ({ label, field, type = 'text', placeholder, required, formData, errors, updateField, disabled }: FormInputProps) => (
+  <div className="space-y-1.5">
+    <label className="block text-sm font-medium text-text-primary">
+      {label}{required && <span className="text-red-500 ml-0.5">*</span>}
+    </label>
+    <input
+      type={type}
+      value={(formData[field] as string) || ''}
+      onChange={(e) => updateField(field, e.target.value)}
+      placeholder={placeholder}
+      disabled={disabled}
+      className={`w-full px-4 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all ${
+        errors[field] ? 'border-red-400' : 'border-border'
+      } ${disabled ? 'bg-gray-100/80 text-text-muted cursor-not-allowed border-border/80' : ''}`}
+    />
+    {errors[field] && <p className="text-xs text-red-500">{errors[field]}</p>}
+  </div>
+);
 export default function MatrimonialRegisterPage() {
   const router = useRouter();
+  const { firebaseUser, profile: userProfile, loading: authLoading } = useAuth();
   const [step, setStep] = useState(0);
   const [formData, setFormData] = useState<FormData>(() => {
     // Load draft if exists
@@ -62,6 +126,17 @@ export default function MatrimonialRegisterPage() {
     }
     return initialFormData;
   });
+
+  useEffect(() => {
+    if (userProfile) {
+      setFormData(prev => ({
+        ...prev,
+        email: userProfile.email || prev.email || '',
+        phone: userProfile.phone || prev.phone || '',
+        full_name: prev.full_name || userProfile.full_name || '',
+      }));
+    }
+  }, [userProfile]);
   const [selectedHobbies, setSelectedHobbies] = useState<string[]>([]);
   const [submitted, setSubmitted] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -125,8 +200,37 @@ export default function MatrimonialRegisterPage() {
   }, [formData.photos, formData.video]);
 
   const updateField = useCallback((field: string, value: string | number) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-    setErrors(prev => { const next = { ...prev }; delete next[field]; return next; });
+    setFormData(prev => {
+      const next = { ...prev, [field]: value };
+      if (field === 'religion') {
+        next.caste = '';
+        next.sub_caste = '';
+        next.gotra = '';
+        next.raasi = '';
+        next.star = '';
+      } else if (field === 'caste') {
+        next.sub_caste = '';
+      } else if (field === 'raasi') {
+        next.star = '';
+      }
+      return next;
+    });
+    setErrors(prev => {
+      const next = { ...prev };
+      delete next[field];
+      if (field === 'religion') {
+        delete next.caste;
+        delete next.sub_caste;
+        delete next.gotra;
+        delete next.raasi;
+        delete next.star;
+      } else if (field === 'caste') {
+        delete next.sub_caste;
+      } else if (field === 'raasi') {
+        delete next.star;
+      }
+      return next;
+    });
   }, []);
 
   const toggleHobby = useCallback((hobby: string) => {
@@ -242,29 +346,42 @@ export default function MatrimonialRegisterPage() {
     const newErrors: Record<string, string> = {};
 
     if (stepIndex === 0) {
-      if (!formData.full_name) newErrors.full_name = 'Full name is required';
       if (!formData.email) newErrors.email = 'Email is required';
+      else if (!/\S+@\S+\.\S+/.test(formData.email as string)) newErrors.email = 'Invalid email address';
       if (!formData.phone) newErrors.phone = 'Phone number is required';
     }
     if (stepIndex === 1) {
-      if (!formData.date_of_birth) newErrors.date_of_birth = 'Date of birth is required';
+      if (!formData.profile_for) newErrors.profile_for = 'Please select profile relation';
+    }
+    if (stepIndex === 2) {
       if (!formData.gender) newErrors.gender = 'Gender is required';
-      if (!formData.height) newErrors.height = 'Height is required';
-      if (!formData.marital_status) newErrors.marital_status = 'Marital status is required';
-      if (!formData.city) newErrors.city = 'Current city is required';
-      if (!formData.native_district) newErrors.native_district = 'Native district is required';
-
-      // Age validation
-      if (formData.date_of_birth) {
+    }
+    if (stepIndex === 3) {
+      if (!formData.full_name) newErrors.full_name = 'Full name is required';
+      if (!formData.date_of_birth) newErrors.date_of_birth = 'Date of birth is required';
+      else {
         const dob = new Date(formData.date_of_birth as string);
         const age = Math.floor((Date.now() - dob.getTime()) / 31557600000);
         if (age < 18) newErrors.date_of_birth = 'Must be at least 18 years old';
         if (age > 60) newErrors.date_of_birth = 'Age must be between 18-60';
       }
     }
-    if (stepIndex === 3) {
+    if (stepIndex === 4) {
+      if (!formData.religion) newErrors.religion = 'Religion is required';
+      if (!formData.caste) newErrors.caste = 'Caste is required';
+      if (!formData.sub_caste) newErrors.sub_caste = 'Sub-caste is required';
+    }
+    if (stepIndex === 5) {
+      if (!formData.city) newErrors.city = 'Current city is required';
+      if (!formData.native_district) newErrors.native_district = 'Native district is required';
+    }
+    if (stepIndex === 6) {
       if (!formData.education) newErrors.education = 'Education is required';
       if (!formData.profession) newErrors.profession = 'Profession is required';
+    }
+    if (stepIndex === 7) {
+      if (!formData.marital_status) newErrors.marital_status = 'Marital status is required';
+      if (!formData.height) newErrors.height = 'Height is required';
     }
 
     setErrors(newErrors);
@@ -293,6 +410,7 @@ export default function MatrimonialRegisterPage() {
       id: realId,
       user_id: `local-${Date.now()}`,
       profile_id: id,
+      profile_for: formData.profile_for as string,
       full_name: formData.full_name as string,
       date_of_birth: formData.date_of_birth as string,
       age,
@@ -324,7 +442,9 @@ export default function MatrimonialRegisterPage() {
       religion: formData.religion as string,
       caste: formData.caste as string,
       sub_caste: formData.sub_caste as string,
-      gotra: formData.gotra as string,
+      gotra: (formData.religion === 'Hindu' ? formData.gotra : '') as string,
+      raasi: (formData.religion === 'Hindu' ? formData.raasi : '') as string,
+      star: (formData.religion === 'Hindu' ? formData.star : '') as string,
       manglik: formData.manglik as string,
       diet: formData.diet as string,
       smoking: formData.smoking as string,
@@ -391,43 +511,80 @@ export default function MatrimonialRegisterPage() {
     );
   }
 
-  // Select helper component
-  const FormSelect = ({ label, field, options, required }: { label: string; field: string; options: readonly string[]; required?: boolean }) => (
-    <div className="space-y-1.5">
-      <label className="block text-sm font-medium text-text-primary">
-        {label}{required && <span className="text-red-500 ml-0.5">*</span>}
-      </label>
-      <select
-        value={(formData[field] as string) || ''}
-        onChange={(e) => updateField(field, e.target.value)}
-        className={`w-full px-4 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all cursor-pointer ${
-          errors[field] ? 'border-red-400' : 'border-border'
-        }`}
-      >
-        <option value="">Select {label}</option>
-        {options.map(o => <option key={o} value={o}>{o}</option>)}
-      </select>
-      {errors[field] && <p className="text-xs text-red-500">{errors[field]}</p>}
-    </div>
-  );
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-surface">
+        <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full" />
+      </div>
+    );
+  }
 
-  const FormInput = ({ label, field, type = 'text', placeholder, required }: { label: string; field: string; type?: string; placeholder?: string; required?: boolean }) => (
-    <div className="space-y-1.5">
-      <label className="block text-sm font-medium text-text-primary">
-        {label}{required && <span className="text-red-500 ml-0.5">*</span>}
-      </label>
-      <input
-        type={type}
-        value={(formData[field] as string) || ''}
-        onChange={(e) => updateField(field, e.target.value)}
-        placeholder={placeholder}
-        className={`w-full px-4 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all ${
-          errors[field] ? 'border-red-400' : 'border-border'
-        }`}
-      />
-      {errors[field] && <p className="text-xs text-red-500">{errors[field]}</p>}
-    </div>
-  );
+  if (!firebaseUser) {
+    return (
+      <div className="min-h-screen bg-surface bg-alpana flex items-center justify-center px-4">
+        <div className="max-w-md w-full animate-fade-in">
+          <Card className="border border-primary/20 shadow-xl bg-white/95 backdrop-blur-md p-8 text-center">
+            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary-light to-accent-light flex items-center justify-center mx-auto mb-6 shadow-md">
+              <Lock className="w-7 h-7 text-primary" />
+            </div>
+            <h1 className="text-2xl font-bold font-display mb-3">Sign Up Required</h1>
+            <p className="text-text-muted mb-6 text-sm">
+              You must create an account and verify your email and phone number before registering a matrimonial profile.
+            </p>
+            <div className="flex flex-col gap-3">
+              <Link href="/auth/register">
+                <Button variant="primary" size="lg" className="w-full flex items-center justify-center gap-2">
+                  <UserPlus className="w-4 h-4" /> Sign Up Now
+                </Button>
+              </Link>
+              <Link href="/auth/login">
+                <Button variant="outline" size="lg" className="w-full">
+                  Login to Account
+                </Button>
+              </Link>
+            </div>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
+  if (!userProfile?.email_verified || !userProfile?.phone_verified) {
+    return (
+      <div className="min-h-screen bg-surface bg-alpana flex items-center justify-center px-4">
+        <div className="max-w-md w-full animate-fade-in">
+          <Card className="border border-amber-200 shadow-xl bg-white/95 backdrop-blur-md p-8 text-center">
+            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-amber-100 to-orange-100 flex items-center justify-center mx-auto mb-6 shadow-md animate-pulse">
+              <AlertCircleIcon className="w-7 h-7 text-amber-600" />
+            </div>
+            <h1 className="text-2xl font-bold font-display mb-3">Verification Required</h1>
+            <p className="text-text-muted mb-6 text-sm">
+              Both your Email ID and Phone Number must be verified before you can register a matrimonial profile.
+            </p>
+            <div className="flex flex-col gap-3 text-left mb-6">
+              <div className={`p-3 rounded-xl border flex items-center justify-between text-xs font-medium ${userProfile?.email_verified ? 'bg-green-50 border-green-200 text-green-700' : 'bg-red-50 border-red-200 text-red-700'}`}>
+                <span className="flex items-center gap-2">
+                  <Mail className="w-3.5 h-3.5" /> Email Address
+                </span>
+                <span>{userProfile?.email_verified ? 'Verified' : 'Pending'}</span>
+              </div>
+              <div className={`p-3 rounded-xl border flex items-center justify-between text-xs font-medium ${userProfile?.phone_verified ? 'bg-green-50 border-green-200 text-green-700' : 'bg-red-50 border-red-200 text-red-700'}`}>
+                <span className="flex items-center gap-2">
+                  <Phone className="w-3.5 h-3.5" /> Phone Number
+                </span>
+                <span>{userProfile?.phone_verified ? 'Verified' : 'Pending'}</span>
+              </div>
+            </div>
+            <Link href="/profile">
+              <Button variant="primary" size="lg" className="w-full flex items-center justify-center gap-2">
+                <ArrowRight className="w-4 h-4" /> Go to Profile to Verify
+              </Button>
+            </Link>
+          </Card>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-surface bg-alpana">
@@ -479,387 +636,501 @@ export default function MatrimonialRegisterPage() {
         </div>
 
         {/* Form Card */}
-        <Card padding="lg" hover={false}>
-          {/* Step 0: Account Setup */}
-          {step === 0 && (
-            <div className="space-y-5 animate-fade-in">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-10 h-10 rounded-xl bg-primary-light flex items-center justify-center">
-                  <User className="w-5 h-5 text-primary" />
-                </div>
-                <div>
-                  <h2 className="text-lg font-bold">Account Setup</h2>
-                  <p className="text-xs text-text-muted">Your basic contact information</p>
-                </div>
-              </div>
-              <FormInput label="Full Name" field="full_name" placeholder="Enter your full name" required />
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <FormInput label="Email Address" field="email" type="email" placeholder="your@email.com" required />
-                <FormInput label="Phone Number" field="phone" type="tel" placeholder="+91 9876543210" required />
-              </div>
-              <FormInput label="WhatsApp Number (if different)" field="whatsapp" type="tel" placeholder="+91 9876543210" />
-            </div>
+        <div className="relative">
+          {/* Back Button */}
+          {step > 0 && (
+            <button
+              onClick={goBack}
+              className="absolute left-4 top-4 w-9 h-9 rounded-full bg-surface border border-border/80 flex items-center justify-center text-text-muted hover:text-text-primary hover:border-border transition-all cursor-pointer z-10"
+              type="button"
+            >
+              <ArrowLeft className="w-4 h-4" />
+            </button>
           )}
 
-          {/* Step 1: Personal Details */}
-          {step === 1 && (
-            <div className="space-y-5 animate-fade-in">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-10 h-10 rounded-xl bg-pink-50 flex items-center justify-center">
-                  <Heart className="w-5 h-5 text-pink-500" />
-                </div>
-                <div>
-                  <h2 className="text-lg font-bold">Personal Details</h2>
-                  <p className="text-xs text-text-muted">Tell us about yourself</p>
-                </div>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <FormInput label="Date of Birth" field="date_of_birth" type="date" required />
-                <FormSelect label="Gender" field="gender" options={['male', 'female']} required />
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <FormSelect label="Height" field="height" options={HEIGHTS} required />
-                <FormInput label="Weight" field="weight" placeholder="65 kg" />
-                <FormSelect label="Complexion" field="complexion" options={COMPLEXIONS} />
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <FormSelect label="Blood Group" field="blood_group" options={BLOOD_GROUPS} />
-                <FormSelect label="Marital Status" field="marital_status" options={MARITAL_STATUSES} required />
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <FormSelect label="Current City (Tamil Nadu)" field="city" options={CITIES} required />
-                <FormSelect label="Native District (West Bengal)" field="native_district" options={WEST_BENGAL_DISTRICTS} required />
-              </div>
-              <FormInput label="Mother Tongue" field="mother_tongue" placeholder="Bengali" />
-            </div>
-          )}
-
-          {/* Step 2: Family Details */}
-          {step === 2 && (
-            <div className="space-y-5 animate-fade-in">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
-                  <Users className="w-5 h-5 text-blue-500" />
-                </div>
-                <div>
-                  <h2 className="text-lg font-bold">Family Details</h2>
-                  <p className="text-xs text-text-muted">About your family background</p>
-                </div>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <FormInput label="Father's Name" field="father_name" placeholder="Father's full name" />
-                <FormInput label="Father's Occupation" field="father_occupation" placeholder="e.g., Retired Bank Manager" />
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <FormInput label="Mother's Name" field="mother_name" placeholder="Mother's full name" />
-                <FormInput label="Mother's Occupation" field="mother_occupation" placeholder="e.g., Homemaker, Teacher" />
-              </div>
-              <FormInput label="Siblings" field="siblings" placeholder="e.g., 1 Elder Sister (Married), 1 Younger Brother" />
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <FormSelect label="Family Type" field="family_type" options={FAMILY_TYPES} />
-                <FormSelect label="Family Values" field="family_values" options={FAMILY_VALUES} />
-                <FormSelect label="Family Status" field="family_status" options={FAMILY_STATUS} />
+          <Card padding="lg" hover={false} className="relative pt-8 md:pt-10 overflow-hidden">
+            {/* Header Avatar Icon */}
+            <div className="flex justify-center mb-6">
+              <div className="w-16 h-16 rounded-full bg-orange-50 text-orange-500 flex items-center justify-center shadow-inner">
+                {step === 0 ? <Shield className="w-7 h-7" /> :
+                 step === 1 ? <Users className="w-7 h-7" /> :
+                 step === 2 ? <User className="w-7 h-7" /> :
+                 step === 3 ? <Heart className="w-7 h-7" /> :
+                 step === 4 ? <BookOpen className="w-7 h-7" /> :
+                 step === 5 ? <MapPin className="w-7 h-7" /> :
+                 step === 6 ? <Briefcase className="w-7 h-7" /> :
+                 step === 7 ? <Sparkles className="w-7 h-7" /> :
+                 <Camera className="w-7 h-7" />}
               </div>
             </div>
-          )}
 
-          {/* Step 3: Education & Career */}
-          {step === 3 && (
-            <div className="space-y-5 animate-fade-in">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center">
-                  <GraduationCap className="w-5 h-5 text-emerald-500" />
+            {/* Step 0: Account Setup */}
+            {step === 0 && (
+              <div className="space-y-5 animate-fade-in">
+                <div className="text-center max-w-md mx-auto mb-2">
+                  <h2 className="text-2xl font-bold font-display text-text-primary">Account Setup</h2>
+                  <p className="text-xs text-text-muted mt-1">Enter your basic contact details to get started</p>
                 </div>
-                <div>
-                  <h2 className="text-lg font-bold">Education & Career</h2>
-                  <p className="text-xs text-text-muted">Your academic and professional details</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <FormInput formData={formData} errors={errors} updateField={updateField} label="Email Address" field="email" type="email" placeholder="your@email.com" required disabled />
+                  <FormInput formData={formData} errors={errors} updateField={updateField} label="Phone Number" field="phone" type="tel" placeholder="+91 9876543210" required disabled />
                 </div>
+                <FormInput formData={formData} errors={errors} updateField={updateField} label="WhatsApp Number (if different)" field="whatsapp" type="tel" placeholder="+91 9876543210" />
               </div>
-              <FormSelect label="Highest Education" field="education" options={EDUCATION_LEVELS} required />
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <FormInput label="Field of Study" field="field_of_study" placeholder="e.g., Computer Science, Medicine" />
-                <FormInput label="Institution" field="institution" placeholder="e.g., IIT Madras, CMC Vellore" />
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <FormInput label="Profession" field="profession" placeholder="e.g., Software Engineer, Doctor" required />
-                <FormInput label="Company / Employer" field="company" placeholder="e.g., Google, TCS, Govt." />
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <FormSelect label="Annual Income" field="annual_income" options={INCOME_RANGES} />
-                <FormInput label="Work City" field="work_city" placeholder="Same as current city?" />
-              </div>
-            </div>
-          )}
+            )}
 
-          {/* Step 4: Religion & Lifestyle */}
-          {step === 4 && (
-            <div className="space-y-5 animate-fade-in">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center">
-                  <BookOpen className="w-5 h-5 text-amber-600" />
+            {/* Step 1: Profile For */}
+            {step === 1 && (
+              <div className="space-y-6 animate-fade-in">
+                <div className="text-center max-w-md mx-auto">
+                  <h2 className="text-2xl font-bold font-display text-text-primary">This Profile is for</h2>
+                  <p className="text-xs text-text-muted mt-1">Select who you are creating this match profile for</p>
                 </div>
-                <div>
-                  <h2 className="text-lg font-bold">Religion & Lifestyle</h2>
-                  <p className="text-xs text-text-muted">Cultural and lifestyle preferences</p>
+                
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-2xl mx-auto py-2">
+                  {['Myself', 'My Son', 'My Daughter', 'My Brother', 'My Sister', 'My Friend', 'My Relative'].map((option) => {
+                    const isSelected = formData.profile_for === option;
+                    return (
+                      <button
+                        key={option}
+                        type="button"
+                        onClick={() => {
+                          updateField('profile_for', option);
+                          // Auto pre-select gender
+                          if (option === 'My Son' || option === 'My Brother') {
+                            updateField('gender', 'male');
+                          } else if (option === 'My Daughter' || option === 'My Sister') {
+                            updateField('gender', 'female');
+                          }
+                          // Smooth auto-advance
+                          setTimeout(() => {
+                            setStep(2);
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                          }, 250);
+                        }}
+                        className={cn(
+                          "py-3 px-4 rounded-xl text-sm font-semibold border text-center transition-all duration-200 cursor-pointer flex items-center justify-center gap-2",
+                          isSelected
+                            ? "bg-primary text-white border-primary shadow-md shadow-primary/20 scale-[1.02]"
+                            : "bg-white text-text-primary border-border hover:border-primary hover:bg-primary-light/10"
+                        )}
+                      >
+                        {option}
+                      </button>
+                    );
+                  })}
                 </div>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <FormSelect label="Religion" field="religion" options={RELIGIONS} />
-                <FormSelect label="Sub-Caste / Community" field="sub_caste" options={BENGALI_SUBCASTES} />
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <FormInput label="Gotra" field="gotra" placeholder="e.g., Kashyap, Bharadwaj" />
-                <FormSelect label="Manglik Status" field="manglik" options={MANGLIK_OPTIONS} />
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <FormSelect label="Diet" field="diet" options={DIET_TYPES} />
-                <FormSelect label="Smoking" field="smoking" options={SMOKING_HABITS} />
-                <FormSelect label="Drinking" field="drinking" options={DRINKING_HABITS} />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-text-primary mb-2">Hobbies & Interests</label>
-                <div className="flex flex-wrap gap-2">
-                  {HOBBIES_LIST.map(hobby => (
-                    <button
-                      key={hobby}
-                      type="button"
-                      onClick={() => toggleHobby(hobby)}
-                      className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all cursor-pointer ${
-                        selectedHobbies.includes(hobby)
-                          ? 'bg-primary text-white border-primary'
-                          : 'bg-white text-text-muted border-border hover:border-primary/50'
-                      }`}
-                    >
-                      {hobby}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
 
-          {/* Step 5: Partner Preferences */}
-          {step === 5 && (
-            <div className="space-y-5 animate-fade-in">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center">
-                  <Sparkles className="w-5 h-5 text-purple-500" />
-                </div>
-                <div>
-                  <h2 className="text-lg font-bold">Partner Preferences</h2>
-                  <p className="text-xs text-text-muted">What you&apos;re looking for in a life partner</p>
-                </div>
-              </div>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                <FormInput label="Age Min" field="pref_age_min" type="number" placeholder="22" />
-                <FormInput label="Age Max" field="pref_age_max" type="number" placeholder="32" />
-                <FormSelect label="Height Min" field="pref_height_min" options={HEIGHTS} />
-                <FormSelect label="Height Max" field="pref_height_max" options={HEIGHTS} />
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <FormSelect label="Preferred Education" field="pref_education" options={EDUCATION_LEVELS} />
-                <FormInput label="Preferred Profession" field="pref_profession" placeholder="e.g., Doctor, Engineer, Any" />
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <FormSelect label="Preferred City" field="pref_city" options={CITIES} />
-                <FormSelect label="Preferred Diet" field="pref_diet" options={DIET_TYPES} />
-                <FormSelect label="Preferred Marital Status" field="pref_marital_status" options={MARITAL_STATUSES} />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-text-primary mb-1.5">About Your Ideal Partner</label>
-                <textarea
-                  value={(formData.partner_preference as string) || ''}
-                  onChange={(e) => updateField('partner_preference', e.target.value)}
-                  rows={4}
-                  className="w-full px-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none"
-                  placeholder="Describe what you're looking for in a life partner..."
-                />
-              </div>
-            </div>
-          )}
+                {errors.profile_for && (
+                  <p className="text-center text-xs text-red-500">{errors.profile_for}</p>
+                )}
 
-          {/* Step 6: Photo & Review */}
-          {step === 6 && (
-            <div className="space-y-6 animate-fade-in">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-10 h-10 rounded-xl bg-primary-light flex items-center justify-center">
-                  <Camera className="w-5 h-5 text-primary" />
-                </div>
-                <div>
-                  <h2 className="text-lg font-bold">Photo & Review</h2>
-                  <p className="text-xs text-text-muted">Add your photo and review your profile</p>
+                {/* Banner notice box */}
+                <div className="max-w-lg mx-auto bg-orange-50/50 border border-orange-200 text-orange-800 text-xs p-4 rounded-xl flex items-start gap-2.5 mt-4">
+                  <Info className="w-5 h-5 text-orange-500 shrink-0 mt-0.5" />
+                  <p className="leading-relaxed text-left">
+                    ProbasiBangali Matrimonial is built for genuine match-seekers from the Bengali community in Tamil Nadu. Any falsification, commercial use, or marriage bureaus is strictly prohibited.
+                  </p>
                 </div>
               </div>
+            )}
 
-              {/* Photo & Video Upload Section */}
-              <div className="space-y-4">
+            {/* Step 2: Gender */}
+            {step === 2 && (
+              <div className="space-y-6 animate-fade-in">
+                <div className="text-center max-w-md mx-auto">
+                  <h2 className="text-2xl font-bold font-display text-text-primary">Select Gender</h2>
+                  <p className="text-xs text-text-muted mt-1">Gender of the profile owner</p>
+                </div>
+
+                <div className="flex gap-4 max-w-sm mx-auto py-2">
+                  {['male', 'female'].map((g) => {
+                    const isSelected = formData.gender === g;
+                    return (
+                      <button
+                        key={g}
+                        type="button"
+                        onClick={() => {
+                          updateField('gender', g);
+                          setTimeout(() => {
+                            setStep(3);
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                          }, 250);
+                        }}
+                        className={cn(
+                          "flex-1 py-4 px-6 rounded-xl text-sm font-semibold border text-center transition-all duration-200 cursor-pointer capitalize",
+                          isSelected
+                            ? "bg-primary text-white border-primary shadow-md shadow-primary/20 scale-[1.02]"
+                            : "bg-white text-text-primary border-border hover:border-primary hover:bg-primary-light/10"
+                        )}
+                      >
+                        {g}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {errors.gender && (
+                  <p className="text-center text-xs text-red-500">{errors.gender}</p>
+                )}
+              </div>
+            )}
+
+            {/* Step 3: Basics */}
+            {step === 3 && (
+              <div className="space-y-5 animate-fade-in">
+                <div className="text-center max-w-md mx-auto mb-2">
+                  <h2 className="text-2xl font-bold font-display text-text-primary">Basic Details</h2>
+                  <p className="text-xs text-text-muted mt-1">Tell us about their basic identity</p>
+                </div>
+                <FormInput formData={formData} errors={errors} updateField={updateField} label="Full Name" field="full_name" placeholder="Enter full name of profile owner" required />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <FormInput formData={formData} errors={errors} updateField={updateField} label="Date of Birth" field="date_of_birth" type="date" required />
+                  <FormInput formData={formData} errors={errors} updateField={updateField} label="Mother Tongue" field="mother_tongue" placeholder="Bengali" />
+                </div>
+              </div>
+            )}
+
+            {/* Step 4: Community Details */}
+            {step === 4 && (
+              <div className="space-y-5 animate-fade-in">
+                <div className="text-center max-w-md mx-auto mb-2">
+                  <h2 className="text-2xl font-bold font-display text-text-primary">Religion & Community</h2>
+                  <p className="text-xs text-text-muted mt-1">Bengali cultural background details</p>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <FormSelect formData={formData} errors={errors} updateField={updateField} label="Religion" field="religion" options={RELIGIONS} required />
+                  <FormSelect 
+                    formData={formData} 
+                    errors={errors} 
+                    updateField={updateField} 
+                    label="Caste" 
+                    field="caste" 
+                    options={formData.religion ? (CASTE_MAPPING[formData.religion as string] || []) : []} 
+                    required 
+                  />
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <FormSelect 
+                    formData={formData} 
+                    errors={errors} 
+                    updateField={updateField} 
+                    label="Sub-Caste" 
+                    field="sub_caste" 
+                    options={formData.caste ? (SUBCASTE_MAPPING[formData.caste as string] || []) : []} 
+                    required 
+                  />
+                  <FormSelect formData={formData} errors={errors} updateField={updateField} label="Manglik status" field="manglik" options={MANGLIK_OPTIONS} />
+                </div>
+                {formData.religion === 'Hindu' && (
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 rounded-xl bg-orange-50/30 border border-orange-100/50 animate-fade-in">
+                    <FormInput formData={formData} errors={errors} updateField={updateField} label="Gotra" field="gotra" placeholder="e.g. Kashyap" />
+                    <FormSelect formData={formData} errors={errors} updateField={updateField} label="Raasi (Zodiac Sign)" field="raasi" options={RAASIS} />
+                    <FormSelect 
+                      formData={formData} 
+                      errors={errors} 
+                      updateField={updateField} 
+                      label="Star (Nakshatra)" 
+                      field="star" 
+                      options={formData.raasi ? (RAASI_NAKSHATRAS_MAPPING[formData.raasi as string] || []) : []} 
+                    />
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Step 5: Location Details */}
+            {step === 5 && (
+              <div className="space-y-5 animate-fade-in">
+                <div className="text-center max-w-md mx-auto mb-2">
+                  <h2 className="text-2xl font-bold font-display text-text-primary">Location Details</h2>
+                  <p className="text-xs text-text-muted mt-1">Current stay in Tamil Nadu and origin roots</p>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <FormSelect formData={formData} errors={errors} updateField={updateField} label="Current City (Tamil Nadu)" field="city" options={CITIES} required />
+                  <FormSelect formData={formData} errors={errors} updateField={updateField} label="Native District (West Bengal)" field="native_district" options={WEST_BENGAL_DISTRICTS} required />
+                </div>
+              </div>
+            )}
+
+            {/* Step 6: Career & Education */}
+            {step === 6 && (
+              <div className="space-y-5 animate-fade-in">
+                <div className="text-center max-w-md mx-auto mb-2">
+                  <h2 className="text-2xl font-bold font-display text-text-primary">Education & Career</h2>
+                  <p className="text-xs text-text-muted mt-1">Academic degree and current job situation</p>
+                </div>
+                <FormSelect formData={formData} errors={errors} updateField={updateField} label="Highest Education" field="education" options={EDUCATION_LEVELS} required />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <FormInput formData={formData} errors={errors} updateField={updateField} label="Field of Study" field="field_of_study" placeholder="e.g. Computer Science" />
+                  <FormInput formData={formData} errors={errors} updateField={updateField} label="Institution" field="institution" placeholder="e.g. IIT Madras" />
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <FormInput formData={formData} errors={errors} updateField={updateField} label="Profession" field="profession" placeholder="e.g. Software Engineer" required />
+                  <FormInput formData={formData} errors={errors} updateField={updateField} label="Company / Employer" field="company" placeholder="e.g. TCS" />
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <FormSelect formData={formData} errors={errors} updateField={updateField} label="Annual Income" field="annual_income" options={INCOME_RANGES} />
+                  <FormInput formData={formData} errors={errors} updateField={updateField} label="Work City" field="work_city" placeholder="e.g. Chennai" />
+                </div>
+              </div>
+            )}
+
+            {/* Step 7: Physical Stats & Lifestyle */}
+            {step === 7 && (
+              <div className="space-y-5 animate-fade-in">
+                <div className="text-center max-w-md mx-auto mb-2">
+                  <h2 className="text-2xl font-bold font-display text-text-primary">Lifestyle & Stats</h2>
+                  <p className="text-xs text-text-muted mt-1">Physical details and habit preferences</p>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <FormSelect formData={formData} errors={errors} updateField={updateField} label="Height" field="height" options={HEIGHTS} required />
+                  <FormInput formData={formData} errors={errors} updateField={updateField} label="Weight (kg)" field="weight" placeholder="e.g. 70" />
+                  <FormSelect formData={formData} errors={errors} updateField={updateField} label="Complexion" field="complexion" options={COMPLEXIONS} />
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <FormSelect formData={formData} errors={errors} updateField={updateField} label="Marital Status" field="marital_status" options={MARITAL_STATUSES} required />
+                  <FormSelect formData={formData} errors={errors} updateField={updateField} label="Blood Group" field="blood_group" options={BLOOD_GROUPS} />
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <FormSelect formData={formData} errors={errors} updateField={updateField} label="Diet" field="diet" options={DIET_TYPES} />
+                  <FormSelect formData={formData} errors={errors} updateField={updateField} label="Smoking" field="smoking" options={SMOKING_HABITS} />
+                  <FormSelect formData={formData} errors={errors} updateField={updateField} label="Drinking" field="drinking" options={DRINKING_HABITS} />
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <FormSelect formData={formData} errors={errors} updateField={updateField} label="Physical Disability" field="physical_disability" options={['None', 'Physical Challenge']} />
+                </div>
+
                 <div>
-                  <h3 className="text-sm font-semibold text-text-primary mb-2">Upload Photos (Up to 5)</h3>
-                  <p className="text-xs text-text-muted mb-3">Add clear, high-quality photos. JPG or PNG, max 5MB each.</p>
-                  
-                  <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-                    {Array.from({ length: 5 }).map((_, i) => {
-                      const preview = photoPreviews[i];
-                      return (
-                        <div key={i} className="aspect-square bg-surface border border-border rounded-xl flex flex-col items-center justify-center relative overflow-hidden group">
-                          {preview ? (
-                            <>
-                              <img src={preview} alt={`Preview ${i + 1}`} className="w-full h-full object-cover" />
-                              <button
-                                type="button"
-                                onClick={() => handlePhotoRemove(i)}
-                                className="absolute top-1.5 right-1.5 p-1 rounded-full bg-red-500 text-white hover:bg-red-600 transition-colors shadow-sm"
-                              >
-                                <Trash2 className="w-3.5 h-3.5" />
-                              </button>
-                            </>
-                          ) : (
-                            <label htmlFor={`photo-upload-${i}`} className="w-full h-full flex flex-col items-center justify-center cursor-pointer hover:bg-primary-light/10 transition-colors">
-                              <Camera className="w-6 h-6 text-text-muted mb-1 group-hover:scale-110 transition-transform" />
-                              <span className="text-[10px] font-semibold text-text-muted">Slot {i + 1}</span>
-                              <input
-                                type="file"
-                                accept="image/*"
-                                onChange={(e) => handlePhotoChange(i, e)}
-                                id={`photo-upload-${i}`}
-                                className="hidden"
-                              />
-                            </label>
-                          )}
-                        </div>
-                      );
-                    })}
+                  <label className="block text-sm font-medium text-text-primary mb-2">Hobbies & Interests</label>
+                  <div className="flex flex-wrap gap-2">
+                    {HOBBIES_LIST.map(hobby => (
+                      <button
+                        key={hobby}
+                        type="button"
+                        onClick={() => toggleHobby(hobby)}
+                        className={cn(
+                          "px-3 py-1.5 rounded-full text-xs font-medium border transition-all cursor-pointer",
+                          selectedHobbies.includes(hobby)
+                            ? 'bg-primary text-white border-primary'
+                            : 'bg-white text-text-muted border-border hover:border-primary/50'
+                        )}
+                      >
+                        {hobby}
+                      </button>
+                    ))}
                   </div>
                 </div>
+              </div>
+            )}
 
-                <div>
-                  <h3 className="text-sm font-semibold text-text-primary mb-2">Upload Profile Video (1 Video)</h3>
-                  <p className="text-xs text-text-muted mb-3">Upload a short intro video. Size must be optimized and under 10MB (max 30 seconds).</p>
-                  
-                  {videoPreview ? (
-                    <div className="p-3 border border-border rounded-xl bg-surface flex flex-col items-center gap-3 max-w-sm">
-                      <video src={videoPreview} controls className="w-full rounded-lg max-h-40 bg-black" />
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={handleVideoRemove}
-                        className="text-red-500 hover:text-red-600 border-red-200"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" /> Remove Video
-                      </Button>
+            {/* Step 8: Photos & Video */}
+            {step === 8 && (
+              <div className="space-y-6 animate-fade-in">
+                <div className="text-center max-w-md mx-auto mb-2">
+                  <h2 className="text-2xl font-bold font-display text-text-primary">Photo & Video Intro</h2>
+                  <p className="text-xs text-text-muted mt-1">Upload files and write a short description</p>
+                </div>
+
+                {/* Upload Section */}
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="text-sm font-semibold text-text-primary mb-2">Upload Photos (Up to 5)</h3>
+                    <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+                      {Array.from({ length: 5 }).map((_, i) => {
+                        const preview = photoPreviews[i];
+                        return (
+                          <div key={i} className="aspect-square bg-surface border border-border rounded-xl flex flex-col items-center justify-center relative overflow-hidden group">
+                            {preview ? (
+                              <>
+                                <img src={preview} alt={`Preview ${i + 1}`} className="w-full h-full object-cover" />
+                                <button
+                                  type="button"
+                                  onClick={() => handlePhotoRemove(i)}
+                                  className="absolute top-1.5 right-1.5 p-1 rounded-full bg-red-500 text-white hover:bg-red-600 transition-colors shadow-sm cursor-pointer"
+                                >
+                                  <Trash2 className="w-3.5 h-3.5" />
+                                </button>
+                              </>
+                            ) : (
+                              <label htmlFor={`photo-upload-${i}`} className="w-full h-full flex flex-col items-center justify-center cursor-pointer hover:bg-primary-light/10 transition-colors">
+                                <Camera className="w-6 h-6 text-text-muted mb-1 group-hover:scale-110 transition-transform" />
+                                <span className="text-[10px] font-semibold text-text-muted">Slot {i + 1}</span>
+                                <input
+                                  type="file"
+                                  accept="image/*"
+                                  onChange={(e) => handlePhotoChange(i, e)}
+                                  id={`photo-upload-${i}`}
+                                  className="hidden"
+                                />
+                              </label>
+                            )}
+                          </div>
+                        );
+                      })}
                     </div>
-                  ) : (
-                    <label htmlFor="video-upload" className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-border rounded-xl bg-surface cursor-pointer hover:bg-primary-light/10 transition-all max-w-sm">
-                      <Video className="w-8 h-8 text-text-muted mb-2" />
-                      <span className="text-xs font-bold text-text-primary">Choose Intro Video</span>
-                      <span className="text-[10px] text-text-muted mt-1">MP4 or WebM, max 10MB, under 30s</span>
-                      <input
-                        type="file"
-                        accept="video/*"
-                        onChange={handleVideoChange}
-                        id="video-upload"
-                        className="hidden"
-                      />
-                    </label>
+                  </div>
+
+                  <div>
+                    <h3 className="text-sm font-semibold text-text-primary mb-2">Intro Video (Optional)</h3>
+                    {videoPreview ? (
+                      <div className="p-3 border border-border rounded-xl bg-surface flex flex-col items-center gap-3 max-w-sm">
+                        <video src={videoPreview} controls className="w-full rounded-lg max-h-40 bg-black" />
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={handleVideoRemove}
+                          className="text-red-500 hover:text-red-600 border-red-200 cursor-pointer"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" /> Remove Video
+                        </Button>
+                      </div>
+                    ) : (
+                      <label htmlFor="video-upload" className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-border rounded-xl bg-surface cursor-pointer hover:bg-primary-light/10 transition-all max-w-sm">
+                        <Video className="w-8 h-8 text-text-muted mb-2" />
+                        <span className="text-xs font-bold text-text-primary">Choose Intro Video</span>
+                        <span className="text-[10px] text-text-muted mt-1">MP4 or WebM, max 10MB, under 30s</span>
+                        <input
+                          type="file"
+                          accept="video/*"
+                          onChange={handleVideoChange}
+                          id="video-upload"
+                          className="hidden"
+                        />
+                      </label>
+                    )}
+                  </div>
+
+                  {uploadError && (
+                    <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-xs text-red-600 flex items-center gap-2">
+                      <AlertTriangle className="w-4 h-4" /> {uploadError}
+                    </div>
                   )}
                 </div>
 
-                {uploadError && (
-                  <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-xs text-red-600 flex items-center gap-2">
-                    <AlertTriangle className="w-4 h-4" /> {uploadError}
-                  </div>
-                )}
+                {/* About Me Textarea */}
+                <div className="space-y-1.5">
+                  <label className="block text-sm font-medium text-text-primary">About Me / Description</label>
+                  <textarea
+                    value={(formData.about_me as string) || ''}
+                    onChange={(e) => updateField('about_me', e.target.value)}
+                    rows={4}
+                    className="w-full px-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none"
+                    placeholder="Tell potential matches about yourself — your personality, interests, values..."
+                  />
+                </div>
+
               </div>
-
-              {/* About Me */}
-              <div>
-                <label className="block text-sm font-medium text-text-primary mb-1.5">About Me</label>
-                <textarea
-                  value={(formData.about_me as string) || ''}
-                  onChange={(e) => updateField('about_me', e.target.value)}
-                  rows={4}
-                  className="w-full px-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none"
-                  placeholder="Tell potential matches about yourself — your personality, interests, values..."
-                />
-              </div>
-
-              {/* Review Summary */}
-              <div className="bg-surface rounded-xl p-5 space-y-4">
-                <h3 className="text-lg font-bold flex items-center gap-2">
-                  <CheckCircle className="w-5 h-5 text-accent" /> Profile Summary
-                </h3>
-                
-                {[
-                  { title: 'Personal', items: [
-                    ['Name', formData.full_name], ['Gender', formData.gender], ['DOB', formData.date_of_birth],
-                    ['Height', formData.height], ['City', formData.city], ['Native', formData.native_district],
-                    ['Marital Status', formData.marital_status], ['Complexion', formData.complexion],
-                  ]},
-                  { title: 'Family', items: [
-                    ['Father', formData.father_name], ['Occupation', formData.father_occupation],
-                    ['Mother', formData.mother_name], ['Family Type', formData.family_type],
-                  ]},
-                  { title: 'Education & Career', items: [
-                    ['Education', formData.education], ['Field', formData.field_of_study],
-                    ['Profession', formData.profession], ['Company', formData.company],
-                    ['Income', formData.annual_income],
-                  ]},
-                  { title: 'Religion & Lifestyle', items: [
-                    ['Religion', formData.religion], ['Sub-caste', formData.sub_caste],
-                    ['Diet', formData.diet], ['Smoking', formData.smoking], ['Drinking', formData.drinking],
-                  ]},
-                ].map(section => (
-                  <div key={section.title}>
-                    <h4 className="text-sm font-semibold text-primary mb-2">{section.title}</h4>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-1 text-sm">
-                      {section.items.map(([label, value]) => (
-                        <p key={label as string}><span className="text-text-muted">{label as string}:</span> <span className="font-medium">{(value as string) || '—'}</span></p>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-
-                {selectedHobbies.length > 0 && (
-                  <div>
-                    <h4 className="text-sm font-semibold text-primary mb-2">Hobbies</h4>
-                    <div className="flex flex-wrap gap-1.5">
-                      {selectedHobbies.map(h => (
-                        <span key={h} className="px-2 py-0.5 rounded-full text-xs bg-primary-light text-primary font-medium">{h}</span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Disclaimer */}
-              <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-700">
-                ⚠️ Your profile will be reviewed by our admin team before being published. We verify all profiles to ensure authenticity. You&apos;ll be notified once it&apos;s approved.
-              </div>
-            </div>
-          )}
-
-          {/* Navigation */}
-          <div className="flex items-center justify-between mt-8 pt-6 border-t border-border">
-            <div className="flex gap-2">
-              <Button variant="ghost" onClick={goBack} disabled={step === 0}>
-                <ArrowLeft className="w-4 h-4" /> Previous
-              </Button>
-              <Button variant="ghost" onClick={saveDraft} className="text-text-muted">
-                <Save className="w-4 h-4" /> Save Draft
-              </Button>
-            </div>
-            {step < steps.length - 1 ? (
-              <Button variant="primary" onClick={goNext}>
-                Next <ArrowRight className="w-4 h-4" />
-              </Button>
-            ) : (
-              <Button variant="primary" onClick={handleSubmit}>
-                <CheckCircle className="w-4 h-4" /> Submit for Review
-              </Button>
             )}
-          </div>
-        </Card>
+
+            {/* Step 9: Expectations & Preferences */}
+            {step === 9 && (
+              <div className="space-y-6 animate-fade-in">
+                <div className="text-center max-w-md mx-auto mb-2">
+                  <h2 className="text-2xl font-bold font-display text-text-primary">Expectations & Preferences</h2>
+                  <p className="text-xs text-text-muted mt-1">Specify your preference for an expecting match</p>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-2 gap-2">
+                    <FormSelect formData={formData} errors={errors} updateField={updateField} label="Partner Min Age" field="pref_age_min" options={Array.from({ length: 43 }, (_, i) => String(i + 18))} />
+                    <FormSelect formData={formData} errors={errors} updateField={updateField} label="Partner Max Age" field="pref_age_max" options={Array.from({ length: 43 }, (_, i) => String(i + 18))} />
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <FormSelect formData={formData} errors={errors} updateField={updateField} label="Partner Min Height" field="pref_height_min" options={HEIGHTS} />
+                    <FormSelect formData={formData} errors={errors} updateField={updateField} label="Partner Max Height" field="pref_height_max" options={HEIGHTS} />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <FormSelect formData={formData} errors={errors} updateField={updateField} label="Partner Marital Status" field="pref_marital_status" options={MARITAL_STATUSES} />
+                  <FormSelect formData={formData} errors={errors} updateField={updateField} label="Partner Diet Preference" field="pref_diet" options={DIET_TYPES} />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <FormSelect formData={formData} errors={errors} updateField={updateField} label="Partner Highest Education" field="pref_education" options={EDUCATION_LEVELS} />
+                  <FormInput formData={formData} errors={errors} updateField={updateField} label="Partner Expected Profession" field="pref_profession" placeholder="e.g. Software Engineer, Doctor" />
+                  <FormSelect formData={formData} errors={errors} updateField={updateField} label="Partner Preferred City (TN)" field="pref_city" options={CITIES} />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="block text-sm font-medium text-text-primary">Expectations Description (optional)</label>
+                  <textarea
+                    value={(formData.partner_preference as string) || ''}
+                    onChange={(e) => updateField('partner_preference', e.target.value)}
+                    rows={4}
+                    className="w-full px-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none"
+                    placeholder="Tell us about the kind of person you are looking for..."
+                  />
+                </div>
+
+                {/* Profile Review Summary */}
+                <div className="bg-surface rounded-xl p-5 space-y-4 border border-border">
+                  <h3 className="text-lg font-bold flex items-center gap-2 text-primary border-b border-border pb-2">
+                    <CheckCircle className="w-5 h-5 text-accent" /> Profile Review
+                  </h3>
+                  
+                  {[
+                    { title: 'Personal info', items: [
+                      ['Name', formData.full_name], ['Created for', formData.profile_for], ['Gender', formData.gender], ['DOB', formData.date_of_birth],
+                      ['Height', formData.height], ['Current City', formData.city], ['Native district', formData.native_district],
+                      ['Marital status', formData.marital_status]
+                    ]},
+                    { title: 'Community info', items: [
+                      ['Religion', formData.religion], ['Caste', formData.caste], ['Sub-Caste', formData.sub_caste], ['Gotra', formData.gotra]
+                    ]},
+                    { title: 'Education & Career', items: [
+                      ['Education', formData.education], ['Profession', formData.profession], ['Income', formData.annual_income]
+                    ]},
+                    { title: 'Expected Match Preferences', items: [
+                      ['Age range', `${formData.pref_age_min || 'Any'} - ${formData.pref_age_max || 'Any'} yrs`],
+                      ['Height range', `${formData.pref_height_min || 'Any'} - ${formData.pref_height_max || 'Any'}`],
+                      ['Marital status', formData.pref_marital_status || 'Any'],
+                      ['Education', formData.pref_education || 'Any'],
+                      ['Profession', formData.pref_profession || 'Any'],
+                      ['Preferred City', formData.pref_city || 'Any']
+                    ]}
+                  ].map(sec => (
+                    <div key={sec.title} className="space-y-1.5">
+                      <h4 className="text-xs font-bold text-accent uppercase tracking-wider">{sec.title}</h4>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-1 text-xs">
+                        {sec.items.map(([lbl, val]) => (
+                          <p key={lbl as string}><span className="text-text-muted">{lbl as string}:</span> <span className="font-semibold text-text-primary">{(val as string) || '—'}</span></p>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-xs text-amber-800 leading-relaxed">
+                  ⚠️ Your profile details will be verified by our administrative team. Once approved, it will be published and visible to other verified match seekers in the community.
+                </div>
+              </div>
+            )}
+
+            {/* Navigation buttons */}
+            <div className="flex items-center justify-between mt-8 pt-6 border-t border-border">
+              <div className="flex gap-2">
+                <Button variant="ghost" onClick={goBack} disabled={step === 0} className="cursor-pointer">
+                  <ArrowLeft className="w-4 h-4" /> Previous
+                </Button>
+                <Button variant="ghost" onClick={saveDraft} className="text-text-muted cursor-pointer">
+                  <Save className="w-4 h-4" /> Save Draft
+                </Button>
+              </div>
+              {step < steps.length - 1 ? (
+                <Button variant="primary" onClick={goNext} className="cursor-pointer">
+                  Next <ArrowRight className="w-4 h-4" />
+                </Button>
+              ) : (
+                <Button variant="primary" onClick={handleSubmit} className="cursor-pointer">
+                  <CheckCircle className="w-4 h-4" /> Submit for Review
+                </Button>
+              )}
+            </div>
+          </Card>
+        </div>
       </div>
     </div>
   );

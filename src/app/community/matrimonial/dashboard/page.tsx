@@ -4,11 +4,12 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
   ArrowLeft, Heart, Star, Eye, Edit3, User, CheckCircle, Clock, XCircle,
-  AlertTriangle, Users, MessageCircle, Trash2, ExternalLink,
+  AlertTriangle, Users, MessageCircle, Trash2, ExternalLink, Lock, Mail, Phone, UserPlus, ArrowRight
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/Badge';
+import { useAuth } from '@/lib/auth/AuthContext';
 import {
   getMyProfile, getInterestsSent, getInterestsReceived, getShortlist,
   getProfile, getViewCount, deleteMyProfile, toggleShortlist, getMedia
@@ -72,6 +73,7 @@ function ProfileMiniCard({ profile, action }: { profile: MatrimonialProfile; act
 }
 
 export default function MatrimonialDashboard() {
+  const { firebaseUser, profile: userProfile, loading: authLoading } = useAuth();
   const [myProfile, setMyProfile] = useState<MatrimonialProfile | null>(null);
   const [interestsSent, setInterestsSent] = useState<MatrimonialProfile[]>([]);
   const [interestsReceived, setInterestsReceived] = useState<MatrimonialProfile[]>([]);
@@ -116,10 +118,87 @@ export default function MatrimonialDashboard() {
     }
   };
 
-  if (loading) {
+  if (loading || authLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-surface animate-fade-in">
         <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full" />
+      </div>
+    );
+  }
+
+  if (!firebaseUser) {
+    return (
+      <div className="min-h-screen bg-surface">
+        <div className="max-w-4xl mx-auto px-4 py-12">
+          <Link href="/community/matrimonial" className="inline-flex items-center gap-2 text-sm text-text-muted hover:text-primary mb-6 transition-colors">
+            <ArrowLeft className="w-4 h-4" /> Back to Matrimonial
+          </Link>
+          <div className="text-center py-16 animate-fade-in flex flex-col items-center">
+            <Card className="border border-primary/20 shadow-xl bg-white/95 backdrop-blur-md p-8 text-center max-w-md mx-auto">
+              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary-light to-accent-light flex items-center justify-center mx-auto mb-6 shadow-md">
+                <Lock className="w-7 h-7 text-primary" />
+              </div>
+              <h1 className="text-2xl font-bold font-display mb-3">Sign Up Required</h1>
+              <p className="text-text-muted mb-6 text-sm">
+                Please create an account and verify both your email and phone number to view the matrimonial dashboard.
+              </p>
+              <div className="flex flex-col gap-3">
+                <Link href="/auth/register">
+                  <Button variant="primary" size="lg" className="w-full flex items-center justify-center gap-2">
+                    <UserPlus className="w-4 h-4" /> Sign Up Now
+                  </Button>
+                </Link>
+                <Link href="/auth/login">
+                  <Button variant="outline" size="lg" className="w-full">
+                    Login to Account
+                  </Button>
+                </Link>
+              </div>
+            </Card>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!userProfile?.email_verified || !userProfile?.phone_verified) {
+    return (
+      <div className="min-h-screen bg-surface">
+        <div className="max-w-4xl mx-auto px-4 py-12">
+          <Link href="/community/matrimonial" className="inline-flex items-center gap-2 text-sm text-text-muted hover:text-primary mb-6 transition-colors">
+            <ArrowLeft className="w-4 h-4" /> Back to Matrimonial
+          </Link>
+          <div className="text-center py-16 animate-fade-in flex flex-col items-center">
+            <Card className="border border-amber-200 shadow-xl bg-white/95 backdrop-blur-md p-8 text-center max-w-md mx-auto">
+              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-amber-100 to-orange-100 flex items-center justify-center mx-auto mb-6 shadow-md animate-pulse">
+                <AlertTriangle className="w-7 h-7 text-amber-600" />
+              </div>
+              <h1 className="text-2xl font-bold font-display mb-3">Verification Required</h1>
+              <p className="text-text-muted mb-6 text-sm">
+                Both your Email ID and Phone Number must be verified before you can access the matrimonial dashboard.
+              </p>
+              <div className="flex flex-col gap-3 text-left mb-6 w-full">
+                <div className={`p-3 rounded-xl border flex items-center justify-between text-xs font-medium ${userProfile?.email_verified ? 'bg-green-50 border-green-200 text-green-700' : 'bg-red-50 border-red-200 text-red-700'}`}>
+                  <span className="flex items-center gap-2">
+                    <Mail className="w-3.5 h-3.5" /> Email Address
+                  </span>
+                  <span>{userProfile?.email_verified ? 'Verified' : 'Pending'}</span>
+                </div>
+                <div className={`p-3 rounded-xl border flex items-center justify-between text-xs font-medium ${userProfile?.phone_verified ? 'bg-green-50 border-green-200 text-green-700' : 'bg-red-50 border-red-200 text-red-700'}`}>
+                  <span className="flex items-center gap-2">
+                    <Phone className="w-3.5 h-3.5" /> Phone Number
+                  </span>
+                  <span>{userProfile?.phone_verified ? 'Verified' : 'Pending'}</span>
+                </div>
+              </div>
+              <Link href="/profile">
+                <Button variant="primary" size="lg" className="w-full flex items-center justify-center gap-2">
+                  <ArrowRight className="w-4 h-4" /> Go to Profile to Verify
+                </Button>
+              </Link>
+            </Card>
+          </div>
+        </div>
       </div>
     );
   }

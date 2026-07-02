@@ -2,11 +2,10 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { MapPin, Navigation, Bus, Train, Car, Bike, ExternalLink, Loader2, AlertCircle, Download, Search, Megaphone, Map } from 'lucide-react';
+import { MapPin, Navigation, Bus, Train, Car, Bike, ExternalLink, Loader2, AlertCircle, Download, Search, Map } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/Badge';
-import { TAMIL_WORDS } from '@/lib/constants';
 import { checkRouteAvailability, RouteResponse, TransportCategory, PrivateMode } from '@/lib/routingService';
 
 const transportCategories = [
@@ -81,10 +80,8 @@ export default function TravelPage() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Route Planner */}
-          <div className="lg:col-span-2 space-y-6">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="space-y-6">
             <Card padding="lg">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-bold">Route Planner</h2>
@@ -293,28 +290,6 @@ export default function TravelPage() {
                 ))}
               </div>
             </Card>
-          </div>
-
-          {/* Tamil Words Helper */}
-          <div>
-            <Card className="sticky top-20">
-              <h3 className="text-lg font-bold mb-4 inline-flex items-center gap-2">
-                <Megaphone className="w-5 h-5 text-primary" /> Tamil Word Helper
-              </h3>
-              <p className="text-sm text-text-muted mb-4">Common Tamil words you&apos;ll need while traveling:</p>
-              <div className="space-y-3">
-                {TAMIL_WORDS.map((word) => (
-                  <div key={word.tamil} className="flex items-start gap-3 p-3 bg-surface rounded-xl">
-                    <div className="flex-1">
-                      <p className="text-sm font-bold text-primary">{word.tamil}</p>
-                      <p className="text-xs text-text-muted">{word.meaning}</p>
-                    </div>
-                    <span className="text-xs text-text-muted bengali-text">{word.script}</span>
-                  </div>
-                ))}
-              </div>
-            </Card>
-          </div>
         </div>
       </div>
     </div>

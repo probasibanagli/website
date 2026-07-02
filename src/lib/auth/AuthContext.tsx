@@ -130,7 +130,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       created_at: now,
       updated_at: now,
       is_active: true,
-      email_verified: true,
+      email_verified: false,
       phone_verified: phoneVerified,
     };
 
