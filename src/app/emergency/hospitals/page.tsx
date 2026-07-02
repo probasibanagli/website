@@ -95,26 +95,37 @@ export default function EmergencyHospitalsPage() {
             </div>
 
             {/* New Subsections Highlight */}
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Link href="/emergency/hospitals/bengali-hospitals" className="group">
-                <div className="bg-white p-5 rounded-2xl border border-red-100 shadow-sm hover:shadow-md transition-all h-full max-w-[250px]">
+            <div className="flex flex-col md:flex-row gap-4">
+              <Link href="/emergency/hospitals/bengali-hospitals" className="group flex-1">
+                <div className="bg-white p-5 rounded-2xl border border-red-100 shadow-sm hover:shadow-md transition-all h-full">
                    <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                      <Building2 className="w-6 h-6 text-primary" />
                    </div>
-                   <h3 className="font-bold text-text-primary mb-1">Bengali Hospitals</h3>
+                   <h3 className="font-bold text-text-primary mb-1">Hospital Directory</h3>
                    <p className="text-sm text-text-muted mb-4">Dedicated directory of Bengali friendly hospitals.</p>
                    <span className="text-primary text-sm font-semibold flex items-center">Explore <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" /></span>
                 </div>
               </Link>
               
-              <Link href="/emergency/hospitals/bengali-doctors" className="group">
-                <div className="bg-white p-5 rounded-2xl border border-red-100 shadow-sm hover:shadow-md transition-all h-full max-w-[250px]">
+              <Link href="/emergency/hospitals/bengali-doctors" className="group flex-1">
+                <div className="bg-white p-5 rounded-2xl border border-red-100 shadow-sm hover:shadow-md transition-all h-full">
                    <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                      <UserRound className="w-6 h-6 text-primary" />
                    </div>
                    <h3 className="font-bold text-text-primary mb-1">Bengali Doctors</h3>
                    <p className="text-sm text-text-muted mb-4">Connect with experienced Bengali-speaking doctors.</p>
                    <span className="text-primary text-sm font-semibold flex items-center">View Doctors <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" /></span>
+                </div>
+              </Link>
+              
+              <Link href="/emergency/hospitals/bengali-staff" className="group flex-1">
+                <div className="bg-white p-5 rounded-2xl border border-red-100 shadow-sm hover:shadow-md transition-all h-full">
+                   <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                     <UserRound className="w-6 h-6 text-primary" />
+                   </div>
+                   <h3 className="font-bold text-text-primary mb-1">Bengali Staff</h3>
+                   <p className="text-sm text-text-muted mb-4">Find Bengali-speaking support and administration.</p>
+                   <span className="text-primary text-sm font-semibold flex items-center">View Staff <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" /></span>
                 </div>
               </Link>
             </div>

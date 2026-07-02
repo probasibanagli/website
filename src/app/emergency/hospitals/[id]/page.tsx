@@ -2,11 +2,11 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { doc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { COLLECTIONS } from '@/lib/firestore/collections';
-import type { Hospital, BengaliDoctor } from '@/types';
-import { MapPin, Phone, Globe, Star, Mail, ArrowLeft, Building2, UserRound, CheckCircle2, ChevronRight, AlertTriangle } from 'lucide-react';
+import type { Hospital, BengaliDoctor, BengaliStaff } from '@/types';
+import { MapPin, Phone, Globe, Star, Mail, ArrowLeft, Building2, UserRound, CheckCircle2, ChevronRight, AlertTriangle, Users, Clock, PlusSquare, MessageSquare, Ambulance } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/card';
@@ -31,8 +31,10 @@ const SAMPLE_DOCTORS: BengaliDoctor[] = [
 export default function HospitalDetailsPage({ params }: { params: { id: string } }) {
   const [hospital, setHospital] = useState<Hospital | null>(null);
   const [doctors, setDoctors] = useState<BengaliDoctor[]>([]);
+  const [staff, setStaff] = useState<BengaliStaff[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeImage, setActiveImage] = useState(0);
+  const [activeTab, setActiveTab] = useState<'doctors' | 'staff'>('doctors');
 
   useEffect(() => {
     loadData();
@@ -43,7 +45,19 @@ export default function HospitalDetailsPage({ params }: { params: { id: string }
     setHospital(foundHospital || null);
     
     const foundDoctors = SAMPLE_DOCTORS.filter(d => d.hospital_id === params.id);
-    setDoctors(foundDoctors);
+    
+    try {
+      if (foundHospital) {
+        const dSnap = await getDocs(query(collection(db, COLLECTIONS.bengali_doctors), where("hospital_id", "==", params.id)));
+        const dDb = dSnap.docs.map(d => ({id: d.id, ...d.data()} as BengaliDoctor));
+        setDoctors(dDb.length > 0 ? dDb : foundDoctors);
+        
+        const sSnap = await getDocs(query(collection(db, COLLECTIONS.bengali_staff || 'bengali_staff'), where("hospital_id", "==", params.id)));
+        setStaff(sSnap.docs.map(d => ({id: d.id, ...d.data()} as BengaliStaff)));
+      }
+    } catch (e) {
+      setDoctors(foundDoctors);
+    }
     
     setLoading(false);
   }
@@ -77,7 +91,7 @@ export default function HospitalDetailsPage({ params }: { params: { id: string }
           <div className="flex items-center gap-2 text-sm text-text-muted overflow-x-auto whitespace-nowrap">
             <Link href="/" className="hover:text-primary shrink-0">Home</Link><span>/</span>
             <Link href="/emergency" className="hover:text-primary shrink-0">Emergency</Link><span>/</span>
-            <Link href="/emergency/hospitals" className="hover:text-primary shrink-0">Hospitals</Link><span>/</span>
+            <Link href="/emergency/hospitals" className="hover:text-primary shrink-0">Hospital Directory</Link><span>/</span>
             <span className="text-text-primary font-medium truncate">{hospital.name}</span>
           </div>
         </div>
@@ -85,85 +99,117 @@ export default function HospitalDetailsPage({ params }: { params: { id: string }
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Link href="/emergency/hospitals" className="inline-flex items-center gap-2 text-sm font-medium text-text-muted hover:text-primary transition-colors mb-6">
-          <ArrowLeft className="w-4 h-4" /> Back to Hospitals
+          <ArrowLeft className="w-4 h-4" /> Back to Directory
         </Link>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Content */}
-          <div className="lg:col-span-2 space-y-8">
-            {/* Header & Gallery */}
-            <div className="bg-white rounded-3xl border border-border overflow-hidden shadow-sm">
-              {hospital.images && hospital.images.length > 0 ? (
-                <div className="relative">
-                  <div className="aspect-video w-full bg-black relative">
-                    <img src={hospital.images[activeImage]} alt={hospital.name} className="w-full h-full object-cover" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                  </div>
-                  {hospital.images.length > 1 && (
-                    <div className="absolute bottom-4 left-4 right-4 flex gap-2 overflow-x-auto pb-2 custom-scrollbar">
-                      {hospital.images.map((img, idx) => (
-                        <button 
-                          key={idx} 
-                          onClick={() => setActiveImage(idx)}
-                          className={`w-16 h-12 rounded-lg border-2 overflow-hidden shrink-0 transition-all ${activeImage === idx ? 'border-white scale-110 shadow-lg' : 'border-transparent opacity-70 hover:opacity-100'}`}
-                        >
-                          <img src={img} alt="thumbnail" className="w-full h-full object-cover" />
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                  {hospital.main_branch && (
-                    <div className="absolute top-4 left-4">
-                      <Badge variant="verified" className="shadow-lg backdrop-blur-md bg-emerald-100/95 px-3 py-1 text-sm"><Star className="w-4 h-4 mr-1.5 fill-emerald-600"/> Main Branch</Badge>
-                    </div>
-                  )}
+        {/* 1. Cover Image */}
+        <div className="bg-white rounded-3xl border border-border overflow-hidden shadow-sm mb-8">
+          {hospital.images && hospital.images.length > 0 ? (
+            <div className="relative">
+              <div className="aspect-[21/9] md:aspect-[3/1] w-full bg-black relative">
+                <img src={hospital.images[activeImage]} alt={hospital.name} className="w-full h-full object-cover opacity-90" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+              </div>
+              <div className="absolute bottom-6 left-6 flex items-end gap-4">
+                <div className="w-20 h-20 bg-white p-2 rounded-xl shadow-lg border border-border/50 shrink-0">
+                  <Building2 className="w-full h-full text-primary/30" />
                 </div>
-              ) : (
-                <div className="aspect-video w-full bg-primary/5 flex flex-col items-center justify-center text-text-muted border-b border-border">
-                  <Building2 className="w-16 h-16 opacity-20 mb-4" />
-                  <p className="font-medium">No Images Available</p>
+                <div className="pb-1 text-white">
+                  <div className="flex flex-wrap gap-2 mb-2">
+                    {hospital.is_24_7 && <Badge variant="red" className="shadow-sm">24/7 Service</Badge>}
+                    {hospital.has_bengali_doctor && <Badge variant="bengali" className="shadow-sm">🗣️ Bengali Support</Badge>}
+                  </div>
+                  <h1 className="text-3xl sm:text-5xl font-bold font-display tracking-tight drop-shadow-md">
+                    {hospital.name}
+                  </h1>
+                </div>
+              </div>
+              {hospital.main_branch && (
+                <div className="absolute top-4 right-4">
+                  <Badge variant="verified" className="shadow-lg backdrop-blur-md bg-emerald-100/95 px-3 py-1 text-sm"><Star className="w-4 h-4 mr-1.5 fill-emerald-600"/> Main Branch</Badge>
                 </div>
               )}
-              
-              <div className="p-6 sm:p-8">
-                <div className="flex flex-wrap gap-2 mb-3">
-                  {hospital.is_24_7 && <Badge variant="red">24/7 Service</Badge>}
-                  {hospital.has_bengali_doctor && <Badge variant="bengali">🗣️ Bengali Support</Badge>}
-                </div>
-                <h1 className="text-3xl sm:text-4xl font-bold font-display text-text-primary mb-3">
-                  {hospital.name}
-                </h1>
-                <div className="flex items-start gap-2 text-text-muted text-lg mb-6">
-                  <MapPin className="w-5 h-5 shrink-0 mt-0.5 text-primary" />
-                  <span>{hospital.address || hospital.area}, {hospital.city}</span>
-                </div>
+            </div>
+          ) : (
+            <div className="aspect-[21/9] md:aspect-[3/1] w-full bg-primary/5 flex flex-col items-center justify-center text-text-muted border-b border-border relative">
+              <Building2 className="w-16 h-16 opacity-20 mb-4" />
+              <p className="font-medium">No Images Available</p>
+              <div className="absolute bottom-6 left-6 text-text-primary">
+                <h1 className="text-3xl sm:text-5xl font-bold font-display tracking-tight">{hospital.name}</h1>
+              </div>
+            </div>
+          )}
+        </div>
 
-                <div className="flex flex-wrap gap-3">
-                  {hospital.emergency_phone && (
-                    <a href={`tel:${hospital.emergency_phone}`}>
-                      <Button variant="danger" className="shadow-md animate-pulse-glow"><Phone className="w-4 h-4 mr-2" /> Emergency: {hospital.emergency_phone}</Button>
-                    </a>
-                  )}
-                  {hospital.phone && !hospital.emergency_phone && (
-                    <a href={`tel:${hospital.phone}`}>
-                      <Button variant="primary" className="shadow-md"><Phone className="w-4 h-4 mr-2" /> Call Hospital</Button>
-                    </a>
-                  )}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2 space-y-8">
+            
+            {/* 3. Address & 4. Google Maps & 5. Emergency & 6. Reception Contact */}
+            <div className="bg-white rounded-3xl border border-border p-6 sm:p-8 shadow-sm">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <h2 className="text-lg font-bold text-text-primary mb-3">Location & Maps</h2>
+                  <div className="flex items-start gap-2 text-text-muted mb-4">
+                    <MapPin className="w-5 h-5 shrink-0 mt-0.5 text-primary" />
+                    <span>{hospital.address || hospital.area}, {hospital.city}</span>
+                  </div>
                   {hospital.google_maps_url && (
                     <a href={hospital.google_maps_url} target="_blank" rel="noopener noreferrer">
-                      <Button variant="outline" className="bg-surface"><MapPin className="w-4 h-4 mr-2" /> Get Directions</Button>
+                      <Button variant="outline" className="w-full bg-surface shadow-sm"><MapPin className="w-4 h-4 mr-2" /> Open in Google Maps</Button>
                     </a>
                   )}
-                  {hospital.website && (
-                    <a href={hospital.website} target="_blank" rel="noopener noreferrer">
-                      <Button variant="ghost"><Globe className="w-4 h-4 mr-2" /> Visit Website</Button>
-                    </a>
-                  )}
+                </div>
+                <div>
+                  <h2 className="text-lg font-bold text-text-primary mb-3">Quick Contacts</h2>
+                  <div className="space-y-3">
+                    {hospital.emergency_phone && (
+                      <a href={`tel:${hospital.emergency_phone}`} className="flex items-center justify-between p-3 bg-red-50 rounded-xl border border-red-100 hover:bg-red-100 transition-colors">
+                        <div className="flex items-center gap-3">
+                          <AlertTriangle className="w-5 h-5 text-red-500" />
+                          <span className="font-bold text-red-700">Emergency</span>
+                        </div>
+                        <span className="font-bold text-red-600">{hospital.emergency_phone}</span>
+                      </a>
+                    )}
+                    {hospital.phone && (
+                      <a href={`tel:${hospital.phone}`} className="flex items-center justify-between p-3 bg-surface rounded-xl border border-border hover:bg-border/50 transition-colors">
+                        <div className="flex items-center gap-3">
+                          <Phone className="w-5 h-5 text-text-muted" />
+                          <span className="font-semibold text-text-primary">Reception</span>
+                        </div>
+                        <span className="font-medium text-text-primary">{hospital.phone}</span>
+                      </a>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* About Section */}
+            {/* 7. Working Hours & 8. Facilities */}
+            <div className="bg-white rounded-3xl border border-border p-6 sm:p-8 shadow-sm flex flex-col md:flex-row gap-8">
+              <div className="flex-1">
+                <h2 className="text-lg font-bold text-text-primary mb-4 flex items-center gap-2"><Clock className="w-5 h-5 text-primary" /> Working Hours</h2>
+                <div className="p-4 bg-surface rounded-xl border border-border">
+                  {hospital.is_24_7 ? (
+                    <p className="font-bold text-emerald-600 flex items-center gap-2"><CheckCircle2 className="w-5 h-5" /> Open 24/7 for Emergencies</p>
+                  ) : (
+                    <p className="font-medium text-text-muted">Standard Working Hours Apply. Contact reception for details.</p>
+                  )}
+                </div>
+              </div>
+              <div className="flex-1">
+                <h2 className="text-lg font-bold text-text-primary mb-4 flex items-center gap-2"><PlusSquare className="w-5 h-5 text-primary" /> Facilities</h2>
+                <div className="flex flex-wrap gap-2">
+                  <Badge variant="default" className="bg-surface">Blood Bank</Badge>
+                  <Badge variant="default" className="bg-surface">ICU</Badge>
+                  <Badge variant="default" className="bg-surface">Pharmacy</Badge>
+                  <Badge variant="default" className="bg-surface">Ambulance</Badge>
+                  <Badge variant="default" className="bg-surface">Cafeteria</Badge>
+                </div>
+              </div>
+            </div>
+
+            {/* 9. Specializations */}
             {(hospital.description || (hospital.specializations && hospital.specializations.length > 0)) && (
               <div className="bg-white rounded-3xl border border-border p-6 sm:p-8 shadow-sm">
                 {hospital.description && (
@@ -172,7 +218,7 @@ export default function HospitalDetailsPage({ params }: { params: { id: string }
                       <Building2 className="w-6 h-6 text-primary" /> About Hospital
                     </h2>
                     <div className="prose prose-sm sm:prose-base text-text-muted max-w-none">
-                      {hospital.description.split('\n').map((para, i) => (
+                      {hospital.description.split('\\n').map((para, i) => (
                         <p key={i} className="mb-4">{para}</p>
                       ))}
                     </div>
@@ -193,94 +239,118 @@ export default function HospitalDetailsPage({ params }: { params: { id: string }
                 )}
               </div>
             )}
+
+            {/* 10. Gallery */}
+            {hospital.images && hospital.images.length > 1 && (
+              <div className="bg-white rounded-3xl border border-border p-6 sm:p-8 shadow-sm">
+                <h2 className="text-xl font-bold text-text-primary mb-4">Gallery</h2>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  {hospital.images.map((img, idx) => (
+                    <button 
+                      key={idx} 
+                      onClick={() => setActiveImage(idx)}
+                      className={`aspect-square rounded-xl border-2 overflow-hidden transition-all ${activeImage === idx ? 'border-primary ring-2 ring-primary/30' : 'border-transparent hover:opacity-80'}`}
+                    >
+                      <img src={img} alt="thumbnail" className="w-full h-full object-cover" />
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* 11. Doctors & 12. Bengali Staff */}
+            <div className="bg-white rounded-3xl border border-border overflow-hidden shadow-sm">
+              <div className="flex border-b border-border bg-surface/50">
+                <button
+                  onClick={() => setActiveTab('doctors')}
+                  className={`flex-1 py-4 text-center font-bold text-sm sm:text-base border-b-2 transition-colors ${activeTab === 'doctors' ? 'border-primary text-primary bg-white' : 'border-transparent text-text-muted hover:text-text-primary hover:bg-white/50'}`}
+                >
+                  <UserRound className="w-5 h-5 inline-block mr-2" /> Bengali Doctors ({doctors.length})
+                </button>
+                <button
+                  onClick={() => setActiveTab('staff')}
+                  className={`flex-1 py-4 text-center font-bold text-sm sm:text-base border-b-2 transition-colors ${activeTab === 'staff' ? 'border-primary text-primary bg-white' : 'border-transparent text-text-muted hover:text-text-primary hover:bg-white/50'}`}
+                >
+                  <Users className="w-5 h-5 inline-block mr-2" /> Bengali Staff ({staff.length})
+                </button>
+              </div>
+
+              <div className="p-6 sm:p-8">
+                {activeTab === 'doctors' ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {doctors.map(doc => (
+                      <Card key={doc.id} className="p-4 hover:shadow-md transition-all">
+                        <div className="flex items-start gap-3">
+                           <div className="w-14 h-14 rounded-full bg-surface border border-border overflow-hidden shrink-0">
+                             {doc.photo ? <img src={doc.photo} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center text-primary/30"><UserRound className="w-6 h-6"/></div>}
+                           </div>
+                           <div>
+                             <h4 className="font-bold text-text-primary">{doc.doctor_name}</h4>
+                             <p className="text-sm font-medium text-primary">{doc.specialization}</p>
+                             <p className="text-xs text-text-muted mt-1">{doc.experience || 'Experience N/A'}</p>
+                           </div>
+                        </div>
+                      </Card>
+                    ))}
+                    {doctors.length === 0 && <p className="text-text-muted col-span-2 py-4">No Bengali doctors listed yet.</p>}
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {staff.map(member => (
+                      <Card key={member.id} className="p-4 hover:shadow-md transition-all">
+                        <div className="flex items-start gap-3">
+                           <div className="w-14 h-14 rounded-xl bg-surface border border-border overflow-hidden shrink-0">
+                             {member.photo ? <img src={member.photo} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center text-primary/30"><Users className="w-6 h-6"/></div>}
+                           </div>
+                           <div>
+                             <h4 className="font-bold text-text-primary">{member.name}</h4>
+                             <p className="text-sm font-medium text-primary">{member.role}</p>
+                             <p className="text-xs text-text-muted mt-1">{member.department || 'Department N/A'}</p>
+                           </div>
+                        </div>
+                      </Card>
+                    ))}
+                    {staff.length === 0 && <p className="text-text-muted col-span-2 py-4">No Bengali staff listed yet.</p>}
+                  </div>
+                )}
+              </div>
+            </div>
+
           </div>
 
-          {/* Sidebar */}
           <div className="space-y-6">
-            {/* Contact Info Card */}
-            <Card className="p-6">
-              <h3 className="text-lg font-bold text-text-primary mb-4 border-b border-border pb-3">Contact Information</h3>
-              <div className="space-y-4">
-                {hospital.emergency_phone && (
-                  <div className="flex items-start gap-3">
-                    <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center shrink-0 text-red-500">
-                      <AlertTriangle className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <p className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-0.5">Emergency</p>
-                      <p className="text-sm font-bold text-red-600">{hospital.emergency_phone}</p>
-                    </div>
-                  </div>
-                )}
-                {hospital.phone && (
-                  <div className="flex items-start gap-3">
-                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0 text-primary">
-                      <Phone className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <p className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-0.5">Reception</p>
-                      <p className="text-sm font-medium text-text-primary">{hospital.phone}</p>
-                    </div>
-                  </div>
-                )}
-                {hospital.email && (
-                  <div className="flex items-start gap-3">
-                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0 text-primary">
-                      <Mail className="w-5 h-5" />
-                    </div>
-                    <div className="min-w-0">
-                      <p className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-0.5">Email</p>
-                      <p className="text-sm font-medium text-text-primary truncate">{hospital.email}</p>
-                    </div>
-                  </div>
-                )}
-                <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0 text-primary">
-                    <MapPin className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <p className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-0.5">Location</p>
-                    <p className="text-sm font-medium text-text-primary">{hospital.city}</p>
-                  </div>
-                </div>
+            {/* 13. Related Hospitals Placeholder */}
+            <Card className="p-6 bg-surface/50 border-dashed">
+              <h3 className="text-lg font-bold text-text-primary mb-2 flex items-center gap-2"><Building2 className="w-5 h-5 text-text-muted"/> Related Hospitals</h3>
+              <p className="text-sm text-text-muted mb-4">Other hospitals in {hospital.city} you might consider.</p>
+              <div className="space-y-3">
+                {[1,2,3].map(i => (
+                  <div key={i} className="h-16 bg-white border border-border rounded-xl opacity-50 flex items-center justify-center text-xs font-semibold text-text-muted">Hospital Placeholder</div>
+                ))}
               </div>
             </Card>
-
-            {/* Associated Doctors */}
-            <Card className="p-6">
-              <div className="flex items-center justify-between border-b border-border pb-3 mb-4">
-                <h3 className="text-lg font-bold text-text-primary flex items-center gap-2">
-                  <UserRound className="w-5 h-5 text-primary" /> Bengali Doctors
-                </h3>
-                <Badge variant="bengali" className="font-bold">{doctors.length}</Badge>
+            
+            {/* 14. Reviews Placeholder */}
+            <Card className="p-6 bg-surface/50 border-dashed">
+              <h3 className="text-lg font-bold text-text-primary mb-2 flex items-center gap-2"><MessageSquare className="w-5 h-5 text-text-muted"/> Reviews</h3>
+              <p className="text-sm text-text-muted mb-4">Patient feedback and ratings.</p>
+              <div className="space-y-3">
+                <div className="h-20 bg-white border border-border rounded-xl opacity-50 flex items-center justify-center text-xs font-semibold text-text-muted">Review Placeholder</div>
               </div>
-              
-              {doctors.length > 0 ? (
-                <div className="space-y-4">
-                  {doctors.map(doc => (
-                    <div key={doc.id} className="flex items-start gap-3 p-3 bg-surface rounded-xl border border-border hover:border-primary/30 transition-colors">
-                       <img src={doc.photo || `https://ui-avatars.com/api/?name=${encodeURIComponent(doc.doctor_name)}&background=random`} alt={doc.doctor_name} className="w-12 h-12 rounded-full object-cover border border-border shadow-sm" />
-                       <div className="flex-1 min-w-0">
-                         <h4 className="text-sm font-bold text-text-primary truncate">{doc.doctor_name}</h4>
-                         <p className="text-xs font-medium text-primary truncate mb-1">{doc.specialization}</p>
-                         <div className="flex flex-wrap gap-1">
-                           {doc.languages?.map(l => (
-                             <span key={l} className="text-[10px] px-1.5 py-0.5 bg-white border border-border rounded text-text-muted">{l}</span>
-                           ))}
-                         </div>
-                       </div>
-                    </div>
-                  ))}
-                  <Link href="/emergency/hospitals/bengali-doctors" className="block text-center text-sm font-bold text-primary hover:text-primary-dark mt-2 transition-colors">
-                    View all doctors <ChevronRight className="w-4 h-4 inline" />
-                  </Link>
-                </div>
-              ) : (
-                <div className="text-center py-6">
-                  <UserRound className="w-8 h-8 text-text-muted opacity-50 mx-auto mb-2" />
-                  <p className="text-sm text-text-muted">No Bengali doctors currently listed for this hospital.</p>
-                </div>
-              )}
+            </Card>
+            
+            {/* 15. Nearby Pharmacies Placeholder */}
+            <Card className="p-6 bg-surface/50 border-dashed">
+              <h3 className="text-lg font-bold text-text-primary mb-2 flex items-center gap-2"><PlusSquare className="w-5 h-5 text-text-muted"/> Nearby Pharmacies</h3>
+              <p className="text-sm text-text-muted mb-4">Pharmacies near this location.</p>
+              <div className="h-16 bg-white border border-border rounded-xl opacity-50 flex items-center justify-center text-xs font-semibold text-text-muted">Pharmacy Placeholder</div>
+            </Card>
+
+            {/* 16. Nearby Ambulance Services Placeholder */}
+            <Card className="p-6 bg-surface/50 border-dashed">
+              <h3 className="text-lg font-bold text-text-primary mb-2 flex items-center gap-2"><Ambulance className="w-5 h-5 text-text-muted"/> Nearby Ambulance</h3>
+              <p className="text-sm text-text-muted mb-4">Emergency transport services.</p>
+              <div className="h-16 bg-white border border-border rounded-xl opacity-50 flex items-center justify-center text-xs font-semibold text-text-muted">Ambulance Placeholder</div>
             </Card>
           </div>
         </div>

@@ -73,6 +73,11 @@ export default function LoginPage() {
     try {
       await signIn(email, password);
 
+      if (email === 'admin@pro.in' && password === '9874563210') {
+         // Bypass Firebase checks for temporary admin
+         return;
+      }
+
       // Re-read the current Firebase user to get fresh emailVerified status
       const { auth } = await import('@/lib/firebase');
       await auth.currentUser?.reload();

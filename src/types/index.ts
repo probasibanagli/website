@@ -141,6 +141,23 @@ export interface BengaliDoctor {
   updated_at?: string;
 }
 
+export interface BengaliStaff {
+  id: string;
+  name: string;
+  photo: string;
+  hospital_id: string;
+  department: string;
+  role: string;
+  languages: string[];
+  phone: string;
+  email: string;
+  experience: string;
+  availability: string;
+  description: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
 export interface BloodBank {
   id: string;
   name: string;

@@ -6,8 +6,11 @@ import { db } from '@/lib/firebase';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { canAccess } from '@/lib/permissions';
 import { COLLECTIONS } from '@/lib/firestore/collections';
-import type { Hospital, BengaliDoctor } from '@/types';
-import { Plus, Pencil, Trash2, X, Loader2, Shield, Building2, UserRound, PhoneCall, CheckCircle } from 'lucide-react';
+import type { Hospital, BengaliDoctor, BengaliStaff } from '@/types';
+import { Plus, Pencil, Trash2, X, Loader2, Shield, Building2, UserRound, PhoneCall, CheckCircle, Users } from 'lucide-react';
+
+const CHENNAI_AREAS = ['Adyar', 'Alandur', 'Ambattur', 'Anna Nagar', 'Ashok Nagar', 'Aminjikarai', 'Avadi', 'Besant Nagar', 'Broadway', 'Chromepet', 'Egmore', 'Guindy', 'Kilpauk', 'Kodambakkam', 'Kolathur', 'Madipakkam', 'Madhavaram', 'Mambalam', 'Manapakkam', 'Medavakkam', 'Mogappair', 'Nanganallur', 'OMR', 'Pallavaram', 'Perambur', 'Porur', 'Royapettah', 'Saidapet', 'Sholinganallur', 'Tambaram', 'T Nagar', 'Thiruvanmiyur', 'Triplicane', 'Vadapalani', 'Velachery', 'Villivakkam', 'Virugambakkam', 'West Mambalam', 'Greams Road', 'Gandhi Nagar', 'Koyambedu', 'Mylapore', 'Perungudi'];
+const LANGUAGES = ['Bengali', 'Tamil', 'English', 'Hindi', 'Telugu', 'Malayalam', 'Kannada', 'Urdu'];
 
 const SAMPLE_HOSPITALS = [
   { name: 'Apollo Hospital Chennai', city: 'Chennai', area: 'Greams Road', emergency_phone: '1066', phone: '044-28293333', is_24_7: true, has_bengali_doctor: true, main_branch: true, specializations: ['Cardiology', 'Neurology', 'Oncology'], description: 'Leading multi-specialty hospital.', images: ['/images/hospitals/apollo-chennai.jpg'] },
@@ -27,10 +30,11 @@ const SAMPLE_DOCTORS = [
 
 export default function AdminEmergencyPage() {
   const { profile } = useAuth();
-  const [activeTab, setActiveTab] = useState<'hospitals' | 'doctors' | 'contacts'>('hospitals');
+  const [activeTab, setActiveTab] = useState<'hospitals' | 'doctors' | 'staff' | 'contacts'>('hospitals');
   
   const [hospitals, setHospitals] = useState<Hospital[]>([]);
   const [doctors, setDoctors] = useState<BengaliDoctor[]>([]);
+  const [staff, setStaff] = useState<BengaliStaff[]>([]);
   const [loading, setLoading] = useState(true);
   
   const [showForm, setShowForm] = useState(false);
@@ -53,12 +57,14 @@ export default function AdminEmergencyPage() {
   async function loadData() {
     setLoading(true);
     try {
-      const [hSnap, dSnap] = await Promise.all([
+      const [hSnap, dSnap, sSnap] = await Promise.all([
         getDocs(collection(db, COLLECTIONS.hospitals)),
-        getDocs(collection(db, COLLECTIONS.bengali_doctors))
+        getDocs(collection(db, COLLECTIONS.bengali_doctors)),
+        getDocs(collection(db, COLLECTIONS.bengali_staff || 'bengali_staff'))
       ]);
       setHospitals(hSnap.docs.map(d => ({ id: d.id, ...d.data() } as Hospital)));
       setDoctors(dSnap.docs.map(d => ({ id: d.id, ...d.data() } as BengaliDoctor)));
+      setStaff(sSnap.docs.map(d => ({ id: d.id, ...d.data() } as BengaliStaff)));
     } catch (e: any) {
       console.error(e);
     } finally {
@@ -104,7 +110,7 @@ export default function AdminEmergencyPage() {
     setFormData(
       activeTab === 'hospitals' 
         ? { specializations: '', images: '', main_branch: false, is_24_7: false, has_bengali_doctor: false } 
-        : { languages: '' }
+        : { languages: [] }
     );
     setShowForm(true);
   }
@@ -116,8 +122,8 @@ export default function AdminEmergencyPage() {
       if (Array.isArray(data.images)) data.images = data.images.join('\n');
       if (Array.isArray(data.specializations)) data.specializations = data.specializations.join('\n');
     }
-    if (activeTab === 'doctors') {
-      if (Array.isArray(data.languages)) data.languages = data.languages.join('\n');
+    if (activeTab === 'doctors' || activeTab === 'staff') {
+      if (!Array.isArray(data.languages)) data.languages = [];
     }
     setFormData(data);
     setShowForm(true);
@@ -126,7 +132,11 @@ export default function AdminEmergencyPage() {
   async function handleSave() {
     setSaving(true);
     try {
-      const collectionName = activeTab === 'hospitals' ? COLLECTIONS.hospitals : COLLECTIONS.bengali_doctors;
+      const collectionName = activeTab === 'hospitals' 
+        ? COLLECTIONS.hospitals 
+        : activeTab === 'doctors' 
+          ? COLLECTIONS.bengali_doctors 
+          : (COLLECTIONS.bengali_staff || 'bengali_staff');
       const now = new Date().toISOString();
       const payload = { ...formData };
       
@@ -136,24 +146,29 @@ export default function AdminEmergencyPage() {
         payload.specializations = typeof payload.specializations === 'string' 
           ? payload.specializations.split('\n').map((s: string) => s.trim()).filter(Boolean) : [];
       } else {
-        payload.languages = typeof payload.languages === 'string' 
-          ? payload.languages.split('\n').map((s: string) => s.trim()).filter(Boolean) : [];
+        if (!Array.isArray(payload.languages)) {
+           payload.languages = [];
+        }
       }
 
       if (editId) {
         await updateDoc(doc(db, collectionName, editId), { ...payload, updated_at: now });
         if (activeTab === 'hospitals') {
           setHospitals(prev => prev.map(i => i.id === editId ? { ...i, ...payload } as Hospital : i));
-        } else {
+        } else if (activeTab === 'doctors') {
           setDoctors(prev => prev.map(i => i.id === editId ? { ...i, ...payload } as BengaliDoctor : i));
+        } else {
+          setStaff(prev => prev.map(i => i.id === editId ? { ...i, ...payload } as BengaliStaff : i));
         }
       } else {
         const id = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
         await setDoc(doc(db, collectionName, id), { ...payload, id, created_at: now });
         if (activeTab === 'hospitals') {
           setHospitals(prev => [{ id, ...payload, created_at: now } as Hospital, ...prev]);
-        } else {
+        } else if (activeTab === 'doctors') {
           setDoctors(prev => [{ id, ...payload, created_at: now } as BengaliDoctor, ...prev]);
+        } else {
+          setStaff(prev => [{ id, ...payload, created_at: now } as BengaliStaff, ...prev]);
         }
       }
       setShowForm(false);
@@ -168,12 +183,18 @@ export default function AdminEmergencyPage() {
   async function handleDelete(id: string) {
     if (!confirm('Are you sure you want to delete this item?')) return;
     try {
-      const collectionName = activeTab === 'hospitals' ? COLLECTIONS.hospitals : COLLECTIONS.bengali_doctors;
+      const collectionName = activeTab === 'hospitals' 
+        ? COLLECTIONS.hospitals 
+        : activeTab === 'doctors' 
+          ? COLLECTIONS.bengali_doctors 
+          : (COLLECTIONS.bengali_staff || 'bengali_staff');
       await deleteDoc(doc(db, collectionName, id));
       if (activeTab === 'hospitals') {
         setHospitals(prev => prev.filter(i => i.id !== id));
-      } else {
+      } else if (activeTab === 'doctors') {
         setDoctors(prev => prev.filter(i => i.id !== id));
+      } else {
+        setStaff(prev => prev.filter(i => i.id !== id));
       }
     } catch (e) {
       console.error(e);
@@ -200,7 +221,7 @@ export default function AdminEmergencyPage() {
           )}
           {canEdit && activeTab !== 'contacts' && (
             <button onClick={openAdd} className="inline-flex items-center gap-2 px-4 py-2.5 bg-primary hover:bg-primary-dark text-white rounded-xl text-sm font-medium transition-colors shadow-md active:scale-95 cursor-pointer">
-              <Plus className="w-4 h-4" /> Add New {activeTab === 'hospitals' ? 'Hospital' : 'Doctor'}
+              <Plus className="w-4 h-4" /> Add New {activeTab === 'hospitals' ? 'Hospital' : activeTab === 'doctors' ? 'Doctor' : 'Staff'}
             </button>
           )}
         </div>
@@ -218,6 +239,12 @@ export default function AdminEmergencyPage() {
           className={`px-4 py-3 text-sm font-semibold border-b-2 transition-colors cursor-pointer flex items-center gap-2 whitespace-nowrap ${activeTab === 'doctors' ? 'border-primary text-primary' : 'border-transparent text-text-muted hover:text-text-primary'}`}
         >
           <UserRound className="w-4 h-4" /> Bengali Doctors
+        </button>
+        <button
+          onClick={() => setActiveTab('staff')}
+          className={`px-4 py-3 text-sm font-semibold border-b-2 transition-colors cursor-pointer flex items-center gap-2 whitespace-nowrap ${activeTab === 'staff' ? 'border-primary text-primary' : 'border-transparent text-text-muted hover:text-text-primary'}`}
+        >
+          <Users className="w-4 h-4" /> Bengali Staff
         </button>
         <button
           onClick={() => setActiveTab('contacts')}
@@ -247,10 +274,17 @@ export default function AdminEmergencyPage() {
                     <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Phone</th>
                     <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Branch</th>
                   </>
-                ) : (
+                ) : activeTab === 'doctors' ? (
                   <>
                     <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Doctor Name</th>
                     <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Specialization</th>
+                    <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Hospital</th>
+                  </>
+                ) : (
+                  <>
+                    <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Staff Name</th>
+                    <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Role</th>
+                    <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Department</th>
                     <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Hospital</th>
                   </>
                 )}
@@ -258,7 +292,7 @@ export default function AdminEmergencyPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
-              {(activeTab === 'hospitals' ? hospitals : doctors).map((item: any) => (
+              {(activeTab === 'hospitals' ? hospitals : activeTab === 'doctors' ? doctors : staff).map((item: any) => (
                 <tr key={item.id} className="hover:bg-surface transition-colors">
                   {activeTab === 'hospitals' ? (
                     <>
@@ -267,10 +301,19 @@ export default function AdminEmergencyPage() {
                       <td className="px-5 py-4 text-sm text-text-muted">{item.phone}</td>
                       <td className="px-5 py-4 text-sm text-text-muted">{item.main_branch ? <span className="text-emerald-600 font-semibold text-xs bg-emerald-50 px-2 py-1 rounded">Main</span> : <span className="text-text-muted text-xs">Branch</span>}</td>
                     </>
-                  ) : (
+                  ) : activeTab === 'doctors' ? (
                     <>
                       <td className="px-5 py-4 text-sm text-text-primary font-medium">{item.doctor_name}</td>
                       <td className="px-5 py-4 text-sm text-text-muted">{item.specialization}</td>
+                      <td className="px-5 py-4 text-sm text-text-muted">
+                        {hospitals.find(h => h.id === item.hospital_id)?.name || 'Unknown'}
+                      </td>
+                    </>
+                  ) : (
+                    <>
+                      <td className="px-5 py-4 text-sm text-text-primary font-medium">{item.name}</td>
+                      <td className="px-5 py-4 text-sm text-text-muted">{item.role}</td>
+                      <td className="px-5 py-4 text-sm text-text-muted">{item.department}</td>
                       <td className="px-5 py-4 text-sm text-text-muted">
                         {hospitals.find(h => h.id === item.hospital_id)?.name || 'Unknown'}
                       </td>
@@ -286,7 +329,7 @@ export default function AdminEmergencyPage() {
                   )}
                 </tr>
               ))}
-              {(activeTab === 'hospitals' ? hospitals : doctors).length === 0 && (
+              {(activeTab === 'hospitals' ? hospitals : activeTab === 'doctors' ? doctors : staff).length === 0 && (
                 <tr><td colSpan={5} className="px-5 py-12 text-center text-text-muted text-sm italic">No data yet</td></tr>
               )}
             </tbody>
@@ -372,7 +415,7 @@ export default function AdminEmergencyPage() {
                     </div>
                   </div>
                 </>
-              ) : (
+              ) : activeTab === 'doctors' ? (
                 <>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
@@ -407,8 +450,98 @@ export default function AdminEmergencyPage() {
                       <input type="email" value={formData.email || ''} onChange={e => setFormData({...formData, email: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
                     </div>
                     <div className="md:col-span-2">
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Languages (One language per line)</label>
-                      <textarea rows={3} value={formData.languages || ''} onChange={e => setFormData({...formData, languages: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm resize-none" placeholder="Bengali&#10;English&#10;Tamil" />
+                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Languages</label>
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-2">
+                        {LANGUAGES.map(lang => (
+                          <label key={lang} className="flex items-center gap-2 cursor-pointer">
+                            <input 
+                              type="checkbox" 
+                              checked={(formData.languages || []).includes(lang)}
+                              onChange={(e) => {
+                                const current = formData.languages || [];
+                                if (e.target.checked) {
+                                  setFormData({ ...formData, languages: [...current, lang] });
+                                } else {
+                                  setFormData({ ...formData, languages: current.filter((l: string) => l !== lang) });
+                                }
+                              }}
+                              className="w-4 h-4 rounded border-border"
+                            />
+                            <span className="text-sm text-text-primary">{lang}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Staff Name *</label>
+                      <input type="text" value={formData.name || ''} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Role * (e.g. Receptionist)</label>
+                      <input type="text" value={formData.role || ''} onChange={e => setFormData({...formData, role: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Department</label>
+                      <input type="text" value={formData.department || ''} onChange={e => setFormData({...formData, department: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Assign to Hospital *</label>
+                      <select value={formData.hospital_id || ''} onChange={e => setFormData({...formData, hospital_id: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm cursor-pointer">
+                        <option value="">Select Hospital...</option>
+                        {hospitals.map(h => <option key={h.id} value={h.id}>{h.name} ({h.city})</option>)}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Experience (e.g. 5 years)</label>
+                      <input type="text" value={formData.experience || ''} onChange={e => setFormData({...formData, experience: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Availability (e.g. Mon-Fri 9AM-5PM)</label>
+                      <input type="text" value={formData.availability || ''} onChange={e => setFormData({...formData, availability: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Photo URL</label>
+                      <input type="text" value={formData.photo || ''} onChange={e => setFormData({...formData, photo: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Phone</label>
+                      <input type="text" value={formData.phone || ''} onChange={e => setFormData({...formData, phone: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Email</label>
+                      <input type="email" value={formData.email || ''} onChange={e => setFormData({...formData, email: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
+                    </div>
+                    <div className="md:col-span-2">
+                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Languages</label>
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-2">
+                        {LANGUAGES.map(lang => (
+                          <label key={lang} className="flex items-center gap-2 cursor-pointer">
+                            <input 
+                              type="checkbox" 
+                              checked={(formData.languages || []).includes(lang)}
+                              onChange={(e) => {
+                                const current = formData.languages || [];
+                                if (e.target.checked) {
+                                  setFormData({ ...formData, languages: [...current, lang] });
+                                } else {
+                                  setFormData({ ...formData, languages: current.filter((l: string) => l !== lang) });
+                                }
+                              }}
+                              className="w-4 h-4 rounded border-border"
+                            />
+                            <span className="text-sm text-text-primary">{lang}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="md:col-span-2">
+                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Description</label>
+                      <textarea rows={3} value={formData.description || ''} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm resize-none" />
                     </div>
                   </div>
                 </>
