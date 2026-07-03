@@ -287,6 +287,7 @@ export interface Event {
   contact?: string;
   image_url?: string;
   category?: string;
+  community_group_id?: string;
 }
 
 export interface BlogPost {
