@@ -228,6 +228,44 @@ const VOTER_OFFLINE_OFFICES = [
   { city: 'Vellore', office: 'District Election Office & Collectorate Vellore', address: 'A-Block, Collectorate Campus, Sathuvachari, Vellore - 632009', phone: '0416-2256600 (Helpline: 1950)' }
 ];
 
+const GENERAL_SERVICES_OFFLINE: Record<string, Record<string, { office: string; address: string; phone?: string; locatorUrl: string; locatorText: string }>> = {
+  'ration-card': {
+    Chennai: { office: 'Civil Supplies & Consumer Protection Department', address: 'No. 5, Subbarayan Street, Triplicane, Chennai - 600005', phone: '044-28592206', locatorUrl: 'https://www.tnpds.gov.in/', locatorText: 'Locate Ration Shop' },
+    Coimbatore: { office: 'District Civil Supplies Office', address: 'Collectorate Campus, Huzur Road, Coimbatore - 641018', phone: '0422-2301320', locatorUrl: 'https://www.tnpds.gov.in/', locatorText: 'Locate Ration Shop' },
+    Vellore: { office: 'District Civil Supplies Office', address: 'A-Block, Collectorate Campus, Sathuvachari, Vellore - 632009', phone: '0416-2256420', locatorUrl: 'https://www.tnpds.gov.in/', locatorText: 'Locate Ration Shop' }
+  },
+  'driving-licence': {
+    Chennai: { office: 'Regional Transport Office (RTO) Chennai Central', address: 'No. 4, G.S.T. Road, Ayyanavaram, Chennai - 600023', phone: '044-26742036', locatorUrl: 'https://sarathi.parivahan.gov.in/', locatorText: 'Locate RTO Centre' },
+    Coimbatore: { office: 'Regional Transport Office (RTO) Coimbatore Central', address: 'No. 1290, Avinashi Road, Peelamedu, Coimbatore - 641004', phone: '0422-2242194', locatorUrl: 'https://sarathi.parivahan.gov.in/', locatorText: 'Locate RTO Centre' },
+    Vellore: { office: 'Regional Transport Office (RTO) Vellore', address: 'Sathuvachari, Vellore, Tamil Nadu - 632009', phone: '0416-2252123', locatorUrl: 'https://sarathi.parivahan.gov.in/', locatorText: 'Locate RTO Centre' }
+  },
+  'ayushman-bharat': {
+    Chennai: { office: 'Rajiv Gandhi Government General Hospital (PMJAY Helpdesk)', address: 'Poonamallee High Road, Park Town, Chennai - 600003', phone: '044-25305000', locatorUrl: 'https://dashboard.pmjay.gov.in/pmjayhospital/', locatorText: 'Find Empanelled Hospital' },
+    Coimbatore: { office: 'Coimbatore Medical College Hospital (PMJAY Helpdesk)', address: 'Trichy Road, Coimbatore - 641018', phone: '0422-2301300', locatorUrl: 'https://dashboard.pmjay.gov.in/pmjayhospital/', locatorText: 'Find Empanelled Hospital' },
+    Vellore: { office: 'Govt Vellore Medical College Hospital (PMJAY Helpdesk)', address: 'Adukamparai, Vellore, Tamil Nadu - 632011', phone: '0416-2235550', locatorUrl: 'https://dashboard.pmjay.gov.in/pmjayhospital/', locatorText: 'Find Empanelled Hospital' }
+  },
+  'mgnregs': {
+    Chennai: { office: 'Block Development Office (BDO) - Outskirts', address: 'Respective Panchayat Union Office, Chennai Outskirts / Kanchipuram / Tiruvallur', locatorUrl: 'https://nrega.nic.in/', locatorText: 'Locate Gram Panchayat' },
+    Coimbatore: { office: 'Block Development Office (BDO) Coimbatore', address: 'Respective Block / Panchayat Union Office, Coimbatore District', locatorUrl: 'https://nrega.nic.in/', locatorText: 'Locate Gram Panchayat' },
+    Vellore: { office: 'Block Development Office (BDO) Vellore', address: 'Panchayat Union Office, Sathuvachari, Vellore - 632009', locatorUrl: 'https://nrega.nic.in/', locatorText: 'Locate Gram Panchayat' }
+  },
+  'tn-e-seva': {
+    Chennai: { office: 'TACTV e-Seva Centre Ripon Buildings', address: 'Ripon Building Campus, General Hospital Road, Periamet, Chennai - 600003', phone: '1800-425-6000', locatorUrl: 'https://www.tnesevai.tn.gov.in/citizen/OpenSearchCenters', locatorText: 'Find e-Seva Center' },
+    Coimbatore: { office: 'TACTV e-Seva Centre Collectorate', address: 'District Collectorate Campus, Huzur Road, Coimbatore - 641018', phone: '1800-425-6000', locatorUrl: 'https://www.tnesevai.tn.gov.in/citizen/OpenSearchCenters', locatorText: 'Find e-Seva Center' },
+    Vellore: { office: 'TACTV e-Seva Centre Collectorate Vellore', address: 'A-Block, Collectorate Campus, Sathuvachari, Vellore - 632009', phone: '1800-425-6000', locatorUrl: 'https://www.tnesevai.tn.gov.in/citizen/OpenSearchCenters', locatorText: 'Find e-Seva Center' }
+  },
+  'labour-registration': {
+    Chennai: { office: 'Office of the Commissioner of Labour', address: 'DMS Campus, Teynampet, Chennai - 600006', phone: '044-24321438', locatorUrl: 'https://labour.tn.gov.in/', locatorText: 'View Labour Offices' },
+    Coimbatore: { office: 'Deputy Commissioner of Labour Office', address: 'Balasundaram Road, Coimbatore - 641018', phone: '0422-2241584', locatorUrl: 'https://labour.tn.gov.in/', locatorText: 'View Labour Offices' },
+    Vellore: { office: 'Assistant Commissioner of Labour Office', address: 'Sathuvachari, Vellore - 632009', phone: '0416-2252033', locatorUrl: 'https://labour.tn.gov.in/', locatorText: 'View Labour Offices' }
+  },
+  'scholarships': {
+    Chennai: { office: 'District Backward Classes & Minorities Welfare Office', address: 'District Collectorate Office, Rajaji Salai, Chennai - 600001', locatorUrl: 'https://scholarships.gov.in/', locatorText: 'Official Scholarship Portal' },
+    Coimbatore: { office: 'District Welfare Office Coimbatore', address: 'First Floor, District Collectorate, Huzur Road, Coimbatore - 641018', locatorUrl: 'https://scholarships.gov.in/', locatorText: 'Official Scholarship Portal' },
+    Vellore: { office: 'District Welfare Office Vellore', address: 'B-Block, Collectorate Sathuvachari, Vellore - 632009', locatorUrl: 'https://scholarships.gov.in/', locatorText: 'Official Scholarship Portal' }
+  }
+};
+
 export default function GovernmentPage() {
   // Page states
   const [aadhaarCity, setAadhaarCity] = useState('Chennai');
@@ -236,6 +274,10 @@ export default function GovernmentPage() {
   const [visaCountry, setVisaCountry] = useState('USA');
   const [policeCity, setPoliceCity] = useState('Chennai');
   const [voterCity, setVoterCity] = useState('Chennai');
+  
+  // Expandable low-priority cards
+  const [expandedServiceId, setExpandedServiceId] = useState<string | null>(null);
+  const [generalServiceCities, setGeneralServiceCities] = useState<Record<string, string>>({});
   
   // Visa sub-section toggle
   const [activeVisaTab, setActiveVisaTab] = useState<'app' | 'bio' | 'offline'>('app');
@@ -802,33 +844,118 @@ export default function GovernmentPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {generalServices.map((service) => {
               const IconComponent = ICON_MAP[service.icon] || Building;
+              const isExpanded = expandedServiceId === service.id;
+              const selectedCity = generalServiceCities[service.id] || 'Chennai';
+              const offlineData = GENERAL_SERVICES_OFFLINE[service.id]?.[selectedCity];
+
               return (
-                <Card key={service.id} className="group flex flex-col bg-white border-border hover:border-primary/50 hover:shadow-md transition-all duration-300">
-                  <div className="flex items-start gap-4">
-                    <div className="w-14 h-14 rounded-2xl bg-primary/5 flex items-center justify-center text-primary shrink-0 group-hover:scale-110 transition-transform">
-                      <IconComponent className="w-8 h-8 text-primary" />
+                <Card 
+                  key={service.id} 
+                  className={`group flex flex-col bg-white transition-all duration-300 border-border hover:shadow-md ${
+                    isExpanded ? 'border-primary ring-1 ring-primary/20 md:col-span-2 lg:col-span-3' : 'hover:border-primary/50'
+                  }`}
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex items-start gap-4">
+                      <div className="w-14 h-14 rounded-2xl bg-primary/5 flex items-center justify-center text-primary shrink-0 group-hover:scale-110 transition-transform">
+                        <IconComponent className="w-8 h-8 text-primary" />
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="text-lg font-bold text-text-primary group-hover:text-primary transition-colors font-display">
+                          {service.title}
+                        </h3>
+                        <span className="text-[10px] font-medium text-text-muted bg-surface px-2 py-0.5 rounded-full mt-1.5 inline-block">
+                          {service.category}
+                        </span>
+                      </div>
                     </div>
-                    <div className="flex-1">
-                      <h3 className="text-lg font-bold text-text-primary group-hover:text-primary transition-colors font-display">
-                        {service.title}
-                      </h3>
-                      <span className="text-[10px] font-medium text-text-muted bg-surface px-2 py-0.5 rounded-full mt-1.5 inline-block">
-                        {service.category}
-                      </span>
-                    </div>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => setExpandedServiceId(isExpanded ? null : service.id)}
+                      className="cursor-pointer text-xs"
+                    >
+                      {isExpanded ? 'Collapse' : 'View Details'}
+                    </Button>
                   </div>
                   
-                  <p className="text-sm text-text-muted mt-4 leading-relaxed flex-1">
+                  <p className="text-sm text-text-muted mt-4 leading-relaxed">
                     {service.description}
                   </p>
                   
-                  <div className="mt-5 pt-4 border-t border-border">
-                    <a href={service.url} target="_blank" rel="noopener noreferrer" className="block">
-                      <Button variant="outline" size="sm" className="w-full cursor-pointer">
-                        Go to Official Portal <ExternalLink className="w-3.5 h-3.5 ml-1.5" />
-                      </Button>
-                    </a>
-                  </div>
+                  {isExpanded && (
+                    <div className="mt-6 pt-6 border-t border-border grid grid-cols-1 lg:grid-cols-2 gap-6 animate-fade-in">
+                      {/* Online Option */}
+                      <div className="space-y-4">
+                        <h4 className="font-bold text-text-primary text-sm flex items-center gap-2">
+                          <CheckCircle className="w-4 h-4 text-primary" /> Online Portal Services
+                        </h4>
+                        <p className="text-xs text-text-muted leading-relaxed">
+                          Submit new applications, file corrections, check real-time application status, or request renewals online.
+                        </p>
+                        <a href={service.url} target="_blank" rel="noopener noreferrer" className="block pt-2">
+                          <Button variant="primary" size="sm" className="w-full text-xs cursor-pointer">
+                            Go to Official online portal <ExternalLink className="w-3.5 h-3.5 ml-1.5" />
+                          </Button>
+                        </a>
+                      </div>
+
+                      {/* Offline Option */}
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between gap-2">
+                          <h4 className="font-bold text-text-primary text-sm flex items-center gap-2">
+                            <MapPin className="w-4 h-4 text-primary" /> Offline Government Office
+                          </h4>
+                          <select 
+                            value={selectedCity} 
+                            onChange={(e) => setGeneralServiceCities({
+                              ...generalServiceCities,
+                              [service.id]: e.target.value
+                            })}
+                            className="px-2 py-1 rounded border border-border bg-white text-[11px] font-medium focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer"
+                          >
+                            <option value="Chennai">Chennai</option>
+                            <option value="Coimbatore">Coimbatore</option>
+                            <option value="Vellore">Vellore</option>
+                          </select>
+                        </div>
+                        
+                        {offlineData ? (
+                          <div className="p-3 bg-surface border border-border rounded-lg text-xs space-y-1.5">
+                            <p className="font-bold text-text-primary">{offlineData.office}</p>
+                            <p className="text-text-muted flex items-start gap-1.5">
+                              <MapPin className="w-3.5 h-3.5 text-primary shrink-0 mt-0.5" />
+                              {offlineData.address}
+                            </p>
+                            {offlineData.phone && (
+                              <p className="text-text-muted flex items-center gap-1.5">
+                                <Phone className="w-3.5 h-3.5 text-primary shrink-0" />
+                                {offlineData.phone}
+                              </p>
+                            )}
+                          </div>
+                        ) : (
+                          <p className="text-xs text-text-muted italic">Office directory details not found for this city.</p>
+                        )}
+
+                        {offlineData && (
+                          <a href={offlineData.locatorUrl} target="_blank" rel="noopener noreferrer" className="block">
+                            <Button variant="outline" size="sm" className="w-full text-xs cursor-pointer">
+                              {offlineData.locatorText} <Search className="w-3.5 h-3.5 ml-1.5" />
+                            </Button>
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                  
+                  {!isExpanded && (
+                    <div className="mt-4 pt-3 border-t border-border/60 flex justify-end">
+                      <a href={service.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs text-primary font-medium hover:underline">
+                        Quick Online Link <ExternalLink className="w-3 h-3" />
+                      </a>
+                    </div>
+                  )}
                 </Card>
               );
             })}
