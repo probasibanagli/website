@@ -106,6 +106,7 @@ export interface FoodListing {
 export interface Hospital {
   id: string;
   name: string;
+  type?: string;
   city: string;
   state?: string;
   district?: string;
@@ -120,13 +121,14 @@ export interface Hospital {
   google_maps_url?: string;
   lat?: number;
   lng?: number;
+  images?: string[];
   created_at: string;
   // New Enhanced Fields
   website?: string;
   email?: string;
   description?: string;
+  facilities?: string[];
   main_branch?: boolean;
-  images?: string[];
   updated_at?: string;
 }
 
@@ -134,9 +136,12 @@ export interface BengaliDoctor {
   id: string;
   doctor_name: string;
   specialization: string;
+  department?: string;
   hospital_id: string;
   experience: string;
+  qualifications?: string[];
   languages: string[];
+  consultation_timings?: string;
   photo: string;
   phone: string;
   email: string;

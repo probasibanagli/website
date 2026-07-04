@@ -13,11 +13,11 @@ const CHENNAI_AREAS = ['Adyar', 'Alandur', 'Ambattur', 'Anna Nagar', 'Ashok Naga
 const LANGUAGES = ['Bengali', 'Tamil', 'English', 'Hindi', 'Telugu', 'Malayalam', 'Kannada', 'Urdu'];
 
 const SAMPLE_HOSPITALS = [
-  { name: 'Apollo Hospital Chennai', city: 'Chennai', area: 'Greams Road', emergency_phone: '1066', phone: '044-28293333', is_24_7: true, has_bengali_doctor: true, main_branch: true, specializations: ['Cardiology', 'Neurology', 'Oncology'], description: 'Leading multi-specialty hospital.', images: ['/images/hospitals/apollo-chennai.jpg'] },
-  { name: 'MGM Healthcare Chennai', city: 'Chennai', area: 'Aminjikarai', emergency_phone: '044-45688888', phone: '044-45688888', is_24_7: true, has_bengali_doctor: true, main_branch: false, specializations: ['Heart Transplant', 'Orthopedics'], description: 'State of the art healthcare.', images: ['/images/hospitals/mgm-healthcare.jpg'] },
-  { name: 'MIOT International Chennai', city: 'Chennai', area: 'Manapakkam', emergency_phone: '105710', phone: '044-22492288', is_24_7: true, has_bengali_doctor: true, main_branch: true, specializations: ['Orthopedics', 'Trauma'], description: 'Pioneers in orthopedic care.', images: ['/images/hospitals/miot-international.jpg'] },
-  { name: 'Fortis Malar Hospital Chennai', city: 'Chennai', area: 'Adyar', emergency_phone: '044-42892222', phone: '044-42892222', is_24_7: true, has_bengali_doctor: true, main_branch: false, specializations: ['Cardiology', 'Gynecology'], description: 'Comprehensive medical care.', images: ['/images/hospitals/fortis-malar.jpg'] },
-  { name: 'SIMS Hospital Chennai', city: 'Chennai', area: 'Vadapalani', emergency_phone: '044-20002001', phone: '044-20002001', is_24_7: true, has_bengali_doctor: true, main_branch: false, specializations: ['Gastroenterology', 'Neurology'], description: 'Expert medical professionals.', images: ['/images/hospitals/sims-hospital.jpg'] }
+  { name: 'Apollo Hospital Chennai', city: 'Chennai', area: 'Greams Road', emergency_phone: '1066', phone: '044-28293333', is_24_7: true, has_bengali_doctor: true, main_branch: true, specializations: ['Cardiology', 'Neurology', 'Oncology'], description: 'Leading multi-specialty hospital.' },
+  { name: 'MGM Healthcare Chennai', city: 'Chennai', area: 'Aminjikarai', emergency_phone: '044-45688888', phone: '044-45688888', is_24_7: true, has_bengali_doctor: true, main_branch: false, specializations: ['Heart Transplant', 'Orthopedics'], description: 'State of the art healthcare.' },
+  { name: 'MIOT International Chennai', city: 'Chennai', area: 'Manapakkam', emergency_phone: '105710', phone: '044-22492288', is_24_7: true, has_bengali_doctor: true, main_branch: true, specializations: ['Orthopedics', 'Trauma'], description: 'Pioneers in orthopedic care.' },
+  { name: 'Fortis Malar Hospital Chennai', city: 'Chennai', area: 'Adyar', emergency_phone: '044-42892222', phone: '044-42892222', is_24_7: true, has_bengali_doctor: true, main_branch: false, specializations: ['Cardiology', 'Gynecology'], description: 'Comprehensive medical care.' },
+  { name: 'SIMS Hospital Chennai', city: 'Chennai', area: 'Vadapalani', emergency_phone: '044-20002001', phone: '044-20002001', is_24_7: true, has_bengali_doctor: true, main_branch: false, specializations: ['Gastroenterology', 'Neurology'], description: 'Expert medical professionals.' }
 ];
 
 const SAMPLE_DOCTORS = [
@@ -110,7 +110,7 @@ export default function AdminEmergencyPage() {
     setEditId(null);
     setFormData(
       activeTab === 'hospitals' 
-        ? { specializations: '', images: '', main_branch: false, is_24_7: false, has_bengali_doctor: false } 
+        ? { specializations: '', main_branch: false, is_24_7: false, has_bengali_doctor: false } 
         : { languages: [] }
     );
     setShowForm(true);
@@ -120,7 +120,6 @@ export default function AdminEmergencyPage() {
     setEditId(item.id);
     const data = { ...item };
     if (activeTab === 'hospitals') {
-      if (Array.isArray(data.images)) data.images = data.images.join('\n');
       if (Array.isArray(data.specializations)) data.specializations = data.specializations.join('\n');
     }
     if (activeTab === 'doctors' || activeTab === 'staff') {
@@ -142,8 +141,6 @@ export default function AdminEmergencyPage() {
       const payload = { ...formData };
       
       if (activeTab === 'hospitals') {
-        payload.images = typeof payload.images === 'string' 
-          ? payload.images.split('\n').map((s: string) => s.trim()).filter(Boolean) : [];
         payload.specializations = typeof payload.specializations === 'string' 
           ? payload.specializations.split('\n').map((s: string) => s.trim()).filter(Boolean) : [];
       } else {
@@ -379,10 +376,6 @@ export default function AdminEmergencyPage() {
                       <input type="text" value={formData.name || ''} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
                     </div>
                     <div>
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">City *</label>
-                      <input type="text" value={formData.city || ''} onChange={e => setFormData({...formData, city: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
-                    </div>
-                    <div>
                       <label className="block text-sm font-semibold text-text-primary mb-1.5">State *</label>
                       <input type="text" value={formData.state || 'Tamil Nadu'} onChange={e => setFormData({...formData, state: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
                     </div>
@@ -396,6 +389,10 @@ export default function AdminEmergencyPage() {
                         <option value="">Select Area...</option>
                         {CHENNAI_AREAS.map(a => <option key={a} value={a}>{a}</option>)}
                       </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-text-primary mb-1.5">City *</label>
+                      <input type="text" value={formData.city || ''} onChange={e => setFormData({...formData, city: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
                     </div>
                     <div>
                       <label className="block text-sm font-semibold text-text-primary mb-1.5">Full Address</label>
@@ -446,10 +443,6 @@ export default function AdminEmergencyPage() {
                     <div className="md:col-span-2">
                       <label className="block text-sm font-semibold text-text-primary mb-1.5">Description / Services Offered</label>
                       <textarea rows={3} value={formData.description || ''} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm resize-none" />
-                    </div>
-                    <div className="md:col-span-2">
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Images (One URL per line)</label>
-                      <textarea rows={3} value={formData.images || ''} onChange={e => setFormData({...formData, images: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm resize-none" placeholder="https://example.com/image1.jpg" />
                     </div>
                   </div>
                 </>

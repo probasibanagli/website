@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { COLLECTIONS } from '@/lib/firestore/collections';
@@ -46,18 +47,24 @@ export default function DoctorDetailsPage({ params }: { params: Promise<{ id: st
   const [isVerified, setIsVerified] = useState(false);
   const [showOtpModal, setShowOtpModal] = useState(false);
   const { firebaseUser: user } = useAuth();
+  const router = useRouter();
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setIsVerified(localStorage.getItem('directory_verified') === 'true');
+    const verified = localStorage.getItem('directory_verified') === 'true';
+    if (!verified) {
+      router.replace(`/emergency/hospitals/general/verify?redirect=/emergency/hospitals/bengali-doctors/${id}`);
+      return;
     }
-  }, []);
+    setIsVerified(true);
+  }, [id, router]);
 
-  const canViewContact = isVerified || !!user;
+  const canViewContact = isVerified;
 
   useEffect(() => {
-    loadData();
-  }, [id]);
+    if (isVerified) {
+      loadData();
+    }
+  }, [id, isVerified]);
 
   const loadData = async () => {
     try {
@@ -81,7 +88,7 @@ export default function DoctorDetailsPage({ params }: { params: Promise<{ id: st
     }
   };
 
-  if (loading) {
+  if (loading || !isVerified) {
     return (
       <div className="min-h-screen bg-surface flex items-center justify-center">
          <div className="w-10 h-10 border-3 border-primary border-t-transparent rounded-full animate-spin" />

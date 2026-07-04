@@ -41,7 +41,7 @@ export default function HospitalDetailsPage({ params }: { params: Promise<{ id: 
   const [isVerified, setIsVerified] = useState(false);
   const [showOtpModal, setShowOtpModal] = useState(false);
   const [doctorSearch, setDoctorSearch] = useState('');
-  const { firebaseUser: user } = useAuth();
+  const [staffSearch, setStaffSearch] = useState('');
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -49,7 +49,7 @@ export default function HospitalDetailsPage({ params }: { params: Promise<{ id: 
     }
   }, []);
 
-  const canViewDoctors = isVerified || !!user;
+  const canViewDoctors = isVerified;
 
   useEffect(() => {
     loadData();
@@ -190,7 +190,6 @@ export default function HospitalDetailsPage({ params }: { params: Promise<{ id: 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-8">
             
-            {/* 3. Address & 4. Google Maps & 5. Emergency & 6. Reception Contact */}
             <div className="bg-white rounded-3xl border border-border p-6 sm:p-8 shadow-sm">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
@@ -322,95 +321,121 @@ export default function HospitalDetailsPage({ params }: { params: Promise<{ id: 
               </div>
 
               <div className="p-6 sm:p-8">
-                {activeTab === 'doctors' ? (
-                  !canViewDoctors ? (
-                    <div className="text-center py-12 px-4 bg-surface rounded-2xl border border-border">
-                      <ShieldAlert className="w-12 h-12 text-primary mx-auto mb-4" />
-                      <h3 className="text-xl font-bold text-text-primary mb-2">Verification Required</h3>
-                      <p className="text-text-muted mb-6 max-w-md mx-auto">
-                        For privacy reasons, doctor details are only visible to verified users. Please login to your account or verify your phone number and email.
-                      </p>
-                      <Button onClick={() => setShowOtpModal(true)} variant="primary" className="shadow-md">
-                        Verify Now to View Doctors
-                      </Button>
-                    </div>
-                  ) : (
-                    <>
-                      <div className="mb-6 relative">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted" />
-                        <input
-                          type="text"
-                          placeholder="Search doctors by name or specialization..."
-                          value={doctorSearch}
-                          onChange={e => setDoctorSearch(e.target.value)}
-                          className="w-full pl-12 pr-4 py-3 bg-surface border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/20 outline-none"
-                        />
-                      </div>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        {doctors.filter(d => 
-                           d.doctor_name.toLowerCase().includes(doctorSearch.toLowerCase()) || 
-                           d.specialization.toLowerCase().includes(doctorSearch.toLowerCase())
-                        ).map(doc => (
-                          <Card key={doc.id} className="p-4 hover:shadow-md transition-all">
-                            <div className="flex items-start justify-between gap-3">
-                              <div className="flex items-start gap-3">
-                                <div className="w-14 h-14 rounded-full bg-surface border border-border overflow-hidden shrink-0">
-                                  {doc.photo ? <img src={doc.photo} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center text-primary/30"><UserRound className="w-6 h-6"/></div>}
-                                </div>
-                                <div>
-                                  <h4 className="font-bold text-text-primary">{doc.doctor_name}</h4>
-                                  <p className="text-sm font-medium text-primary">{doc.specialization}</p>
-                                  <p className="text-xs text-text-muted mt-1">{doc.experience || 'Experience N/A'}</p>
-                                  {doc.social_links && (
-                                    <div className="flex items-center gap-2 mt-2">
-                                      {doc.social_links.linkedin && <a href={doc.social_links.linkedin} target="_blank" rel="noreferrer" className="text-xs text-blue-600 hover:underline">LinkedIn</a>}
-                                      {doc.social_links.facebook && <a href={doc.social_links.facebook} target="_blank" rel="noreferrer" className="text-xs text-blue-600 hover:underline">Facebook</a>}
-                                    </div>
-                                  )}
-                                </div>
-                              </div>
-                              <button onClick={() => {
-                                if (navigator.share) {
-                                  navigator.share({
-                                    title: `${doc.doctor_name} at ${hospital.name}`,
-                                    text: `Check out ${doc.doctor_name} (${doc.specialization}) at ${hospital.name}.`,
-                                    url: window.location.href,
-                                  });
-                                } else {
-                                  alert('Sharing not supported on this browser.');
-                                }
-                              }} className="p-2 text-text-muted hover:text-primary transition-colors cursor-pointer" title="Share Doctor">
-                                <Share2 className="w-4 h-4" />
-                              </button>
-                            </div>
-                          </Card>
-                        ))}
-                        {doctors.length === 0 && <p className="text-text-muted col-span-2 py-4">No Bengali doctors listed yet.</p>}
-                        {doctors.length > 0 && doctors.filter(d => 
-                           d.doctor_name.toLowerCase().includes(doctorSearch.toLowerCase()) || 
-                           d.specialization.toLowerCase().includes(doctorSearch.toLowerCase())
-                        ).length === 0 && <p className="text-text-muted col-span-2 py-4">No doctors match your search.</p>}
-                      </div>
-                    </>
-                  )
-                ) : (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {staff.map(member => (
-                      <Card key={member.id} className="p-4 hover:shadow-md transition-all">
-                        <div className="flex items-start gap-3">
-                           <div className="w-14 h-14 rounded-xl bg-surface border border-border overflow-hidden shrink-0">
-                             {member.photo ? <img src={member.photo} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center text-primary/30"><Users className="w-6 h-6"/></div>}
-                           </div>
-                           <div>
-                             <h4 className="font-bold text-text-primary">{member.name}</h4>
-                             <p className="text-sm font-medium text-primary">{member.role}</p>
-                             <p className="text-xs text-text-muted mt-1">{member.department || 'Department N/A'}</p>
-                           </div>
-                        </div>
-                      </Card>
-                    ))}
-                    {staff.length === 0 && <p className="text-text-muted col-span-2 py-4">No Bengali staff listed yet.</p>}
+                {!isVerified ? (
+                  <div className="text-center py-12 px-4 bg-surface rounded-2xl border border-border">
+                    <ShieldAlert className="w-12 h-12 text-primary mx-auto mb-4" />
+                    <h3 className="text-xl font-bold text-text-primary mb-2">Verification Required</h3>
+                    <p className="text-text-muted mb-6 max-w-md mx-auto">
+                      For privacy reasons, doctor and staff details are only visible to verified users. Please verify your phone number and email.
+                    </p>
+                    <Button onClick={() => setShowOtpModal(true)} variant="primary" className="shadow-md cursor-pointer">
+                      Verify Now to View {activeTab === 'doctors' ? 'Doctors' : 'Staff'}
+                    </Button>
                   </div>
+                ) : (
+                  <>
+                    {activeTab === 'doctors' ? (
+                      <>
+                        <div className="mb-6 relative">
+                          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted" />
+                          <input
+                            type="text"
+                            placeholder="Search doctors by name or specialization..."
+                            value={doctorSearch}
+                            onChange={e => setDoctorSearch(e.target.value)}
+                            className="w-full pl-12 pr-4 py-3 bg-surface border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/20 outline-none"
+                          />
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          {doctors.filter(d => 
+                             d.doctor_name.toLowerCase().includes(doctorSearch.toLowerCase()) || 
+                             d.specialization.toLowerCase().includes(doctorSearch.toLowerCase())
+                          ).map(doc => (
+                            <Card key={doc.id} className="p-4 hover:shadow-md transition-all">
+                              <div className="flex items-start justify-between gap-3">
+                                <Link href={`/emergency/hospitals/bengali-doctors/${doc.id}`} className="flex items-start gap-3 flex-1">
+                                  <div className="w-14 h-14 rounded-full bg-surface border border-border overflow-hidden shrink-0">
+                                    {doc.photo ? <img src={doc.photo} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center text-primary/30"><UserRound className="w-6 h-6"/></div>}
+                                  </div>
+                                  <div>
+                                    <h4 className="font-bold text-text-primary hover:text-primary transition-colors">{doc.doctor_name}</h4>
+                                    <p className="text-sm font-medium text-primary">{doc.specialization}</p>
+                                    <p className="text-xs text-text-muted mt-1">{doc.experience || 'Experience N/A'}</p>
+                                  </div>
+                                </Link>
+                                <button onClick={() => {
+                                  if (navigator.share) {
+                                    navigator.share({
+                                      title: `${doc.doctor_name} at ${hospital.name}`,
+                                      text: `Check out ${doc.doctor_name} (${doc.specialization}) at ${hospital.name}.`,
+                                      url: `${window.location.origin}/emergency/hospitals/bengali-doctors/${doc.id}`,
+                                    });
+                                  } else {
+                                    alert('Sharing not supported on this browser.');
+                                  }
+                                }} className="p-2 text-text-muted hover:text-primary transition-colors cursor-pointer" title="Share Doctor">
+                                  <Share2 className="w-4 h-4" />
+                                </button>
+                              </div>
+                            </Card>
+                          ))}
+                          {doctors.length === 0 && <p className="text-text-muted col-span-2 py-4">No Bengali doctors listed yet.</p>}
+                          {doctors.length > 0 && doctors.filter(d => 
+                             d.doctor_name.toLowerCase().includes(doctorSearch.toLowerCase()) || 
+                             d.specialization.toLowerCase().includes(doctorSearch.toLowerCase())
+                          ).length === 0 && <p className="text-text-muted col-span-2 py-4">No doctors match your search.</p>}
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div className="mb-6 relative">
+                          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted" />
+                          <input
+                            type="text"
+                            placeholder="Search staff by name or role..."
+                            value={staffSearch}
+                            onChange={e => setStaffSearch(e.target.value)}
+                            className="w-full pl-12 pr-4 py-3 bg-surface border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/20 outline-none"
+                          />
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          {staff.filter(member => 
+                            member.name.toLowerCase().includes(staffSearch.toLowerCase()) || 
+                            (member.role && member.role.toLowerCase().includes(staffSearch.toLowerCase()))
+                          ).map(member => (
+                            <Card key={member.id} className="p-4 hover:shadow-md transition-all">
+                              <div className="flex items-start justify-between gap-3">
+                                <Link href={`/emergency/hospitals/bengali-staff/${member.id}`} className="flex items-start gap-3 flex-1">
+                                  <div className="w-14 h-14 rounded-xl bg-surface border border-border overflow-hidden shrink-0">
+                                    {member.photo ? <img src={member.photo} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center text-primary/30"><Users className="w-6 h-6"/></div>}
+                                  </div>
+                                  <div>
+                                    <h4 className="font-bold text-text-primary hover:text-primary transition-colors">{member.name}</h4>
+                                    <p className="text-sm font-medium text-primary">{member.role}</p>
+                                    <p className="text-xs text-text-muted mt-1">{member.department || 'Department N/A'}</p>
+                                  </div>
+                                </Link>
+                                <button onClick={() => {
+                                  if (navigator.share) {
+                                    navigator.share({
+                                      title: `${member.name} at ${hospital.name}`,
+                                      text: `Check out ${member.name} (${member.role}) at ${hospital.name}.`,
+                                      url: `${window.location.origin}/emergency/hospitals/bengali-staff/${member.id}`,
+                                    });
+                                  } else {
+                                    alert('Sharing not supported on this browser.');
+                                  }
+                                }} className="p-2 text-text-muted hover:text-primary transition-colors cursor-pointer" title="Share Staff">
+                                  <Share2 className="w-4 h-4" />
+                                </button>
+                              </div>
+                            </Card>
+                          ))}
+                          {staff.length === 0 && <p className="text-text-muted col-span-2 py-4">No Bengali staff listed yet.</p>}
+                        </div>
+                      </>
+                    )}
+                  </>
                 )}
               </div>
             </div>
@@ -418,7 +443,7 @@ export default function HospitalDetailsPage({ params }: { params: Promise<{ id: 
           </div>
 
           <div className="space-y-6">
-            {/* 13. Related Hospitals Placeholder */}
+            {/* Related Hospitals Placeholder */}
             <Card className="p-6 bg-surface/50 border-dashed">
               <h3 className="text-lg font-bold text-text-primary mb-2 flex items-center gap-2"><Building2 className="w-5 h-5 text-text-muted"/> Related Hospitals</h3>
               <p className="text-sm text-text-muted mb-4">Other hospitals in {hospital.city} you might consider.</p>
@@ -429,23 +454,21 @@ export default function HospitalDetailsPage({ params }: { params: Promise<{ id: 
               </div>
             </Card>
             
-            {/* 14. Reviews Placeholder */}
+            {/* Reviews Placeholder */}
             <Card className="p-6 bg-surface/50 border-dashed">
               <h3 className="text-lg font-bold text-text-primary mb-2 flex items-center gap-2"><MessageSquare className="w-5 h-5 text-text-muted"/> Reviews</h3>
               <p className="text-sm text-text-muted mb-4">Patient feedback and ratings.</p>
-              <div className="space-y-3">
-                <div className="h-20 bg-white border border-border rounded-xl opacity-50 flex items-center justify-center text-xs font-semibold text-text-muted">Review Placeholder</div>
-              </div>
+              <div className="h-20 bg-white border border-border rounded-xl opacity-50 flex items-center justify-center text-xs font-semibold text-text-muted">Review Placeholder</div>
             </Card>
             
-            {/* 15. Nearby Pharmacies Placeholder */}
+            {/* Nearby Pharmacies Placeholder */}
             <Card className="p-6 bg-surface/50 border-dashed">
               <h3 className="text-lg font-bold text-text-primary mb-2 flex items-center gap-2"><PlusSquare className="w-5 h-5 text-text-muted"/> Nearby Pharmacies</h3>
               <p className="text-sm text-text-muted mb-4">Pharmacies near this location.</p>
               <div className="h-16 bg-white border border-border rounded-xl opacity-50 flex items-center justify-center text-xs font-semibold text-text-muted">Pharmacy Placeholder</div>
             </Card>
 
-            {/* 16. Nearby Ambulance Services Placeholder */}
+            {/* Nearby Ambulance Services Placeholder */}
             <Card className="p-6 bg-surface/50 border-dashed">
               <h3 className="text-lg font-bold text-text-primary mb-2 flex items-center gap-2"><Ambulance className="w-5 h-5 text-text-muted"/> Nearby Ambulance</h3>
               <p className="text-sm text-text-muted mb-4">Emergency transport services.</p>
