@@ -1,0 +1,10487 @@
+Bus No,Stop Order,Stop Name
+M5,0,Adyar
+M5,1,Thiruvanmiyur
+M5,2,Perungudi
+M5,3,Sholinganallur
+M5,4,Kelambakkam
+19D,0,Adyar
+19D,1,Thiruvanmiyur
+19D,2,SRP
+19D,3,Perungudi
+19D,4,Chemmenchery
+19K,0,Adyar B.S.
+19K,1,Thiruvanmiyur
+19K,2,Perungudi
+19K,3,Navalur
+19K,4,Thalambur
+19K,5,Siruseri
+19P,0,Adyar B.S.
+19P,1,SRP Tools
+19P,2,Perugudi
+19P,3,Sholinganallur
+19P,4,Navalur
+19P,5,Thalambur
+19P,6,Sirusery
+19P,7,Pudupakkam
+19P,8,Chettinad Hospital
+19P,9,Kelambakkam
+519 cut,0,Adyar
+519 cut,1,SRP tools
+519 cut,2,Sholinganallur
+519 cut,3,Kelambakkam
+519 cut,4,Kalavakkam
+519 cut,5,Thirupporur
+519A cut,0,Adyar
+519A cut,1,SRP tools
+519A cut,2,Sholinganallur
+519A cut,3,Kelambakkam
+519A cut,4,Thirupporur
+519A cut,5,Aalathur IE
+519T,0,Adyar
+519T,1,Perungudi
+519T,2,Sholinganallur
+519T,3,Kelambakka m
+519T,4,Thaiyur
+522,0,Adyar
+522,1,Perungudi
+522,2,Sholinganallur
+522,3,Kelambakkam
+522,4,Thirupporur
+522,5,Manamathi
+568,0,Adyar
+568,1,Rajiv Gandhi Salai
+568,2,Mamallapuram
+C51,0,Adyar
+C51,1,Camp Road
+C51,2,Kamarajapuram
+C51,3,Medavakkam
+C51,4,Sholinganallur
+C51,5,ECR
+C51,6,Injambakkam
+C51,7,Thiruvanmyur
+C51,8,Tambaram West
+588,0,Adyar
+588,1,Thiruvanmiyur
+588,2,Injambakkam
+588,3,Kovalam
+588,4,Thiruvedanthai
+588,5,Vadanemili
+588,6,Mamallapuram
+251A,0,Agaramthe n
+251A,1,Bharath Engg. College
+251A,2,Camp Road
+251A,3,Kamarajapuram
+251A,4,Medavakkam
+251A,5,T.Nagar
+51A,0,Agaramthe n
+51A,1,Camp Road
+51A,2,Tambaram East
+20K,0,Ambattur I.E
+20K,1,Thiruverkadu
+20P,0,Ambattur I.E
+20P,1,Ayapakkam
+20P,2,Saveetha Engineering College
+20P,3,Kumananchavadi
+20P,4,Karaiyanchavadi
+20P,5,Poonamallee
+61A,0,Ambattur I.E
+61A,1,Dunlop
+61A,2,Amabttur OT
+61A,3,Thirumullaivoyil
+61A,4,Avadi
+61A,5,HVF Hospital
+61A,6,Melapedu
+65B,0,Ambattur I.E
+65B,1,Karayan chavadi
+65B,2,Seeneerkuppam
+65B,3,Goverdhangiri
+65B,4,Avadi Market
+65B,5,Avadi
+65B,6,Thirumullaivoyal
+65B,7,Ambathur OT
+65B,8,Canara bank
+65B,9,Dunlop
+65B,10,AMBIT Park
+65B,11,Poonamallee
+65C,0,Ambattur I.E
+65C,1,Dunlop
+65C,2,Ambattur OT
+65C,3,Thirumulaivoyil
+65C,4,Avadi
+65C,5,Pattabiram
+65C,6,Jaya College
+65C,7,Thirunindravur
+65C,8,Pakkam
+65E,0,Ambattur I.E
+65E,1,Ambattur OT
+65E,2,Avadi
+65E,3,Kamaraj Nagar
+65E,4,Karaiyanchavadi
+65E,5,Poonamallee
+65P,0,Ambattur I.E
+65P,1,Ambattur OT
+65P,2,Avadi Market
+65P,3,Poonamallee
+65P,4,Thandurai
+65P,5,Pattabiram
+65R,0,Ambattur I.E
+65R,1,Ambattur OT
+65R,2,Avadi Market
+65R,3,Karaiyanchavadi
+65R,4,Kumananchavadi
+65R,5,Iyyapanthangal
+70D,0,Ambattur I.E
+70D,1,Collector Nagar
+70D,2,CMBT
+70D,3,Vadapalani
+70D,4,Ashok Nagar
+70D,5,Guindy
+70D,6,Velachery
+70D,7,Ram Nagar
+70D,8,MadipakkamB.S .
+D70,0,Ambattur I.E
+D70,1,Collector Nagar
+D70,2,CMBT
+D70,3,Vadapalani
+D70,4,Ashok nagar
+D70,5,Guindy
+D70,6,Checkpost
+D70,7,Velachery Bypass road
+D70,8,Velachery
+M70V,0,Ambattur I.E
+M70V,1,Collector Nagar
+M70V,2,Vadapalani
+M70V,3,Guindy TVK Estate
+M270,0,Ambattur I.E
+M270,1,Aadambakkam
+M270,2,Guindy
+M270,3,Udhayam
+M270,4,CMBT
+M270,5,Thirumangalam
+M270,6,Puzhuthivakka m
+562,0,Ambattur Estate
+562,1,Periyapalayam
+562,2,Red Hills
+562,3,Puzhal
+562,4,Pudur
+562,5,Ambattur OT
+562,6,Thandalam
+563,0,Ambattur I.E
+563,1,Ambattur OT
+563,2,Avadi
+563,3,Pattabiram
+563,4,Periyapalayam
+570A,0,Ambattur Estate
+570A,1,CMBT
+570A,2,Vadapalani
+570A,3,Ashok Nagar
+570A,4,Guindy
+570A,5,Check post
+570A,6,Velachery
+570A,7,SRP tools
+570A,8,Perungudi
+570A,9,Sholinganallur
+570A,10,Navalur
+570A,11,Padur
+570A,12,Kelambakkam
+7E,0,Ambattur I.E
+7E,1,Central R.S
+7E,2,Choolai P.O
+7E,3,Doveton
+7E,4,Purasaiwakkam
+7E,5,Kellys
+7E,6,Kilpauk Gardens
+7E,7,Chinthamani
+7E,8,Thirumangalam
+7E,9,Wavin
+7E,10,Broadway
+7H xt,0,Ambattur I.E
+7H xt,1,Central R.S
+7H xt,2,Vepery
+7H xt,3,Purasaiwakkam
+7H xt,4,Kellys
+7H xt,5,Kilpauk Gardens
+7H xt,6,Chinthamani
+7H xt,7,Thirumangalam
+7H xt,8,Broadway
+20E,0,Ambattur I.E
+20E,1,Ayyapakkam
+22A,0,Ambattur I.E
+22A,1,Korattur
+22A,2,Lucas
+22A,3,Nathamuni
+22A,4,ICF
+22A,5,Ayanavaram
+22A,6,Kellys
+22A,7,Purasaiwakkam
+22A,8,Egmore
+22A,9,Triplicane
+22A,10,Ka nnagi statue
+22A,11,Santhome
+22A,12,AMS
+22A,13,Adyar
+22A,14,Thirunamiyur
+34,0,Ambattur I.E
+34,1,Thirumangalam
+34,2,Rountana
+34,3,Chinthamani
+34,4,Kellys
+34,5,Purasaiwakkam
+34,6,Choolai P.O.
+34,7,Regal
+34,8,V.Nagar
+34,9,Tondiarpet
+34,10,Tollgate
+34,11,Therady
+34,12,Thiruvottiyur
+47C,0,Ambattur I.E
+47C,1,Saidpet
+47C,2,T. Nagar
+47C,3,Mahalingapuram
+47C,4,Choolaimedu
+47C,5,Roundtana
+47C,6,Thirumangalam
+47C,7,Wavin
+47C,8,Kotturpuram
+62A,0,Ambattur I.E
+62A,1,Pudur
+62A,2,Red Hills
+219,0,Ambattur I.E
+219,1,Collector Nagar
+219,2,Thirumangalam
+219,3,Anna Arch
+219,4,Choolaimedu
+219,5,Mahalingapuram
+219,6,T.Nagar
+219,7,Saidapet
+219,8,Madhya Kailash
+219,9,Tidel Park
+219,10,Thoraipakkam
+219,11,Siruseri
+219,12,Kelambakkam
+572,0,Ambattur I.E
+572,1,Ambattur OT
+572,2,Avadi
+572,3,Pattabiram
+572,4,Thirunindravur
+572,5,Veppampattu
+572,6,Sevapet
+572,7,Kakallur
+572,8,Thiruvallur
+572K,0,Ambattur I.E
+572K,1,Avadi
+572K,2,Pattabiram
+572K,3,Thirunindravur
+572K,4,Veppampattu
+572K,5,Sevapet
+572K,6,Kilanur
+70L,0,Ambattur Karukku
+70L,1,CMBT
+D41,0,Ambattur O.T.
+D41,1,Korattur
+D41,2,Lucas
+D41,3,Thirumangalam
+D41,4,Amijikarai
+D41,5,KMC
+D41,6,Chetpet
+D41,7,Sterling road
+D41,8,Gemini
+D41,9,Teynampet
+D41,10,Nandanam
+D41,11,Adyar Gate
+D41,12,Mandaveli
+D41,13,AMS
+D41,14,Adyar
+D41,15,Thiruvanmiyur
+170K,0,Ambattur O.T
+170K,1,V.Z00
+170K,2,Tambaram
+170K,3,Pallavaram
+170K,4,Guindy
+170K,5,Udhayam
+170K,6,Vadapalani
+170K,7,CMBT
+170K,8,Anna Nagar
+170K,9,Padi
+170K,10,Ambattur I.E
+170K,11,Guduvanchery
+47D,0,Ambathur O.T.
+47D,1,Adyar
+47D,2,T. Nagar
+47D,3,Sterling Road
+47D,4,Ambattur I.E
+47D,5,Thiruvanmiyur
+71,0,Ambattur OT
+71,1,Central R.S
+71,2,Taylors Road
+71,3,New Avadi road
+71,4,Nadhamuni
+71,5,Padi
+71,6,Ambattur IE
+71,7,Broadway
+147C,0,Ambattur O.T.
+147C,1,Collector Nagar
+147C,2,Blue Star
+147C,3,Anna Hospital
+147C,4,Loyalla College
+147C,5,Sterling Road
+147C,6,Valluvar Kottam
+147C,7,T.Nagar
+253,0,Aminjikarai
+253,1,NSK
+253,2,Mathuravoyal
+253,3,Vellapanchavadi
+253,4,Kumananchavadi
+253,5,Poonamallee
+253,6,Thirumazhisai
+253,7,Vellavedu
+60,0,Anakaputh ur
+60,1,Pammal
+60,2,Pallavaram
+60,3,Guindy
+60,4,Little Mount
+60,5,Saidapet
+60,6,Teynampet
+60,7,DMS
+60,8,TVS
+60,9,Simpson
+60,10,Central R.S
+60,11,Broadway
+60C,0,Anakaputh ur
+60C,1,Pammal
+60C,2,Pallavaram
+60C,3,Guindy
+60C,4,Little Mount
+60C,5,Saidapet
+60C,6,Teynampet
+60C,7,DMS
+60C,8,TVS
+60C,9,Simpson
+60C,10,Central R.S
+60C,11,Broadway
+M70 xt,0,Anna Nagar West
+M70 xt,1,Thirumangalam
+M70 xt,2,CMBT
+M70 xt,3,Vadapalani
+M70 xt,4,Ashok nagar
+M70 xt,5,Guindy
+M70 xt,6,Checkpost
+M70 xt,7,Velacherry
+M70 xt,8,Taramani
+M70 xt,9,SRP tools
+M70 xt,10,Jayanthi
+M70 xt,11,Thiruvanmiyur
+15,0,Anna NagarWest
+15,1,Broadway
+15A,0,Anna Nagar West
+15A,1,Kilpauk
+15A,2,Broadway
+15D,0,Anna Nagar West
+15D,1,Dasaprakash
+15D,2,Anna Hospital
+15D,3,14 Shops
+15D,4,Broadway
+23M extn,0,Anna Nagar West
+23M extn,1,Adyar
+23M extn,2,Gandhi mandapam
+23M extn,3,Little mount
+23M extn,4,Saidapet
+23M extn,5,T.Nagar
+23M extn,6,Panagal park
+23M extn,7,Liberty
+23M extn,8,Power house
+23M extn,9,Vadapalani
+23M extn,10,MMDA Colony
+23M extn,11,CMBT
+23M extn,12,Thirumangalam
+23M extn,13,Thiruvanmiyur
+24A,0,Anna Nagar West
+24A,1,Shanthi Colony
+24A,2,K4 Police station
+24A,3,Chinthamani
+24A,4,Aminijikarai
+24A,5,Chetpet
+24A,6,Gemini
+24A,7,Royapetah
+24A,8,V House
+27C cut,0,Anna nagar West
+27C cut,1,Panagal park
+27C cut,2,Bharathinagar
+27C cut,3,Liberty
+27C cut,4,Power house
+27C cut,5,Vadapalani
+27C cut,6,MMDA Colony
+27C cut,7,CMBT
+27C cut,8,Thirumangalam
+27C cut,9,T. Nagar
+41C,0,Anna Nagar West
+41C,1,Adyar Depot
+41C,2,Adyar
+41C,3,AMS
+41C,4,Mandaveli
+41C,5,Mylapore
+41C,6,Luz
+41C,7,Alwarpet
+41C,8,DMS
+41C,9,Gemini
+41C,10,Sterling Road
+41C,11,Chetpet
+41C,12,KMC
+41C,13,Amijikarai
+41C,14,Rountana
+41C,15,Thirumangalam
+41C,16,Thiruvanmiyur
+2A,0,Anna Square
+2A,1,Vyasarpadi
+2A,2,Basin Bridge
+2A,3,Regal
+2A,4,Elephant gate
+2A,5,Central R.S
+2A,6,P R & sons
+2A,7,Walaja Road
+2A,8,Bells Road
+2A,9,M.K.B Nagar
+2A xt,0,Anna Square
+2A xt,1,M.K.B Nagar
+2A xt,2,Kaviarasu Kannadasan Nagar
+C2,0,Anna Square
+C2,1,Secretariat
+C2,2,Parrys
+C2,3,Beach Road
+C2,4,Stanley Hospital
+C2,5,Vallalar Nagar
+C2,6,Regal
+C2,7,Central
+C2,8,Pallavan Road
+C2,9,Wallajah road
+C2,10,Chepauk
+C2,11,Triplicane
+C2,12,Ezhilagam
+C2,13,Anna Square
+12G,0,Anna Square
+12G,1,MGR Nagar
+12G,2,Ashok Pillar
+12G,3,West Mambalam
+12G,4,Alwarpet
+12G,5,Luz
+12G,6,K K Nagar
+25G,0,Anna Square
+25G,1,Kannaki Statue
+25G,2,V.House
+25G,3,Royapettah
+25G,4,Palmgrove
+25G,5,Liberty
+25G,6,Vadapalani
+25G,7,Porur
+25G,8,Iyyapanthangal
+25G,9,Kumananchavadi
+25G,10,Poonamallee
+27E,0,Anna Square
+27E,1,Collector nagar
+27E,2,Thirumangalam
+27E,3,Rountana
+27E,4,Amijikarai
+27E,5,KMC
+27E,6,Egmore RS
+27E,7,Zimson
+27E,8,Triplicane
+27E,9,Kannaki Statue
+27E,10,Elango nagar officer colony
+27H,0,Anna Square
+27H,1,Triplicane
+27H,2,LIC
+27H,3,DPI
+27H,4,Sterling Road
+27H,5,Anna Arch
+27H,6,Thirumangalam
+27H,7,Padi
+27H,8,Ambattur OT
+27H,9,Avadi
+27H xt,0,Anna Square
+27H xt,1,Triplicane
+27H xt,2,LIC
+27H xt,3,DPI
+27H xt,4,Sterling Road
+27H xt,5,Anna Arch
+27H xt,6,Thirumangalam
+27H xt,7,Padi
+27H xt,8,Ambattur OT
+27H xt,9,Avadi
+27H xt,10,Pattabiram
+27L,0,Anna Square
+27L,1,Triplicane
+27L,2,Ethiraj College
+27L,3,Loyola College
+27L,4,Choolaimedu
+27L,5,Thirumangalam
+27L,6,Mogappair West
+27R,0,Anna Square
+27R,1,Triplicane
+27R,2,LIC
+27R,3,DPI
+27R,4,Sterling Road
+27R,5,Choolaimedu
+27R,6,Anna Arch
+27R,7,Thirumangalam
+27R,8,Vavin
+27R,9,Ambattur I.E
+27R,10,Ambattur OT
+27R,11,Oragadam
+H27,0,Anna Square
+H27,1,Triplicane
+H27,2,LIC
+H27,3,DPI
+H27,4,Sterling Road
+H27,5,Loyola College
+H27,6,Choolaimedu
+H27,7,Roundtana
+H27,8,Thirumangalam
+H27,9,Vavin
+H27,10,Ambattur I.E
+H27,11,Ambattur
+40A,0,Anna Square
+40A,1,Triplicane
+40A,2,LIC
+40A,3,Egmore
+40A,4,KMC
+40A,5,Aminjikarai
+40A,6,Chinthamani
+40A,7,Blue Star
+40A,8,Collector Nagar
+40A,9,Ambattur OT
+40A,10,Avadi
+45B,0,Anna Square
+45B,1,Saidapet
+45B,2,Nandanam
+45B,3,Teynampet
+45B,4,Alwarpet
+45B,5,Luz
+45B,6,Chennai Citi Centre
+45B,7,Guindy
+45G,0,Anna square
+45G,1,Marina Beach
+45G,2,Chennai Citi Centre
+45G,3,Mylapore
+45G,4,Mandaveli
+45G,5,Adyar G ate
+45G,6,Nandanam
+45G,7,CIT Nagar
+45G,8,Srinivasa
+45G,9,Mettupalayam
+45G,10,Saidapet West
+45G,11,Guindy
+M45B,0,Anna Square
+M45B,1,Saidapet
+M45B,2,Nandanam
+M45B,3,Teynampet
+M45B,4,Alwarpet
+M45B,5,Luz
+M45B,6,Chennai Citi Centre
+M45B,7,Nanganallur
+M45E,0,Anna Square
+M45E,1,Triplicane
+M45E,2,Chennai Citi Centre
+M45E,3,Luz
+M45E,4,Saidapet
+M45E,5,Velachery
+M45E,6,Kilkattalai
+127B,0,Anna Square
+127B,1,Maduravoyal
+127B,2,KoyambeduMarket
+127B,3,Amijikarai
+127B,4,KMC
+127B,5,Chetpet
+127B,6,EgmoreR.S
+127B,7,Chindhatripet
+127B,8,Triplicane
+127B,9,Thiruverkadu
+127H,0,Anna Square
+127H,1,Triplicane
+127H,2,LIC
+127H,3,DPI
+127H,4,Sterling Road
+127H,5,Anna Arch
+127H,6,Thirumangalam
+127H,7,Nadhamuni
+127H,8,Villivakkam
+C2,0,Anna Square
+C2,1,Ezhilagam
+C2,2,Triplicane
+C2,3,Chepauk
+C2,4,Wallaja Road
+C2,5,Pallavan Road
+C2,6,Central
+C2,7,Regal
+C2,8,Vallalar Nagar
+C2,9,Royapuram bridge
+C2,10,Beach Road
+C2,11,Parrys
+C2,12,Secretariat
+C2,13,Anna Square
+C2,0,Anna Square
+C2,1,Secretariat
+C2,2,Parrys
+C2,3,Beach Road
+C2,4,Stanley Hospital
+C2,5,Vallalar Nagar
+C2,6,Regal
+C2,7,Central
+C2,8,Pallavan Road
+C2,9,Wallajah road
+C2,10,Chepauk
+C2,11,Triplicane
+C2,12,Ezhilagam
+C2,13,Anna Square
+13A,0,Anna Square
+13A,1,Triplicane
+13A,2,Zambazzar
+13A,3,Express Avenue
+13A,4,Royapettah
+13A,5,Gopalapuram playground
+13A,6,Sapphire
+13A,7,LFC
+13A,8,Vanimahal
+13A,9,T.Nagar
+22B,0,Anna Square
+22B,1,Lucas
+22B,2,Nathamuni
+22B,3,ICF
+22B,4,Ayanavaram
+22B,5,Kellys
+22B,6,Purasaiwakkam
+22B,7,Egmore
+22B,8,Triplicane
+22B,9,Ka nnagi statue
+22B,10,Korattur
+27B,0,Anna Square
+27B,1,Koyambedu
+27B,2,Arumbakkam
+27B,3,NSK nagar
+27B,4,Amijikarai
+27B,5,KMC
+27B,6,Chetpet
+27B,7,MMC School
+27B,8,Egmore RS
+27B,9,Chindatripet
+27B,10,Zimson
+27B,11,Triplicane
+27B,12,Kannaki Statue
+27B,13,CMBT
+29A,0,Anna Square
+29A,1,Otteri
+29A,2,Devoton
+29A,3,Egmore
+29A,4,Pudhupet
+29A,5,Walaja Road
+29A,6,Bells Road
+29A,7,Triplicane
+29A,8,Perambur
+M45A,0,Anna Square
+M45A,1,Saidapet
+M45A,2,Nandanam
+M45A,3,Adyar Gate
+M45A,4,Velachery
+242xt,0,Anna Square
+242xt,1,Red Hills
+61C,0,Avadi
+61C,1,HVF Hospital
+61C,2,HVF Main Gate
+61C,3,Muthapudupet
+61K,0,Avadi
+61K,1,HVF Hospital
+61K,2,Kovilpadagai
+61K,3,Veerapuram
+61K,4,Kaniyamman Nagar
+61R,0,Avadi
+61R,1,HVF Hospital
+61R,2,Kovilpadagai
+61R,3,Vellanur
+61R,4,Veerapuram
+61R,5,Kadavoor
+61R,6,Red Hills
+62,0,Avadi
+62,1,Thirumullaivoyal
+62,2,Ambathur OT
+62,3,Pudur
+62,4,Kallikuppam
+62,5,Surapedu
+62,6,Puzhal
+62,7,Bypass road
+62,8,Kavangarai
+62,9,Ayurveda Ashramam
+62,10,Red Hills
+65,0,Avadi
+65,1,Govardhanagiri
+65,2,Mettupalayam
+65,3,Kaduveti
+65,4,Karaiyanchavadi
+65,5,Poonamallee
+65D,0,Avadi
+65D,1,Pattabiram
+65D,2,Thirunindravur
+65D,3,Melkondaiyur
+65G,0,Avadi
+65G,1,Pattabiram
+65G,2,Thirunindravur
+65G,3,Meyyur
+65H,0,Avadi
+65H,1,Pattabiram
+65H,2,Thirunindravur
+65H,3,Red Hills
+70,0,Avadi
+70,1,Ambattur
+70,2,Padi
+70,3,Thirumangalam
+70,4,CMBT
+70,5,Vadapalani
+70,6,Ashok Pillar
+70,7,Chennai Airport
+70,8,Pallavaram
+70,9,Chromepet
+70,10,Tambaram
+70A,0,Avadi
+70A,1,Tambaram
+70A,2,Vandalur Zoo
+70B,0,Avadi
+70B,1,Ambattur OT
+70B,2,Collector Nagar
+70B,3,CMBT
+70B,4,Vadapalani
+70B,5,Udhayam
+70B,6,Pallavaram
+70B,7,Chromepet Lakshmi
+A70,0,Avadi
+A70,1,Ambattur
+A70,2,Padi
+A70,3,Thirumangalam
+A70,4,CMBT
+A70,5,Vadapalani
+A70,6,Ashok Pillar
+A70,7,Kathipara
+A70,8,Chennai Airport
+A70,9,Pallavaram
+266,0,Avadi
+266,1,Govardhanagiri
+266,2,Kaduveti
+266,3,Karaiyanchavadi
+266,4,Kumananchavadi
+266,5,Mangadu
+266,6,Kundrathur
+266,7,Pallavaram
+266,8,Tambaram
+565A,0,Avadi
+565A,1,Govardhanagiri
+565A,2,Karaiyanchavadi
+565A,3,Poonamallee
+565A,4,Irrunkatturkottai
+565A,5,Sriperumbudur
+565A,6,Sunguvarchatira m
+580,0,Avadi
+580,1,Pattabiram
+580,2,Thiruninravur
+580,3,Pakkam
+580,4,Tamaraipakkam
+580,5,Vadamadurai
+580,6,Periyapalayam Koot road
+580,7,Arani
+580M,0,Avadi
+580M,1,Pattabiram
+580M,2,Thiruninravur
+580M,3,Pakkam
+580M,4,Tamaraipakkam
+580M,5,Vengal
+580M,6,Vengal Koot road
+580M,7,Malanthur
+24C,0,Avadi
+24C,1,Ambattur OT
+24C,2,Collector Nagar
+24C,3,Blue Star
+24C,4,Chinthamani
+24C,5,Aminijikarai
+24C,6,Chetpet
+24C,7,Gemini
+24C,8,Royapetah
+24C,9,V House
+27H,0,Avadi
+27H,1,Triplicane
+27H,2,LIC
+27H,3,DPI
+27H,4,Sterling Road
+27H,5,Anna Arch
+27H,6,Thirumangalam
+27H,7,Padi
+27H,8,Ambattur OT
+27H,9,Anna Square
+41D,0,Avadi
+41D,1,Ambattur OT
+41D,2,Korattur
+41D,3,Lucas
+41D,4,Thirumangalam
+41D,5,Amijikarai
+41D,6,KMC
+41D,7,Chetpet
+41D,8,Sterling road
+41D,9,Gemini
+41D,10,Teynampet
+41D,11,Nandanam
+41D,12,Adyar Gate
+41D,13,Mandaveli
+47D,0,Avadi
+47D,1,Adyar
+47D,2,T. Nagar
+47D,3,Sterling Road
+47D,4,Ambattur I.E
+47D,5,Thiruvanmiyur
+A47,0,Avadi
+A47,1,Adyar
+A47,2,T.Nagar
+A47,3,Pushpa Nagar
+A47,4,Ambattur I.E
+A47,5,Thiruvanmiyur
+M70A,0,Avadi
+M70A,1,Ambattur O.T
+M70A,2,Collector Nagar
+M70A,3,CMBT
+120,0,Avadi
+120,1,Central R.S
+120,2,Purasaiwakkam
+120,3,Sayani
+120,4,ICF
+120,5,Padi
+120,6,Ambattur OT
+120,7,Broadway
+A147,0,Avadi
+A147,1,Adyar
+A147,2,T.Nagar
+A147,3,Pushpa Nagar
+A147,4,Ambattur I.E
+A147,5,Collector Nagar
+A147,6,Thiruvanmiyur
+150,0,Avadi
+150,1,Central
+150,2,Dasaprakash
+150,3,KMC
+150,4,Amijikarai
+150,5,Arumbakkam
+150,6,Koyambedu
+150,7,Nerkundram
+150,8,Maduravoyal
+150,9,Vanagaram
+150,10,Velappan chavadi
+150,11,Thiruverkadu
+150,12,Govardhangiri
+150,13,Avadi Market
+150,14,Broadway
+162A,0,Avadi
+162A,1,Puzhal
+162A,2,Mathur MMDA
+572A,0,Avadi
+572A,1,Pattabiram
+572A,2,Thirunindravur
+572A,3,Veppampattu
+572A,4,Sevapet
+572A,5,Kakallur
+572A,6,Thiruvallur
+71H,0,Avadi Kamaraj Nagar
+71H,1,Central R.S
+71H,2,New Avadi road
+71H,3,Nadhamuni
+71H,4,Ambattur IE
+71H,5,Ambattur OT
+71H,6,Avadi
+71H,7,Broadway
+22,0,Ayanavara
+22,1,Egmore
+22,2,Triplicane
+22,3,Kannagi statue
+22,4,Anna Square
+23C,0,Ayanavara m
+23C,1,Purasaiwakkam
+23C,2,Egmore
+23C,3,LIC
+23C,4,TVS
+23C,5,Saidapet
+23C,6,Adyar
+23C,7,Besant Nagar/Thiruva nmiyur
+35,0,Ayanavara m
+35,1,Sayani
+35,2,Kellys
+35,3,Purasaiwakkam
+35,4,Choolai P.O
+35,5,Central R.S
+35,6,Broadway
+70G,0,Ayanavara m
+70G,1,Anna Nagar East
+70G,2,Thirumangalam
+70G,3,CMBT
+70G,4,Vadapalani
+70G,5,Ashok Pillar
+70G,6,Chennai Airport
+70G,7,Pallavaram
+70G,8,Chromepet
+70G,9,Tambaram
+114A,0,Ayanavara m
+114A,1,Puzhal
+114A,2,Nethaji Circle(byepass)
+114A,3,Retteri
+114A,4,Lucas
+114A,5,ICF
+114A,6,Red Hills
+20E,0,Ayyapakka m
+20E,1,Ambattur I.E
+20J,0,Ayyapakka m
+20J,1,CMBT
+147Cxt,0,Ayapakka m
+147Cxt,1,Ambattur I.E
+147Cxt,2,T.Nagar
+23M cut,0,Besant nagar
+23M cut,1,Adyar
+23M cut,2,Gandhi mandapam
+23M cut,3,Little mount
+23M cut,4,Saidapet
+23M cut,5,T.Nagar
+23M cut,6,Panagal park
+23M cut,7,Liberty
+23M cut,8,Power house
+23M cut,9,Vadapalani
+23M cut,10,MMDA Colony
+23M cut,11,CMBT
+47B,0,Besant Nagar
+47B,1,Avvai Home
+47B,2,Adyar B.S
+47B,3,T.Nagar
+47B,4,Anna Nagar East
+47B,5,Villivakkam
+6A,0,Besant Nagar
+6A,1,Adyar
+6A,2,Foreshore Estate
+6A,3,Triplicane
+6A,4,Parry's Corner
+6A,5,Maharani
+6A,6,Washermanpet
+6A,7,Tollgate
+23C,0,Besant Nagar/Thir uvanmiyur
+23C,1,Purasaiwakkam
+23C,2,Egmore
+23C,3,LIC
+23C,4,TVS
+23C,5,Saidapet
+23C,6,Adyar
+23C,7,Ayanavaram
+29C,0,Besant Nagar/Thir uvanmiyur
+29C,1,Jamaliya
+29C,2,Otteri
+29C,3,KMC
+29C,4,Chetpet
+29C,5,Sterling Road/College Road
+29C,6,Gemini
+29C,7,Mylapore
+29C,8,Mandaveli
+29C,9,Adyar
+29C,10,Perambur
+1G Cut,0,Broadway
+1G Cut,1,Velachery
+1G Cut,2,Saidapet
+1G Cut,3,TVS
+1G Cut,4,LIC
+1G Cut,5,Central
+1G Cut,6,Madipakkam
+A1 xt,0,Broadway
+A1 xt,1,Central
+A1 xt,2,LIC
+A1 xt,3,Royapettah
+A1 xt,4,Luz
+A1 xt,5,Mylapore
+A1 xt,6,Mandaveli
+A1 xt,7,AMS
+A1 xt,8,Adyar
+A1 xt,9,Thiruvanmiyur
+A1 xt,10,Kottivakkam
+A1 xt,11,Palavakkam
+A1 xt,12,Neelangarai
+A1 xt,13,Injambakkam
+A1 xt,14,Uthandi
+A1 xt,15,Kanathur
+A1 xt,16,Muttukadu boat yard
+A1 xt,17,Kovalam
+5C,0,Broadway
+5C,1,Madhya Kailash
+5C,2,Kotturpuram
+5C,3,Alwarpet
+5C,4,Royapettah
+5C,5,Chennai Central
+5C,6,Taramani
+7B,0,Broadway
+7B,1,Central R.S
+7B,2,Periamet
+7B,3,Vepery
+7B,4,Doveton
+7B,5,Pattalam
+7B,6,Otteri
+7B,7,Ayanavaram
+7B,8,Joint Office
+7B,9,ICF
+7B,10,Villivakkam
+7B,11,Nathamuni
+7B,12,Korattur
+7E,0,Broadway
+7E,1,Central R.S
+7E,2,Choolai P.O
+7E,3,Doveton
+7E,4,Purasaiwakkam
+7E,5,Kellys
+7E,6,Kilpauk Gardens
+7E,7,Chinthamani
+7E,8,Ambattur I.E
+7F,0,Broadway
+7F,1,Central R.S
+7F,2,Vepery
+7F,3,Purasaiwakkam
+7F,4,Kellys
+7F,5,Kilpauk Gardens
+7F,6,Chinthamani
+7F,7,Thirumangalam
+7F,8,Anna Nagar West
+7G,0,Broadway
+7G,1,Moolakadai
+7G,2,Perambur market
+7G,3,Pattalam
+7G,4,Doveton
+7G,5,Periamedu
+7G,6,Central R.S
+7G,7,Kaviarasu Kannadasan Nagar
+7H,0,Broadway
+7H,1,Central R.S
+7H,2,Vepery
+7H,3,Purasaiwakkam
+7H,4,Kellys
+7H,5,Kilpauk Gardens
+7H,6,Chinthamani
+7H,7,Thirumangalam
+7H,8,Mogappair East
+7H xt,0,Broadway
+7H xt,1,Central R.S
+7H xt,2,Vepery
+7H xt,3,Purasaiwakkam
+7H xt,4,Kellys
+7H xt,5,Kilpauk Gardens
+7H xt,6,Chinthamani
+7H xt,7,Thirumangalam
+7H xt,8,Ambattur I.E
+7M,0,Broadway
+7M,1,Central R.S
+7M,2,Vepery
+7M,3,Purasaiwakkam
+7M,4,Kellys
+7M,5,Kilpauk Gardens
+7M,6,Chinthamani
+7M,7,Thirumangalam
+7M,8,Mogappair West
+11,0,Broadway
+11,1,Panagal park
+11,2,Vani mahal
+11,3,Thousand Lights
+11,4,TVS
+11,5,Central R.S
+11,6,T.Nagar
+A11,0,Broadway
+A11,1,Teynampet
+A11,2,T.Nagar
+15,0,Broadway
+15,1,Anna NagarWest
+15A,0,Broadway
+15A,1,Kilpauk
+15A,2,Anna Nagar West
+15B,0,Broadway
+15B,1,Amijikarai
+15B,2,KMC
+15B,3,Dasaprakash
+15B,4,Central R.S
+15B,5,CMBT
+15D,0,Broadway
+15D,1,Dasaprakash
+15D,2,Anna Hospital
+15D,3,14 Shops
+15D,4,Anna Nagar West
+15F,0,Broadway
+15F,1,Virugambakkam
+15F,2,Chinmaya nagar
+15F,3,Koyambedu Market
+15F,4,CMBT
+15F,5,Amijikarai
+15F,6,KMC
+15F,7,Dasaprakash
+15F,8,Central R.S
+15F,9,Vadapalani
+15F cut,0,Broadway
+15F cut,1,CMBT
+15F cut,2,Amijikarai
+15F cut,3,KMC
+15F cut,4,Dasaprakash
+15F cut,5,Central R.S
+15F cut,6,Koyambedu Ma rket
+15L,0,Broadway
+15L,1,Athipet ICF colony
+17,0,Broadway
+17,1,Central
+17,2,Chindatripet
+17,3,Egmore RS
+17,4,Chetpet
+17,5,Sterling road
+17,6,Loyola college
+17,7,Kodambakkam
+17,8,Vadapalani
+17A,0,Broadway
+17A,1,Koyambedu Market
+17A,2,Virugambakkam
+17A,3,Vadapalani
+17A,4,Gemini
+17A,5,CMBT
+17B,0,Broadway
+17B,1,Paranipathur
+17B,2,Baikadai
+17B,3,Moulivakkam
+17B,4,Porur
+17B,5,Virugambakkam
+17B,6,Vadapalani
+17B,7,Gemini
+17B,8,Thousand lights
+17B,9,Central
+17B,10,Mangadu
+17C,0,Broadway
+17C,1,Central
+17C,2,Egmore
+17C,3,DPI
+17C,4,Sterling Road
+17C,5,Valluvarkottam
+17C,6,Liberty
+17C,7,Vadapalani
+17C,8,Virugambakkam
+17C,9,Valasarawakkam
+17C,10,Porur
+17C,11,SRMC
+17C,12,Iyyapanthangal
+17D,0,Broadway
+17D,1,Central
+17D,2,Egmore
+17D,3,DPI
+17D,4,Sterling Road
+17D,5,Valluvarkottam
+17D,6,Liberty
+17D,7,Udhayam
+17D,8,Nesapakkam
+17D,9,K K Nagar
+17E,0,Broadway
+17E,1,Central
+17E,2,Chindatripet
+17E,3,Egmore
+17E,4,DPI
+17E,5,Sterling Road
+17E,6,Valluvarkottam
+17E,7,Liberty
+17E,8,Vadapalani
+17E,9,Saligramam
+17G,0,Broadway
+17G,1,Kedar Hospital
+17G,2,Ramapuram
+17G,3,Angalamman Koil
+17G,4,Alwarthirunagar
+17G,5,Virugambakkam
+17G,6,Vadapalani
+17G,7,Gemini
+17G,8,Thousand lights
+17G,9,Central
+17G,10,Mogalivakkam
+17K,0,Broadway
+17K,1,Central
+17K,2,Egmore
+17K,3,DPI
+17K,4,Sterling Road
+17K,5,Valluvarkottam
+17K,6,Liberty
+17K,7,Vadapalani
+17K,8,Dasarathapura m
+17M,0,Broadway
+17M,1,Porur
+17M,2,Virugambakkam
+17M,3,Vadapalani
+17M,4,Kodambakkam Power house
+17M,5,Liberty
+17M,6,Periyar Road
+17M,7,Valluvar kottam
+17M,8,Gemini
+17M,9,Thousand lights
+17M,10,TVS
+17M,11,LIC
+17M,12,Simpson
+17M,13,Central
+17M,14,Iyyapanthangal
+18,0,Broadway
+18,1,Central R.S
+18,2,Zimson
+18,3,Shanthi Theater
+18,4,LIC
+18,5,TVS
+18,6,Thousand Lights
+18,7,DMS
+18,8,Vanavil
+18,9,SIET
+18,10,Defence Accounts office
+18,11,Nandanam
+18,12,Saidapet
+18,13,Guindy
+18A,0,Broadway
+18A,1,LIC
+18A,2,TVS
+18A,3,Saidapet
+18A,4,Guindy
+18A,5,Pallavaram
+18A,6,Chr omepet
+18A,7,Tambaram Sanatorium
+18A,8,Tambaram
+18A,9,Perugalathur
+18D,0,Broadway
+18D,1,LIC
+18D,2,TVS
+18D,3,Saidapet
+18D,4,Guindy
+18D,5,St. Thomas Mount
+18D,6,Kilkattalai
+18E,0,Broadway
+18E,1,LIC
+18E,2,TVS
+18E,3,Saidapet
+18E,4,Guindy
+18E,5,Nandambakkam
+18E,6,Ramapuram
+18F,0,Broadway
+18F,1,Central R.S
+18F,2,Simpson
+18F,3,LIC
+18F,4,TVS
+18F,5,DMS
+18F,6,Nandanam
+18F,7,CIT Nagar
+18F,8,Srinivasa
+18F,9,Mettupalayam
+18F,10,Saidapet West
+18F,11,Guindy
+18K,0,Broadway
+18K,1,Central R.S
+18K,2,Simpson
+18K,3,LIC
+18K,4,TVS
+18K,5,DMS
+18K,6,Teynampet
+18K,7,Nandanam
+18K,8,CIT Nagar
+18K,9,Srinivasa
+18K,10,Mettupalayam
+18K,11,Saidapet West
+K18,0,Broadway
+K18,1,Central R.S
+K18,2,Simpson
+K18,3,LIC
+K18,4,TVS
+K18,5,DMS
+K18,6,Teynampet
+K18,7,Nandanam
+K18,8,Saidapet
+K18,9,Guindy
+K18,10,Ekkaduthangal
+K18,11,Ashok nagar
+K18,12,Mettupalayam
+K18,13,Saidapet West
+K18 cut,0,Broadway
+K18 cut,1,Central R.S
+K18 cut,2,Simpson
+K18 cut,3,LIC
+K18 cut,4,TVS
+K18 cut,5,DMS
+K18 cut,6,Teynampet
+K18 cut,7,Nandanam
+K18 cut,8,Saidapet
+K18 cut,9,Guindy
+K18 cut,10,CIPET
+K18 cut,11,Ekkaduthangal
+19G,0,Broadway
+19G,1,Central
+19G,2,LIC
+19G,3,DMS
+19G,4,SIET
+19G,5,Saidapet
+19G,6,Anna university
+19G,7,Adyar
+19G,8,Thiruvanmiyur
+19G,9,Kottivakkam
+19G,10,Palavakkam
+19G,11,Neelangarai
+19G,12,Injambakkam
+19G,13,Uthandi
+19G,14,Kanathur
+19G,15,Muttukadu boat yard
+19G,16,Kovalam
+PP19xt,0,Broadway
+PP19xt,1,Marina Beach
+PP19xt,2,Thiruvanmiyur
+PP19xt,3,Injambakkam
+PP19xt,4,Kovalam
+20,0,Broadway
+20,1,Villivakkam
+20A,0,Broadway
+20A,1,Central RS
+20A,2,Periyamedu
+20A,3,Purasaiwakkam
+20A,4,Villivakkam
+20A,5,Nadhamuni
+20A,6,Ambattur I.E
+20A,7,Mugappair West
+20B,0,Broadway
+20B,1,Purasaiwakkam
+20B,2,Villivakkam
+20B,3,Nadhamuni
+20B,4,Padi
+20B,5,Ambattur I.E
+20B,6,Dunlop
+20B,7,Ambattur OT
+20B,8,Menambedu
+20C,0,Broadway
+20C,1,Purasaiwakkam
+20C,2,Villivakkam
+20C,3,Nadhamuni
+20C,4,Padi
+20C,5,Ambattur I.E
+20C,6,Dunlop
+20C,7,Ambattur OT
+20C,8,Oragadam
+20M,0,Broadway
+20M,1,Villivakkam
+20M,2,Kumaran Nagar
+20N,0,Broadway
+20N,1,Villivakkam
+20N,2,Poombukar
+21,0,Broadway
+21,1,Mylapore
+21,2,Luz
+21,3,Ajanta
+21,4,Express Avenue
+21,5,L.I.C
+21,6,Simpson
+21,7,Central
+21,8,Mandaveli
+21D,0,Broadway
+21D,1,Indira Nagar
+21D,2,Besant Nagar
+21D,3,Foreshore Estate
+21D,4,Anna Square
+21D,5,Thiruvanmiyur
+21E,0,Broadway
+21E,1,Porur
+21E,2,Guindy
+21E,3,Adayar
+21E,4,Foreshore Estate
+21E,5,Anna Square
+21E,6,Iyyapanthangal
+21G,0,Broadway
+21G,1,Anna Square
+21G,2,Mylapore
+21G,3,Mandaveli
+21G,4,Adyar Gate
+21G,5,Guindy
+21G,6,Tambaram
+21H,0,Broadway
+21H,1,Secretrariat
+21H,2,Anna Square
+21H,3,AIR
+21H,4,Santhome
+21H,5,Foreshore Estate
+21H,6,MRC Nagar
+21H,7,Adyar
+21H,8,SRP Tools
+21H,9,Perungudi
+21H,10,Sholinganallur
+21H,11,Navalur
+21H,12,Kelambakkam
+21K,0,Broadway
+21K,1,Secretrariat
+21K,2,Anna Square
+21K,3,AIR
+21K,4,Santhome
+21K,5,Foreshore Estate
+21K,6,MRC Nagar
+21K,7,Adyar
+21K,8,Anna University
+21K,9,Guindy
+21K,10,Butt Road
+21K,11,Defence Colony
+21K,12,Bharath Electronics
+21L xt,0,Broadway
+21L xt,1,Marina Beach
+21L xt,2,Foreshore Estate
+21L xt,3,MRC Nagar
+21L xt,4,Adyar
+21L xt,5,Anna University
+21L xt,6,Velachery
+21L xt,7,Kilkattalai
+C21,0,Broadway
+C21,1,Secretrariat
+C21,2,Anna Square
+C21,3,AIR
+C21,4,Santhome
+C21,5,Foreshore Estate
+C21,6,MRC Nagar
+C21,7,Adyar
+C21,8,SRP Tools
+C21,9,Perungudi
+C21,10,Sholinganallur
+C21,11,Perumbakkam
+C21,12,Nukkanpalayam
+C21,13,Arasan Kazhani
+C21,14,Ottiyambakkam
+G21,0,Broadway
+G21,1,Secretariat
+G21,2,Kannaki Statue
+G21,3,QMC
+G21,4,Kalyani Hospital
+G21,5,Sanskrit College
+G21,6,Luz
+G21,7,Mylapore
+G21,8,Mandaveli BS
+G21,9,Adyar Gate
+G21,10,Kotturpuram
+G21,11,Anna university
+G21,12,Guindy
+G21,13,Pallavaram
+G21,14,Chromepet
+H21,0,Broadway
+H21,1,Secretrariat
+H21,2,Anna Square
+H21,3,AIR
+H21,4,Santhome
+H21,5,Foreshore Estate
+H21,6,MRC Nagar
+H21,7,Adyar
+H21,8,SRP Tools
+H21,9,Perungudi
+H21,10,Sholinganallur
+H21,11,Chemmenchery
+L21,0,Broadway
+L21,1,Marina Beach
+L21,2,Foreshore Estate
+L21,3,MRC Nagar
+L21,4,Adyar
+L21,5,SRP Tools
+L21,6,Velachery
+R21,0,Broadway
+R21,1,Eachangadu
+R21,2,Kilkattalai
+R21,3,Velachery
+R21,4,SRP
+R21,5,Adayar
+R21,6,Foreshore Estate
+R21,7,Anna Square
+R21,8,Pallavaram
+S21,0,Broadway
+S21,1,Adyar
+S21,2,Mettukuppam
+T21,0,Broadway
+T21,1,Thoraipakkam
+T21,2,Adyar
+T21,3,Marina
+T21,4,Kannagi Nagar
+M21G,0,Broadway
+M21G,1,Secretariat
+M21G,2,Kannaki Statue
+M21G,3,QMC
+M21G,4,Kalyani Hospital
+M21G,5,Sanskrit College
+M21G,6,Luz
+M21G,7,Mylapore
+M21G,8,Mandaveli BS
+M21G,9,Adyar Gate
+M21G,10,Kotturpuram
+M21G,11,Anna university
+M21G,12,Guindy
+M21G xt,0,Broadway
+M21G xt,1,Secretariat
+M21G xt,2,Kannaki Statue
+M21G xt,3,QMC
+M21G xt,4,Kalyani Hospital
+M21G xt,5,Sanskrit College
+M21G xt,6,Luz
+M21G xt,7,Mylapore
+M21G xt,8,Mandaveli BS
+M21G xt,9,Adyar Gate
+M21G xt,10,Kotturpuram
+M21G xt,11,Anna university
+M21G xt,12,Guindy
+M21G xt,13,Ekkaduthangal
+PP21,0,Broadway
+PP21,1,Secretariat
+PP21,2,Chepauk
+PP21,3,Q.M.C
+PP21,4,Fore Shore Estate
+PP21,5,Adyar Bus Stand
+PP21,6,Guindy
+PP21,7,Pallavaram
+PP21,8,Chromepet
+PP21,9,Tambaram
+PP21,10,Vandalur Zoo
+PP21,11,Guduvanchery
+33,0,Broadway
+33,1,Vyasarpadi
+33,2,Basin Bridge
+33,3,Mint
+33,4,Mannadi
+33,5,M.K.B Nagar
+M33xt,0,Broadway
+M33xt,1,M.K.B Nagar
+M33xt,2,Vyasarpadi
+M33xt,3,Basin Bridge
+M33xt,4,Mint
+M33xt,5,Mannadi
+M33xt,6,Kaviarasu Kannadasan Nagar
+M33A,0,Broadway
+M33A,1,Moolakadai
+42,0,Broadway
+42,1,Central R.S
+42,2,Periamet
+42,3,Natarajatheatre
+42,4,Pulianthope
+42,5,Pattalam
+42,6,Kannigapuram
+42,7,Perambur B.S
+42,8,Venus
+42,9,Peravallur
+42,10,Periyar Nagar
+42A,0,Broadway
+42A,1,Central R.S
+42A,2,Periamet
+42A,3,Nataraja theatre
+42A,4,Pulianthope
+42A,5,Pattalam
+42A,6,Kannigapuram
+42A,7,Perambur B.S
+42A,8,Venus
+42A,9,Peravallur
+42A,10,G.K.M colony
+M42B,0,Broadway
+M42B,1,Central R.S
+M42B,2,Periamet
+M42B,3,Choolaipostoffice
+M42B,4,Doveton
+M42B,5,Bhuvaneswari
+M42B,6,Pattalam
+M42B,7,Otteri
+M42B,8,Perambur
+M42B,9,Venus
+M42B,10,Peravallur
+M42B,11,Nehrusilai
+M42B,12,Poombuhar
+M42C,0,Broadway
+M42C,1,Central
+M42C,2,Periamet
+M42C,3,Natarajatheatre
+M42C,4,Pulianthope
+M42C,5,Pattalam
+M42C,6,Kannigapuram
+M42C,7,Perambur B.S
+M42C,8,Venus
+M42C,9,Peravallur
+M42C,10,Kolathur
+M42C,11,Vinayagapuram
+M42C,12,Teacherscolony
+M42D,0,Broadway
+M42D,1,Srinivasanagar
+44A,0,Broadway
+44A,1,Tondiarpet
+44A,2,I.O.C (Indian Oil Corporation)
+44C,0,Broadway
+44C,1,Korukkupet
+44C,2,I.O.C
+44D,0,Broadway
+44D,1,Sathiyamoorthy Nagar
+44D,2,I.O.C
+44L,0,Broadway
+44L,1,Parvathi Nagar (Kodungaiyur)
+50,0,Broadway
+50,1,Central
+50,2,Dasaprakash
+50,3,KMC
+50,4,Amijikarai
+50,5,Arumbakkam
+50,6,Koyambedu
+50,7,Nerkundram
+50,8,Maduravoyal
+50,9,Vanagaram
+50,10,Velappan chavadi
+50,11,Thiruverkadu
+51J,0,Broadway
+51J,1,Central
+51J,2,LIC
+51J,3,DMS
+51J,4,SIET
+51J,5,Saidapet
+51J,6,CheckpostVelachery
+51J,7,Medavakkam
+51J,8,Sith alapakkam koot road
+51J,9,Kovilancherry
+51J,10,Madurapakkam
+51J,11,Ponmar
+51R,0,Broadway
+51R,1,Puzhudivakkam
+51R,2,Guindy Race Course
+51R,3,Madipakkam BS
+53,0,Broadway
+53,1,Kumananchavadi
+53,2,Mathruvayoil
+53,3,Arumbakkam
+53,4,Aminijikarai
+53,5,KMC
+53,6,Central R.S
+53,7,Poonamallee
+53E,0,Broadway
+53E,1,Kumananchavadi
+53E,2,Mathruvayoil
+53E,3,Arumbakkam
+53E,4,Aminijikarai
+53E,5,KMC
+53E,6,Central R.S
+53E,7,Mangadu
+54K,0,Broadway
+54K,1,Poonamallee
+54K,2,Kumananchavadi
+54K,3,SRMC
+54K,4,Porur
+54K,5,Guindy
+54K,6,Saidapet
+54K,7,DMS
+54K,8,TVS
+54K,9,LIC
+54K,10,Central R.S
+54K,11,Nemam
+56,0,Broadway
+56,1,V.Nagar
+56,2,Tondiarpet
+56,3,Thiruvottriyur
+56,4,Sathyamoorthy nagar
+56,5,Kargil Nagar
+56 xt,0,Broadway
+56 xt,1,V.Nagar
+56 xt,2,Tondiarpet
+56 xt,3,Thiruvottriyur
+56 xt,4,Ernavoor
+56 xt,5,Ashok Leyland
+56 xt,6,Ennore
+56D,0,Broadway
+56D,1,Beach R.S
+56D,2,Thambuchetty St.
+56D,3,Kalmandappam
+56D,4,Kasimedu
+56D,5,Tondirapet
+56D,6,Tollgate
+56D,7,Rajakadai
+56D,8,Thiruvotriyur R.S
+56D,9,Mattumandai
+56D,10,Manali
+56N,0,Broadway
+56N,1,Ennore
+58A,0,Broadway
+58A,1,V.Nagar
+58A,2,Vyasarpadi
+58A,3,Moolakadai
+58A,4,Mathur
+58A,5,Red Hills
+58H,0,Broadway
+58H,1,Karanodai
+58H,2,RedHills
+58H,3,V.Nagar
+58H,4,Vyasarpadi
+58H,5,Moolakadai
+58H,6,New Erumai Vettipalayam
+58G,0,Broadway
+58G,1,V.Nagar
+58G,2,Vyasarpadi
+58G,3,Moolakadai
+58G,4,Gnayaru
+60D,0,Broadway
+60D,1,Pallavaram
+60D,2,Guindy
+60D,3,"Kamarajpuram, Anakaputhur"
+60E,0,Broadway
+60E,1,Andankuppam
+60E,2,Anakaputtur
+60E,3,Pallavaram
+60E,4,Guindy
+60E,5,Anna University
+60E,6,Adyar
+60E,7,Sathyastudio
+60E,8,MRC Nagar
+60E,9,Pattinapakkam
+60E,10,AIR
+60E,11,Kannagi Statue
+60E,12,Annasquare
+60E,13,Kundrathur
+60G,0,Broadway
+60G,1,Pallavaram
+60G,2,Guindy
+60G,3,Anna University
+60G,4,Adyar
+60G,5,Sathyastudio
+60G,6,MRC Nagar
+60G,7,Pattinapakkam
+60G,8,AIR
+60G,9,Kannagi Statue
+60G,10,Annasquare
+60G,11,Pozhichalur
+60H,0,Broadway
+60H,1,Pammal
+60H,2,Pallavaram
+60H,3,Guindy
+60H,4,"Shankar Nagar, Pammal"
+61D,0,Broadway
+61D,1,Central R.S
+61D,2,Purasaiwakkam
+61D,3,Ayanavaram
+61D,4,Nadhamuni
+61D,5,Padi
+61D,6,Amabattur IE
+61D,7,Avadi
+61D,8,HVF Hospital
+61D,9,Kovilpadagai
+61D,10,Veerapuram
+61D,11,Kadavoor
+61D xt,0,Broadway
+61D xt,1,Avadi
+61D xt,2,Kadavoor
+61D xt,3,Kilkondaiyar
+61E,0,Broadway
+61E,1,Ambattur IE
+61E,2,Avadi
+61E,3,HVF Hospital
+61E,4,Kovilpadagai
+61E,5,Vellanur
+61E,6,Veerapuram
+61E,7,Arakkambakkam
+61E,8,Kilkondaiyar
+M64B,0,Broadway
+M64B,1,Napalayam
+M64B,2,Manali New Town
+M64B,3,MFL
+M64B,4,CPCL
+M64B,5,Manali
+M64B,6,Madhavaram Milk colony
+M64B,7,Moolakadai
+M64B,8,Perambur market
+M64B,9,Pulianthope
+M64B,10,Doveton
+M64B,11,Central R.S
+M64B,12,Minjur
+M64D,0,Broadway
+M64D,1,Madhavaram Milk colony
+M64D,2,Thapal petti
+M64D,3,Moolakadai
+M64D,4,Vyasarpadi
+M64D,5,Pulianthope
+M64D,6,Doveton
+M64D,7,Central R.S
+M64D,8,Kosappur
+71,0,Broadway
+71,1,Central R.S
+71,2,Taylors Road
+71,3,New Avadi road
+71,4,Nadhamuni
+71,5,Padi
+71,6,Ambattur IE
+71,7,Ambattur OT
+71D,0,Broadway
+71D,1,Central R.S
+71D,2,Nadhamuni
+71D,3,Padi
+71D,4,Ambattur IE
+71D,5,Ambattur OT
+71D,6,Pudur
+71F,0,Broadway
+71F,1,Central R.S
+71F,2,Nadhamuni
+71F,3,Ambattur IE
+71F,4,Ambattur OT
+71F,5,Senthil Nagar
+71H,0,Broadway
+71H,1,Central R.S
+71H,2,New Avadi road
+71H,3,Nadhamuni
+71H,4,Ambattur IE
+71H,5,Ambattur OT
+71H,6,Avadi
+71H,7,Avadi Kamaraj Nagar
+71V,0,Broadway
+71V,1,Central R.S
+71V,2,Nadhamuni
+71V,3,Ambattur I.E
+71V,4,Ambattur OT
+71V,5,Avadi
+71V,6,Thirunindravur
+71V,7,Veppampattu
+M116,0,Broadway
+M116,1,SIDCO
+M116,2,MKB Nagar
+M116,3,Sathyamoorthy Nagar
+M116,4,Basin Bridge
+M116,5,Mint
+M116,6,Stanley
+M116,7,Beach R.S
+M116,8,Kaviarasu Kannadhasan Nagar
+M116A,0,Broadway
+M116A,1,SIDCO
+M116A,2,MKB Nagar
+M116A,3,Sathyamoorthy Nagar
+M116A,4,Basin Bridge
+M116A,5,Mint
+M116A,6,Stanley
+M116A,7,Beach R.S
+M116A,8,Muthamil Nagar (Kodungaiyur)
+M116L,0,Broadway
+M116L,1,Muthamil Nagar
+M116L,2,SIDCO
+M116L,3,MKB Nagar
+M116L,4,Sathyamoorthy Nagar
+M116L,5,Basin Bridge
+M116L,6,Mint
+M116L,7,Stanley
+M116L,8,Beach R.S
+M116L,9,Parvathi Nagar (Kodungaiyur)
+120,0,Broadway
+120,1,Central R.S
+120,2,Purasaiwakkam
+120,3,Sayani
+120,4,ICF
+120,5,Padi
+120,6,Ambattur OT
+120,7,Avadi
+120C,0,Broadway
+120C,1,Central R.S
+120C,2,Purasaiwakkam
+120C,3,Sayani
+120C,4,ICF
+120C,5,Padi
+120C,6,Ambattur OT
+120C,7,Thirumullaivoy al colony
+142B,0,Broadway
+142B,1,Peravallur Kumaran Nagar
+142P,0,Broadway
+142P,1,Puthagaram
+153,0,Broadway
+153,1,Central R.S
+153,2,KMC
+153,3,Madhuravoyal
+153,4,Poonamallee
+153,5,Thirumazhisai
+164C,0,Broadway
+164C,1,Manali
+502,0,Broadway
+502,1,Central R.S
+502,2,LIC
+502,3,Saidapet
+502,4,Guindy
+502,5,Porur
+502,6,Kumananchavadi
+502,7,Poonamallee
+502,8,Irrungattukottai
+502,9,Sriperumbudur
+527,0,Broadway
+527,1,V.Nagar
+527,2,Tondiarpet
+527,3,Thiruvottriyur
+527,4,Sathyamoorthy nagar
+527,5,Minjur
+527,6,Kadapakkam
+527,7,Thathamanji
+557,0,Broadway
+557,1,Beach R.S
+557,2,Mint
+557,3,Vyasarpadi
+557,4,Moolakadai
+557,5,Red Hills
+557,6,Thachur Koot Road
+557,7,Puduvayal
+557,8,Kavarapettai
+557,9,Gummidipoond i
+587,0,Broadway
+587,1,Marina
+587,2,Thiruvamiyur
+587,3,ECR
+587,4,Kelambakka m
+587,5,Thirupporur
+593,0,Broadway
+593,1,Beach R.S
+593,2,Stanley
+593,3,Mint
+593,4,Basin Bridge
+593,5,Vyasarpadi
+593,6,Moolakadai
+593,7,Puzhal
+593,8,Red Hills
+593,9,Karanodai
+593,10,Periyapalayam
+593,11,Thandalam
+521,0,"Broadway, Chennai"
+521,1,Marina
+521,2,Thiruvanmiyur
+521,3,Perungudi
+521,4,Sholi nganallur
+521,5,Kelambakkam
+521,6,Thirupporur
+10E,0,Broadway
+10E,1,Central R.S
+10E,2,Egmore R.S
+10E,3,Maternity Hospital
+10E,4,DPI
+10E,5,Sterling road
+10E,6,Valluvar Kottam
+10E,7,Panagal park
+10E,8,T.Nagar
+10E,9,Srinivasa Theater
+10E,10,Mettupalayam
+10E,11,Ashok Nagar
+10E,12,Jaffarkhanpet
+10E,13,Ekkaduthangal
+M21T,0,Broadway
+M21T,1,Santhome
+M21T,2,Adyar
+M21T,3,Perungudi
+M21T,4,Kannagi Nagar
+35,0,Broadway
+35,1,Sayani
+35,2,Kellys
+35,3,Purasaiwakkam
+35,4,Choolai P.O
+35,5,Central R.S
+35,6,Ayanavaram
+38H,0,Broadway
+38H,1,Thapal Petti
+38H,2,Moolakadai
+38H,3,Sharma nagar
+38H,4,Vyasarpadi
+38H,5,Basin Bridge
+38H,6,Mint
+38H,7,Stanley
+38H,8,Beach R.S
+38H,9,Madhavaram
+51D,0,Broadway
+51D,1,Convent
+51D,2,Camp road
+51D,3,Rajakilpakkam
+51D,4,Kozhipannai
+51D,5,Madambakkam
+51D,6,Jothi Nagar
+51D,7,Noothencherry
+51D,8,Vengaivasal
+51D,9,Santhosapuram
+51D,10,Medavakkam Koot road
+51D,11,Medavakkam
+51D,12,Pallikaranai
+51D,13,Velacherry
+51D,14,Saidapet
+51D,15,DMS
+51D,16,TVS
+51D,17,LIC
+51D,18,Central
+51D,19,Tambaram East
+H51,0,Broadway
+H51,1,Secretariat
+H51,2,Kannaki Statue
+H51,3,QMC
+H51,4,Kalyani Hospital
+H51,5,Luz
+H51,6,Mylapore
+H51,7,Mandaveli BS
+H51,8,AMS
+H51,9,Adyar Depot
+H51,10,SRP tools
+H51,11,Taramani
+H51,12,Velachery
+H51,13,Pallikaranai
+H51,14,Medavakkam
+H51,15,Santhosapuram
+H51,16,Kamarajapuram
+H51,17,Camp road
+H51,18,Convent
+H51,19,Tambaram East
+52,0,Broadway
+52,1,Pallavaram
+52,2,Guindy
+52,3,Saidapet
+52,4,DMS
+52,5,TVS
+52,6,LIC
+52,7,Central RS
+52,8,Pozhichalur
+52D,0,Broadway
+52D,1,Varadharaja Theater
+52D,2,Chromepet
+52D,3,Pallavaram
+52D,4,Guind y
+52D,5,Saidapet
+52D,6,DMS
+52D,7,TVS
+52D,8,LIC
+52D,9,Central RS
+52D,10,Chitlapakkam
+53P,0,Broadway
+53P,1,Mangadu
+53P,2,Kumananchavadi
+53P,3,Mathruvayoil
+53P,4,Arumbakkam
+53P,5,Aminijikarai
+53P,6,KMC
+53P,7,Central R.S
+53P,8,Pattur
+54,0,Broadway
+54,1,Kumananchavadi
+54,2,Porur
+54,3,Guindy
+54,4,DMS
+54,5,TVS
+54,6,LIC
+54,7,Central R.S
+54,8,Poonamallee
+54G,0,Broadway
+54G,1,Vellavedu
+54G,2,Thirumazhisai
+54G,3,Poonamallee
+54G,4,Porur
+54G,5,Guindy
+54G,6,DMS
+54G,7,TVS
+54G,8,LIC
+54G,9,Central R.S
+54G,10,Kuthambakkam
+60C,0,Broadway
+60C,1,Pammal
+60C,2,Pallavaram
+60C,3,Guindy
+60C,4,Little Mount
+60C,5,Saidapet
+60C,6,Teynampet
+60C,7,DMS
+60C,8,TVS
+60C,9,Simpson
+60C,10,Central R.S
+60C,11,Anakaputhur
+155A,0,Broadway
+155A,1,Thiruneermalai
+155A,2,Nagakeni
+155A,3,Pallavaram
+155A,4,Guindy
+155A,5,Saidape t
+155A,6,DMS
+155A,7,LIC
+155A,8,Central R.S
+155A,9,Thirumudivakk am
+242,0,Broadway
+242,1,Central R.S
+242,2,Vepery
+242,3,Doveton
+242,4,Perambur
+242,5,Kolathur
+242,6,Puzhal
+242,7,Red Hills
+242xt,0,Broadway
+242xt,1,Perambur
+242xt,2,Central R.S
+242xt,3,Padiyanallur
+553,0,Broadway
+553,1,Central R.S
+553,2,KMC
+553,3,Kumananchavadi
+553,4,Poonamallee
+553,5,Irrungattukottai
+553,6,Sriperumbudur
+571,0,Broadway
+571,1,Central R.S
+571,2,Taylors Road
+571,3,Nadhamuni
+571,4,Padi
+571,5,Ambattur IE
+571,6,Avadi
+571,7,Thirunindravur
+571,8,Vepampattu
+571,9,Sevapet
+571,10,Kakallur
+571,11,Thiruvallur
+579,0,Broadway
+579,1,Karasangal
+579,2,Mudichur
+579,3,Tambaram
+579,4,Pallavaram
+579,5,Guindy
+579,6,Saidapet
+579,7,LIC
+579,8,Padappai
+588B,0,Broadway
+588B,1,Marina Beach
+588B,2,Thiruvanmiyur
+588B,3,Injambakkam
+588B,4,Kovalam
+588B,5,Thiruvedanthai
+588B,6,Vadanemili
+588B,7,Mamallapuram
+M500,0,Chengalpat tu
+M500,1,Singaperumal Koil
+M500,2,Maraimalai nagar IE
+M500,3,Guduvancherry
+M500,4,Vandalur Zoo
+M500,5,Perugalathur
+M500,6,Tambaram
+500,0,Chengalpat tu
+500,1,Singaperumal Koil
+500,2,Maraimalai nagar IE
+500,3,Guduvancherry
+500,4,Vandalur Zoo
+500,5,Tambaram
+500,6,Pallavaram
+500,7,Guindy
+500,8,T. Nagar
+500A,0,Chengalpat tu
+500A,1,Singaperumal Koil
+500A,2,Maraimalai nagar IE
+500A,3,Guduvancherry
+500A,4,Vandalur Zoo
+500A,5,Tambaram
+500A,6,Tambaram Sanatorium
+500A,7,Nehru nagar(Chromepet)
+500A,8,Kumaran Kundram
+500A,9,Hasthinapuram
+500C,0,Chengalpat tu
+500C,1,Singaperumal Koil
+500C,2,Maraimalai nagar IE
+500C,3,Guduvancherry
+500C,4,Vandalur Zoo
+500C,5,Tambaram
+500C,6,Pallavaram
+500C,7,Guindy
+500C,8,Saidapet
+500C,9,CMBT
+500J,0,Chengalpat tu
+500J,1,Pallikkaranai
+500J,2,Medavakkam
+500J,3,Kamarajapuram
+500J,4,Camp Road
+500J,5,Tambaram East
+500J,6,Tambaram West
+500J,7,Vandalur Zoo
+500J,8,Velachery
+500V,0,Chengalpat tu
+500V,1,Guindy
+500V,2,Pallvaram
+500V,3,Tambaram West
+500V,4,Vandalur Zoo
+500V,5,Velachery
+577,0,Chengalpat tu
+577,1,Singaperumal Koil
+577,2,Maraimalai Nagar IE
+577,3,Guduvancherry
+577,4,Vandalur Zoo
+577,5,Tambaram
+577,6,Pallavaram
+577,7,Guindy
+577,8,Adyar
+577,9,AMS
+577,10,Mandaveli
+52D,0,Chitlapakka m
+52D,1,Varadharaja Theater
+52D,2,Chromepet
+52D,3,Pallavaram
+52D,4,Guind y
+52D,5,Saidapet
+52D,6,DMS
+52D,7,TVS
+52D,8,LIC
+52D,9,Central RS
+52D,10,Broadway
+27B,0,CMBT
+27B,1,Koyambedu
+27B,2,Arumbakkam
+27B,3,NSK nagar
+27B,4,Amijikarai
+27B,5,KMC
+27B,6,Chetpet
+27B,7,MMC School
+27B,8,Egmore RS
+27B,9,Chindatripet
+27B,10,Zimson
+27B,11,Triplicane
+27B,12,Kannaki Statue
+27B,13,Anna Square
+46,0,CMBT
+46,1,Perambur
+46,2,Ayanavaram
+46,3,ICF
+46,4,Anna Nagar East
+46,5,Arumbakkam
+46,6,TVK Nagar
+46B,0,CMBT
+46B,1,Perambur
+46B,2,Ayanavaram
+46B,3,ICF
+46B,4,Anna Nagar East
+46B,5,Arumbakkam
+46B,6,Periyar Nagar
+46C,0,CMBT
+46C,1,Moolakadai
+46C,2,Perambur
+46C,3,Ayanavaram
+46C,4,ICF
+46C,5,Anna Nagar East
+46C,6,Arumbakkam
+46C,7,Parvathy Nagar (Kodungaiyur)
+46G,0,CMBT
+46G,1,Vyasarpadi
+46G,2,Ayanavaram
+46G,3,ICF
+46G,4,Anna Nagar East
+46G,5,Arumbakkam
+46G,6,MKB Nagar East
+48C,0,CMBT
+48C,1,Thirumangalam
+48C,2,Anna Nagar West
+48C,3,Nadhamuni
+48C,4,ICF
+48C,5,Railway Quarters
+48C,6,Joint Office
+48C,7,Sayani
+48C,8,Otterri
+48C,9,Basin Bridge
+48C,10,Vallalar Nagar
+PP49,0,CMBT
+PP49,1,MMDA Colony
+PP49,2,Vadapalani
+PP49,3,Liberty
+PP49,4,T.Nagar
+PP49,5,Saidapet
+PP49,6,Adyar
+PP49,7,Thiruvanmiyur
+PP49,8,Kottivakkam
+PP49,9,Palavakkam
+PP49,10,Injambakkam
+PP49,11,Kanathur
+PP49,12,Muttukadu
+PP49,13,Kovalam
+L51,0,CMBT
+L51,1,Arasan Kazhani
+L51,2,Sithalapakkam
+L51,3,Medavakkam
+L51,4,Pallikaranai
+L51,5,Velacherry
+L51,6,Checkpost
+L51,7,Guindy
+L51,8,Ashok Pillar
+L51,9,Vadapalani
+L51,10,MMDA Colony
+L51,11,Ottiambakkam
+53K,0,CMBT
+53K,1,Mathruvayoil
+53K,2,Kumananchavadi
+53K,3,Poonamallee
+53K,4,Meppur
+61B,0,CMBT
+61B,1,Thirumangalam
+61B,2,Collector Nagar
+61B,3,Ambattur IE
+61B,4,Avadi
+61B,5,HVF Hospital
+61B,6,Kovilpadagai
+61B,7,Vellanur
+61B,8,Veerapuram
+61B,9,Arakkambakka m
+70S,0,CMBT
+70S,1,Velachery
+70S,2,SRP Tools
+70S,3,Kannagi Nagar
+M70,0,CMBT
+M70,1,Vadapalani
+M70,2,Ashok nagar
+M70,3,Guindy
+M70,4,Checkpost
+M70,5,Velacherry
+M70,6,Taramani
+M70,7,SRP tools
+M70,8,Jayanthi
+M70,9,Thiruvanmiyur
+M70A,0,CMBT
+M70A,1,Ambattur O.T
+M70A,2,Collector Nagar
+M70A,3,Avadi
+121A,0,CMBT
+121A,1,Madhavaram Milk Colony
+121A,2,Thapal petti
+121A,3,Moolakadai
+121A,4,Retteri
+121A,5,Lucas
+121A,6,Thirumangalam
+121A,7,Manali
+121B,0,CMBT
+121B,1,Napalayam
+121B,2,MFL
+121B,3,CPCL
+121B,4,Manali
+121B,5,Madhavaram Milk Colony
+121B,6,Thapal petti
+121B,7,Moolakadai
+121B,8,Retteri
+121B,9,Lucas
+121B,10,Thirumangalam
+121B,11,Minjur
+121C,0,CMBT
+121C,1,Ernavoor gate
+121C,2,MFL
+121C,3,CPCL
+121C,4,Manali
+121C,5,Madhavaram Milk Colony
+121C,6,Thapal petti
+121C,7,Moolakadai
+121C,8,Retteri
+121C,9,Lucas
+121C,10,Thirumangalam
+121C,11,Ennore
+121D,0,CMBT
+121D,1,MFL
+121D,2,CPCL
+121D,3,Manali
+121D,4,Madhavaram Milk Colony
+121D,5,Thapal petti
+121D,6,Moolakadai
+121D,7,Retteri
+121D,8,Lucas
+121D,9,Thirumangalam
+121D,10,Manali New Town
+121G,0,CMBT
+121G,1,Moolakadai
+121G,2,Retteri
+121G,3,Lucas
+121G,4,Thirumangalam
+121G,5,Kaviarasu Kannadasan Nagar
+159D,0,CMBT
+159D,1,Tondiarpet
+159D,2,V.Nagar
+159D,3,Regal
+159D,4,Choolai P.O.
+159D,5,Purasawakkam High Road
+159D,6,Kellys
+159D,7,Aminjikarai
+159D,8,Arumbakkam
+159D,9,I.O.C
+159E,0,CMBT
+159E,1,Ashok Leyland
+159E,2,Ernavoor Gate
+159E,3,Thiruvottriyur
+159E,4,Therady
+159E,5,Tollgate
+159E,6,Tondiarpet
+159E,7,V.Nagar
+159E,8,Regal
+159E,9,Choolai P.O.
+159E,10,Purasawakkam High Road
+159E,11,Kellys
+159E,12,Aminjikarai
+159E,13,Arumbakkam
+159E,14,Ennore
+170J,0,CMBT
+170J,1,West Saidapet
+170J,2,Udhayam
+170J,3,Vadapalani
+170J,4,MMDA Colony
+170J,5,Guindy
+170R,0,CMBT
+170R,1,Thirumangalam
+170R,2,Madhavaram
+170R,3,Kosappur
+170R,4,Andarkuppam
+270J,0,CMBT
+270J,1,Thirumangalam
+270J,2,Madhavaram
+270J,3,Mathur
+558L,0,CMBT
+558L,1,Redhills
+558L,2,Karanodai
+558L,3,Ponneri
+558L,4,Minjur
+568C,0,CMBT
+568C,1,Rajiv Gandhi Salai
+568C,2,Mamallapuram
+568T,0,CMBT
+568T,1,Guindy
+568T,2,SRP Tools
+568T,3,Sholinganallur
+568T,4,Navalur
+568T,5,Thalambur
+570,0,CMBT
+570,1,Vadapalani
+570,2,Ashok Nagar
+570,3,Guindy
+570,4,Check post
+570,5,Velachery
+570,6,SRP tools
+570,7,Perungudi
+570,8,Sholinganallur
+570,9,Navalur
+570,10,Padur
+570,11,Kelambakkam
+570S,0,CMBT
+570S,1,Vadapalani
+570S,2,Ashok Nagar
+570S,3,Guindy
+570S,4,Check post
+570S,5,Velachery
+570S,6,SRP tools
+570S,7,Perungudi
+570S,8,Sholinganallur
+570S,9,Navalur
+570S,10,SiruseriSIPCOT
+596,0,CMBT
+596,1,Koyambedu
+596,2,Nerkundram
+596,3,Madhuravoyal
+596,4,Kumanan chavadi
+596,5,Poonamallee
+596,6,Thirumazhisai
+596,7,Vellavedu
+596,8,Nemam
+596,9,Pudhuchatiram
+596,10,Mettukandigai
+596,11,Arnavoyal kuppam
+596,12,Arnavoyal
+596,13,Murkancherry
+596,14,Manavalan Nagar
+596,15,Thiruvallur
+596A,0,CMBT
+596A,1,Koyambedu
+596A,2,Nerkundram
+596A,3,Madhuravoyal
+596A,4,Kumanan chavadi
+596A,5,Poonamallee
+596A,6,Thirumazhisai
+596A,7,Vellavedu
+596A,8,Nemam
+596A,9,Pudhuchatiram
+596A,10,Mettukandigai
+596A,11,Arnavoyal kuppam
+596A,12,Arnavoyal
+596A,13,Murkancherry
+596A,14,Manavalan Nagar
+596A,15,Thiruvallur
+596A,16,Thiruvallur - Pandur
+15B,0,CMBT
+15B,1,Amijikarai
+15B,2,KMC
+15B,3,Dasaprakash
+15B,4,Central R.S
+15B,5,Broadway
+17A,0,CMBT
+17A,1,Koyambedu Market
+17A,2,Virugambakkam
+17A,3,Vadapalani
+17A,4,Gemini
+17A,5,Broadway
+20J,0,CMBT
+20J,1,Ayyapakkam
+23M,0,CMBT
+23M,1,Jayanthi
+23M,2,Adyar
+23M,3,Gandhi mandapam
+23M,4,Little mount
+23M,5,Saidapet
+23M,6,T.Nagar
+23M,7,Panagal park
+23M,8,Liberty
+23M,9,Power house
+23M,10,Vadapalani
+23M,11,MMDA Colony
+23M,12,Thiruvanmiyur
+23M cut,0,CMBT
+23M cut,1,Adyar
+23M cut,2,Gandhi mandapam
+23M cut,3,Little mount
+23M cut,4,Saidapet
+23M cut,5,T.Nagar
+23M cut,6,Panagal park
+23M cut,7,Liberty
+23M cut,8,Power house
+23M cut,9,Vadapalani
+23M cut,10,MMDA Colony
+23M cut,11,Besant nagar
+M27,0,CMBT
+M27,1,Panagal park
+M27,2,Bharathinagar
+M27,3,Liberty
+M27,4,Power house
+M27,5,Vadapalani
+M27,6,Virugambakkam
+M27,7,Chinmaya nagar
+M27,8,Koyambedu Market
+M27,9,T. Nagar
+41F,0,CMBT
+41F,1,Luz
+41F,2,Gemini
+41F,3,Valluvar Kottam
+41F,4,Loyola College
+41F,5,Choolaimedu
+41F,6,Anna Arch
+41F,7,Mandaveli
+51L,0,CMBT
+51L,1,Vadapalani
+51L,2,Guindy
+51L,3,Velachery
+51L,4,Pallikkaranai
+51L,5,Medavakkam
+51L,6,Kamarajapuram
+51L,7,Camp Road
+51L,8,Tambaram East
+53S,0,CMBT
+53S,1,Thiruverkadu
+53S,2,Sundaransozhapuram
+53S,3,Mettupalayam
+53S,4,Thandarai
+53S,5,Pattabiram
+70K,0,CMBT
+70K,1,Velachery
+70K,2,Guindy
+70K,3,Ashok Pillar
+70K,4,Vadapalani
+70K,5,Kilkattalai
+70L,0,CMBT
+70L,1,Ambattur Karukku
+H70,0,CMBT
+H70,1,Ambattur OT
+H70,2,Menambedu
+159A,0,CMBT
+159A,1,Tollgate
+159A,2,Tondiarpet
+159A,3,V.Nagar
+159A,4,Regal
+159A,5,Choolai P.O.
+159A,6,Purasawakkam High Road
+159A,7,Kellys
+159A,8,Aminjikarai
+159A,9,Arumbakkam
+159A,10,Thiruvotriyur
+159B,0,CMBT
+159B,1,Tondiarpet
+159B,2,V.Nagar
+159B,3,Regal
+159B,4,Choolai P.O.
+159B,5,Purasawakkam High Road
+159B,6,Kellys
+159B,7,Aminjikarai
+159B,8,Arumbakkam
+159B,9,Tollgate
+170S,0,CMBT
+170S,1,Sarma Nagar
+170S,2,Moolakadai
+170S,3,Retteri
+170S,4,Thirumangalam
+170S,5,DMDK Office
+170S,6,MKB Nagar East
+J170,0,CMBT
+J170,1,Ashok pillar
+J170,2,K.K.Nagar BS
+J170,3,MGR nagar
+J170,4,Nesapakkam
+J170,5,West K.K.nagar
+J170,6,Avichi School
+J170,7,Virugambakkam
+J170,8,Chinmaya Nagar
+J170,9,Koyambedu Market
+J170,10,Guindy
+500C,0,CMBT
+500C,1,Singaperumal Koil
+500C,2,Maraimalai nagar IE
+500C,3,Guduvancherry
+500C,4,Vandalur Zoo
+500C,5,Tambaram
+500C,6,Pallavaram
+500C,7,Guindy
+500C,8,Saidapet
+500C,9,Chengalpattu
+510,0,CMBT
+510,1,Karasangal
+510,2,Mudichur
+510,3,Tambaram
+510,4,Pallavaram
+510,5,Ashok Pillar
+510,6,Padappai
+514,0,CMBT
+514,1,Lucas
+514,2,Puzhal
+514,3,Red Hills
+514,4,Karanodai
+514,5,Janappan chathram x road
+514,6,Bandikavanoor
+514,7,Kannigaipair
+514,8,Periyapalayam
+533,0,CMBT
+533,1,Arani
+553A,0,CMBT
+553A,1,Mathruvayoil
+553A,2,Kumananchavadi
+553A,3,Poonamallee
+553A,4,Irrungattukottai
+553A,5,Sriperumbudur
+588C,0,CMBT
+588C,1,Vadapalani
+588C,2,Ashok Nagar
+588C,3,Guindy
+588C,4,Adyar
+588C,5,Thiruvanmiyur
+588C,6,Injambakkam
+588C,7,Kovalam
+588C,8,Thiruvedanthai
+588C,9,Vadanemili
+588C,10,Mamallapuram
+21F,0,Egmore
+21F,1,Kannagi nagar
+40A xt,0,Egmore
+40A xt,1,KMC
+40A xt,2,Aminijikarai
+40A xt,3,Chinthamani
+40A xt,4,Blue Star
+40A xt,5,Collector Nagar
+40A xt,6,Ambattur OT
+40A xt,7,Avadi
+40A xt,8,Pattabiram
+40A xt,9,Thirunindravur
+40A xt,10,Veppampattu
+28,0,Egmore R.S
+28,1,Tollgate
+28,2,Tondiarpet
+28,3,Vallalarnagar
+28,4,Regal
+28,5,Central RS
+28,6,Chindatripet
+28,7,Thiruvotriyur
+28A,0,Egmore R.S
+28A,1,Andankuppam
+28A,2,Thiruvottriyur
+28A,3,Tollgate
+28A,4,Tondiarpet
+28A,5,Vallalarnagar
+28A,6,Regal
+28A,7,Central RS
+28A,8,Manali
+28B,0,Egmore R.S
+28B,1,Ernavoor
+28B,2,Thiruvottriyur
+28B,3,Tollgate
+28B,4,Tondiarpet
+28B,5,Vallalarnagar
+28B,6,Regal
+28B,7,Central RS
+28B,8,Chindatripet
+28B,9,Ennore
+10E,0,Ekkadutha ngal
+10E,1,Central R.S
+10E,2,Egmore R.S
+10E,3,Maternity Hospital
+10E,4,DPI
+10E,5,Sterling road
+10E,6,Valluvar Kottam
+10E,7,Panagal park
+10E,8,T.Nagar
+10E,9,Srinivasa Theater
+10E,10,Mettupalayam
+10E,11,Ashok Nagar
+10E,12,Jaffarkhanpet
+10E,13,Broadway
+88E,0,Ekkadttuth angal
+88E,1,Koovoor
+88E,2,Periyapannicherry
+88E,3,Baikadai
+88E,4,Porur
+88E,5,Guindy
+88E,6,Kundrathur
+K18 cut,0,Ekkadutha ngal
+K18 cut,1,Central R.S
+K18 cut,2,Simpson
+K18 cut,3,LIC
+K18 cut,4,TVS
+K18 cut,5,DMS
+K18 cut,6,Teynampet
+K18 cut,7,Nandanam
+K18 cut,8,Saidapet
+K18 cut,9,Guindy
+K18 cut,10,CIPET
+K18 cut,11,Broadway
+M21G xt,0,Ekkadutha ngal
+M21G xt,1,Secretariat
+M21G xt,2,Kannaki Statue
+M21G xt,3,QMC
+M21G xt,4,Kalyani Hospital
+M21G xt,5,Sanskrit College
+M21G xt,6,Luz
+M21G xt,7,Mylapore
+M21G xt,8,Mandaveli BS
+M21G xt,9,Adyar Gate
+M21G xt,10,Kotturpuram
+M21G xt,11,Anna university
+M21G xt,12,Guindy
+M21G xt,13,Broadway
+154E,0,Ekkadutha ngal
+154E,1,Poonamallee
+154E,2,Kumananchavadi
+154E,3,Porur
+154E,4,Guindy
+154E,5,Vellavedu
+M70D,0,Elango Nagar (Collector Nagar)
+M70D,1,Thirumangalam
+M70D,2,CMBT
+M70D,3,Vadapalani
+M70D,4,Ashok Pillar
+M70D,5,Guindy
+27E,0,Elango nagar officer colony
+27E,1,Collector nagar
+27E,2,Thirumangalam
+27E,3,Rountana
+27E,4,Amijikarai
+27E,5,KMC
+27E,6,Egmore RS
+27E,7,Zimson
+27E,8,Triplicane
+27E,9,Kannaki Statue
+27E,10,Anna Square
+1E,0,Ennore
+1E,1,Chromepet
+1E,2,Pallavaram
+1E,3,Guindy
+1E,4,Teynampet
+1E,5,D.M.S
+1E,6,L.I.C
+1E,7,Central R.S
+1E,8,Parry's Corner
+1E,9,Kalmandapam
+1E,10,Tollgate
+1E,11,Thiruvottiyur
+1E,12,Tambaram
+1D,0,Ennore
+1D,1,Adyar
+1D,2,Mylapore
+1D,3,Royapettah
+1D,4,Parry's Corner
+1D,5,Kalmandapam
+1D,6,Thalankuppam
+1D,7,Thiruvanmiyur
+28B,0,Ennore
+28B,1,Ernavoor
+28B,2,Thiruvottriyur
+28B,3,Tollgate
+28B,4,Tondiarpet
+28B,5,Vallalarnagar
+28B,6,Regal
+28B,7,Central RS
+28B,8,Chindatripet
+28B,9,Egmore R.S
+48B,0,Ennore
+48B,1,Venus
+48B,2,Perambur
+48B,3,Moolakadai
+48B,4,Madhavaram
+48B,5,Mathur Koot road
+48B,6,Manali Koot road
+48B,7,Sathyamoorthy nagar
+48B,8,Ernavoor
+48B,9,Ashok Leyeland
+48B,10,Thiru.Vi.Ka Nagar
+56 xt,0,Ennore
+56 xt,1,V.Nagar
+56 xt,2,Tondiarpet
+56 xt,3,Thiruvottriyur
+56 xt,4,Ernavoor
+56 xt,5,Ashok Leyland
+56 xt,6,Broadway
+56A,0,Ennore
+56A,1,V Nagar
+56N,0,Ennore
+56N,1,Broadway
+121C,0,Ennore
+121C,1,Ernavoor gate
+121C,2,MFL
+121C,3,CPCL
+121C,4,Manali
+121C,5,Madhavaram Milk Colony
+121C,6,Thapal petti
+121C,7,Moolakadai
+121C,8,Retteri
+121C,9,Lucas
+121C,10,Thirumangalam
+121C,11,CMBT
+157E,0,Ennore
+157E,1,Puzhal
+157E,2,Moolakadai
+157E,3,Sharma Nagar
+157E,4,M.K.B Nagar
+157E,5,Korukkupettai
+157E,6,Tondaripet
+157E,7,Tollgate
+157E,8,Theradi
+157E,9,Thiruvottiyur
+157E,10,Red Hills
+159E,0,Ennore
+159E,1,Ashok Leyland
+159E,2,Ernavoor Gate
+159E,3,Thiruvottriyur
+159E,4,Therady
+159E,5,Tollgate
+159E,6,Tondiarpet
+159E,7,V.Nagar
+159E,8,Regal
+159E,9,Choolai P.O.
+159E,10,Purasawakkam High Road
+159E,11,Kellys
+159E,12,Aminjikarai
+159E,13,Arumbakkam
+159E,14,CMBT
+12B xt,0,Foreshore Estate
+12B xt,1,CMBT
+12B xt,2,MMDA Colony
+12B xt,3,Vadapalani
+12B xt,4,Kodambakkam
+12B xt,5,Pondy Bazaar
+12B xt,6,Alwarpet
+12B xt,7,Luz
+12B xt,8,Santhome
+12B xt,9,Koyambedu Ma rket
+12B xt,0,Foreshore Estate
+12B xt,1,Porur
+12B xt,2,Virugambakkam
+12B xt,3,Vadapalani
+12B xt,4,Liberty
+12B xt,5,Pondy Bazaar
+12B xt,6,Alwarpet
+12B xt,7,Luz
+12B xt,8,Santhome
+12B xt,9,Iyyapanthangal
+27D,0,Foreshore Estate
+27D,1,Santhome
+27D,2,AIR
+27D,3,V.M.Street
+27D,4,Stella Maris College
+27D,5,Thousand Lights
+27D,6,LIC
+27D,7,Pudhupet
+27D,8,Maternity Hospital
+27D,9,Egmore RS
+27D,10,Dasaprakash
+27D,11,Purasaiwakkam
+27D,12,Kellys
+27D,13,Ayanavaram
+27D,14,ICF
+27D,15,Villivakkam
+12A,0,Foreshore Estate
+12A,1,Pondy bazaar
+12A,2,Alwarpet
+12A,3,Luz
+12A,4,Santhome
+12A,5,T. Nagar
+M12A,0,Foreshore Estate
+M12A,1,Pondy bazaar
+M12A,2,Alwarpet
+M12A,3,Luz
+M12A,4,Santhome
+M12A,5,T. Nagar
+32A,0,Foreshore Estate
+32A,1,Maharani
+32A,2,Tondiarpet
+32A,3,Vallalar nagar
+32A,4,Broadway
+32A,5,Central R.S.
+32A,6,Triplicane
+32A,7,V.House
+32A,8,AIR
+32A,9,Santhome
+32A,10,Tollgate
+55B,0,Guduvanch erry
+55B,1,Oorapakkam
+55B,2,Vandalur Zoo
+55B,3,Perugalathur
+55B,4,Tambaram
+55B,5,Kannadapalayam
+55B,6,Pazhanthandala m
+E18,0,Guduvanch ery
+E18,1,LIC
+E18,2,TVS
+E18,3,Saidapet
+E18,4,Guindy
+E18,5,Pallavaram
+E18,6,Tambaram
+E18,7,Vandalur Zoo
+E18,8,High Court
+G18,0,Guduvanch ery
+G18,1,Saidapet
+G18,2,Guindy
+G18,3,Pallavaram
+G18,4,Chromepet
+G18,5,Tambaram
+G18,6,Vandalur Zoo
+G18,7,T.Nagar
+M18,0,Guduvanch ery
+M18,1,Vandalur Zoo/Arignar Anna Zoological Park
+M18,2,Tambaram
+M18N,0,Guduvanch ery
+M18N,1,Pazhavanthangal
+M18N,2,Pallavaram
+M18N,3,Chromepet
+M18N,4,Tambaram
+M18N,5,Vandalur Zoo
+M18N,6,Oorapakkam
+M18N,7,Nanganallur
+T51S,0,Guduvanch ery
+T51S,1,Vandalur
+T51S,2,Tambaram East
+T51S,3,Camp Road
+T51S,4,Medavakkam
+T51S,5,Sholinganallur
+T51S,6,Okkiam Thoraippakkam
+555G,0,Guduvanch ery
+555G,1,Urapakkam
+555G,2,Vandalur
+555G,3,Mambakkam
+555G,4,Kelambakkam
+21J,0,Guduvanch ery
+21J,1,Pallikkaranai
+21J,2,Medavakkam
+21J,3,Kamarajapuram
+21J,4,Camp Road
+21J,5,Poondi Bazar
+21J,6,Tambaram Sanatorium
+21J,7,Tambaram West
+21J,8,Vandalur
+21J,9,Velachery
+V21,0,Guduvanch ery
+V21,1,SRP
+V21,2,Taramani
+V21,3,Velachery
+V21,4,Kamatchi Hospital
+V21,5,Chromepet
+V21,6,Tambaram
+V21,7,Thiruvanmiyur
+PP21,0,Guduvanch ery
+PP21,1,Secretariat
+PP21,2,Chepauk
+PP21,3,Q.M.C
+PP21,4,Fore Shore Estate
+PP21,5,Adyar Bus Stand
+PP21,6,Guindy
+PP21,7,Pallavaram
+PP21,8,Chromepet
+PP21,9,Tambaram
+PP21,10,Vandalur Zoo
+PP21,11,Broadway
+M52,0,Guduvanch ery
+M52,1,Pallavaram
+M52,2,Chromepet
+M52,3,Tambaram
+M52,4,Perungalathur
+M52,5,Vandalor Zoo
+M52,6,Pozhichalur
+70V,0,Guduvanch ery
+70V,1,Vadapalani
+70V,2,Pallavaram
+70V,3,Tambaram
+70V,4,Koyambedu
+G70,0,Guduvanch ery
+G70,1,Udhayam Theater
+G70,2,Pallavaram
+G70,3,Tambaram
+G70,4,Vandalur Zoo
+G70,5,Vadapalani
+118P,0,Guduvanch ery
+118P,1,Aadambakkam
+118P,2,Guindy
+118P,3,Pallavaram
+118P,4,Tambaram
+118P,5,Zoo
+118P,6,Puzhuthivakka m
+170K,0,Guduvanch ery
+170K,1,V.Z00
+170K,2,Tambaram
+170K,3,Pallavaram
+170K,4,Guindy
+170K,5,Udhayam
+170K,6,Vadapalani
+170K,7,CMBT
+170K,8,Anna Nagar
+170K,9,Padi
+170K,10,Ambattur I.E
+170K,11,Ambattur O.T
+119G,0,Guindy
+119G,1,Velachery
+119G,2,Navalur
+119G,3,Kelambakkam
+J170,0,Guindy
+J170,1,Ashok pillar
+J170,2,K.K.Nagar BS
+J170,3,MGR nagar
+J170,4,Nesapakkam
+J170,5,West K.K.nagar
+J170,6,Avichi School
+J170,7,Virugambakkam
+J170,8,Chinmaya Nagar
+J170,9,Koyambedu Market
+J170,10,CMBT
+18,0,Guindy
+18,1,Central R.S
+18,2,Zimson
+18,3,Shanthi Theater
+18,4,LIC
+18,5,TVS
+18,6,Thousand Lights
+18,7,DMS
+18,8,Vanavil
+18,9,SIET
+18,10,Defence Accounts office
+18,11,Nandanam
+18,12,Saidapet
+18,13,Broadway
+18F,0,Guindy
+18F,1,Central R.S
+18F,2,Simpson
+18F,3,LIC
+18F,4,TVS
+18F,5,DMS
+18F,6,Nandanam
+18F,7,CIT Nagar
+18F,8,Srinivasa
+18F,9,Mettupalayam
+18F,10,Saidapet West
+18F,11,Broadway
+M21G,0,Guindy
+M21G,1,Secretariat
+M21G,2,Kannaki Statue
+M21G,3,QMC
+M21G,4,Kalyani Hospital
+M21G,5,Sanskrit College
+M21G,6,Luz
+M21G,7,Mylapore
+M21G,8,Mandaveli BS
+M21G,9,Adyar Gate
+M21G,10,Kotturpuram
+M21G,11,Anna university
+M21G,12,Broadway
+45B,0,Guindy
+45B,1,Saidapet
+45B,2,Nandanam
+45B,3,Teynampet
+45B,4,Alwarpet
+45B,5,Luz
+45B,6,Chennai Citi Centre
+45B,7,Anna Square
+45G,0,Guindy
+45G,1,Marina Beach
+45G,2,Chennai Citi Centre
+45G,3,Mylapore
+45G,4,Mandaveli
+45G,5,Adyar G ate
+45G,6,Nandanam
+45G,7,CIT Nagar
+45G,8,Srinivasa
+45G,9,Mettupalayam
+45G,10,Saidapet West
+45G,11,Anna square
+M70D,0,Guindy
+M70D,1,Thirumangalam
+M70D,2,CMBT
+M70D,3,Vadapalani
+M70D,4,Ashok Pillar
+M70D,5,Elango Nagar (Collector Nagar)
+M119,0,Guindy
+M119,1,Velachery
+M119,2,SRP
+M119,3,Perungudi
+M119,4,Semmencheri
+M119B,0,Guindy
+M119B,1,Saidapet
+M119B,2,GandhiMandapam
+M119B,3,Adyar
+M119B,4,Thi ruvanmiyur
+M119B,5,Semmencheri
+B70,0,Guindy Estate
+B70,1,Avadi
+B70,2,Ambattur OT
+B70,3,Padi
+B70,4,CMBT
+B70,5,Vadapalani
+B70,6,Udhayam
+B70,7,CIPET
+B70,8,Pattabiram
+C70,0,Guindy Estate
+C70,1,Ashok nagar
+C70,2,Vadapalani
+C70,3,CMBT
+C70,4,Thirumangalam
+C70,5,Anna nagar west
+C70,6,Padi
+C70,7,Thathankuppam
+C70,8,Kolathur
+C70,9,Retteri
+C70,10,Puzhal
+C70,11,Kavangarai
+C70,12,Ayurveda Ashramam
+C70,13,Red Hills
+C70xt,0,Guindy Estate
+C70xt,1,Ashok nagar
+C70xt,2,Vadapalani
+C70xt,3,CMBT
+C70xt,4,Thirumangalam
+C70xt,5,Anna nagar west
+C70xt,6,Padi
+C70xt,7,Thathankuppam
+C70xt,8,Kolathur
+C70xt,9,Retteri
+C70xt,10,Puzhal
+C70xt,11,Kavangarai
+C70xt,12,Ayurveda Ashramam
+C70xt,13,Red Hills
+C70xt,14,Padiyanallur
+170C,0,Guindy Estate
+170C,1,Kolathur
+170C,2,Retteri
+170C,3,Thirumangalam
+170C,4,CMBT
+170C,5,Vadapalani
+170C,6,Ashok Pillar
+170C,7,TVK Nagar
+170C xt,0,Guindy Estate
+170C xt,1,Madhavaram Milk colony
+170C xt,2,Thapal petti
+170C xt,3,Moolakadai
+170C xt,4,TVK Nagar
+170C xt,5,Retteri
+170C xt,6,Thirumangalam
+170C xt,7,CMBT
+170C xt,8,Vadapalani
+170C xt,9,Manali
+F70,0,Guindy TV K Estate
+F70,1,Avadi
+F70,2,Ambattur I.E
+F70,3,Lucas
+F70,4,Anna Nagar West
+F70,5,Koyambedu market
+F70,6,CMBT
+F70,7,Vadapalani
+F70,8,West Saidapet
+F70,9,Pattabiram
+J70,0,Guindy I.E
+J70,1,Collector Nagar
+J70,2,CMBT
+J70,3,Vadapalani
+J70,4,Udhayam Theater
+J70,5,Mogappair West
+M70V,0,Guindy TVK Estate
+M70V,1,Collector Nagar
+M70V,2,Vadapalani
+M70V,3,Ambattur I.E
+170D,0,Guindy Estate
+170D,1,Moolakadai
+170D,2,Retteri
+170D,3,Thirumangalam
+170D,4,CMBT
+170D,5,Vadapalani
+170D,6,Ashok Pillar
+170D,7,Ekkattuthangal
+170D,8,Kannadasan Nagar
+52B,0,Hasthinapu ram
+52B,1,Chromepet
+52B,2,Pallavaram
+52B,3,Guindy
+52B,4,Saidap et
+52B,5,DMS
+52B,6,TVS
+52B,7,LIC
+52B,8,Central RS
+52B,9,Highcourt
+52C,0,Hasthinapu ram
+52C,1,Chromepet
+52C,2,Pallavaram
+52C,3,Guindy
+52C,4,Saidap et
+52C,5,T.Nagar
+66A,0,Hasthinapu ram
+66A,1,Anakaputhur
+66A,2,Pammal
+66A,3,Pallavaram
+66A,4,Chromepet
+66A,5,Kundrathur
+152B,0,Hasthinapu ram
+152B,1,Chromepet
+152B,2,Pallavaram
+152B,3,Guindy
+152B,4,Adayar B.S
+152B,5,Mandaveli
+152B,6,Mylapore
+152B,7,LUZ
+152B,8,QMC
+152B,9,V.House
+152B,10,Secretariat
+152B,11,High Court
+M18G,0,Hasthinapu ram
+M18G,1,Chromepet
+M18G,2,Tambaram
+M18G,3,Vandalur Zoo
+M18G,4,Guduvanchery
+500A,0,Hasthinapu ram
+500A,1,Singaperumal Koil
+500A,2,Maraimalai nagar IE
+500A,3,Guduvancherry
+500A,4,Vandalur Zoo
+500A,5,Tambaram
+500A,6,Tambaram Sanatorium
+500A,7,Nehru nagar(Chromepet)
+500A,8,Kumaran Kundram
+500A,9,Chengalpattu
+3A,0,High Court
+3A,1,Mylapore
+3A,2,Luz
+3A,3,Alwarpet
+3A,4,Royapetah
+3A,5,L.I.C
+3A,6,Central
+3A,7,Mandaveli
+8B,0,High Court
+8B,1,Parrys
+8B,2,V.Nagar
+8B,3,Puliantope
+8B,4,Pattalam
+8B,5,Jamalaya
+8B,6,Venus
+8B,7,T.V.K Nagar
+11G,0,High Court
+11G,1,MGR Nagar
+11G,2,Ashok Pillar
+11G,3,Pangal Park
+11G,4,Annasalai
+11G,5,Central R.S
+11G,6,Parry's Corner
+11G,7,K K Nagar
+11H,0,High Court
+11H,1,Virugambakkam
+11H,2,K.K.Nagar
+11H,3,Pondy Bazaar
+11H,4,Anna Salai
+11H,5,Marina Beach
+11H,6,Iyyapanthangal
+M12,0,High Court
+M12,1,Gopalapuram
+M12,2,Teynampet
+M12,3,Velachery
+M12,4,Kilkattalai
+51P,0,High Court
+51P,1,Gunidy Race Course
+51P,2,Puzhudivakkam BS
+D51,0,High Court
+D51,1,Medavakkam
+D51,2,Pallikkaranai
+D51,3,Velachery
+D51,4,Guindy Race Course
+D51,5,DMS
+D51,6,LIC
+D51,7,Central R.S
+D51,8,Medavakkam koot road
+D51 xt,0,High Court
+D51 xt,1,Sithalapakkam Koot road
+D51 xt,2,Medavakkam
+D51 xt,3,Pallikkaranai
+D51 xt,4,Velachery
+D51 xt,5,Guindy Race Course
+D51 xt,6,DMS
+D51 xt,7,LIC
+D51 xt,8,Central R.S
+D51 xt,9,SithalapakkamT NHB Colony
+E51,0,High Court
+E51,1,Arasan kazhani
+E51,2,Sithalapakkam
+E51,3,Sithalapakkam Koot road
+E51,4,Medavakkam
+E51,5,Pallikkaranai
+E51,6,Velachery
+E51,7,Guindy Race Course
+E51,8,DMS
+E51,9,LIC
+E51,10,Central R.S
+E51,11,Ottiambakkam
+PP51,0,High Court
+PP51,1,Selaiyur
+PP51,2,Camp Road
+PP51,3,Medavakkam
+PP51,4,Pallikaranai
+PP51,5,Velachery
+PP51,6,Anna University
+PP51,7,Adyar
+PP51,8,Sathyastudio
+PP51,9,MRC Nagar
+PP51,10,Foreshore Estate
+PP51,11,Santhome
+PP51,12,AIR
+PP51,13,Anna Square
+PP51,14,Tambaram East
+PP51 cut,0,High Court
+PP51 cut,1,Camp Road
+PP51 cut,2,Medavakkam
+PP51 cut,3,Pallikaranai
+PP51 cut,4,Velachery
+PP51 cut,5,Anna University
+PP51 cut,6,Adyar
+PP51 cut,7,Sathyastudio
+PP51 cut,8,MRC Nagar
+PP51 cut,9,Foreshore Estate
+PP51 cut,10,Santhome
+PP51 cut,11,AIR
+PP51 cut,12,Anna Square
+PP51 cut,13,Padhuvancherry
+52E,0,High Court
+52E,1,Chromepet
+52E,2,Pallavaram
+52E,3,Guindy
+52E,4,Saidapet
+52E,5,DMS
+52E,6,TVS
+52E,7,LIC
+52E,8,Central RS
+52E,9,Nemilicheri
+52G,0,High Court
+52G,1,Pallavaram
+52G,2,Guindy
+52G,3,Saidapet
+52G,4,DMS
+52G,5,TVS
+52G,6,LIC
+52G,7,Central RS
+52G,8,Cowl Bazaar
+52K,0,High Court
+52K,1,Nanganallur
+52K,2,Aasargana
+52K,3,Guindy
+52K,4,Anna Salai
+52K,5,Keelkattalai
+52L,0,High Court
+52L,1,Aasargana
+52L,2,Guindy
+52L,3,Anna Salai
+52L,4,Nanganallur
+54L,0,High Court
+54L,1,Poonamallee
+54L,2,Kumananchavadi
+54L,3,SRMC
+54L,4,Porur
+54L,5,Guindy
+54L,6,Saidapet
+54L,7,DMS
+54L,8,TVS
+54L,9,LIC
+54L,10,Central R.S
+54L,11,Vellavedu
+54M,0,High Court
+54M,1,Paraniputhur
+54M,2,Baikadai
+54M,3,Moulivakkam
+54M,4,Porur
+54M,5,Guindy
+54M,6,Saidapet
+54M,7,DMS
+54M,8,TVS
+54M,9,LIC
+54M,10,Central R.S
+54M,11,Mangadu
+54T,0,High Court
+54T,1,Poonamallee
+54T,2,Kumananchavadi
+54T,3,SRMC
+54T,4,Porur
+54T,5,Guindy
+54T,6,Saidapet
+54T,7,DMS
+54T,8,TVS
+54T,9,LIC
+54T,10,Central R.S
+54T,11,Chembarambak kam
+57F,0,High Court
+57F,1,Beach R.S
+57F,2,Stanley
+57F,3,Mint
+57F,4,Basin Bridge
+57F,5,Vyasarpadi
+57F,6,Moolakadai
+57F,7,Puzhal
+57F,8,Red hills
+57F,9,Karanodai
+A57,0,High Court
+A57,1,Beach R.S
+A57,2,Stanley
+A57,3,Mint
+A57,4,Basin Bridge
+A57,5,Vyasarpadi
+A57,6,Moolakadai
+A57,7,Puzhal
+A57,8,Red hills
+A57,9,Padiyanallur
+88A,0,High Court
+88A,1,Sirukalathur
+88A,2,Kundrathur
+88A,3,Koovoor
+88A,4,Peri yapannicherry
+88A,5,Baikadai
+88A,6,Porur
+88A,7,Valasara wakkam
+88A,8,Virugambakkam
+88A,9,Vadapalani
+88A,10,Liberty
+88A,11,Gemini
+88A,12,LIC
+88A,13,Central R.S
+88A,14,Nandambakkam
+88R,0,High Court
+88R,1,Gunidy
+88R,2,Porur
+88R,3,Kundrathur
+88R,4,Somangalam
+88R,5,Amarambedu
+88M,0,High Court
+88M,1,Gunidy
+88M,2,Porur
+88M,3,Kundrathur
+88M,4,Somangalam
+118A,0,HighCourt
+118A,1,LIC
+118A,2,TVS
+118A,3,Saidapet
+118A,4,Guindy
+118A,5,Pallavaram
+118A,6,Tambaram
+118A,7,Vandalur Zoo
+118A,8,Kolapakkam
+118A,9,U.Mandaveli
+118A,10,Oonamancheri
+151,0,High Court
+151,1,Secretariat
+151,2,Marina Beach
+151,3,Santhome
+151,4,Adyar
+151,5,Anna university
+151,6,Velachery
+151,7,Pallikkaranai
+151,8,Medavakkam
+151,9,Kamarajapuram
+151,10,Rajakeelpakkam
+151,11,Madambakkam
+151,12,Vengaivasal P.H. Centre
+254,0,High Court
+254,1,SRMC
+254,2,Porur
+254,3,Ramapuram
+254,4,Guindy
+254,5,Saidapet
+254,6,SIET
+254,7,DMS
+254,8,TVS
+254,9,LIC
+254,10,Central R.S.
+254,11,Iyyapanthangal
+500B,0,High Court
+500B,1,Maraimalai nagar IE
+500B,2,Guduvancherry
+500B,3,Vandalur Zoo
+500B,4,Tambaram
+500B,5,Pallavaram
+500B,6,Guindy
+500B,7,Saidapet
+500B,8,DMS
+500B,9,Central R.S
+500B,10,S.P.KOIL
+A18,0,High Court
+A18,1,LIC
+A18,2,TVS
+A18,3,Saidapet
+A18,4,Guindy
+A18,5,Pallavaram
+A18,6,Chromepet
+A18,7,Tambaram
+A18,8,Vandalur Zoo
+E18,0,High Court
+E18,1,LIC
+E18,2,TVS
+E18,3,Saidapet
+E18,4,Guindy
+E18,5,Pallavaram
+E18,6,Tambaram
+E18,7,Vandalur Zoo
+E18,8,Guduvanchery
+E18 xt,0,High Court
+E18 xt,1,LIC
+E18 xt,2,TVS
+E18 xt,3,Saidapet
+E18 xt,4,Guindy
+E18 xt,5,Pallavaram
+E18 xt,6,Tambaram
+E18 xt,7,Vandalur Zoo
+E18 xt,8,Guduvanchery
+E18 xt,9,Maraimalai nagar
+A51,0,High Court
+A51,1,Camp Road
+A51,2,Kamarajapuram
+A51,3,Medavakkam
+A51,4,Pallikkaranai
+A51,5,Velachery
+A51,6,Guindy Race Course
+A51,7,DMS
+A51,8,LIC
+A51,9,Central R.S
+A51,10,Tambaram East
+60A,0,High Court
+60A,1,Kundrathur
+60A,2,Andankuppam
+60A,3,Anakaputhur
+60A,4,Pammal
+60A,5,Pallavaram
+60A,6,Guindy
+60A,7,Little Mount
+60A,8,Saidapet
+60A,9,Teynampet
+60A,10,DMS
+60A,11,TVS
+60A,12,Simpson
+60A,13,Central R.S
+60A,14,Kundrathur Mu rugan Temple
+88C,0,High Court
+88C,1,Koovoor
+88C,2,Periyapannicherry
+88C,3,Baikadai
+88C,4,Porur
+88C,5,Guindy
+88C,6,Saidapet
+88C,7,DMS
+88C,8,TVS
+88C,9,Central R.S
+88C,10,Kundrathur
+88C,0,High Court
+88C,1,Koovoor
+88C,2,Periyapannicherry
+88C,3,Baikadai
+88C,4,Porur
+88C,5,Guindy
+88C,6,Saidapet
+88C,7,DMS
+88C,8,TVS
+88C,9,Central R.S
+88C,10,Thandalam
+152B,0,High Court
+152B,1,Chromepet
+152B,2,Pallavaram
+152B,3,Guindy
+152B,4,Adayar B.S
+152B,5,Mandaveli
+152B,6,Mylapore
+152B,7,LUZ
+152B,8,QMC
+152B,9,V.House
+152B,10,Secretariat
+152B,11,Hasthinapuram
+188C,0,High Court
+188C,1,Koovoor
+188C,2,Periyapannicherry
+188C,3,Kolapakkam
+188C,4,Manapakkam
+188C,5,Nandambakkam
+188C,6,Butt road
+188C,7,Kathipara
+188C,8,GuindyI.E
+188C,9,Little Mount
+188C,10,Saidapet
+188C,11,DMS
+188C,12,LIC
+188C,13,Central Railway Station
+188C,14,Kundrathur
+52B,0,Highcourt
+52B,1,Chromepet
+52B,2,Pallavaram
+52B,3,Guindy
+52B,4,Saidap et
+52B,5,DMS
+52B,6,TVS
+52B,7,LIC
+52B,8,Central RS
+52B,9,Hasthinapuram
+37E xt,0,Iyyapantha ngal
+37E xt,1,M.K.B Nagar
+37E xt,2,Vysarpadi
+37E xt,3,V Nagar
+37E xt,4,Regal
+37E xt,5,Choolai P.O.
+37E xt,6,Purasaiwakkam
+37E xt,7,Egmore
+37E xt,8,DPI
+37E xt,9,Sterling Road
+37E xt,10,Valluvarkottam
+37E xt,11,Liberty
+37E xt,12,Vadapalani
+37E xt,13,Porur
+37E xt,14,SRMC
+37E xt,15,Kaviarasu Kannadasan Nagar
+37G,0,Iyyapantha ngal
+37G,1,Regal
+37G,2,Choolai P.O.
+37G,3,Purasaivakkam
+37G,4,KMC
+37G,5,Chetpet
+37G,6,Ste rling road
+37G,7,Valluvarkottam
+37G,8,Liberty
+37G,9,Vadapalani
+37G,10,Porur
+37G,11,SRMC
+37G,12,V Nagar
+M89T,0,Iyyapantha ngal
+M89T,1,Porur
+M89T,2,Kundrathur
+M89T,3,Amarambedu
+11H,0,Iyyapantha ngal
+11H,1,Virugambakkam
+11H,2,K.K.Nagar
+11H,3,Pondy Bazaar
+11H,4,Anna Salai
+11H,5,Marina Beach
+11H,6,High Court
+12B xt,0,Iyyapantha ngal
+12B xt,1,Porur
+12B xt,2,Virugambakkam
+12B xt,3,Vadapalani
+12B xt,4,Liberty
+12B xt,5,Pondy Bazaar
+12B xt,6,Alwarpet
+12B xt,7,Luz
+12B xt,8,Santhome
+12B xt,9,Foreshore Estate
+17J,0,Iyyapantha ngal
+17J,1,SRMC
+17J,2,Porur
+17J,3,Valasarawakkam
+17J,4,Alwarthirunagar
+17J,5,Virugambakkam
+17J,6,Chinmaya nagar
+17J,7,Koyambedu Market
+17J,8,CMBT
+17M,0,Iyyapantha ngal
+17M,1,Porur
+17M,2,Virugambakkam
+17M,3,Vadapalani
+17M,4,Kodambakkam Power house
+17M,5,Liberty
+17M,6,Periyar Road
+17M,7,Valluvar kottam
+17M,8,Gemini
+17M,9,Thousand lights
+17M,10,TVS
+17M,11,LIC
+17M,12,Simpson
+17M,13,Central
+17M,14,Broadway
+21E,0,Iyyapantha ngal
+21E,1,Porur
+21E,2,Guindy
+21E,3,Adayar
+21E,4,Foreshore Estate
+21E,5,Anna Square
+21E,6,Broadway
+49,0,Iyyapantha ngal
+49,1,Guindy
+49,2,Porur
+49,3,Thiruvanmiyur
+65R,0,Iyyapantha ngal
+65R,1,Ambattur OT
+65R,2,Avadi Market
+65R,3,Karaiyanchavadi
+65R,4,Kumananchavadi
+65R,5,Ambattur I.E
+254,0,Iyyapantha ngal
+254,1,SRMC
+254,2,Porur
+254,3,Ramapuram
+254,4,Guindy
+254,5,Saidapet
+254,6,SIET
+254,7,DMS
+254,8,TVS
+254,9,LIC
+254,10,Central R.S.
+254,11,High Court
+166,0,Iyyappanth angal
+166,1,Ramachandra Hospital
+166,2,Porur
+166,3,Porur Powerhouse
+166,4,Gerugumbakkam
+166,5,Kovur
+166,6,Moondram kattalai
+166,7,Kundrathur
+166,8,Anagaputtur
+166,9,Pammal
+166,10,Pallavaram
+166,11,Chromepet
+166,12,Tambaram
+170L,0,Kallikuppa m
+170L,1,Tambaram
+170L,2,Pallavaram
+170L,3,Guindy
+170L,4,Vadapalani
+170L,5,CMBT
+170L,6,Anna Nagar
+170L,7,Padi
+170L,8,Ambattur I.E
+170L,9,Ambattur OT
+170L,10,Pudur
+170L,11,Vandalur Zoo
+248A,0,Kallikuppa
+248A,1,Pudur
+248A,2,V Nagar
+170D,0,Kannadasa n Nagar
+170D,1,Moolakadai
+170D,2,Retteri
+170D,3,Thirumangalam
+170D,4,CMBT
+170D,5,Vadapalani
+170D,6,Ashok Pillar
+170D,7,Ekkattuthangal
+170D,8,Guindy Estate
+2A xt,0,Kaviarasu Kannadasa n Nagar
+2A xt,1,M.K.B Nagar
+2A xt,2,Anna Square
+7G,0,Kaviarasu Kannadasa n Nagar
+7G,1,Moolakadai
+7G,2,Perambur market
+7G,3,Pattalam
+7G,4,Doveton
+7G,5,Periamedu
+7G,6,Central R.S
+7G,7,Broadway
+M33xt,0,Kaviarasu Kannadasa n Nagar
+M33xt,1,M.K.B Nagar
+M33xt,2,Vyasarpadi
+M33xt,3,Basin Bridge
+M33xt,4,Mint
+M33xt,5,Mannadi
+M33xt,6,Broadway
+37E xt,0,Kaviarasu Kannadasa n Nagar
+37E xt,1,M.K.B Nagar
+37E xt,2,Vysarpadi
+37E xt,3,V Nagar
+37E xt,4,Regal
+37E xt,5,Choolai P.O.
+37E xt,6,Purasaiwakkam
+37E xt,7,Egmore
+37E xt,8,DPI
+37E xt,9,Sterling Road
+37E xt,10,Valluvarkottam
+37E xt,11,Liberty
+37E xt,12,Vadapalani
+37E xt,13,Porur
+37E xt,14,SRMC
+37E xt,15,Iyyapanthangal
+M116,0,Kaviarasu Kannadhas an Nagar
+M116,1,SIDCO
+M116,2,MKB Nagar
+M116,3,Sathyamoorthy Nagar
+M116,4,Basin Bridge
+M116,5,Mint
+M116,6,Stanley
+M116,7,Beach R.S
+M116,8,Broadway
+121G,0,Kaviarasu Kannadasa n Nagar
+121G,1,Moolakadai
+121G,2,Retteri
+121G,3,Lucas
+121G,4,Thirumangalam
+121G,5,CMBT
+170T,0,Kaviarasu Kannadasa n Nagar
+170T,1,MR Nagar
+170T,2,Moolakadai
+170T,3,Retteri
+170T,4,Thirumangalam
+170T,5,CMBT
+170T,6,Vadapalani
+170T,7,Guindy
+170T,8,Pallavaram
+170T,9,Tambaram
+170T,10,Vandalur Zoo
+M21C,0,Kannagi Nagar
+M21C,1,Thoraipakkam
+M21C,2,Perungudi
+M21C,3,Thiruvanmiyur
+M21C,4,Adayar
+M21C,5,Mandaveli
+M21C,6,Central R.S
+M21F,0,Kannagi Nagar
+M21F,1,Mettukuppam
+M21F,2,Perugudi
+M21F,3,Kandan chavadi
+M21F,4,SRP Tools
+M21F,5,Thiruvanmiyur
+M21F,6,Adyar
+M21F,7,AMS
+M21F,8,Mandaveli
+M21F,9,Mylapore
+M21F,10,Ajantha
+M21F,11,Royapettah
+M21F,12,Wesley School
+M21F,13,LIC
+M21F,14,Pudhupet
+M21F,15,Maternity Hospital
+M21F,16,Egmore
+M21T,0,Kannagi Nagar
+M21T,1,Santhome
+M21T,2,Adyar
+M21T,3,Perungudi
+M21T,4,Broadway
+5G,0,Kannagi Nagar
+5G,1,Saidapet
+5G,2,Velachery
+5G,3,Taramani
+5G,4,RMZ
+5G,5,Perugudi
+5G,6,T. Nagar
+M19B,0,Kannagi Nagar
+M19B,1,Saidapet
+M19B,2,Adyar
+M19B,3,Thiruvanmiyur
+M19B,4,Jain College
+M19B,5,Perungudi
+M19B,6,T. Nagar
+21F,0,Kannagi nagar
+21F,1,Egmore
+T21,0,Kannagi Nagar
+T21,1,Thoraipakkam
+T21,2,Adyar
+T21,3,Marina
+T21,4,Broadway
+70S,0,Kannagi Nagar
+70S,1,Velachery
+70S,2,SRP Tools
+70S,3,CMBT
+M151K,0,Kannagi Nagar
+M151K,1,CampRoad
+M151K,2,Medavakkam
+M151K,3,Shozhinganallur
+M151K,4,Okkiam
+M151K,5,Tambaram East
+T51 cut,0,Kannaki Nagar
+T51 cut,1,Camp Road
+T51 cut,2,Medavakkam
+T51 cut,3,Sholinganallur
+T51 cut,4,Tambaram East
+188K,0,Katrambak kam
+188K,1,Kundrathur
+188K,2,Koovoor
+188K,3,Periyapannicherry
+188K,4,Baikadai
+188K,5,Moulivakkam
+188K,6,Porur
+188K,7,Manapakkam
+188K,8,Nandambakkam
+188K,9,Butt road
+188K,10,Kathipara
+188K,11,Guindy I.E
+188K,12,Little Mount
+188K,13,Saidapet
+188K,14,T.Nagar
+219,0,Kelambakk am
+219,1,Collector Nagar
+219,2,Thirumangalam
+219,3,Anna Arch
+219,4,Choolaimedu
+219,5,Mahalingapuram
+219,6,T.Nagar
+219,7,Saidapet
+219,8,Madhya Kailash
+219,9,Tidel Park
+219,10,Thoraipakkam
+219,11,Siruseri
+219,12,Ambattur I.E
+221H,0,Kelambakk am
+221H,1,LIC
+221H,2,DMS
+221H,3,Saidapet
+221H,4,IIT Chennai
+221H,5,Madhya Kailash
+221H,6,Tidel Park
+221H,7,Thoraipakkam
+221H,8,Sholinganallur
+221H,9,SIRUSERI
+221H,10,Central R.S
+M5,0,Kelambakk am
+M5,1,Thiruvanmiyur
+M5,2,Perungudi
+M5,3,Sholinganallur
+M5,4,Adyar
+19B,0,Kelambakk am
+19B,1,IIT Chennai
+19B,2,Madhya Kailash
+19B,3,Tidel Park
+19B,4,Thoraipakkam
+19B,5,SIRUSERI
+19B,6,Saidapet
+19P,0,Kelambakk am
+19P,1,SRP Tools
+19P,2,Perugudi
+19P,3,Sholinganallur
+19P,4,Navalur
+19P,5,Thalambur
+19P,6,Sirusery
+19P,7,Pudupakkam
+19P,8,Chettinad Hospital
+19P,9,Adyar B.S.
+B19,0,Kelambakk am
+B19,1,Navallur
+B19,2,Siruseri
+B19,3,Shozhinganallur
+M19A,0,Kelambakk am
+M19A,1,Saidapet
+M19A,2,Adyar
+M19A,3,Thiruvanmiyur
+M19A,4,Perungudi
+M19A,5,T. Nagar
+21H,0,Kelambakk am
+21H,1,Secretrariat
+21H,2,Anna Square
+21H,3,AIR
+21H,4,Santhome
+21H,5,Foreshore Estate
+21H,6,MRC Nagar
+21H,7,Adyar
+21H,8,SRP Tools
+21H,9,Perungudi
+21H,10,Sholinganallur
+21H,11,Navalur
+21H,12,Broadway
+21H Cut,0,Kelambakk am
+21H Cut,1,SRP Tools
+21H Cut,2,Perungudi
+21H Cut,3,Sholinganallur
+21H Cut,4,Navalu r
+21H Cut,5,Padur
+21H Cut,6,Thiruvanmiyur
+21H xt,0,Kelambakk am
+21H xt,1,Tollgate
+21H xt,2,Broadway
+21H xt,3,Secretrariat
+21H xt,4,Anna Square
+21H xt,5,AIR
+21H xt,6,Santhome
+21H xt,7,Foreshore Estate
+21H xt,8,MRC Nagar
+21H xt,9,Adyar
+21H xt,10,SRP Tools
+21H xt,11,Perungudi
+21H xt,12,Sholinganallur
+21H xt,13,Navalu
+21H xt,14,Thiruvotriyur
+M51D,0,Kelambakk am
+M51D,1,Velachery
+M51D,2,Medavakkam
+M51D,3,Ottiyambakkam
+M51D,4,Karanai
+M51D,5,Thalambur
+M51D,6,Pudhupakkam
+M51D,7,Chettinad Hospital
+M51D,8,Saidapet
+119G,0,Kelambakk am
+119G,1,Velachery
+119G,2,Navalur
+119G,3,Guindy
+515V,0,Kelambakk am
+515V,1,Mambakkam
+515V,2,Vandalur
+551A,0,Kelambakk am
+551A,1,CampRoad
+551A,2,Medavakkam
+551A,3,Ponmar
+551A,4,Mambakkam
+551A,5,Pudupakkam
+551A,6,Chettinad Hospital
+551A,7,Tambaram East
+555G,0,Kelambakk am
+555G,1,Urapakkam
+555G,2,Vandalur
+555G,3,Mambakkam
+555G,4,Guduvanchery
+555P,0,Kelambakk am
+555P,1,Karasangal
+555P,2,Vandalur
+555P,3,Mambakkam
+555P,4,Padappai
+570,0,Kelambakk am
+570,1,Vadapalani
+570,2,Ashok Nagar
+570,3,Guindy
+570,4,Check post
+570,5,Velachery
+570,6,SRP tools
+570,7,Perungudi
+570,8,Sholinganallur
+570,9,Navalur
+570,10,Padur
+570,11,CMBT
+570A,0,Kelambakk am
+570A,1,CMBT
+570A,2,Vadapalani
+570A,3,Ashok Nagar
+570A,4,Guindy
+570A,5,Check post
+570A,6,Velachery
+570A,7,SRP tools
+570A,8,Perungudi
+570A,9,Sholinganallur
+570A,10,Navalur
+570A,11,Padur
+570A,12,Ambattur Estate
+572K,0,Kilanur
+572K,1,Avadi
+572K,2,Pattabiram
+572K,3,Thirunindravur
+572K,4,Veppampattu
+572K,5,Sevapet
+572K,6,Ambattur I.E
+M18C,0,Kilkattalai
+M18C,1,Madipakkam Koot Road
+M18C,2,Nanganallur
+M18C,3,Guindy
+M18C,4,Saidapet
+M18C,5,T.Nagar
+66K,0,Kilkattalai
+66K,1,Inchangadu
+66K,2,Pallavaram
+66K,3,Pammal
+66K,4,Anakaputhur
+66K,5,Kundrathur
+66K,6,Mangadu
+66K,7,Kumananchavadi
+66K,8,Karaiyanchavadi
+66K,9,Poonamallee
+70K,0,Kilkattalai
+70K,1,Velachery
+70K,2,Guindy
+70K,3,Ashok Pillar
+70K,4,Vadapalani
+70K,5,CMBT
+170N,0,Kilkattalai
+170N,1,Nanganallur
+170N,2,Guindy
+170N,3,Udhayam
+170N,4,Vadapalani
+170N,5,CMBT
+170N,6,Thirumangalam
+170N,7,Retteri
+170N,8,Venus
+170N,9,Perambur
+552K,0,Kilkattalai
+552K,1,Medavakkam
+552K,2,Sholinganallur
+552K,3,Kelamba kkam
+552K,4,Thirupporur
+52K,0,Keelkattalai
+52K,1,Nanganallur
+52K,2,Aasargana
+52K,3,Guindy
+52K,4,Anna Salai
+52K,5,High Court
+79K,0,Keelkattalai
+79K,1,Padappai
+79K,2,Mudichur
+79K,3,West Tambaram
+79K,4,East Tambaram
+79K,5,Camp Road
+79K,6,Kamarajapuram
+79K,7,Medavakkam Koot Road
+79K,8,Kovilambakkam
+79K,9,Oragadam
+M1,0,Kilkattalai
+M1,1,SRP Tools
+M1,2,Velachery
+M1,3,Kaiveli
+M1,4,Ram Nagar
+M1,5,Madipakkam
+M1,6,Thiruvanmiyur
+M12,0,Kilkattalai
+M12,1,Gopalapuram
+M12,2,Teynampet
+M12,3,Velachery
+M12,4,High Court
+18D,0,Kilkattalai
+18D,1,LIC
+18D,2,TVS
+18D,3,Saidapet
+18D,4,Guindy
+18D,5,St. Thomas Mount
+18D,6,Broadway
+21L xt,0,Kilkattalai
+21L xt,1,Marina Beach
+21L xt,2,Foreshore Estate
+21L xt,3,MRC Nagar
+21L xt,4,Adyar
+21L xt,5,Anna University
+21L xt,6,Velachery
+21L xt,7,Broadway
+M45,0,Kilkattalai
+M45,1,Saidapet
+M45,2,Velachery
+M45,3,T. Nagar
+M45E,0,Kilkattalai
+M45E,1,Triplicane
+M45E,2,Chennai Citi Centre
+M45E,3,Luz
+M45E,4,Saidapet
+M45E,5,Velachery
+M45E,6,Anna Square
+23C xt,0,Korattur
+23C xt,1,Lucas
+23C xt,2,Nathamuni
+23C xt,3,ICF
+23C xt,4,Ayanavaram
+23C xt,5,Purasaiwakkam
+23C xt,6,Egmore
+23C xt,7,LIC
+23C xt,8,TVS
+23C xt,9,Saidapet
+23C xt,10,Adyar
+23C xt,11,Thiruvanmiyur
+7B,0,Korattur
+7B,1,Central R.S
+7B,2,Periamet
+7B,3,Vepery
+7B,4,Doveton
+7B,5,Pattalam
+7B,6,Otteri
+7B,7,Ayanavaram
+7B,8,Joint Office
+7B,9,ICF
+7B,10,Villivakkam
+7B,11,Nathamuni
+7B,12,Broadway
+47D cut,0,Korattur
+47D cut,1,Adyar
+47D cut,2,T. Nagar
+47D cut,3,Sterling Road
+47D cut,4,Lucas
+47D cut,5,T.Nagar
+65T,0,Korattur
+65T,1,Pattravakkam
+65T,2,Ambattur OT
+65T,3,Avadi Market
+65T,4,Karaiyanchavadi
+65T,5,Poonamallee
+B21xt,0,Korukkupet
+B21xt,1,V.Nagar
+B21xt,2,Parrys
+B21xt,3,Secretrariat
+B21xt,4,Anna Square
+B21xt,5,AIR
+B21xt,6,Santhome
+B21xt,7,Foreshore Estate
+B21xt,8,MRC Nagar
+B21xt,9,Adyar
+B21xt,10,SRP Tools
+B21xt,11,Velacherry
+B21xt,12,Madipakkam Koot road
+B21xt,13,Kilkatalai
+B21xt,14,Kovilambakkam
+B21xt,15,Vellakal
+B21xt,16,Medavakkam Koot Road
+B18,0,Korukkupet
+B18,1,Broadway
+B18,2,LIC
+B18,3,TVS
+B18,4,Saidapet
+B18,5,Guindy
+B18,6,Pallavaram
+B18,7,Tambaram
+B18,8,Vandalur Zoo
+32B,0,Korukkupet
+32B,1,Vallalar nagar
+32B,2,Broadway
+32B,3,Central R.S.
+32B,4,Simpson
+32B,5,V. House
+47C,0,Kotturpura m
+47C,1,Saidpet
+47C,2,T. Nagar
+47C,3,Mahalingapuram
+47C,4,Choolaimedu
+47C,5,Roundtana
+47C,6,Ambattur I.E
+70V,0,Koyambed u
+70V,1,Vadapalani
+70V,2,Pallavaram
+70V,3,Tambaram
+70V,4,Guduvanchery
+L18,0,Koyambed uMarket
+L18,1,Vadapalani
+L18,2,Ashok pillar
+L18,3,Guindy
+L18,4,Pallavaram
+L18,5,Tambaram
+L18,6,Old Perugalathur
+L18,7,Mudichur
+62D,0,Koyambed u Market
+62D,1,Puzhal
+62E,0,Koyambed u Market
+62E,1,Madanakuppam
+70C,0,Koyambed u Market
+70C,1,Vadapalani
+70C,2,Udhayam
+70C,3,Pallavaram
+70C,4,Tambaram
+70C,5,Tambaram
+70C xt,0,Koyambed u Market
+70C xt,1,CMBT
+70C xt,2,Vadapalani
+70C xt,3,Ashok nagar
+70C xt,4,Guindy
+70C xt,5,Pallavaram
+70C xt,6,Tambaram
+70C xt,7,Tambaram East
+70C xt,8,Camp road
+70C xt,9,Rajakilpakkam
+70C xt,10,Kozhipannai
+70C xt,11,Madambakkam
+70C xt,12,Jothi nagar
+70C xt,13,Sithalapakkam Housing board
+70C xt,14,Kovilancherry
+70C xt,15,Madurapakkam
+70C xt,16,Ponmar
+70C xt,17,Mambakkam Kulam
+70C xt,18,Mambakkam
+114E,0,Koyambed u market
+114E,1,Red Hills
+114E,2,Puzhal
+114E,3,Nethaji Circle(byepass)
+114E,4,Retteri
+114E,5,New Erumai Vettipalayam
+114P,0,Koyambed u Market
+114P,1,Puzhal
+114P,2,Nethaji circle
+114P,3,Retteri
+114P,4,Lucas
+114P,5,Thriumangalam
+114P,6,Padiyanallur
+12B xt,0,Koyambed u Market
+12B xt,1,CMBT
+12B xt,2,MMDA Colony
+12B xt,3,Vadapalani
+12B xt,4,Kodambakkam
+12B xt,5,Pondy Bazaar
+12B xt,6,Alwarpet
+12B xt,7,Luz
+12B xt,8,Santhome
+12B xt,9,Foreshore Estate
+15F cut,0,Koyambed u Market
+15F cut,1,CMBT
+15F cut,2,Amijikarai
+15F cut,3,KMC
+15F cut,4,Dasaprakash
+15F cut,5,Central R.S
+15F cut,6,Broadway
+114 cut,0,Koyambed u Market
+114 cut,1,Puzhal
+114 cut,2,Nethaji Circle(byepass)
+114 cut,3,Retteri
+114 cut,4,Thirumangalam
+114 cut,5,Red Hills
+159C,0,Koyambed u Market
+159C,1,Tollgate
+159C,2,Tondiarpet
+159C,3,V.Nagar
+159C,4,Regal
+159C,5,Choolai P.O.
+159C,6,Purasawakkam High Road
+159C,7,Kellys
+159C,8,Aminjikarai
+159C,9,Arumbakkam
+159C,10,Thiruvottiyur
+88C,0,Kundrathur
+88C,1,Koovoor
+88C,2,Periyapannicherry
+88C,3,Baikadai
+88C,4,Porur
+88C,5,Guindy
+88C,6,Saidapet
+88C,7,DMS
+88C,8,TVS
+88C,9,Central R.S
+88C,10,High Court
+88C cut,0,Kundrathur
+88C cut,1,Sirukalathur
+88C cut,2,Kundrathur B.S
+88C cut,3,Koovoor
+88C cut,4,Periyapannicherry
+88C cut,5,Baikadai
+88C cut,6,Porur
+88C cut,7,Guindy
+88C cut,8,Saidapet
+88C cut,9,DMS
+88C cut,10,TVS
+88C cut,11,Central R.S
+88C cut,12,T.Nagar
+88D,0,Kundrathur
+88D,1,Koovoor
+88D,2,Periyapannicherry
+88D,3,Baikadai
+88D,4,Porur
+88D,5,Guindy
+88D,6,Saidapet
+88D,7,Srinivasa Theater
+88D,8,Saidapet West
+88E,0,Kundrathur
+88E,1,Koovoor
+88E,2,Periyapannicherry
+88E,3,Baikadai
+88E,4,Porur
+88E,5,Guindy
+88E,6,Ekkadttuthangal
+M88,0,Kundrathur
+M88,1,Porur
+M88,2,Vadapalani
+188C,0,Kundrathur
+188C,1,Koovoor
+188C,2,Periyapannicherry
+188C,3,Kolapakkam
+188C,4,Manapakkam
+188C,5,Nandambakkam
+188C,6,Butt road
+188C,7,Kathipara
+188C,8,GuindyI.E
+188C,9,Little Mount
+188C,10,Saidapet
+188C,11,DMS
+188C,12,LIC
+188C,13,Central Railway Station
+188C,14,High Court
+566,0,Kundrathur
+566,1,Anakaputhur
+566,2,Pammal
+566,3,Pallavaram
+566,4,Chromepet
+566,5,Tambaram Sanatorium
+566,6,Tambaram
+566,7,Vandalur
+566,8,Kandigai
+566,9,Mambakkam
+566,10,Pudhupakkam
+566,11,Chettinad Hospital
+566,12,Kelambakkam
+566,13,Thirupporur
+60E,0,Kundrathur
+60E,1,Andankuppam
+60E,2,Anakaputtur
+60E,3,Pallavaram
+60E,4,Guindy
+60E,5,Anna University
+60E,6,Adyar
+60E,7,Sathyastudio
+60E,8,MRC Nagar
+60E,9,Pattinapakkam
+60E,10,AIR
+60E,11,Kannagi Statue
+60E,12,Annasquare
+60E,13,Broadway
+66A,0,Kundrathur
+66A,1,Anakaputhur
+66A,2,Pammal
+66A,3,Pallavaram
+66A,4,Chromepet
+66A,5,Hasthinapuram
+578,0,Kundrathur
+578,1,Mangadu
+578,2,Kumananchavadi
+578,3,Poonamallee
+578,4,Chembarambakkam
+578,5,Irrungattukottai
+578,6,Sriperumbudur
+60A,0,Kundrathur Murugan Temple
+60A,1,Kundrathur
+60A,2,Andankuppam
+60A,3,Anakaputhur
+60A,4,Pammal
+60A,5,Pallavaram
+60A,6,Guindy
+60A,7,Little Mount
+60A,8,Saidapet
+60A,9,Teynampet
+60A,10,DMS
+60A,11,TVS
+60A,12,Simpson
+60A,13,Central R.S
+60A,14,High Court
+T553,0,Kunnam
+T553,1,Kumananchavadi
+T553,2,Poonamallee
+T553,3,Irrungattukottai
+T553,4,Sriperumbudur
+T553,5,Sung uvarchatiram
+T553,6,Thiruverkadu
+54G,0,Kuthambak kam
+54G,1,Vellavedu
+54G,2,Thirumazhisai
+54G,3,Poonamallee
+54G,4,Porur
+54G,5,Guindy
+54G,6,DMS
+54G,7,TVS
+54G,8,LIC
+54G,9,Central R.S
+54G,10,Broadway
+11A xt,0,M.K.B Nagar East
+11A xt,1,Annasalai
+11A xt,2,Central R.S
+11A xt,3,Parry's Corner
+11A xt,4,Stanley Hospital
+11A xt,5,Vallalar nagar
+11A xt,6,Vysarpadi
+11A xt,7,T.Nagar
+37E,0,M.K.B Nagar
+37E,1,Vysarpadi
+37E,2,V Nagar
+37E,3,Regal
+37E,4,Choolai P.O.
+37E,5,Purasaiwakkam
+37E,6,Egmore
+37E,7,DPI
+37E,8,Sterling Road
+37E,9,Valluvarkottam
+37E,10,Liberty
+37E,11,Vadapalani
+170S,0,MKB Nagar East
+170S,1,Sarma Nagar
+170S,2,Moolakadai
+170S,3,Retteri
+170S,4,Thirumangalam
+170S,5,DMDK Office
+170S,6,CMBT
+2A,0,M.K.B Nagar
+2A,1,Vyasarpadi
+2A,2,Basin Bridge
+2A,3,Regal
+2A,4,Elephant gate
+2A,5,Central R.S
+2A,6,P R & sons
+2A,7,Walaja Road
+2A,8,Bells Road
+2A,9,Anna Square
+33,0,M.K.B Nagar
+33,1,Vyasarpadi
+33,2,Basin Bridge
+33,3,Mint
+33,4,Mannadi
+33,5,Broadway
+29J,0,Madhavara m
+29J,1,Moolakadai
+29J,2,Perambur
+29J,3,Jamaliya
+29J,4,Otteri
+29J,5,KMC
+29J,6,Chetpet
+29J,7,Sterling Road/College Road
+29J,8,Gemini
+29J,9,Mylapore
+29J,10,Mandaveli
+38H,0,Madhavara m
+38H,1,Thapal Petti
+38H,2,Moolakadai
+38H,3,Sharma nagar
+38H,4,Vyasarpadi
+38H,5,Basin Bridge
+38H,6,Mint
+38H,7,Stanley
+38H,8,Beach R.S
+38H,9,Broadway
+38J,0,Madhavara m
+38J,1,Thapal Petti
+38J,2,Moolakadai
+38J,3,Sharma nagar
+38J,4,Vyasarpadi
+38J,5,Basin Bridge
+38J,6,Mint
+38J,7,Stanley
+38J,8,Beach R.S
+38J,9,Broadway
+38J,10,Central
+38J,11,LIC
+38J,12,TVS
+38J,13,DMS
+38J,14,Panagal Park
+38J,15,T.Nagar
+48A,0,Madhavara m
+48A,1,Moolakadai
+48A,2,Perambur
+48A,3,Ayanavaram
+48A,4,ICF
+48A,5,Villivakkam
+48A,6,Padi
+48A,7,Ambattur I.E
+162,0,Madhavara m
+162,1,Koyambedu Junction
+162,2,Mathuravoyal
+162,3,Kumananchavadi
+162,4,Karaiyanchavadi
+162,5,Poonamallee
+170A,0,Madhavara m
+170A,1,Thapal petti
+170A,2,Moolakadai
+170A,3,Retteri
+170A,4,Thirumangalam
+170A,5,CMBT
+170A,6,Vadapalani
+170A,7,Guindy
+170A,8,Pallavaram
+170A,9,Tambaram
+170A,10,Vandalur Zoo
+56T,0,Madhavara m
+56T,1,MFL
+56T,2,Tiruvottiyur
+56W,0,Madhavara m
+56W,1,Tondiarpet
+56W,2,Thiruvottriyur
+56W,3,MFL
+56W,4,V Nagar
+147,0,Madhavara m
+147,1,Moolakadai
+147,2,Retteri
+147,3,Thirumangalam
+147,4,Rountana
+147,5,Loyola College
+147,6,Mahalingapuram
+147,7,Panagal park
+147,8,T.Nagar
+588,0,Mamallapu ram
+588,1,Thiruvanmiyur
+588,2,Injambakkam
+588,3,Kovalam
+588,4,Thiruvedanthai
+588,5,Vadanemili
+588,6,Adyar
+588B,0,Mamallapu ram
+588B,1,Marina Beach
+588B,2,Thiruvanmiyur
+588B,3,Injambakkam
+588B,4,Kovalam
+588B,5,Thiruvedanthai
+588B,6,Vadanemili
+588B,7,Broadway
+588C,0,Mamallapu ram
+588C,1,Vadapalani
+588C,2,Ashok Nagar
+588C,3,Guindy
+588C,4,Adyar
+588C,5,Thiruvanmiyur
+588C,6,Injambakkam
+588C,7,Kovalam
+588C,8,Thiruvedanthai
+588C,9,Vadanemili
+588C,10,CMBT
+589,0,Mamallapu ram
+589,1,Thiruvanmiyur
+589,2,Injambakkam
+589,3,Kovalam
+589,4,Thiruvedanthai
+589,5,Vadanemili
+589,6,Velachery
+515,0,Mamallapu ram
+515,1,Vandalur Zoo
+515,2,Kolapakkam
+515,3,Vengambakkam
+515,4,Rathinamangalam
+515,5,Kandigai
+515,6,Melkottaiyur
+515,7,Kilkottaiyur
+515,8,Mambakkam
+515,9,Pudhupakkam
+515,10,Kelambakkam
+515,11,Kalavakkam
+515,12,Thirupporur
+515,13,Thandalam
+515,14,Paiyanoor
+515,15,Tambaram
+568,0,Mamallapu ram
+568,1,Rajiv Gandhi Salai
+568,2,Adyar
+568C,0,Mamallapu ram
+568C,1,Rajiv Gandhi Salai
+568C,2,CMBT
+599,0,Mamallapu ram
+599,1,Saidapet
+599,2,Adyar
+599,3,Thiruvanmiyur
+599,4,Injambakkam
+599,5,Kovalam
+599,6,Thiruvedanthai
+599,7,Vadanemili
+599,8,T. Nagar
+44B,0,Manali New Town
+44B,1,Triplicane
+41D,0,Mandaveli
+41D,1,Ambattur OT
+41D,2,Korattur
+41D,3,Lucas
+41D,4,Thirumangalam
+41D,5,Amijikarai
+41D,6,KMC
+41D,7,Chetpet
+41D,8,Sterling road
+41D,9,Gemini
+41D,10,Teynampet
+41D,11,Nandanam
+41D,12,Adyar Gate
+41D,13,Avadi
+41D Cut,0,Mandaveli
+41D Cut,1,Thirumullaivoyal
+41D Cut,2,Ambattur OT
+41D Cut,3,Korattur
+41D Cut,4,Amijikarai
+41D Cut,5,KMC
+41D Cut,6,Chetpet
+41D Cut,7,Sterling road
+41D Cut,8,Gemini
+41D Cut,9,Teynampet
+41D Cut,10,Nandanam
+41D Cut,11,Senthil Nagar
+41F,0,Mandaveli
+41F,1,Luz
+41F,2,Gemini
+41F,3,Valluvar Kottam
+41F,4,Loyola College
+41F,5,Choolaimedu
+41F,6,Anna Arch
+41F,7,CMBT
+577,0,Mandaveli
+577,1,Singaperumal Koil
+577,2,Maraimalai Nagar IE
+577,3,Guduvancherry
+577,4,Vandalur Zoo
+577,5,Tambaram
+577,6,Pallavaram
+577,7,Guindy
+577,8,Adyar
+577,9,AMS
+577,10,Chengalpattu
+3A,0,Mandaveli
+3A,1,Mylapore
+3A,2,Luz
+3A,3,Alwarpet
+3A,4,Royapetah
+3A,5,L.I.C
+3A,6,Central
+3A,7,High Court
+21,0,Mandaveli
+21,1,Mylapore
+21,2,Luz
+21,3,Ajanta
+21,4,Express Avenue
+21,5,L.I.C
+21,6,Simpson
+21,7,Central
+21,8,Broadway
+29,0,Mandaveli
+29,1,Kolahur
+29,2,Agaram
+29,3,Venus
+29,4,Ptaaalam
+29,5,Doveton
+29,6,Egmore
+29,7,L.I.C
+29,8,Royapettah
+29,9,Luz
+29,10,Mylapore
+29,11,Vinayagapuram
+29J,0,Mandaveli
+29J,1,Moolakadai
+29J,2,Perambur
+29J,3,Jamaliya
+29J,4,Otteri
+29J,5,KMC
+29J,6,Chetpet
+29J,7,Sterling Road/College Road
+29J,8,Gemini
+29J,9,Mylapore
+29J,10,Madhavaram
+54F,0,Mandaveli
+54F,1,Kumananchavadi
+54F,2,Iyyapanthangal
+54F,3,Porur
+54F,4,Guindy
+54F,5,Adayar
+54F,6,Poonamallee
+E18 xt,0,Maraimalai nagar
+E18 xt,1,LIC
+E18 xt,2,TVS
+E18 xt,3,Saidapet
+E18 xt,4,Guindy
+E18 xt,5,Pallavaram
+E18 xt,6,Tambaram
+E18 xt,7,Vandalur Zoo
+E18 xt,8,Guduvanchery
+E18 xt,9,High Court
+G18 xt,0,Maraimalai nagar
+G18 xt,1,Saidapet
+G18 xt,2,Guindy
+G18 xt,3,Pallavaram
+G18 xt,4,Chromepet
+G18 xt,5,Tambaram
+G18 xt,6,Vandalur Zoo
+G18 xt,7,Guduvanchery
+G18 xt,8,T.Nagar
+552,0,Maraimalai Nagar
+552,1,Guindy
+552,2,Velachery
+118,0,Maraimalai Nagar I.E
+118,1,Irumbuliyur
+118,2,Perugalathur
+118,3,Vandalur Gate
+118,4,Vandalur Zoo
+118,5,Oorapakkam School
+118,6,Oorapakkam Tea shop
+118,7,Guduvanchery
+118,8,SRM University
+118,9,Tambaram
+29C xt,0,Mathur MMDA
+29C xt,1,Madhavaram Milk colony
+29C xt,2,Thapal petti
+29C xt,3,Moolakadai
+29C xt,4,Perambur
+29C xt,5,Thiruvanmiyur
+29D,0,Mathur MMDA
+29D,1,Madhavaram Milk colony
+29D,2,Thapal petti
+29D,3,Moolakadai
+29D,4,Perambur
+29D,5,Otteri
+29D,6,Devoton
+29D,7,Egmore
+29D,8,Pudhupet
+29D,9,Walaja Road
+29D,10,V House
+38A,0,Mathur MMDA
+38A,1,Broadway
+162A,0,Mathur MMDA
+162A,1,Puzhal
+162A,2,Avadi
+270J,0,Mathur
+270J,1,Thirumangalam
+270J,2,Madhavaram
+270J,3,CMBT
+147T,0,Mathur MMDA
+147T,1,Madhavaram
+147T,2,Moolakadai
+147T,3,Retteri
+147T,4,Thirumangalam
+147T,5,Rountana
+147T,6,Loyola College
+147T,7,Mahalingapuram
+147T,8,Panagal park
+147T,9,T.Nagar
+H70,0,Menambed u
+H70,1,Ambattur OT
+H70,2,CMBT
+L70,0,Menambed u
+L70,1,Korattur
+L70,2,CMBT
+L70,3,Vadapalani
+L70,4,Udhayam Theater
+L70,5,Tambaram
+40,0,Meenambe du
+40,1,Triplicane
+40,2,Pudhupet
+40,3,Egmore
+40,4,Dasaprakash
+40,5,Taylors road
+40,6,ICF
+40,7,Nathamuni
+40,8,Lucas
+40,9,Ambathur IE
+40,10,Ambathur OT
+40,11,Venkatapuram
+40,12,Anna Square
+64P,0,Minjur
+64P,1,Napalayam
+64P,2,Manali new town
+64P,3,MFL
+64P,4,CPCL
+64P,5,Manali
+64P,6,Madhavaram Milk colony
+64P,7,Moolakadai
+64P,8,Perambur
+56P,0,Minjur Ne w Bus Stand
+56P,1,V. Nagar
+56P,2,TONDAIAYRPET
+56P,3,THIRUVETRIYUR B.S
+56P,4,SATHIYAMOORTHY NAGAR
+56P,5,NAPALAYAM
+56P,6,Minjur B.D.O
+56P,7,Broadway
+M64B,0,Minjur
+M64B,1,Napalayam
+M64B,2,Manali New Town
+M64B,3,MFL
+M64B,4,CPCL
+M64B,5,Manali
+M64B,6,Madhavaram Milk colony
+M64B,7,Moolakadai
+M64B,8,Perambur market
+M64B,9,Pulianthope
+M64B,10,Doveton
+M64B,11,Central R.S
+M64B,12,Broadway
+558A,0,Minjur
+558A,1,Karanodai
+558A,2,RedHills
+558L,0,Minjur
+558L,1,Redhills
+558L,2,Karanodai
+558L,3,Ponneri
+558L,4,CMBT
+558M,0,Minjur N.T.
+558M,1,Red Hills
+70W,0,Mugappair West
+70W,1,Wavin
+70W,2,Collector Nagar
+70W,3,CMBT
+70W,4,Vadapalani
+70W,5,Ashok Pillar
+70W,6,Guindy
+70W,7,Velachery
+J70,0,Mogappair West
+J70,1,Collector Nagar
+J70,2,CMBT
+J70,3,Vadapalani
+J70,4,Udhayam Theater
+J70,5,Guindy I.E
+558B,0,Moolakadai
+558B,1,Madhavaram
+558B,2,Redhills
+558B,3,Karanodai
+558B,4,Ponneri
+558B,5,Kanchivoyal
+558B,6,Thirupalaivanam
+558B,7,Perliyambakkam
+558B,8,Pulicut
+558B,9,Pazhaverkadu
+5K,0,Mylapore
+5K,1,Taramani
+M15,0,Mylapore
+M15,1,Adyar
+M15,2,Thiruvanmiyur
+M15,3,SRP Tools
+M15,4,Velachery
+M15,5,Pallikaranai
+M15,6,Medavakkam
+M15 xt,0,Mylapore
+M15 xt,1,Adyar
+M15 xt,2,Thiruvanmiyur
+M15 xt,3,SRP Tools
+M15 xt,4,Velachery
+M15 xt,5,Pallikaranai
+M15 xt,6,Medavakkam
+M15 xt,7,Camp Road
+M15 xt,8,Tambaram East
+5B,0,Mylapore
+5B,1,Saidapet
+5B,2,Anna University
+5B,3,Adyar
+5B,4,Sathyastudio
+5B,5,Mandaveli
+5B,6,T. Nagar
+12C,0,Mylapore
+12C,1,Vadapalani
+12C,2,Rangarajapuram
+12C,3,Panagal Park
+12C,4,S.I.E.T
+12C,5,Adyar Gate
+12C,6,Mandaveli
+12C,7,Saligramam
+M14,0,N.G.O Colony B.S
+M14,1,Adambakkam
+M14,2,Vanuvampet
+M14,3,Ullagaram
+M14,4,Puzhithivakkam
+M14,5,Madipakkam Koot rd
+M14,6,Ganesh Nagar
+M14,7,Kilkattalai
+M14,8,Kovilambakkam
+M14,9,Vadakkupet
+M14,10,Vellaikal
+M14,11,Bell Nagar
+M14,12,Medavakkam
+M14,13,Medavakkam Junction
+52S,0,Nemilicheri
+52S,1,Chromepet
+52S,2,Pallavaram
+52S,3,Pozhichalur
+52E,0,Nemilicheri
+52E,1,Chromepet
+52E,2,Pallavaram
+52E,3,Guindy
+52E,4,Saidapet
+52E,5,DMS
+52E,6,TVS
+52E,7,LIC
+52E,8,Central RS
+52E,9,High Court
+52F,0,Nemilicheri
+52F,1,Chromepet
+52F,2,Pallavaram
+52F,3,Guindy
+52F,4,Saidapet
+52F,5,T.Nagar
+T51S,0,Okkiam Thoraippak kam
+T51S,1,Vandalur
+T51S,2,Tambaram East
+T51S,3,Camp Road
+T51S,4,Medavakkam
+T51S,5,Sholinganallur
+T51S,6,Guduvanchery
+19C,0,Okkiam Thorapakka m
+19C,1,Saidapet
+19C,2,Madhya Kailash
+19C,3,Tidel park
+19C,4,SRP Tools
+19C,5,Perugudi
+19C,6,T. Nagar
+129,0,Okkium Thoraipakk am
+129,1,Perungudi
+129,2,Tidel Park
+129,3,Saidapet
+129,4,Gemini
+129,5,LIC
+129,6,KMC
+129,7,SHIVASHANMUGAPURAM
+129,8,Perambur
+79K,0,Oragadam
+79K,1,Padappai
+79K,2,Mudichur
+79K,3,West Tambaram
+79K,4,East Tambaram
+79K,5,Camp Road
+79K,6,Kamarajapuram
+79K,7,Medavakkam Koot Road
+79K,8,Kovilambakkam
+79K,9,Keelkattalai
+20C,0,Oragadam
+20C,1,Purasaiwakkam
+20C,2,Villivakkam
+20C,3,Nadhamuni
+20C,4,Padi
+20C,5,Ambattur I.E
+20C,6,Dunlop
+20C,7,Ambattur OT
+20C,8,Broadway
+27R,0,Oragadam
+27R,1,Triplicane
+27R,2,LIC
+27R,3,DPI
+27R,4,Sterling Road
+27R,5,Choolaimedu
+27R,6,Anna Arch
+27R,7,Thirumangalam
+27R,8,Vavin
+27R,9,Ambattur I.E
+27R,10,Ambattur OT
+27R,11,Anna Square
+27T,0,Oragadam
+27T,1,Ambattur OT
+27T,2,Ambattur I.E
+27T,3,Collector Nagar
+27T,4,CMBT
+27T,5,Vadapalani
+27T,6,Liberty
+27T,7,Bharathi nagar
+27T,8,Panagal park
+27T,9,T.Nagar
+248xt,0,Oragadam
+248xt,1,Ambattur
+248xt,2,Ambattur IE
+248xt,3,Padi
+248xt,4,Lucas TVS
+248xt,5,ICF
+248xt,6,Joint Office
+248xt,7,Otteri
+248xt,8,Basin Bridge
+248xt,9,V Nagar
+M79,0,Padappai
+M79,1,Samthuvapuram
+M79,2,Karasangal
+M79,3,Mannivakkam
+M79,4,Mudichur
+M79,5,Old Perugalathur
+M79,6,Tambaram
+M79,7,Chromepet
+M79,8,Pallavaram
+M79,9,Meenambakkam
+M79,10,Asharkana
+M79,11,Guindy
+M79,12,Little mount
+M79,13,Saidapet
+M79,14,T.Nagar
+80,0,Padappai
+80,1,Manimangalam
+80,2,Tambaram
+510,0,Padappai
+510,1,Karasangal
+510,2,Mudichur
+510,3,Tambaram
+510,4,Pallavaram
+510,5,Ashok Pillar
+510,6,CMBT
+555P,0,Padappai
+555P,1,Karasangal
+555P,2,Vandalur
+555P,3,Mambakkam
+555P,4,Kelambakkam
+579,0,Padappai
+579,1,Karasangal
+579,2,Mudichur
+579,3,Tambaram
+579,4,Pallavaram
+579,5,Guindy
+579,6,Saidapet
+579,7,LIC
+579,8,Broadway
+579V,0,Padappai
+579V,1,Mudichur
+579V,2,Tambaram
+579V,3,Chromepet
+579V,4,Eachangadu
+579V,5,Kilkattalai
+579V,6,Madipakkam
+579V,7,Ram Nagar
+579V,8,Velachery
+114T,0,Padiyanallu r
+114T,1,Panagal park
+114T,2,Liberty
+114T,3,Power house
+114T,4,Vadapalani Koil
+114T,5,Vadapalani
+114T,6,CMBT
+114T,7,Thirumangalam
+114T,8,Anna nagar west
+114T,9,Kolathur
+114T,10,Retteri
+114T,11,Puzhal
+114T,12,Kavangarai
+114T,13,Ayurveda Ashramam
+114T,14,Red Hills
+114T,15,T.Nagar
+242xt,0,Padiyanallu r
+242xt,1,Perambur
+242xt,2,Central R.S
+242xt,3,Broadway
+T242,0,Padiyanallu r
+T242,1,Puzhal
+T242,2,Retteri
+T242,3,Kolathur
+T242,4,Perambur
+T242,5,Doveton
+T242,6,Vepery
+T242,7,Central R.S
+T242,8,Broadway
+T242,9,Marina
+T242,10,Santhome
+T242,11,Adyar
+T242,12,Thiruvanmiyur
+A57,0,Padiyanallu r
+A57,1,Beach R.S
+A57,2,Stanley
+A57,3,Mint
+A57,4,Basin Bridge
+A57,5,Vyasarpadi
+A57,6,Moolakadai
+A57,7,Puzhal
+A57,8,Red hills
+A57,9,High Court
+62xt,0,Padiyanallu r
+62xt,1,Karayan chavadi
+62xt,2,Seeneerkuppam
+62xt,3,Goverdhangiri
+62xt,4,Avadi Market
+62xt,5,Avadi
+62xt,6,Thirumullaivoyal
+62xt,7,Ambathur OT
+62xt,8,Pudur
+62xt,9,Kallikuppam
+62xt,10,Puzhal
+62xt,11,Bypass road
+62xt,12,Kavangarai
+62xt,13,Ayurveda Ashramam
+62xt,14,Red Hills
+62xt,15,Poonamallee
+C70xt,0,Padiyanallu r
+C70xt,1,Ashok nagar
+C70xt,2,Vadapalani
+C70xt,3,CMBT
+C70xt,4,Thirumangalam
+C70xt,5,Anna nagar west
+C70xt,6,Padi
+C70xt,7,Thathankuppam
+C70xt,8,Kolathur
+C70xt,9,Retteri
+C70xt,10,Puzhal
+C70xt,11,Kavangarai
+C70xt,12,Ayurveda Ashramam
+C70xt,13,Red Hills
+C70xt,14,Guindy Estate
+114P,0,Padiyanallu r
+114P,1,Puzhal
+114P,2,Nethaji circle
+114P,3,Retteri
+114P,4,Lucas
+114P,5,Thriumangalam
+114P,6,Koyambedu Market
+52T,0,Pallavaram
+52T,1,Chromepet
+52T,2,Hasthinapuram
+52T,3,Thirumalai Nagar
+55A,0,Pallavaram
+55A,1,Nagalkeni
+55A,2,Thiruneermalai
+55A,3,Thirumudivakkam
+55A,4,Pazhanthandala m
+517,0,Pallavaram
+517,1,Chromepet
+517,2,Tambaram Sanatorium
+517,3,Tambaram
+517,4,Vandalur
+517,5,Kandigai
+517,6,Mambakkam
+517,7,Pudhupakkam
+517,8,Chettinad Hospital
+517,9,Kelambakkam
+517,10,Kovalam
+517,11,Thiruvidanthai
+517,12,Vadanemili
+517K,0,Pallavaram
+517K,1,Eachangadu
+517K,2,Kovilambakkam
+517K,3,Medavakkam Koot Road
+517K,4,Sholinganallur
+517K,5,Kelambakkam
+517K,6,Kovalam
+517T,0,Pallavaram
+517T,1,Eachangadu
+517T,2,Kovilambakkam
+517T,3,Medavakkam Koot Road
+517T,4,Sholinganallur
+517T,5,Kelambakkam
+517T,6,Thirupporur
+583E,0,Pallavaram
+583E,1,Tambaram
+583E,2,Mudichur
+583E,3,Padappai
+583E,4,Serapanancherri
+583E,5,Oragadam
+583E,6,Maathur
+583E,7,Vallakkottai
+R21,0,Pallavaram
+R21,1,Eachangadu
+R21,2,Kilkattalai
+R21,3,Velachery
+R21,4,SRP
+R21,5,Adayar
+R21,6,Foreshore Estate
+R21,7,Anna Square
+R21,8,Broadway
+A70,0,Pallavaram
+A70,1,Ambattur
+A70,2,Padi
+A70,3,Thirumangalam
+A70,4,CMBT
+A70,5,Vadapalani
+A70,6,Ashok Pillar
+A70,7,Kathipara
+A70,8,Chennai Airport
+A70,9,Avadi
+53S,0,Pattabiram
+53S,1,Thiruverkadu
+53S,2,Sundaransozhapuram
+53S,3,Mettupalayam
+53S,4,Thandarai
+53S,5,CMBT
+66P,0,Pattabiram
+66P,1,Pallavaram
+66P,2,Kundrathur
+66P,3,Poonamallee
+66P,4,Parivakkam
+66P,5,Chittukadu
+66P,6,Thandarai
+66P,7,Tambaram
+F70,0,Pattabiram
+F70,1,Avadi
+F70,2,Ambattur I.E
+F70,3,Lucas
+F70,4,Anna Nagar West
+F70,5,Koyambedu market
+F70,6,CMBT
+F70,7,Vadapalani
+F70,8,West Saidapet
+F70,9,Guindy TVK Estate
+121E,0,Pattabiram
+121E,1,Vyasarpadi
+121E,2,Moolakadai
+121E,3,TVK Nagar
+121E,4,Retteri
+121E,5,Lucas
+121E,6,Ambattur
+121E,7,Avadi
+121E,8,M.K.B Nagar
+M153,0,Pattabiram
+M153,1,Thandarai
+M153,2,Chittukadu
+M153,3,Thirumazhisai
+M153,4,P oonamallee
+M153,5,Kumananchavadi
+M153,6,Madura voyal
+M153,7,CMBT
+170P,0,Pattabiram
+170P,1,Avadi
+170P,2,Ambattur OT
+170P,3,Golden Flats
+170P,4,Thirumangalam
+170P,5,CMBT
+170P,6,Vadapalani
+170P,7,Pallavaram
+170P,8,Chromepet
+170P,9,Tambaram
+536,0,Pattabiram
+536,1,Avadi
+536,2,Ambattur O.T.
+536,3,Pudhur
+536,4,Puzhal
+536,5,Red Hills
+536,6,Ponneri
+565,0,Pattabiram
+565,1,Avadi
+565,2,Govardhanagiri
+565,3,Karaiyanchavadi
+565,4,Poonamallee
+565,5,Irrunkatturkottai
+565,6,Sriperumbudur
+27H xt,0,Pattabiram
+27H xt,1,Triplicane
+27H xt,2,LIC
+27H xt,3,DPI
+27H xt,4,Sterling Road
+27H xt,5,Anna Arch
+27H xt,6,Thirumangalam
+27H xt,7,Padi
+27H xt,8,Ambattur OT
+27H xt,9,Avadi
+27H xt,10,Anna Square
+34xt,0,Pattabiram
+34xt,1,Ambattur I.E
+34xt,2,Thirumangalam
+34xt,3,Rountana
+34xt,4,Chinthamani
+34xt,5,Kellys
+34xt,6,Purasaiwakkam
+34xt,7,Choolai P.O.
+34xt,8,Regal
+34xt,9,V.Nagar
+34xt,10,Tondiarpet
+34xt,11,Tollgate
+34xt,12,Therady
+34xt,13,Thiruvottiyur
+54C,0,Pattabiram
+54C,1,Parivakkam
+54C,2,Chittukadu
+54C,3,Thandarai
+54C,4,Poonamallee
+65P,0,Pattabiram
+65P,1,Ambattur OT
+65P,2,Avadi Market
+65P,3,Poonamallee
+65P,4,Thandurai
+65P,5,Ambattur I.E
+B70,0,Pattabiram
+B70,1,Avadi
+B70,2,Ambattur OT
+B70,3,Padi
+B70,4,CMBT
+B70,5,Vadapalani
+B70,6,Udhayam
+B70,7,CIPET
+B70,8,Guindy Estate
+566B,0,Pattur
+566B,1,Kundrathur
+566B,2,Anakaputhur
+566B,3,Pammal
+566B,4,Pallavaram
+566B,5,Chromepet
+566B,6,Tambaram Sanatorium
+566B,7,Tambaram
+566B,8,Perugalathur
+566B,9,Vandalur
+566B,10,Kandigai
+566B,11,Mambakkam
+566B,12,Pudhupakkam
+566B,13,Chettinad Hospital
+566B,14,Kelambakkam
+566B,15,Kovalam
+17P,0,Pattur
+17P,1,Mangadu
+17P,2,Porur
+17P,3,Virugambakkam
+17P,4,Vadapalani
+154,0,Pattur
+154,1,Mangadu
+154,2,Iyyapanthangal
+154,3,Porur
+154,4,Ramapuram
+154,5,St.Thomas Mount
+154,6,Guindy
+154,7,Saidapet
+154,8,T. Nagar
+595,0,Pazhaverka du
+595,1,Thiruvottriyur
+595,2,Sathyamoorthy nagar
+595,3,Minjur
+595,4,Kadapakkam
+595,5,Thathanmanji
+595,6,Perliyambakkam
+595,7,Pulicut
+595,8,Tollgate
+595A,0,Pazhaverka du
+595A,1,Sathyamoorthy nagar
+595A,2,Minjur
+595A,3,Kadapakkam
+595A,4,Thathanmanji
+595A,5,Perliyambakkam
+595A,6,Pulicut
+595A,7,Thiruvottiyur
+558B,0,Pazhaverka du
+558B,1,Madhavaram
+558B,2,Redhills
+558B,3,Karanodai
+558B,4,Ponneri
+558B,5,Kanchivoyal
+558B,6,Thirupalaivanam
+558B,7,Perliyambakkam
+558B,8,Pulicut
+558B,9,Moolakadai
+591,0,Perambakk am
+591,1,Guindy
+591,2,Porur
+591,3,Poonamallee
+591,4,Thandalam
+591,5,Mannur
+591,6,Kattukoot rd
+591,7,Mappedu
+591,8,Koovam
+591,9,T.Nagar
+591B,0,Perambakk am
+591B,1,Virugambakkam
+591B,2,Porur
+591B,3,Poonamallee
+591B,4,Thandalam
+591B,5,Mannur
+591B,6,Kattukoot rd
+591B,7,Mappedu
+591B,8,Vadapalani
+583B,0,Perambakk am
+583B,1,Old Perungalathur
+583B,2,Manimangalam
+583B,3,Sriperumbudur
+583B,4,Kattu Koot road
+583B,5,Meppedu
+583B,6,Koovam
+583B,7,Tambaram
+29A,0,Perambur
+29A,1,Otteri
+29A,2,Devoton
+29A,3,Egmore
+29A,4,Pudhupet
+29A,5,Walaja Road
+29A,6,Bells Road
+29A,7,Triplicane
+29A,8,Anna Square
+29B,0,Perambur
+29B,1,Otteri
+29B,2,Doveton
+29B,3,KMC
+29B,4,Chetpet
+29B,5,Sterling Road/College Road
+29B,6,Gemini
+29B,7,DMS
+29B,8,T.Nagar
+29B,9,Saidapet
+29C,0,Perambur
+29C,1,Jamaliya
+29C,2,Otteri
+29C,3,KMC
+29C,4,Chetpet
+29C,5,Sterling Road/College Road
+29C,6,Gemini
+29C,7,Mylapore
+29C,8,Mandaveli
+29C,9,Adyar
+29C,10,Besant Nagar/Thiruva nmiyur
+29E,0,Perambur
+29E,1,Otteri
+29E,2,Purasawakkam High Road
+29E,3,Kellys
+29E,4,Aminjikarai
+29E,5,Koyambedu
+29E,6,Nerkundram
+29E,7,Maduravoyal
+29E,8,Velappanchavadi
+29E,9,Thiruverkadu
+129,0,Perambur
+129,1,Perungudi
+129,2,Tidel Park
+129,3,Saidapet
+129,4,Gemini
+129,5,LIC
+129,6,KMC
+129,7,SHIVASHANMUGAPURAM
+129,8,Okkium Thoraipakkam
+129C,0,Perambur
+129C,1,T.Nagar
+129C,2,Sterling Road
+129C,3,Chetpet
+129C,4,Otteri
+129C,5,Nanganallur
+142,0,Perambur
+142,1,Vinayagapuram
+29N,0,Perambur
+29N,1,Saidapet
+29N,2,T. Nagar
+29N,3,DMS
+29N,4,Gemini
+29N,5,Sterling Road/College Road
+29N,6,KMC
+29N,7,Velachery
+64P,0,Perambur
+64P,1,Napalayam
+64P,2,Manali new town
+64P,3,MFL
+64P,4,CPCL
+64P,5,Manali
+64P,6,Madhavaram Milk
+64P,7,Minjur
+164,0,Perambur
+164,1,Madhavaram Milk colony
+164,2,Thapal petti
+164,3,Moolakadai
+164,4,Mathur MMDA
+170N,0,Perambur
+170N,1,Nanganallur
+170N,2,Guindy
+170N,3,Udhayam
+170N,4,Vadapalani
+170N,5,CMBT
+170N,6,Thirumangalam
+170N,7,Retteri
+170N,8,Venus
+170N,9,Kilkattalai
+514,0,Periyapalay am
+514,1,Lucas
+514,2,Puzhal
+514,3,Red Hills
+514,4,Karanodai
+514,5,Janappan chathram x road
+514,6,Bandikavanoor
+514,7,Kannigaipair
+514,8,CMBT
+505A,0,Periyapalay am
+505A,1,Vadamadurai
+505A,2,Vengal
+505A,3,Tamaraipakkam
+505A,4,Vishnuvakkam
+505A,5,Moolakarai
+505A,6,Ekkadu Kandigai
+505A,7,Thiruvallur
+505P,0,Periyapalay am
+505P,1,Alamadhi
+505P,2,Tamaraipakkam
+505P,3,Vengal
+505P,4,Vadamadurai
+505P,5,Red Hills
+532,0,Periyapalay am
+532,1,Basin Bridge
+532,2,Vyasarpadi
+532,3,Moolakadai
+532,4,Puzhal
+532,5,Red Hills
+532,6,Karanodai
+532,7,Arani
+532,8,Vallalar Nagar
+547,0,Periyapalay am
+547,1,Basin Bridge
+547,2,Vyasarpadi
+547,3,Moolakadai
+547,4,Puzhal
+547,5,Red Hills
+547,6,Karanodai
+547,7,Siruvapuri
+547,8,V Nagar
+547A,0,Periyapalay am
+547A,1,Basin Bridge
+547A,2,Vyasarpadi
+547A,3,Moolakadai
+547A,4,Puzhal
+547A,5,Red Hills
+547A,6,Karanodai
+547A,7,Akarambakkam
+547A,8,Arani
+547A,9,Kosavampettai
+547A,10,V Nagar
+563,0,Periyapalay am
+563,1,Ambattur OT
+563,2,Avadi
+563,3,Pattabiram
+563,4,Ambattur I.E
+580P,0,Periyapalay am
+580P,1,Thirumazhisai
+580P,2,Vellavedu
+580P,3,Pudhuchatiram
+580P,4,Periyakottambedu
+580P,5,Kosavapalayam
+580P,6,Thiruninravur
+580P,7,Pakkam
+580P,8,Tamaraipakkam
+580P,9,Vadamadurai
+580P,10,Poonamallee
+592G,0,Periyapalay am
+592G,1,Basin Bridge
+592G,2,Vyasarpadi
+592G,3,Moolakadai
+592G,4,Puzhal
+592G,5,Red Hills
+592G,6,Karanodai
+592G,7,Pandy Kavanoor Rd JN
+592G,8,Kannigaipair
+592G,9,V Nagar
+29L,0,Periyar Nagar
+29L,1,Egmore
+29L,2,Teynampet
+29L,3,Saidapet
+29L,4,Adyar
+29L,5,Thiruvanmiyur
+8A,0,Periyar Nagar
+8A,1,Tondiarpet
+8A,2,V.Nagar
+8A,3,Regal
+8A,4,Choolai P.O
+8A,5,Otteri
+8A,6,Jamalaya
+8A,7,Venus
+8A,8,Tollgate
+B29N,0,Periyar nagar
+B29N,1,Saidapet
+B29N,2,T. Nagar
+B29N,3,DMS
+B29N,4,Gemini
+B29N,5,Sterling Road/College Road
+B29N,6,KMC
+B29N,7,Doveton
+B29N,8,Perambur
+B29N,9,Venus
+B29N,10,Velachery
+42,0,Periyar Nagar
+42,1,Central R.S
+42,2,Periamet
+42,3,Natarajatheatre
+42,4,Pulianthope
+42,5,Pattalam
+42,6,Kannigapuram
+42,7,Perambur B.S
+42,8,Venus
+42,9,Peravallur
+42,10,Broadway
+46B,0,Periyar Nagar
+46B,1,Perambur
+46B,2,Ayanavaram
+46B,3,ICF
+46B,4,Anna Nagar East
+46B,5,Arumbakkam
+46B,6,CMBT
+138A,0,Periyar Nagar
+138A,1,Tondiarpet
+138A,2,Mint
+138A,3,Basin Bridge
+138A,4,Vyasarpadi
+138A,5,Moolakadai
+138A,6,TVK Nagar
+138A,7,Thiruvottiyur
+170G,0,Periyar Nagar
+170G,1,Tambaram
+583P,0,Pondhur
+583P,1,Serapanancherri
+583P,2,Padappai
+583P,3,Mannivakkam
+583P,4,Mudichur
+583P,5,Tambaram
+49A,0,Poonamalle e
+49A,1,Kumananchavadi
+49A,2,Porur
+49A,3,K.K. Nagar
+49A,4,Ashok Pillar
+49A,5,T.Nagar
+49B,0,Poonamalle e
+49B,1,Kumananchavadi
+49B,2,Mangadu
+49B,3,Porur
+49B,4,K.K. Nagar
+49B,5,Ashok Pillar
+49B,6,T.Nagar
+54,0,Poonamalle e
+54,1,Kumananchavadi
+54,2,Porur
+54,3,Guindy
+54,4,DMS
+54,5,TVS
+54,6,LIC
+54,7,Central R.S
+54,8,Broadway
+54A,0,Poonamalle e
+54A,1,Thirumazhisai
+54A,2,Vellavedu
+54A,3,Pudhuchatiram
+54A,4,Periyakottambedu
+54A,5,Kosavapalayam
+54A,6,Thirunindravur
+54C,0,Poonamalle e
+54C,1,Parivakkam
+54C,2,Chittukadu
+54C,3,Thandarai
+54C,4,Pattabiram
+54F,0,Poonamalle e
+54F,1,Kumananchavadi
+54F,2,Iyyapanthangal
+54F,3,Porur
+54F,4,Guindy
+54F,5,Adayar
+54F,6,Mandaveli
+54P,0,Poonamalle e
+54P,1,Kumanan chavadi
+54P,2,Mangadu
+54P,3,Paraniputhur
+54P,4,Baikadai
+54P,5,Moulivakkam
+54P,6,Porur
+54P,7,Guindy
+54P,8,Saidapet
+54P,9,T.Nagar
+F54,0,Poonamalle e
+F54,1,Kumananchavadi
+F54,2,Iyyapanthangal
+F54,3,Porur
+F54,4,Guindy
+F54,5,Kotturpuram
+F54,6,Adyar Gate
+F54,7,Mandaveli
+62,0,Poonamalle e
+62,1,Karayan chavadi
+62,2,Seeneerkuppam
+62,3,Goverdhangiri
+62,4,Avadi Market
+62,5,Avadi
+62,6,Thirumullaivoyal
+62,7,Ambathur OT
+62,8,Pudur
+62,9,Kallikuppam
+62,10,Puzhal
+62,11,Bypass road
+62,12,Kavangarai
+62,13,Ayurveda Ashramam
+62,14,Red Hills
+62xt,0,Poonamalle e
+62xt,1,Karayan chavadi
+62xt,2,Seeneerkuppam
+62xt,3,Goverdhangiri
+62xt,4,Avadi Market
+62xt,5,Avadi
+62xt,6,Thirumullaivoyal
+62xt,7,Ambathur OT
+62xt,8,Pudur
+62xt,9,Kallikuppam
+62xt,10,Puzhal
+62xt,11,Bypass road
+62xt,12,Kavangarai
+62xt,13,Ayurveda Ashramam
+62xt,14,Red Hills
+62xt,15,Padiyanallur
+65V,0,Poonamalle e
+65V,1,Nadhamuni
+65V,2,Padi
+65V,3,Ambattur I.E
+65V,4,Ambattur OT
+65V,5,Avadi
+65V,6,Karaiyanchavadi
+65V,7,Villivakkam
+PP66,0,Poonamalle e
+PP66,1,Tambaram
+PP66,2,Chromepet
+PP66,3,Pallavaram
+PP66,4,Pammal
+PP66,5,Anakaputhur
+PP66,6,Kundrathur
+PP66,7,Mangadu
+PP66,8,Karaiyanchavadi
+PP66,9,Vandalur Zoo
+66,0,Poonamalle e
+66,1,MEPZ
+66,2,Chromepet
+66,3,Pallavaram
+66,4,Pammal
+66,5,Anakaputhur
+66,6,Kundrathur
+66,7,Mangadu
+66,8,Karaiyanchavadi
+66,9,Tambaram
+66S,0,Poonamalle e
+66S,1,Mettukuppam
+66S,2,Kamatchi Hospital
+66S,3,Echangadu
+66S,4,Pallavaram
+66S,5,Pammal
+66S,6,Anakaputhur
+66S,7,Kundrathur
+66S,8,Mangadu
+66S,9,Karaiyanchavadi
+66S,10,Sholinganallur
+154B,0,Poonamalle e
+154B,1,Kumanachavadi
+154B,2,Porur
+154B,3,Guindy
+154B,4,St.Thomas Mount
+154B,5,Vanuvampet
+154B,6,Nanganallur
+562B,0,Poonamalle e
+562B,1,Janappan chathram x Road
+562B,2,Karanodai
+562B,3,Red Hills
+562B,4,Puzhal
+562B,5,Ambattur OT
+562B,6,Avadi
+562B,7,Karaiyanchavadi
+562B,8,Ponneri
+578P,0,Poonamalle e
+578P,1,Chembarambakkam
+578P,2,Irunkattukottai
+578P,3,Pennalur EB
+578P,4,Sriperumbudur
+578P,5,Mambakkam
+578P,6,Vadamangalam
+578P,7,Thirumangalam
+578P,8,S.V.Chatiram
+578P,9,Maduramangalam Koot road
+578P,10,Pudhupattu
+578P,11,Elampakkam
+580P,0,Poonamalle e
+580P,1,Thirumazhisai
+580P,2,Vellavedu
+580P,3,Pudhuchatiram
+580P,4,Periyakottambedu
+580P,5,Kosavapalayam
+580P,6,Thiruninravur
+580P,7,Pakkam
+580P,8,Tamaraipakkam
+580P,9,Vadamadurai
+580P,10,Periyapalayam
+591C,0,Poonamalle e
+591C,1,Chembarambakkam
+591C,2,Chetipedu
+591C,3,Thandalam
+591C,4,Mannur
+591C,5,Kattukoot rd
+591C,6,Mappedu
+591C,7,Perambakkam
+591C,8,Narasinprm M Koil
+25G,0,Poonamalle e
+25G,1,Kannaki Statue
+25G,2,V.House
+25G,3,Royapettah
+25G,4,Palmgrove
+25G,5,Liberty
+25G,6,Vadapalani
+25G,7,Porur
+25G,8,Iyyapanthangal
+25G,9,Kumananchavadi
+25G,10,Anna Square
+53,0,Poonamalle e
+53,1,Kumananchavadi
+53,2,Mathruvayoil
+53,3,Arumbakkam
+53,4,Aminijikarai
+53,5,KMC
+53,6,Central R.S
+53,7,Broadway
+M54,0,Poonamalle e
+M54,1,Saidepet
+M54,2,Guindy
+M54,3,Porur
+M54,4,Iyyapanthangal
+M54,5,Kumananchavadi
+M54,6,T.Nagar
+55J,0,Poonamalle e
+55J,1,Kadapery
+55J,2,Thiruneermalai
+55J,3,Burma Colony
+55J,4,Vazhuthulapedu
+55J,5,Kundrathur Murugan koil
+55J,6,Kundrathur
+55J,7,Mangadu
+55J,8,Kumanan chavadi
+55J,9,Tambaram
+55K,0,Poonamalle e
+55K,1,Tambaram Sanatorium
+55K,2,Chromepet
+55K,3,Pallavaram
+55K,4,Pammal Kamarajapuram
+55K,5,Thiruneermalai
+55K,6,Kundrathur Murugan koil
+55K,7,Kundrathur
+55K,8,Mangadu
+55K,9,Kumanan chavadi
+55K,10,Tambaram
+65,0,Poonamalle e
+65,1,Govardhanagiri
+65,2,Mettupalayam
+65,3,Kaduveti
+65,4,Karaiyanchavadi
+65,5,Avadi
+65B,0,Poonamalle e
+65B,1,Karayan chavadi
+65B,2,Seeneerkuppam
+65B,3,Goverdhangiri
+65B,4,Avadi Market
+65B,5,Avadi
+65B,6,Thirumullaivoyal
+65B,7,Ambathur OT
+65B,8,Canara bank
+65B,9,Dunlop
+65B,10,AMBIT Park
+65B,11,Ambattur I.E
+65E,0,Poonamalle e
+65E,1,Ambattur OT
+65E,2,Avadi
+65E,3,Kamaraj Nagar
+65E,4,Karaiyanchavadi
+65E,5,Ambattur I.E
+65K,0,Poonamalle e
+65K,1,Govardhanagiri
+65K,2,Mettupalayam Rd JN
+65K,3,Parivakkam Rd JN
+65K,4,Kaduveti
+65K,5,Karaiyanchavadi
+65K,6,Avadi
+66K,0,Poonamalle e
+66K,1,Inchangadu
+66K,2,Pallavaram
+66K,3,Pammal
+66K,4,Anakaputhur
+66K,5,Kundrathur
+66K,6,Mangadu
+66K,7,Kumananchavadi
+66K,8,Karaiyanchavadi
+66K,9,Kilkattalai
+162,0,Poonamalle e
+162,1,Koyambedu Junction
+162,2,Mathuravoyal
+162,3,Kumananchavadi
+162,4,Karaiyanchavadi
+162,5,Madhavaram
+553K,0,Poonamalle e
+553K,1,Chembarambakkam
+553K,2,Thandalam Koot road
+553K,3,Irrungattukottai
+553K,4,Pennalur EB
+553K,5,Sriperumbudur
+54B,0,Porur
+54B,1,Moulivakkam
+54B,2,Baikadai
+54B,3,Periyapannicherry
+54B,4,Kolapakkam
+54B,5,Manapakkam
+54B,6,Nandambakkam
+54B,7,Butt road
+54B,8,Kathipara
+54B,9,Guindy I.E
+54B,10,Little Mount
+54B,11,Saidapet
+M89,0,Porur
+M89,1,Kundrathur
+M89,2,Somangalam
+52,0,Pozhichalur
+52,1,Pallavaram
+52,2,Guindy
+52,3,Saidapet
+52,4,DMS
+52,5,TVS
+52,6,LIC
+52,7,Central RS
+52,8,Broadway
+52H,0,Pozhichalur
+52H,1,Pallavaram
+52H,2,Chromepet
+52H,3,Tambaram
+52H,4,Mudichur
+52H,5,Mannivakkam
+52H,6,Karasangal
+52H,7,Manimangalam
+52J,0,Pozhichalur
+52J,1,Pallavaram
+52J,2,Chromepet
+52J,3,T.B.Sanatorium
+52J,4,Durga nagar
+M52,0,Pozhichalur
+M52,1,Pallavaram
+M52,2,Chromepet
+M52,3,Tambaram
+M52,4,Perungalathur
+M52,5,Vandalor Zoo
+M52,6,Guduvanchery
+M1P,0,Pozhichalur
+M1P,1,Velachery
+M1P,2,Kilkattalai
+M1P,3,Pallavaram
+M1P,4,Pammal
+M1P,5,Thiruvanmiyur
+52S,0,Pozhichalur
+52S,1,Chromepet
+52S,2,Pallavaram
+52S,3,Nemilicheri
+118P,0,Puzhuthiva kkam
+118P,1,Aadambakkam
+118P,2,Guindy
+118P,3,Pallavaram
+118P,4,Tambaram
+118P,5,Zoo
+118P,6,Guduvanchery
+51P,0,Puzhudiva kkam BS
+51P,1,Gunidy Race Course
+51P,2,High Court
+M270,0,Puzhuthiva kkam
+M270,1,Aadambakkam
+M270,2,Guindy
+M270,3,Udhayam
+M270,4,CMBT
+M270,5,Thirumangalam
+M270,6,Ambattur I.E
+554A,0,Puzhuthiva kkam
+554A,1,Guindy
+554A,2,Porur
+554A,3,Kumananchavadi
+554A,4,Poonamallee
+554A,5,Irrungattukottai
+554A,6,Sriperumbudur
+62A,0,Red Hills
+62A,1,Pudur
+62A,2,Ambattur I.E
+62C,0,Red Hills
+62C,1,Iyyapanthangal
+62C,2,Kattupakkam
+62C,3,Kumanan chavadi
+62C,4,Saveetha Engineering College
+62C,5,Ayapakkam
+62C,6,Ambathur OT
+62C,7,Pudur
+62C,8,Kallikuppam
+62C,9,Puzhal
+62C,10,Bypass road
+62C,11,Kavangarai
+62C,12,Ayurveda Ashramam
+62C,13,SRMC(Porur)
+114,0,Red Hills
+114,1,Tambaram
+114,2,Pallavaram
+114,3,Guindy
+114,4,Ashok nagar
+114,5,Vadapalani
+114,6,CMBT
+114,7,Thirumangalam
+114,8,Anna nagar west
+114,9,Padi
+114,10,Thathankuppam
+114,11,Kolathur
+114,12,Retteri
+114,13,Puzhal
+114,14,Kavangarai
+114,15,Ayurveda Ashramam
+114,16,Vandalur Zoo
+114A,0,Red Hills
+114A,1,Puzhal
+114A,2,Nethaji Circle(byepass)
+114A,3,Retteri
+114A,4,Lucas
+114A,5,ICF
+114A,6,Ayanavaram
+157E,0,Red Hills
+157E,1,Puzhal
+157E,2,Moolakadai
+157E,3,Sharma Nagar
+157E,4,M.K.B Nagar
+157E,5,Korukkupettai
+157E,6,Tondaripet
+157E,7,Tollgate
+157E,8,Theradi
+157E,9,Thiruvottiyur
+157E,10,Ennore
+M157,0,Red Hills
+M157,1,Puzhal
+M157,2,Moolakadai
+M157,3,Sharma Nagar
+M157,4,M.K.B Nagar
+M157,5,Korukkupettai
+M157,6,Tondaripet
+M157,7,Tollgate
+M157,8,Theradi
+M157,9,Thiruvottiyur
+242,0,Red Hills
+242,1,Central R.S
+242,2,Vepery
+242,3,Doveton
+242,4,Perambur
+242,5,Kolathur
+242,6,Puzhal
+242,7,Broadway
+242xt,0,Red Hills
+242xt,1,Anna Square
+505P,0,Red Hills
+505P,1,Alamadhi
+505P,2,Tamaraipakkam
+505P,3,Vengal
+505P,4,Vadamadurai
+505P,5,Periyapalayam
+557C,0,Red Hills
+557C,1,Karanodai
+557C,2,Thachur Koot Road
+557C,3,Puduvayal
+557C,4,Kavarapettai
+557C,5,Gummidipoondi R.S.
+557C,6,Elavur
+557C,7,Kuppam
+557C,8,Chinna Mangodu
+557C,9,Kallur
+557M,0,Red Hills
+557M,1,Karanodai
+557M,2,Thachur Koot Road
+557M,3,Puduvayal
+557M,4,Kavarapettai
+557M,5,Gummidipoondi
+557M,6,Equavarpalayam
+557M,7,Pathirivedu
+557M,8,Madarpakkam
+558M,0,Red Hills
+558M,1,Minjur N.T.
+562A,0,Red Hills
+562A,1,Puzhal
+562A,2,Pudur
+562A,3,Ambattur OT
+562A,4,Avadi
+562A,5,Karaiyanchavadi
+562A,6,Poonammallee
+562A,7,Irrunkatturkottai
+562A,8,Sriperumbudur
+592A,0,Red Hills
+592A,1,Karanodai
+592A,2,Thatchur Koot road
+592A,3,Kannigaipair
+592A,4,Periyapalayam
+592A,5,Uthukkottai
+558A,0,RedHills
+558A,1,Karanodai
+558A,2,Minjur
+57,0,Red Hills
+57,1,Basin Bridge
+57,2,Vyasarpadi
+57,3,Moolakadai
+57,4,Puzhal
+57,5,V Nagar
+58A,0,Red Hills
+58A,1,V.Nagar
+58A,2,Vyasarpadi
+58A,3,Moolakadai
+58A,4,Broadway
+61R,0,Red Hills
+61R,1,HVF Hospital
+61R,2,Kovilpadagai
+61R,3,Vellanur
+61R,4,Veerapuram
+61R,5,Kadavoor
+61R,6,Avadi
+62,0,Red Hills
+62,1,Thirumullaivoyal
+62,2,Ambathur OT
+62,3,Pudur
+62,4,Kallikuppam
+62,5,Surapedu
+62,6,Puzhal
+62,7,Bypass road
+62,8,Kavangarai
+62,9,Ayurveda Ashramam
+62,10,Avadi
+62,0,Red Hills
+62,1,Karayan chavadi
+62,2,Seeneerkuppam
+62,3,Goverdhangiri
+62,4,Avadi Market
+62,5,Avadi
+62,6,Thirumullaivoyal
+62,7,Ambathur OT
+62,8,Pudur
+62,9,Kallikuppam
+62,10,Puzhal
+62,11,Bypass road
+62,12,Kavangarai
+62,13,Ayurveda Ashramam
+62,14,Poonamallee
+65H,0,Red Hills
+65H,1,Pattabiram
+65H,2,Thirunindravur
+65H,3,Avadi
+C70,0,Red Hills
+C70,1,Ashok nagar
+C70,2,Vadapalani
+C70,3,CMBT
+C70,4,Thirumangalam
+C70,5,Anna nagar west
+C70,6,Padi
+C70,7,Thathankuppam
+C70,8,Kolathur
+C70,9,Retteri
+C70,10,Puzhal
+C70,11,Kavangarai
+C70,12,Ayurveda Ashramam
+C70,13,Guindy Estate
+505,0,Red Hills
+505,1,Alamadhi
+505,2,Tamaraipakkam
+505,3,Vishnuvakkam
+505,4,Moolakarai
+505,5,Ekkadu Kandigai
+505,6,Thiruvallur
+M2,0,Saidapet
+M2,1,Velachery
+M2,2,Medavakkam
+M2,3,Ottiambakkam
+5R,0,Saidapet
+5R,1,Guindy
+5R,2,N.G.O. Colony
+5R,3,St.Thomas Mount
+5R,4,Vanuvampet
+5R,5,Velachery MRTS
+5R,6,Velachery
+M11,0,Saidapet
+M11,1,Guindy
+M11,2,St.Thomas Mount
+M11,3,Kilkattalai
+M11,4,Kovilambakkam
+M11,5,Medavakkam Koot Road
+M11,6,Santhosapuram
+M11,7,Camp Road
+M11,8,Tambaram East
+19B,0,Saidapet
+19B,1,IIT Chennai
+19B,2,Madhya Kailash
+19B,3,Tidel Park
+19B,4,Thoraipakkam
+19B,5,SIRUSERI
+19B,6,Kelambakkam
+19B xt,0,Saidapet
+19B xt,1,IIT Chennai
+19B xt,2,Madhya Kailash
+19B xt,3,Tidel Park
+19B xt,4,Thoraipakkam
+19B xt,5,SIRUSERI
+19B xt,6,Kelambakkam
+19B xt,7,Thirupporur
+51B,0,Saidapet
+51B,1,Checkpost
+51B,2,Velachery
+51B,3,Narayanapuram
+51B,4,Pallikaranai
+51B,5,Medavakkam
+51B,6,Sithalapakkam koot road
+51B,7,Sithalapakkam
+51B,8,Arasan kazhani
+51B,9,Ottiyambakkam
+51B,10,Karanai
+51E,0,Saidapet
+51E,1,Velachery
+51E,2,Ram Nagar
+51E,3,Madipakkam BS
+51S,0,Saidapet
+51S,1,St.Thomas Mount
+51S,2,Madippakkam
+51S,3,Keelkattalai
+51S,4,Kovilambakkam
+51S,5,Medavakkam Koot Road
+51S,6,Kamarajapuram
+51S,7,Camp Road
+51S,8,Tambaram East
+M51D,0,Saidapet
+M51D,1,Velachery
+M51D,2,Medavakkam
+M51D,3,Ottiyambakkam
+M51D,4,Karanai
+M51D,5,Thalambur
+M51D,6,Pudhupakkam
+M51D,7,Chettinad Hospital
+M51D,8,Kelambakkam
+54E,0,Saidapet
+54E,1,Guindy
+54E,2,Ramapuram
+54E,3,Porur
+54E,4,Kumanan chavadi
+54E,5,Poonamallee
+54E,6,Meppur
+65A,0,Saidapet
+65A,1,Guindy
+65A,2,Porur
+65A,3,Kumananchavadi
+65A,4,Karaiyanchavadi
+65A,5,Avadi
+65A,6,HVF Hospital
+65A,7,Muthapudupet
+29B,0,Saidapet
+29B,1,Otteri
+29B,2,Doveton
+29B,3,KMC
+29B,4,Chetpet
+29B,5,Sterling Road/College Road
+29B,6,Gemini
+29B,7,DMS
+29B,8,T.Nagar
+29B,9,Perambur
+51H,0,Saidapet
+51H,1,Velachery
+51H,2,Pallikkaranai
+51H,3,Medavakkam
+51H,4,Kamarajapuram
+51H,5,Camp Road
+51H,6,Tambaram East
+A51 cut,0,Saidapet
+A51 cut,1,Camp Road
+A51 cut,2,Kamarajapuram
+A51 cut,3,Medavakkam
+A51 cut,4,Pallikkaranai
+A51 cut,5,Velachery
+A51 cut,6,Guindy Race Course
+A51 cut,7,Tambaram East
+54B,0,Saidapet
+54B,1,Moulivakkam
+54B,2,Baikadai
+54B,3,Periyapannicherry
+54B,4,Kolapakkam
+54B,5,Manapakkam
+54B,6,Nandambakkam
+54B,7,Butt road
+54B,8,Kathipara
+54B,9,Guindy I.E
+54B,10,Little Mount
+54B,11,Porur
+12C,0,Saligramam
+12C,1,Vadapalani
+12C,2,Rangarajapuram
+12C,3,Panagal Park
+12C,4,S.I.E.T
+12C,5,Adyar Gate
+12C,6,Mandaveli
+12C,7,Mylapore
+17E,0,Saligramam
+17E,1,Central
+17E,2,Chindatripet
+17E,3,Egmore
+17E,4,DPI
+17E,5,Sterling Road
+17E,6,Valluvarkottam
+17E,7,Liberty
+17E,8,Vadapalani
+17E,9,Broadway
+M119,0,Semmenche ri
+M119,1,Velachery
+M119,2,SRP
+M119,3,Perungudi
+M119,4,Guindy
+M119A,0,Semmenche ri
+M119A,1,Saidapet
+M119A,2,Velachery
+M119A,3,SRP
+M119A,4,Perungudi
+M119A,5,T.Nagar
+M119B,0,Semmenche ri
+M119B,1,Saidapet
+M119B,2,GandhiMandapam
+M119B,3,Adyar
+M119B,4,Thi ruvanmiyur
+M119B,5,Guindy
+A19,0,Shozhingan allur
+A19,1,Thoraippakkam
+A19,2,SRP
+A19,3,Tidel Park
+A19,4,Madhya Kailash
+M51,0,Sholinganal lur
+M51,1,Velachery
+M51,2,Medavakkam
+M51,3,T. Nagar
+M51,0,Sholinganal lur
+M51,1,Saidapet
+M51,2,Velacherry
+M51,3,Pallikaranai
+M51,4,Medavakkam
+M51,5,Perumbakkam
+M51,6,T.Nagar
+66S,0,Sholinganal lur
+66S,1,Mettukuppam
+66S,2,Kamatchi Hospital
+66S,3,Echangadu
+66S,4,Pallavaram
+66S,5,Pammal
+66S,6,Anakaputhur
+66S,7,Kundrathur
+66S,8,Mangadu
+66S,9,Karaiyanchavadi
+66S,10,Poonamallee
+553,0,Sriperumbu dur
+553,1,Central R.S
+553,2,KMC
+553,3,Kumananchavadi
+553,4,Poonamallee
+553,5,Irrungattukottai
+553,6,Broadway
+553A,0,Sriperumbu dur
+553A,1,Mathruvayoil
+553A,2,Kumananchavadi
+553A,3,Poonamallee
+553A,4,Irrungattukottai
+553A,5,CMBT
+553K,0,Sriperumbu dur
+553K,1,Chembarambakkam
+553K,2,Thandalam Koot road
+553K,3,Irrungattukottai
+553K,4,Pennalur EB
+553K,5,Poonamallee
+554A,0,Sriperumbu dur
+554A,1,Guindy
+554A,2,Porur
+554A,3,Kumananchavadi
+554A,4,Poonamallee
+554A,5,Irrungattukottai
+554A,6,Puzhuthivakka m
+578,0,Sriperumbu dur
+578,1,Mangadu
+578,2,Kumananchavadi
+578,3,Poonamallee
+578,4,Chembarambakkam
+578,5,Irrungattukottai
+578,6,Kundrathur
+578A,0,Sriperumbu dur
+578A,1,Virugambakkam
+578A,2,Valasarawakkam
+578A,3,Porur
+578A,4,Kovoor
+578A,5,Kundrathur
+578A,6,Somangalam
+578A,7,Nallur
+578A,8,Sumtheramedu Koot road
+578A,9,Pillaipakkam
+578A,10,Pattunool Chatiram
+578A,11,Vadapalani
+583,0,Sriperumbu dur
+583,1,Mudichur
+583,2,Padappai
+583,3,Serapanacherri
+583,4,Oragadam
+583,5,Vallakottai
+583,6,Pondur
+583,7,Tambaram
+502,0,Sriperumbu dur
+502,1,Central R.S
+502,2,LIC
+502,3,Saidapet
+502,4,Guindy
+502,5,Porur
+502,6,Kumananchavadi
+502,7,Poonamallee
+502,8,Irrungattukottai
+502,9,Broadway
+562A,0,Sriperumbu dur
+562A,1,Puzhal
+562A,2,Pudur
+562A,3,Ambattur OT
+562A,4,Avadi
+562A,5,Karaiyanchavadi
+562A,6,Poonammallee
+562A,7,Irrunkatturkottai
+562A,8,Red Hills
+565,0,Sriperumbu dur
+565,1,Avadi
+565,2,Govardhanagiri
+565,3,Karaiyanchavadi
+565,4,Poonamallee
+565,5,Irrunkatturkottai
+565,6,Pattabiram
+583C,0,Sriperumbu dur
+583C,1,Mudichur
+583C,2,Mannivakkam
+583C,3,Karasangal
+583C,4,Manimangalam
+583C,5,Tambaram
+583D,0,Sriperumbu dur
+583D,1,Old Perungalathur
+583D,2,Manimangalam
+583D,3,Mullai Nagar
+583D,4,Tambaram
+554,0,Sunguvarch atiram
+554,1,Saidapet
+554,2,Guindy
+554,3,Porur
+554,4,Kumananchavadi
+554,5,Poonamallee
+554,6,Irrungattukottai
+554,7,Sriperumbudur
+554,8,T. Nagar
+525,0,Sunguvarch atiram
+525,1,Virugambakkam
+525,2,Valasarawakkam
+525,3,Porur
+525,4,Poonamallee
+525,5,Irrungattukottai
+525,6,Sriperumbudur
+525,7,Thirumangalam koot road
+525,8,Mambakkam
+525,9,Vadamangalam
+525,10,Vadapalani
+549,0,Sunguvarch athiram
+549,1,Adyar
+549,2,Guindy
+549,3,Porur
+549,4,Iyyapanthangal
+549,5,Kumananchavadi
+549,6,Poonamallee
+549,7,Irungatukottai
+549,8,Sriperumbudur
+549,9,Thiruvanmiyur
+554B,0,Sunguvarch atram
+554B,1,Porur
+554B,2,Kumananchavadi
+554B,3,Poonamallee
+554B,4,Irrungattukottai
+554B,5,Sriperumbudur
+554B,6,Ekkaduthangal
+51F,0,Sunnabu kulathur
+51F,1,Velachery
+51F,2,T. Nagar
+5A,0,T. Nagar
+5A,1,Saidapet
+5A,2,Velachery
+5A,3,Medavakkam
+5A,4,Camp Road
+5A,5,Tambaram East
+5B,0,T. Nagar
+5B,1,Saidapet
+5B,2,Anna University
+5B,3,Adyar
+5B,4,Sathyastudio
+5B,5,Mandaveli
+5B,6,Mylapore
+5G,0,T. Nagar
+5G,1,Saidapet
+5G,2,Velachery
+5G,3,Taramani
+5G,4,RMZ
+5G,5,Perugudi
+5G,6,Kannagi Nagar
+A5,0,T. Nagar
+A5,1,Saidapet
+A5,2,Velachery
+A5,3,Medavakkam
+A5,4,Kamarajapuram
+A5,5,Balaji Nagar
+7K,0,T.Nagar
+7K,1,Saidapet
+7K,2,Anna university
+7K,3,CPT
+7K,4,WPT
+7K,5,Tidel park
+7K,6,Taramani
+M7,0,T.Nagar
+M7,1,Saidapet
+M7,2,Velachery
+M7,3,SRP Tools
+M7,4,Thiruvanmiyur
+M7A,0,T.Nagar
+M7A,1,Saidapet
+M7A,2,Guindy
+M7A,3,Velachery
+M7A,4,IRT
+M7A,5,SRP Tools
+M7A,6,Thiruvanmiyur
+9M,0,T.Nagar
+9M,1,Saidapet
+9M,2,Guindy
+9M,3,NGO Colony
+9M,4,Brindavan nagar
+9M,5,Kakkan Bridge
+9M,6,A.G.S Office Colony
+12,0,T.Nagar
+12,1,Teynampet
+12,2,Alwarpet
+12,3,Luz
+12,4,Chennai Citi Centre
+12,5,Vivekananda House
+12A,0,T. Nagar
+12A,1,Pondy bazaar
+12A,2,Alwarpet
+12A,3,Luz
+12A,4,Santhome
+12A,5,Foreshore Estate
+M12A,0,T. Nagar
+M12A,1,Pondy bazaar
+M12A,2,Alwarpet
+M12A,3,Luz
+M12A,4,Santhome
+M12A,5,Foreshore Estate
+13B,0,T. Nagar
+13B,1,Zambazzar
+13B,2,Express avenue
+13B,3,Royapettah
+13B,4,Gopalapuram playground
+13B,5,Thousand Lights
+13B,6,DMS
+13B,7,Pondy Bazzar
+13B,8,Panagal park
+13B,9,Triplicane
+19B xt,0,T.Nagar
+19B xt,1,Saidapet
+19B xt,2,IIT Chennai
+19B xt,3,Madhya Kailash
+19B xt,4,Tidel Park
+19B xt,5,Thoraipakkam
+19B xt,6,SIRUSERI
+19B xt,7,Kelambakkam
+19B xt,8,Thaiyur Koman Nagar
+19C,0,T. Nagar
+19C,1,Saidapet
+19C,2,Madhya Kailash
+19C,3,Tidel park
+19C,4,SRP Tools
+19C,5,Perugudi
+19C,6,Okkiam Thorapakkam
+19H,0,T.Nagar
+19H,1,Saidapet
+19H,2,Anna university
+19H,3,Adyar
+19H,4,Thiruvanmiyur
+19H,5,Kottivakkam
+19H,6,Palavakkam
+19H,7,Neelangarai
+19H,8,Injambakkam
+19H,9,Uthandi
+19H,10,Kanathur
+19T,0,T.Nagar
+19T,1,Saidapet
+19T,2,SRP Tools
+19T,3,Sholinganallur
+19T,4,Navalur
+19T,5,Thalambur
+M19A,0,T. Nagar
+M19A,1,Saidapet
+M19A,2,Adyar
+M19A,3,Thiruvanmiyur
+M19A,4,Perungudi
+M19A,5,Kelambakkam
+M19B,0,T. Nagar
+M19B,1,Saidapet
+M19B,2,Adyar
+M19B,3,Thiruvanmiyur
+M19B,4,Jain College
+M19B,5,Perungudi
+M19B,6,Kannagi Nagar
+27C,0,T. Nagar
+27C,1,Panagal park
+27C,2,Bharathinagar
+27C,3,Liberty
+27C,4,Power house
+27C,5,Vadapalani
+27C,6,MMDA Colony
+27C,7,CMBT
+27C,8,Koyambedu Market
+27C,9,Nerkundram
+27C,10,Maduravoyal
+27C,11,Vanagaram
+27C,12,Velappan chavadi
+27C,13,Thiruverkadu
+27C cut,0,T. Nagar
+27C cut,1,Panagal park
+27C cut,2,Bharathinagar
+27C cut,3,Liberty
+27C cut,4,Power house
+27C cut,5,Vadapalani
+27C cut,6,MMDA Colony
+27C cut,7,CMBT
+27C cut,8,Thirumangalam
+27C cut,9,Anna nagar West
+27T,0,T.Nagar
+27T,1,Ambattur OT
+27T,2,Ambattur I.E
+27T,3,Collector Nagar
+27T,4,CMBT
+27T,5,Vadapalani
+27T,6,Liberty
+27T,7,Bharathi nagar
+27T,8,Panagal park
+27T,9,Oragadam
+M45,0,T. Nagar
+M45,1,Saidapet
+M45,2,Velachery
+M45,3,Kilkattalai
+47D cut,0,T.Nagar
+47D cut,1,Adyar
+47D cut,2,T. Nagar
+47D cut,3,Sterling Road
+47D cut,4,Lucas
+47D cut,5,Korattur
+49R,0,T. Nagar
+49R,1,Saidapet
+49R,2,Guindy
+49R,3,Ramapuram
+49R,4,Valasar awakkam
+49R,5,Maduravoyal
+49R,6,Velappan chavadi
+49R,7,Thiruverkadu
+51B xt,0,T.Nagar
+51B xt,1,Saidapet
+51B xt,2,Checkpost
+51B xt,3,Velachery
+51B xt,4,Narayanapuram
+51B xt,5,Pallikaranai
+51B xt,6,Medavakkam
+51B xt,7,Sithalapakkam koot road
+51B xt,8,Sithalapakkam
+51B xt,9,Arasan kazhani
+51B xt,10,Ottiyambakkam
+51M,0,T. Nagar
+51M,1,Saidapet
+51M,2,Guindy
+51M,3,NGO Colony
+51M,4,ST Thomas Mount
+51M,5,Vanuvampet
+51M,6,Madipakkam Koot road
+51M,7,Madipakkam BS
+51N,0,T.Nagar
+51N,1,Saidapet
+51N,2,Guindy
+51N,3,NGO Colony
+51N,4,ST Thomas Mount
+51N,5,Vanuvampet
+51N,6,Madipakkam Koot road
+51N,7,Moovarasampet
+M51,0,T. Nagar
+M51,1,Velachery
+M51,2,Medavakkam
+M51,3,Sholinganallur
+M51C,0,T. Nagar
+M51C,1,Velachery
+M51C,2,MEDAVAKKAM
+M51C,3,Perumbakkam
+M51C,4,Ottiambakkam
+M51V,0,T.Nagar
+M51V,1,Velachery
+M51V,2,Medavakkam
+M51V,3,Sithalapakkam koot road
+M51V,4,Kovilancherry
+M51V,5,Madurapakkam
+M51V,6,Po nmar
+M51V,7,Mambakkam Rice mill
+M51V,8,Mambakkam
+M51V,9,Kolathur
+M51,0,T.Nagar
+M51,1,Saidapet
+M51,2,Velacherry
+M51,3,Pallikaranai
+M51,4,Medavakkam
+M51,5,Perumbakkam
+M51,6,Sholinganallur
+M51C,0,T.Nagar
+M51C,1,Arasan Kazhani
+M51C,2,Nukkanpalayam
+M51C,3,Perumbakkam
+M51C,4,Medavakkam
+M51C,5,Pallikaranai
+M51C,6,Velacherry
+M51C,7,Checkpost
+M51C,8,Saidapet
+M51C,9,Ottiambakkam
+52F,0,T.Nagar
+52F,1,Chromepet
+52F,2,Nemilicheri
+54V,0,T.Nagar
+54V,1,Sri ram Engg college
+54V,2,Perumalpattu
+54V,3,Ramasamy nagar
+54V,4,Periyakottambedu
+54V,5,Pudhuchatiram
+54V,6,Vellavedu
+54V,7,Poonamallee
+54V,8,Kumananchavadi
+54V,9,SRMC
+54V,10,Porur
+54V,11,Guindy
+54V,12,Saidapet
+54V,13,Veppampattu
+G54,0,T.Nagar
+G54,1,Poonamallee
+G54,2,Kumananchavadi
+G54,3,SRMC
+G54,4,Porur
+G54,5,Guindy
+G54,6,Saidapet
+G54,7,Vellavedu
+M54,0,T.Nagar
+M54,1,Saidepet
+M54,2,Guindy
+M54,3,Porur
+M54,4,Iyyapanthangal
+M54,5,Kumananchavadi
+M54,6,Poonamallee
+88L,0,T.Nagar
+88L,1,Gunidy
+88L,2,Porur
+88L,3,Kundrathur
+88L,4,Periyar Colony
+G118,0,T.Nagar
+G118,1,Guindy
+G118,2,Pallavaram
+G118,3,Tambaram
+G118,4,Vandaloor Zoo
+G118,5,Guduvanchery
+G118,6,Kavanoor Koot Road
+147,0,T.Nagar
+147,1,Moolakadai
+147,2,Retteri
+147,3,Thirumangalam
+147,4,Rountana
+147,5,Loyola College
+147,6,Mahalingapuram
+147,7,Panagal park
+147,8,Madhavaram
+147A,0,T.Nagar
+147A,1,Anna Nagar
+147A,2,Mugappair East
+147B,0,T.Nagar
+147B,1,Anna Nagar
+147B,2,Mugappair West
+147C,0,T.Nagar
+147C,1,Collector Nagar
+147C,2,Blue Star
+147C,3,Anna Hospital
+147C,4,Loyalla College
+147C,5,Sterling Road
+147C,6,Valluvar Kottam
+147C,7,Ambattur O.T.
+147Cxt,0,T.Nagar
+147Cxt,1,Ambattur I.E
+147Cxt,2,Ayapakkam
+147S,0,T.Nagar
+147S,1,Thirumullaivoyil
+147S,2,Ambattur OT
+147S,3,Collector Nagar
+147S,4,Roundtana
+147S,5,Loyallo College
+147S,6,Valluvar Kottam
+147S,7,Senthil Nagar
+147T,0,T.Nagar
+147T,1,Madhavaram
+147T,2,Moolakadai
+147T,3,Retteri
+147T,4,Thirumangalam
+147T,5,Rountana
+147T,6,Loyola College
+147T,7,Mahalingapuram
+147T,8,Panagal park
+147T,9,Mathur MMDA
+154,0,T. Nagar
+154,1,Mangadu
+154,2,Iyyapanthangal
+154,3,Porur
+154,4,Ramapuram
+154,5,St.Thomas Mount
+154,6,Guindy
+154,7,Saidapet
+154,8,Pattur
+519A,0,T. Nagar
+519A,1,Saidapet
+519A,2,Tidel park
+519A,3,Sholinganallur
+519A,4,Kelambakkam
+519A,5,Thirupporur
+519A,6,Aalathur IE
+576,0,T. Nagar
+576,1,Saidepet
+576,2,Guindy
+576,3,Porur
+576,4,Poonamallee
+576,5,Irrungattukottai
+576,6,Sriperumbudur
+576,7,Sunguvarchathiram
+576,8,Pillai chatiram
+576,9,Kamakshi Temple
+576,10,Kanchipuram
+582,0,T. Nagar
+582,1,Saidapet
+582,2,Guindy
+582,3,Porur
+582,4,Poonamallee
+582,5,Sriperumbudur
+582,6,Bhondur
+582,7,Pattunul Chatiram
+582,8,Vallakkottai
+599,0,T. Nagar
+599,1,Saidapet
+599,2,Adyar
+599,3,Thiruvanmiyur
+599,4,Injambakkam
+599,5,Kovalam
+599,6,Thiruvedanthai
+599,7,Vadanemili
+599,8,Mamallapuram
+51F,0,T. Nagar
+51F,1,Velachery
+51F,2,Sunnabu kulathur
+B51,0,T. Nagar
+B51,1,Camp Road
+B51,2,Santhosapuram
+B51,3,Medavakkam Koot Road
+B51,4,Kilkattalai
+B51,5,Madipakkam koot Road
+B51,6,Mount
+B51,7,Kathipara
+B51,8,Guindy
+B51,9,Tambaram East
+V51,0,T. Nagar
+V51,1,Saidapet
+V51,2,Velachery
+V51,3,Ram Nagar
+V51,4,Madipakkam
+V51,5,Kilkattalai
+V51,6,Kovilambakkam
+V51,7,Medavakkam Koot Road
+V51,8,Kamarajapuram
+V51,9,Camp Road
+V51,10,TambaramWest
+70P,0,T. Nagar
+70P,1,Thirunindravur
+70P,2,Avadi
+70P,3,Ambattur OT
+70P,4,Collector Nagar
+70P,5,CMBT
+70P,6,Liberty
+70P,7,Veppampattu
+V151,0,T. Nagar
+V151,1,Saidapet
+V151,2,Velachery
+V151,3,Kamatchi Hospital
+V151,4,S.Kolathur
+V151,5,Kovilambakkam
+V151,6,Medavakkam Koot Road
+V151,7,Kamarajapuram
+V151,8,Camp Road
+V151,9,Tambaram East
+154A,0,T. Nagar
+154A,1,Kosavapalayam
+154A,2,Pudhuchatiram
+154A,3,Vellavedu
+154A,4,Thirumazhisai
+154A,5,Poonamallee
+154A,6,Kumananchavadi
+154A,7,Iyyapanthangal
+154A,8,Thirunindravur
+500,0,T. Nagar
+500,1,Singaperumal Koil
+500,2,Maraimalai nagar IE
+500,3,Guduvancherry
+500,4,Vandalur Zoo
+500,5,Tambaram
+500,6,Pallavaram
+500,7,Guindy
+500,8,Saidapet
+500,9,Chengalpattu
+554,0,T. Nagar
+554,1,Saidapet
+554,2,Guindy
+554,3,Porur
+554,4,Kumananchavadi
+554,5,Poonamallee
+554,6,Irrungattukottai
+554,7,Sriperumbudur
+554,8,Sunguvarchatira m
+5S,0,T.Nagar
+5S,1,Adyar
+5S,2,Kotturpuram
+5S,3,Thiruvanmiyur
+11,0,T.Nagar
+11,1,Panagal park
+11,2,Vani mahal
+11,3,Thousand Lights
+11,4,TVS
+11,5,Central R.S
+11,6,Broadway
+11A,0,T.Nagar
+11A,1,Annasalai
+11A,2,Central R.S
+11A,3,Parry's Corner
+11A,4,Stanley Hospital
+11A,5,Vallalar Nagar
+11A xt,0,T.Nagar
+11A xt,1,Annasalai
+11A xt,2,Central R.S
+11A xt,3,Parry's Corner
+11A xt,4,Stanley Hospital
+11A xt,5,Vallalar nagar
+11A xt,6,Vysarpadi
+11A xt,7,M.K.B Nagar East
+A11,0,T.Nagar
+A11,1,Teynampet
+A11,2,Broadway
+G18,0,T.Nagar
+G18,1,Saidapet
+G18,2,Guindy
+G18,3,Pallavaram
+G18,4,Chromepet
+G18,5,Tambaram
+G18,6,Vandalur Zoo
+G18,7,Guduvanchery
+G18 xt,0,T.Nagar
+G18 xt,1,Saidapet
+G18 xt,2,Guindy
+G18 xt,3,Pallavaram
+G18 xt,4,Chromepet
+G18 xt,5,Tambaram
+G18 xt,6,Vandalur Zoo
+G18 xt,7,Guduvanchery
+G18 xt,8,Maraimalai nagar
+M18C,0,T.Nagar
+M18C,1,Madipakkam Koot Road
+M18C,2,Nanganallur
+M18C,3,Guindy
+M18C,4,Saidapet
+M18C,5,Kilkattalai
+28D,0,T.Nagar
+28D,1,Therady
+28D,2,Rajakadai
+28D,3,Tollgate
+28D,4,Tondiarpet
+28D,5,Vallalar nagar
+28D,6,Regal
+28D,7,Central
+28D,8,Zimson
+28D,9,LIC
+28D,10,TVS
+28D,11,Thousand Lights
+28D,12,DMS
+28D,13,Panagal park
+28D,14,Thiruvottiyur
+38J,0,T.Nagar
+38J,1,Thapal Petti
+38J,2,Moolakadai
+38J,3,Sharma nagar
+38J,4,Vyasarpadi
+38J,5,Basin Bridge
+38J,6,Mint
+38J,7,Stanley
+38J,8,Beach R.S
+38J,9,Broadway
+38J,10,Central
+38J,11,LIC
+38J,12,TVS
+38J,13,DMS
+38J,14,Panagal Park
+38J,15,Madhavaram
+49B,0,T.Nagar
+49B,1,Kumananchavadi
+49B,2,Mangadu
+49B,3,Porur
+49B,4,K.K. Nagar
+49B,5,Ashok Pillar
+49B,6,Poonamallee
+52C,0,T.Nagar
+52C,1,Chromepet
+52C,2,Pallavaram
+52C,3,Guindy
+52C,4,Saidap et
+52C,5,Hasthinapuram
+54P,0,T.Nagar
+54P,1,Kumanan chavadi
+54P,2,Mangadu
+54P,3,Paraniputhur
+54P,4,Baikadai
+54P,5,Moulivakkam
+54P,6,Porur
+54P,7,Guindy
+54P,8,Saidapet
+54P,9,Poonamallee
+54S,0,T.Nagar
+54S,1,Poonamallee
+54S,2,Kumanan chavadi
+54S,3,Iyyppanthangal
+54S,4,Porur
+54S,5,Guindy
+54S,6,Saidapet
+54S,7,Vadaku Malaiyambakka m
+M79,0,T.Nagar
+M79,1,Samthuvapuram
+M79,2,Karasangal
+M79,3,Mannivakkam
+M79,4,Mudichur
+M79,5,Old Perugalathur
+M79,6,Tambaram
+M79,7,Chromepet
+M79,8,Pallavaram
+M79,9,Meenambakkam
+M79,10,Asharkana
+M79,11,Guindy
+M79,12,Little mount
+M79,13,Saidapet
+M79,14,Padappai
+88C cut,0,T.Nagar
+88C cut,1,Sirukalathur
+88C cut,2,Kundrathur B.S
+88C cut,3,Koovoor
+88C cut,4,Periyapannicherry
+88C cut,5,Baikadai
+88C cut,6,Porur
+88C cut,7,Guindy
+88C cut,8,Saidapet
+88C cut,9,DMS
+88C cut,10,TVS
+88C cut,11,Central R.S
+88C cut,12,Kundrathur
+114T,0,T.Nagar
+114T,1,Panagal park
+114T,2,Liberty
+114T,3,Power house
+114T,4,Vadapalani Koil
+114T,5,Vadapalani
+114T,6,CMBT
+114T,7,Thirumangalam
+114T,8,Anna nagar west
+114T,9,Kolathur
+114T,10,Retteri
+114T,11,Puzhal
+114T,12,Kavangarai
+114T,13,Ayurveda Ashramam
+114T,14,Red Hills
+114T,15,Padiyanallur
+M119A,0,T.Nagar
+M119A,1,Saidapet
+M119A,2,Velachery
+M119A,3,SRP
+M119A,4,Perungudi
+M119A,5,Semmencheri
+188K,0,T.Nagar
+188K,1,Kundrathur
+188K,2,Koovoor
+188K,3,Periyapannicherry
+188K,4,Baikadai
+188K,5,Moulivakkam
+188K,6,Porur
+188K,7,Manapakkam
+188K,8,Nandambakkam
+188K,9,Butt road
+188K,10,Kathipara
+188K,11,Guindy I.E
+188K,12,Little Mount
+188K,13,Saidapet
+188K,14,Katrambakkam
+591,0,T.Nagar
+591,1,Guindy
+591,2,Porur
+591,3,Poonamallee
+591,4,Thandalam
+591,5,Mannur
+591,6,Kattukoot rd
+591,7,Mappedu
+591,8,Koovam
+591,9,Perambakkam
+597,0,T. Nagar/Ma ndaveli
+597,1,Guindy
+597,2,Iyypanthangal
+597,3,Kumanan chavadi
+597,4,Poonamallee
+597,5,Thirumazhisai
+597,6,Vellavedu
+597,7,Nemam
+597,8,Pudhuchatiram
+597,9,Mettukandigai
+597,10,Arnavoyal kuppam
+597,11,Arnavoyal
+597,12,Murkancherry
+597,13,Manavalan Nagar
+597,14,Thiruvallur
+18H,0,Tambaram
+18H,1,Kannadapalayam
+18H,2,Pazhanthandalam Koot road
+18H,3,Ettayapuram
+18H,4,Somangalam Koot road
+18H,5,Naduveerapattu
+18L,0,Tambaram
+18L,1,Perugalathur
+18L,2,Vandaloor Zoo
+18L,3,Guduvanchery
+18L,4,Madambakkam koot road
+18L,5,Madambakkam
+18S,0,Tambaram
+18S,1,Kannadapalayam
+18S,2,Pazhanthandalam Koot road
+18S,3,Ettayapuram
+18S,4,Somangalam Koot road
+18S,5,Poonthandalam
+18S,6,Somangalam
+18S extn,0,Tambaram
+18S extn,1,Kannadapalayam
+18S extn,2,Pazhanthandalam Koot road
+18S extn,3,Ettayapuram
+18S extn,4,Somangalam Koot road
+18S extn,5,Poonthandalam
+18S extn,6,Somangalam
+18S extn,7,Nallur
+21G,0,Tambaram
+21G,1,Anna Square
+21G,2,Mylapore
+21G,3,Mandaveli
+21G,4,Adyar Gate
+21G,5,Guindy
+21G,6,Broadway
+51G,0,Tambaram
+51G,1,Camp Road
+51G,2,Rajakilpakkam
+51G,3,Madambakkam
+51G,4,Vengaivasal
+55,0,Tambaram
+55,1,Old Perugalathur
+55,2,Mudichur
+55,3,Mannivakkam/ Vandalur Gate
+55D,0,Tambaram
+55D,1,Perugalathur
+55D,2,Sadhanapuram
+55D,3,Nedugudram
+55D,4,Kolapakkam
+55D,5,Rathnamangalam
+55D,6,Kandigai
+55D,7,Keerapakkam
+55G,0,Tambaram
+55G,1,Perugalathur
+55G,2,Sadhanapuram
+55G,3,Nedugudram
+55G,4,Kolapakkam
+55G,5,Vengambakkam koot road
+55G,6,Vengambakkam
+55J,0,Tambaram
+55J,1,Kadapery
+55J,2,Thiruneermalai
+55J,3,Burma Colony
+55J,4,Vazhuthulapedu
+55J,5,Kundrathur Murugan koil
+55J,6,Kundrathur
+55J,7,Mangadu
+55J,8,Kumanan chavadi
+55J,9,Poonamallee
+55K,0,Tambaram
+55K,1,Tambaram Sanatorium
+55K,2,Chromepet
+55K,3,Pallavaram
+55K,4,Pammal Kamarajapuram
+55K,5,Thiruneermalai
+55K,6,Kundrathur Murugan koil
+55K,7,Kundrathur
+55K,8,Mangadu
+55K,9,Kumanan chavadi
+55K,10,Poonamallee
+118,0,Tambaram
+118,1,Irumbuliyur
+118,2,Perugalathur
+118,3,Vandalur Gate
+118,4,Vandalur Zoo
+118,5,Oorapakkam School
+118,6,Oorapakkam Tea shop
+118,7,Guduvanchery
+118,8,SRM University
+118,9,Maraimalai Nagar I.E
+118K,0,Tambaram
+118K,1,Irumbuliyur
+118K,2,Perugalathur
+118K,3,Vandalur Gate
+118K,4,Vandalur Zoo
+118K,5,Oorapakkam School
+118K,6,Oorapakkam Tea shop
+118K,7,Guduvanchery
+118K,8,SRM University
+118K,9,Maraimalai nagar IE
+118K,10,Kilakaranai
+118K,11,Kilakaranai Koot road
+166,0,Tambaram
+166,1,Ramachandra Hospital
+166,2,Porur
+166,3,Porur Powerhouse
+166,4,Gerugumbakkam
+166,5,Kovur
+166,6,Moondram kattalai
+166,7,Kundrathur
+166,8,Anagaputtur
+166,9,Pammal
+166,10,Pallavaram
+166,11,Chromepet
+166,12,Iyyappanthanga l
+170,0,Tambaram
+170,1,CMBT
+170,2,Vadapalani
+170,3,Guindy
+170,4,Pallavaram
+170,5,Chromepet
+170,6,Thiruverkadu
+170G,0,Tambaram
+170G,1,Periyar Nagar
+515,0,Tambaram
+515,1,Vandalur Zoo
+515,2,Kolapakkam
+515,3,Vengambakkam
+515,4,Rathinamangalam
+515,5,Kandigai
+515,6,Melkottaiyur
+515,7,Kilkottaiyur
+515,8,Mambakkam
+515,9,Pudhupakkam
+515,10,Kelambakkam
+515,11,Kalavakkam
+515,12,Thirupporur
+515,13,Thandalam
+515,14,Paiyanoor
+515,15,Mamallapuram
+555,0,Tambaram
+555,1,Vandalur
+555,2,Kandigai
+555,3,Kelambakkam
+555,4,Thirupporur
+555M,0,Tambaram
+555M,1,Kolapakkam
+555M,2,Mambakkam
+555M,3,Kayar
+555M,4,Vembedu
+555M,5,Thirupporur
+555N,0,Tambaram
+555N,1,Guduvanchery
+555N,2,Thirupporur
+566A,0,Tambaram
+566A,1,Pallavaram
+566A,2,Pammal
+566A,3,Anakaputhur
+566A,4,Kundrathur
+566A,5,Mangadu
+566A,6,Kumanan chavadi
+566A,7,Poonamallee
+566A,8,Thirumazhisai
+566A,9,Vellavedu
+566A,10,Nemam
+566A,11,Pudhuchatiram
+566A,12,Mettukandigai
+566A,13,Arnavoyal kuppam
+566A,14,Arnavoyal
+566A,15,Murkancherry
+566A,16,Manavalan Nagar
+566A,17,Thiruvallur
+579A,0,Tambaram
+579A,1,Mudichur
+579A,2,Karasangal
+579A,3,Padappai
+579A,4,Oragadam Koot Road
+579A,5,Wallajabad
+583B,0,Tambaram
+583B,1,Old Perungalathur
+583B,2,Manimangalam
+583B,3,Sriperumbudur
+583B,4,Kattu Koot road
+583B,5,Meppedu
+583B,6,Koovam
+583B,7,Perambakkam
+583C,0,Tambaram
+583C,1,Mudichur
+583C,2,Mannivakkam
+583C,3,Karasangal
+583C,4,Manimangalam
+583C,5,Sriperumbudur
+583D,0,Tambaram
+583D,1,Old Perungalathur
+583D,2,Manimangalam
+583D,3,Mullai Nagar
+583D,4,Sriperumbudur
+1B,0,Tambaram
+1B,1,Chromepet
+1B,2,Pallavaram
+1B,3,Guindy
+1B,4,Teynampet
+1B,5,D.M.S
+1B,6,L.I.C
+1B,7,Central R.S
+1B,8,Parry's Corner
+1B,9,Kalmandapam
+1B,10,Thiruvottiyur
+1E,0,Tambaram
+1E,1,Chromepet
+1E,2,Pallavaram
+1E,3,Guindy
+1E,4,Teynampet
+1E,5,D.M.S
+1E,6,L.I.C
+1E,7,Central R.S
+1E,8,Parry's Corner
+1E,9,Kalmandapam
+1E,10,Tollgate
+1E,11,Thiruvottiyur
+1E,12,Ennore
+M18,0,Tambaram
+M18,1,Vandalur Zoo/Arignar Anna Zoological Park
+M18,2,Guduvanchery
+21P,0,Tambaram
+21P,1,Madipakkam
+21P,2,Kilkattalai
+21P,3,Eachangadu
+21P,4,Chromepet
+21P,5,Velachery
+66,0,Tambaram
+66,1,MEPZ
+66,2,Chromepet
+66,3,Pallavaram
+66,4,Pammal
+66,5,Anakaputhur
+66,6,Kundrathur
+66,7,Mangadu
+66,8,Karaiyanchavadi
+66,9,Poonamallee
+66P,0,Tambaram
+66P,1,Pallavaram
+66P,2,Kundrathur
+66P,3,Poonamallee
+66P,4,Parivakkam
+66P,5,Chittukadu
+66P,6,Thandarai
+66P,7,Pattabiram
+70,0,Tambaram
+70,1,Ambattur
+70,2,Padi
+70,3,Thirumangalam
+70,4,CMBT
+70,5,Vadapalani
+70,6,Ashok Pillar
+70,7,Chennai Airport
+70,8,Pallavaram
+70,9,Chromepet
+70,10,Avadi
+70C,0,Tambaram
+70C,1,Vadapalani
+70C,2,Udhayam
+70C,3,Pallavaram
+70C,4,Tambaram
+70C,5,Koyambedu Market
+70G,0,Tambaram
+70G,1,Anna Nagar East
+70G,2,Thirumangalam
+70G,3,CMBT
+70G,4,Vadapalani
+70G,5,Ashok Pillar
+70G,6,Chennai Airport
+70G,7,Pallavaram
+70G,8,Chromepet
+70G,9,Ayanavaram
+70T,0,Tambaram
+70T,1,Nadhamuni
+70T,2,Thirumangalam
+70T,3,CMBT
+70T,4,Vadapalani
+70T,5,Guindy
+70T,6,Pallavaram
+70T,7,Villivakkam
+L70,0,Tambaram
+L70,1,Korattur
+L70,2,CMBT
+L70,3,Vadapalani
+L70,4,Udhayam Theater
+L70,5,Menambedu
+80,0,Tambaram
+80,1,Manimangalam
+80,2,Padappai
+170B,0,Tambaram
+170B,1,Kolathur
+170B,2,Retteri
+170B,3,Thirumangalam
+170B,4,CMBT
+170B,5,Vadapalani
+170B,6,Ashok Pillar
+170B,7,Guindy
+170B,8,Pallavaram
+170B,9,TVK Nagar
+170P,0,Tambaram
+170P,1,Avadi
+170P,2,Ambattur OT
+170P,3,Golden Flats
+170P,4,Thirumangalam
+170P,5,CMBT
+170P,6,Vadapalani
+170P,7,Pallavaram
+170P,8,Chromepet
+170P,9,Pattabiram
+266,0,Tambaram
+266,1,Govardhanagiri
+266,2,Kaduveti
+266,3,Karaiyanchavadi
+266,4,Kumananchavadi
+266,5,Mangadu
+266,6,Kundrathur
+266,7,Pallavaram
+266,8,Avadi
+M500,0,Tambaram
+M500,1,Singaperumal Koil
+M500,2,Maraimalai nagar IE
+M500,3,Guduvancherry
+M500,4,Vandalur Zoo
+M500,5,Perugalathur
+M500,6,Chengalpattu
+583,0,Tambaram
+583,1,Mudichur
+583,2,Padappai
+583,3,Serapanacherri
+583,4,Oragadam
+583,5,Vallakottai
+583,6,Pondur
+583,7,Sriperumbudur
+583P,0,Tambaram
+583P,1,Serapanancherri
+583P,2,Padappai
+583P,3,Mannivakkam
+583P,4,Mudichur
+583P,5,Pondhur
+51A,0,Tambaram East
+51A,1,Camp Road
+51A,2,Agaramthen
+51D,0,Tambaram East
+51D,1,Convent
+51D,2,Camp road
+51D,3,Rajakilpakkam
+51D,4,Kozhipannai
+51D,5,Madambakkam
+51D,6,Jothi Nagar
+51D,7,Noothencherry
+51D,8,Vengaivasal
+51D,9,Santhosapuram
+51D,10,Medavakkam Koot road
+51D,11,Medavakkam
+51D,12,Pallikaranai
+51D,13,Velacherry
+51D,14,Saidapet
+51D,15,DMS
+51D,16,TVS
+51D,17,LIC
+51D,18,Broadway
+51H,0,Tambaram East
+51H,1,Velachery
+51H,2,Pallikkaranai
+51H,3,Medavakkam
+51H,4,Kamarajapuram
+51H,5,Camp Road
+51H,6,Saidapet
+51K,0,Tambaram East
+51K,1,Camp Road
+51K,2,Zion School
+51K,3,Madambakkam
+51K,4,Sithalapakkam Koot road
+51K,5,Sithalapakkam
+51K,6,Ottiyambakkam
+51K,7,Karanai
+51K,8,Thalambur
+51K,9,Navalur
+51L,0,Tambaram East
+51L,1,Vadapalani
+51L,2,Guindy
+51L,3,Velachery
+51L,4,Pallikkaranai
+51L,5,Medavakkam
+51L,6,Kamarajapuram
+51L,7,Camp Road
+51L,8,CMBT
+51T,0,Tambaram East
+51T,1,Camp road
+51T,2,Balaji nagar
+51T,3,Thiruvancherry
+51T,4,Paduvancherry
+51T,5,Agaram then
+51T,6,Kovilancherry
+51T,7,Madurapakkam
+51T,8,Ponmar
+A51,0,Tambaram East
+A51,1,Camp Road
+A51,2,Kamarajapuram
+A51,3,Medavakkam
+A51,4,Pallikkaranai
+A51,5,Velachery
+A51,6,Guindy Race Course
+A51,7,DMS
+A51,8,LIC
+A51,9,Central R.S
+A51,10,High Court
+A51 cut,0,Tambaram East
+A51 cut,1,Camp Road
+A51 cut,2,Kamarajapuram
+A51 cut,3,Medavakkam
+A51 cut,4,Pallikkaranai
+A51 cut,5,Velachery
+A51 cut,6,Guindy Race Course
+A51 cut,7,Saidapet
+B51,0,Tambaram East
+B51,1,Camp Road
+B51,2,Santhosapuram
+B51,3,Medavakkam Koot Road
+B51,4,Kilkattalai
+B51,5,Madipakkam koot Road
+B51,6,Mount
+B51,7,Kathipara
+B51,8,Guindy
+B51,9,T. Nagar
+B51 cut,0,Tambaram East
+B51 cut,1,Camp Road
+B51 cut,2,Santhosapuram
+B51 cut,3,Medavakkam Koot Road
+B51 cut,4,Kilkattalai
+B51 cut,5,Madipakkam koot Road
+B51 cut,6,Mount
+B51 cut,7,Kathipara
+B51 cut,8,GuindyEstate
+B51 cut,9,Saidapet
+T51,0,Tambaram East
+T51,1,Camp Road
+T51,2,Medavakkam
+T51,3,Sholinganallur
+T51,4,Karappakkam
+T51,5,SRP
+T51,6,Tidel Park
+T51,7,Thiruvanmiyur
+T51 cut,0,Tambaram East
+T51 cut,1,Camp Road
+T51 cut,2,Medavakkam
+T51 cut,3,Sholinganallur
+T51 cut,4,Kannaki Nagar
+T151,0,Tambaram East
+T151,1,CampRoad
+T151,2,Medavakkam
+T151,3,Shozhinganallur
+T151,4,Navalur
+T151,5,Kelambakkam
+T151,6,Kovalam
+V151,0,Tambaram East
+V151,1,Saidapet
+V151,2,Velachery
+V151,3,Kamatchi Hospital
+V151,4,S.Kolathur
+V151,5,Kovilambakkam
+V151,6,Medavakkam Koot Road
+V151,7,Kamarajapuram
+V151,8,Camp Road
+V151,9,T. Nagar
+M151K,0,Tambaram East
+M151K,1,CampRoad
+M151K,2,Medavakkam
+M151K,3,Shozhinganallur
+M151K,4,Okkiam
+M151K,5,Kannagi Nagar
+551A,0,Tambaram East
+551A,1,CampRoad
+551A,2,Medavakkam
+551A,3,Ponmar
+551A,4,Mambakkam
+551A,5,Pudupakkam
+551A,6,Chettinad Hospital
+551A,7,Kelambakkam
+5A,0,Tambaram East
+5A,1,Saidapet
+5A,2,Velachery
+5A,3,Medavakkam
+5A,4,Camp Road
+5A,5,T. Nagar
+M11,0,Tambaram East
+M11,1,Guindy
+M11,2,St.Thomas Mount
+M11,3,Kilkattalai
+M11,4,Kovilambakkam
+M11,5,Medavakkam Koot Road
+M11,6,Santhosapuram
+M11,7,Camp Road
+M11,8,Saidapet
+M15 xt,0,Tambaram East
+M15 xt,1,Adyar
+M15 xt,2,Thiruvanmiyur
+M15 xt,3,SRP Tools
+M15 xt,4,Velachery
+M15 xt,5,Pallikaranai
+M15 xt,6,Medavakkam
+M15 xt,7,Camp Road
+M15 xt,8,Mylapore
+51S,0,Tambaram East
+51S,1,St.Thomas Mount
+51S,2,Madippakkam
+51S,3,Keelkattalai
+51S,4,Kovilambakkam
+51S,5,Medavakkam Koot Road
+51S,6,Saidapet
+PP51,0,Tambaram East
+PP51,1,Selaiyur
+PP51,2,Camp Road
+PP51,3,Medavakkam
+PP51,4,Pallikaranai
+PP51,5,Velachery
+PP51,6,Anna University
+PP51,7,Adyar
+PP51,8,Sathyastudio
+PP51,9,MRC Nagar
+PP51,10,Foreshore Estate
+PP51,11,Santhome
+PP51,12,AIR
+PP51,13,Anna Square
+PP51,14,High Court
+C51,0,Tambaram West
+C51,1,Camp Road
+C51,2,Kamarajapuram
+C51,3,Medavakkam
+C51,4,Sholinganallur
+C51,5,ECR
+C51,6,Injambakkam
+C51,7,Thiruvanmyur
+C51,8,Adyar
+C51 cut,0,Tambaram West
+C51 cut,1,Camp Road
+C51 cut,2,Kamarajapuram
+C51 cut,3,Medavakkam
+C51 cut,4,Sholinganallur
+C51 cut,5,ECR
+C51 cut,6,Injambakkam
+V51,0,Tambaram West
+V51,1,Saidapet
+V51,2,Velachery
+V51,3,Ram Nagar
+V51,4,Madipakkam
+V51,5,Kilkattalai
+V51,6,Kovilambakkam
+V51,7,Medavakkam Koot Road
+V51,8,Kamarajapuram
+V51,9,Camp Road
+V51,10,T. Nagar
+V51 cut,0,Tambaram West
+V51 cut,1,Ram Nagar
+V51 cut,2,Madipakkam
+V51 cut,3,Kilkattalai
+V51 cut,4,Kovilambakkam
+V51 cut,5,Medavakkam Koot Road
+V51 cut,6,Kamarajapuram
+V51 cut,7,Camp Road
+V51 cut,8,Velachery
+T151K,0,Tambaram West
+T151K,1,CampRoad
+T151K,2,Medavakkam
+T151K,3,Shozhinganallur
+T151K,4,Panaiyur
+T151K,5,Uthandi
+T151K,6,Kanathur
+T151K,7,Muttukadu
+T151K,8,Kovalam
+21J cut,0,Tambaram West
+21J cut,1,Pallikkaranai
+21J cut,2,Medavakkam
+21J cut,3,Kamarajapuram
+21J cut,4,Camp Road
+21J cut,5,Poondi Bazar
+21J cut,6,Tambaram Sanatorium
+21J cut,7,Velachery
+M21,0,Tambaram West
+M21,1,Narayanapuram
+M21,2,Pallikaranai
+M21,3,Medavakkam
+M21,4,Camp Road
+M21,5,Tambaram East
+M21,6,Velachery
+88C,0,Thandalam
+88C,1,Koovoor
+88C,2,Periyapannicherry
+88C,3,Baikadai
+88C,4,Porur
+88C,5,Guindy
+88C,6,Saidapet
+88C,7,DMS
+88C,8,TVS
+88C,9,Central R.S
+88C,10,High Court
+562,0,Thandalam
+562,1,Periyapalayam
+562,2,Red Hills
+562,3,Puzhal
+562,4,Pudur
+562,5,Ambattur OT
+562,6,Ambattur Estate
+593,0,Thandalam
+593,1,Beach R.S
+593,2,Stanley
+593,3,Mint
+593,4,Basin Bridge
+593,5,Vyasarpadi
+593,6,Moolakadai
+593,7,Puzhal
+593,8,Red Hills
+593,9,Karanodai
+593,10,Periyapalayam
+593,11,Broadway
+T29,0,Thiru vi ka nagar
+T29,1,Venus
+T29,2,Perambur
+T29,3,Jamaliya
+T29,4,Egmore
+T29,5,L.I.C
+T29,6,Mylapore
+T29,7,Adyar
+T29,8,Thiruvanmiyur
+48B,0,Thiru.Vi.Ka Nagar
+48B,1,Venus
+48B,2,Perambur
+48B,3,Moolakadai
+48B,4,Madhavaram
+48B,5,Mathur Koot road
+48B,6,Manali Koot road
+48B,7,Sathyamoorthy nagar
+48B,8,Ernavoor
+48B,9,Ashok Leyeland
+48B,10,Ennore
+38C,0,TVK Nagar
+38C,1,Venus
+38C,2,Perambur
+38C,3,Pattalam
+38C,4,Bhuvaneswari
+38C,5,Doveton
+38C,6,Choolai P.O
+38C,7,Central R.S
+38C,8,Simpson
+38C,9,Adam market
+38C,10,Triplicane P.O
+38C,11,V House
+170B,0,TVK Nagar
+170B,1,Kolathur
+170B,2,Retteri
+170B,3,Thirumangalam
+170B,4,CMBT
+170B,5,Vadapalani
+170B,6,Ashok Pillar
+170B,7,Guindy
+170B,8,Pallavaram
+170B,9,Tambaram
+46,0,TVK Nagar
+46,1,Perambur
+46,2,Ayanavaram
+46,3,ICF
+46,4,Anna Nagar East
+46,5,Arumbakkam
+46,6,CMBT
+170C,0,TVK Nagar
+170C,1,Kolathur
+170C,2,Retteri
+170C,3,Thirumangalam
+170C,4,CMBT
+170C,5,Vadapalani
+170C,6,Ashok Pillar
+170C,7,Guindy Estate
+155A,0,Thirumudi vakkam
+155A,1,Thiruneermalai
+155A,2,Nagakeni
+155A,3,Pallavaram
+155A,4,Guindy
+155A,5,Saidape t
+155A,6,DMS
+155A,7,LIC
+155A,8,Central R.S
+155A,9,Broadway
+22A,0,Thirunamiy ur
+22A,1,Korattur
+22A,2,Lucas
+22A,3,Nathamuni
+22A,4,ICF
+22A,5,Ayanavaram
+22A,6,Kellys
+22A,7,Purasaiwakkam
+22A,8,Egmore
+22A,9,Triplicane
+22A,10,Ka nnagi statue
+22A,11,Santhome
+22A,12,AMS
+22A,13,Adyar
+22A,14,Ambattur I.E
+1C,0,Thiruvanmi yur
+1C,1,Adyar
+1C,2,Mylapore
+1C,3,Royapettah
+1C,4,Parry's Corner
+1C,5,Kalmandapam
+1C,6,Tollgate
+1C,7,Rajakadai
+1C,8,Theradi
+1C,9,Azax
+1C,10,Ernavoor
+1C,11,Ennore
+1D,0,Thiruvanmi yur
+1D,1,Adyar
+1D,2,Mylapore
+1D,3,Royapettah
+1D,4,Parry's Corner
+1D,5,Kalmandapam
+1D,6,Thalankuppam
+1D,7,Ennore
+A1,0,Thiruvanmi yur
+A1,1,Adyar
+A1,2,Mylapore
+A1,3,Royapettah
+A1,4,Central R.S
+M1,0,Thiruvanmi yur
+M1,1,SRP Tools
+M1,2,Velachery
+M1,3,Kaiveli
+M1,4,Ram Nagar
+M1,5,Madipakkam
+M1,6,Kilkattalai
+T1,0,Thiruvanmi yur
+T1,1,Adyar
+T1,2,Mylapore
+T1,3,Royapettah
+T1,4,Parry's Corner
+T1,5,Royapuram M.C
+M1P,0,Thiruvanmi yur
+M1P,1,Velachery
+M1P,2,Kilkattalai
+M1P,3,Pallavaram
+M1P,4,Pammal
+M1P,5,Pozhichalur
+5S,0,Thiruvanmi yur
+5S,1,Adyar
+5S,2,Kotturpuram
+5S,3,T.Nagar
+6D,0,Thiruvanmi yur
+6D,1,Besant Nagar
+6D,2,Foreshore Estate
+6D,3,Parry's Corner
+6D,4,Tollgate
+6E,0,Thiruvanmi yur
+6E,1,Adyar
+6E,2,Foreshore Estate
+6E,3,Parry's Corner
+6E,4,Kasimedu
+6E,5,Tollgate
+7S,0,Thiruvanmi yur
+7S,1,SRP Tools
+7S,2,Velachery
+7S,3,Saidapet
+7S,4,CIT Nagar
+7S,5,Saidapet West
+21H Cut,0,Thiruvanmi yur
+21H Cut,1,SRP Tools
+21H Cut,2,Perungudi
+21H Cut,3,Sholinganallur
+21H Cut,4,Navalu r
+21H Cut,5,Padur
+21H Cut,6,Kelambakkam
+A21,0,Thiruvanmi yur
+A21,1,SRP Tools
+A21,2,Thorapakkam
+A21,3,Redial Road
+A21,4,Kamatchi Hospital
+A21,5,Eechangadu
+A21,6,Pallavaram
+A21,7,Chromepet
+A21,8,Tambaram
+A21,9,Perugalathur
+A21,10,Vandalur Zoo
+V21,0,Thiruvanmi yur
+V21,1,SRP
+V21,2,Taramani
+V21,3,Velachery
+V21,4,Kamatchi Hospital
+V21,5,Chromepet
+V21,6,Tambaram
+V21,7,Guduvanchery
+23M,0,Thiruvanmi yur
+23M,1,Jayanthi
+23M,2,Adyar
+23M,3,Gandhi mandapam
+23M,4,Little mount
+23M,5,Saidapet
+23M,6,T.Nagar
+23M,7,Panagal park
+23M,8,Liberty
+23M,9,Power house
+23M,10,Vadapalani
+23M,11,MMDA Colony
+23M,12,CMBT
+23M extn,0,Thiruvanmi yur
+23M extn,1,Adyar
+23M extn,2,Gandhi mandapam
+23M extn,3,Little mount
+23M extn,4,Saidapet
+23M extn,5,T.Nagar
+23M extn,6,Panagal park
+23M extn,7,Liberty
+23M extn,8,Power house
+23M extn,9,Vadapalani
+23M extn,10,MMDA Colony
+23M extn,11,CMBT
+23M extn,12,Thirumangalam
+23M extn,13,Anna Nagar West
+29G,0,Thiruvanmi yur
+29G,1,Moolakadai
+29G,2,Perambur
+29G,3,Doveton
+29G,4,Egmore
+29G,5,LIC
+29G,6,Royapettah
+29G,7,Mylapore
+29G,8,Mandaveli
+29G,9,Adyar
+29G,10,Parvathy Nagar (Kodungaiyur)
+41G,0,Thiruvanmi yur
+41G,1,Amabattur OT
+41G,2,Ambathur IE
+41G,3,Wavin
+41G,4,Collector nagar
+41G,5,Thirumangalam
+41G,6,Anna nagar Rountana
+41G,7,Amijikarai
+41G,8,Taylors road
+41G,9,Sterling road
+41G,10,Gemini
+41G,11,Stella Maris College
+41G,12,Mylapore
+41G,13,Mandaveli
+41G,14,AMS
+41G,15,Adyar
+41G,16,Oragadam
+47,0,Thiruvanmi yur/Adyar
+47,1,T.Nagar
+47,2,Valluvar Kottam
+47,3,Pushpa nagar
+47,4,Loyola college
+47,5,Anna Nagar East
+47,6,Villivakkam
+47A,0,Thiruvanmi yur/Besant Nagar
+47A,1,Adyar
+47A,2,T.Nagar
+47A,3,Sterling Road
+47A,4,Taylors Road
+47A,5,New Avadi Road
+47A,6,ICF (Integral Coach Factory)
+47D,0,Thiruvanmi yur
+47D,1,Adyar
+47D,2,T. Nagar
+47D,3,Sterling Road
+47D,4,Ambattur I.E
+47D,5,Avadi
+47D,0,Thiruvanmi yur
+47D,1,Adyar
+47D,2,T. Nagar
+47D,3,Sterling Road
+47D,4,Ambattur I.E
+47D,5,Ambathur O.T.
+A47,0,Thiruvanmi yur
+A47,1,Adyar
+A47,2,T.Nagar
+A47,3,Pushpa Nagar
+A47,4,Ambattur I.E
+A47,5,Avadi
+49,0,Thiruvanmi yur
+49,1,Guindy
+49,2,Porur
+49,3,Iyyapanthangal
+49xt,0,Thiruvanmi yur
+49xt,1,Iyyapanthangal
+49xt,2,Kumananchavadi
+49xt,3,Velappanchavadi
+49xt,4,Thiruverkadu
+A147,0,Thiruvanmi yur
+A147,1,Adyar
+A147,2,T.Nagar
+A147,3,Pushpa Nagar
+A147,4,Ambattur I.E
+A147,5,Collector Nagar
+A147,6,Avadi
+523,0,Thiruvanmi yur
+523,1,Perungudi
+523,2,Sholinganallur
+523,3,Kelambakka m
+523,4,Thirupporur
+523,5,Perunthandalam
+523A,0,Thiruvanmi yur
+523A,1,Perungudi
+523A,2,Sholinganallur
+523A,3,Kelambakkam
+523A,4,Thirupporur
+523A,5,Karumbakkam
+549,0,Thiruvanmi yur
+549,1,Adyar
+549,2,Guindy
+549,3,Porur
+549,4,Iyyapanthangal
+549,5,Kumananchavadi
+549,6,Poonamallee
+549,7,Irungatukottai
+549,8,Sriperumbudur
+549,9,Sunguvarchathir am
+1A,0,Thiruvanmi yur
+1A,1,Adyar
+1A,2,Mylapore
+1A,3,Royapettah
+1A,4,Central R.S
+1A,5,Kalmandapam
+1A,6,Tollgate
+1A,7,Rajakadai
+1A,8,Theradi
+1A,9,Thiruvottiyur
+4,0,Thiruvanmi yur
+4,1,Adyar
+4,2,Mylapore
+4,3,Luz
+4,4,Music Academy
+4,5,Royapettah
+4,6,LIC
+4,7,Central R.S
+4,8,Regal
+4,9,Vallalar Nagar
+4,10,Tondiarpet
+4,11,Tollgate
+4,12,Therady
+4,13,Thiruvottiyur
+M7,0,Thiruvanmi yur
+M7,1,Saidapet
+M7,2,Velachery
+M7,3,SRP Tools
+M7,4,T.Nagar
+M7A,0,Thiruvanmi yur
+M7A,1,Saidapet
+M7A,2,Guindy
+M7A,3,Velachery
+M7A,4,IRT
+M7A,5,SRP Tools
+M7A,6,T.Nagar
+21D,0,Thiruvanmi yur
+21D,1,Indira Nagar
+21D,2,Besant Nagar
+21D,3,Foreshore Estate
+21D,4,Anna Square
+21D,5,Broadway
+23C xt,0,Thiruvanmi yur
+23C xt,1,Lucas
+23C xt,2,Nathamuni
+23C xt,3,ICF
+23C xt,4,Ayanavaram
+23C xt,5,Purasaiwakkam
+23C xt,6,Egmore
+23C xt,7,LIC
+23C xt,8,TVS
+23C xt,9,Saidapet
+23C xt,10,Adyar
+23C xt,11,Korattur
+29C xt,0,Thiruvanmi yur
+29C xt,1,Madhavaram Milk colony
+29C xt,2,Thapal petti
+29C xt,3,Moolakadai
+29C xt,4,Perambur
+29C xt,5,Mathur MMDA
+29L,0,Thiruvanmi yur
+29L,1,Egmore
+29L,2,Teynampet
+29L,3,Saidapet
+29L,4,Adyar
+29L,5,Periyar Nagar
+T29,0,Thiruvanmi yur
+T29,1,Venus
+T29,2,Perambur
+T29,3,Jamaliya
+T29,4,Egmore
+T29,5,L.I.C
+T29,6,Mylapore
+T29,7,Adyar
+T29,8,Thiru vi ka nagar
+D41,0,Thiruvanmi yur
+D41,1,Korattur
+D41,2,Lucas
+D41,3,Thirumangalam
+D41,4,Amijikarai
+D41,5,KMC
+D41,6,Chetpet
+D41,7,Sterling road
+D41,8,Gemini
+D41,9,Teynampet
+D41,10,Nandanam
+D41,11,Adyar Gate
+D41,12,Mandaveli
+D41,13,AMS
+D41,14,Adyar
+D41,15,Ambattur O.T.
+T51,0,Thiruvanmi yur
+T51,1,Camp Road
+T51,2,Medavakkam
+T51,3,Sholinganallur
+T51,4,Karappakkam
+T51,5,SRP
+T51,6,Tidel Park
+T51,7,Tambaram East
+M70,0,Thiruvanmi yur
+M70,1,Vadapalani
+M70,2,Ashok nagar
+M70,3,Guindy
+M70,4,Checkpost
+M70,5,Velacherry
+M70,6,Taramani
+M70,7,SRP
+M70,8,CMBT
+M70 xt,0,Thiruvanmi yur
+M70 xt,1,Thirumangalam
+M70 xt,2,CMBT
+M70 xt,3,Vadapalani
+M70 xt,4,Ashok nagar
+M70 xt,5,Guindy
+M70 xt,6,Checkpost
+M70 xt,7,Velacherry
+M70 xt,8,Taramani
+M70 xt,9,SRP tools
+M70 xt,10,Jayanthi
+M70 xt,11,Anna Nagar West
+T242,0,Thiruvanmi yur
+T242,1,Puzhal
+T242,2,Retteri
+T242,3,Kolathur
+T242,4,Perambur
+T242,5,Doveton
+T242,6,Vepery
+T242,7,Central R.S
+T242,8,Broadway
+T242,9,Marina
+T242,10,Santhome
+T242,11,Adyar
+T242,12,Padiyanallur
+154A,0,Thirunindr avur
+154A,1,Kosavapalayam
+154A,2,Pudhuchatiram
+154A,3,Vellavedu
+154A,4,Thirumazhisai
+154A,5,Poonamallee
+154A,6,Kumananchavadi
+154A,7,Iyyapanthangal
+154A,8,Porur
+154A,9,Guindy
+154A,10,Saidapet
+154A,11,T. Nagar
+54A,0,Thirunindr avur
+54A,1,Thirumazhisai
+54A,2,Vellavedu
+54A,3,Pudhuchatiram
+54A,4,Periyakottambedu
+54A,5,Kosavapalayam
+54A,6,Poonamallee
+71E,0,Thirunindr avur
+71E,1,Central R.S
+71E,2,New Avadi road
+71E,3,Nadhamuni
+71E,4,Ambattur I.E
+71E,5,Ambattur OT
+71E,6,Avadi
+71E,7,Broadway /Am battur I.E (NS)
+221H,0,Thirupporu r
+221H,1,LIC
+221H,2,DMS
+221H,3,Saidapet
+221H,4,IIT Chennai
+221H,5,Madhya Kailash
+221H,6,Tidel Park
+221H,7,Thoraipakkam
+221H,8,Sholinganallur
+221H,9,SIRUSERI
+221H,10,Kelambakkam
+221H,11,Central R.S
+568B,0,Thirupporu r
+568B,1,Sholinganallur
+568B,2,Kelambakkam
+568B,3,Velachery
+517T,0,Thirupporu r
+517T,1,Eachangadu
+517T,2,Kovilambakkam
+517T,3,Medavakkam Koot Road
+517T,4,Sholinganallur
+517T,5,Kelambakkam
+517T,6,Pallavaram
+519,0,Thirupporu r
+519,1,Saidapet
+519,2,Tidel park
+519,3,Sholinganallur
+519,4,Kelambakkam
+519,5,T. Nagar
+519 cut,0,Thirupporu r
+519 cut,1,SRP tools
+519 cut,2,Sholinganallur
+519 cut,3,Kelambakkam
+519 cut,4,Kalavakkam
+519 cut,5,Adyar
+521,0,Thirupporu r
+521,1,Marina
+521,2,Thiruvanmiyur
+521,3,Perungudi
+521,4,Sholi nganallur
+521,5,Kelambakkam
+521,6,"Broadway, Chennai"
+552K,0,Thirupporu r
+552K,1,Medavakkam
+552K,2,Sholinganallur
+552K,3,Kelamba kkam
+552K,4,Kilkattalai
+555,0,Thirupporu r
+555,1,Vandalur
+555,2,Kandigai
+555,3,Kelambakkam
+555,4,Tambaram
+555M,0,Thirupporu r
+555M,1,Kolapakkam
+555M,2,Mambakkam
+555M,3,Kayar
+555M,4,Vembedu
+555M,5,Tambaram
+555N,0,Thirupporu r
+555N,1,Guduvanchery
+555N,2,Tambaram
+566,0,Thirupporu r
+566,1,Anakaputhur
+566,2,Pammal
+566,3,Pallavaram
+566,4,Chromepet
+566,5,Tambaram Sanatorium
+566,6,Tambaram
+566,7,Vandalur
+566,8,Kandigai
+566,9,Mambakkam
+566,10,Pudhupakkam
+566,11,Chettinad Hospital
+566,12,Kelambakkam
+566,13,Kundrathur
+587,0,Thirupporu r
+587,1,Marina
+587,2,Thiruvamiyur
+587,3,ECR
+587,4,Kelambakka m
+587,5,Broadway
+505,0,Thiruvallur
+505,1,Alamadhi
+505,2,Tamaraipakkam
+505,3,Vishnuvakkam
+505,4,Moolakarai
+505,5,Ekkadu Kandigai
+505,6,Red Hills
+571,0,Thiruvallur
+571,1,Central R.S
+571,2,Taylors Road
+571,3,Nadhamuni
+571,4,Padi
+571,5,Ambattur IE
+571,6,Avadi
+571,7,Thirunindravur
+571,8,Vepampattu
+571,9,Sevapet
+571,10,Kakallur
+571,11,Broadway
+572,0,Thiruvallur
+572,1,Ambattur OT
+572,2,Avadi
+572,3,Pattabiram
+572,4,Thirunindravur
+572,5,Veppampattu
+572,6,Sevapet
+572,7,Kakallur
+572,8,Ambattur I.E
+572A,0,Thiruvallur
+572A,1,Pattabiram
+572A,2,Thirunindravur
+572A,3,Veppampattu
+572A,4,Sevapet
+572A,5,Kakallur
+572A,6,Avadi
+597,0,Thiruvallur
+597,1,Guindy
+597,2,Iyypanthangal
+597,3,Kumanan chavadi
+597,4,Poonamallee
+597,5,Thirumazhisai
+597,6,Vellavedu
+597,7,Nemam
+597,8,Pudhuchatiram
+597,9,Mettukandigai
+597,10,Arnavoyal kuppam
+597,11,Arnavoyal
+597,12,Murkancherry
+597,13,Manavalan Nagar
+597,14,T. Nagar/Mandav eli
+566A,0,Thiruvallur
+566A,1,Pallavaram
+566A,2,Pammal
+566A,3,Anakaputhur
+566A,4,Kundrathur
+566A,5,Mangadu
+566A,6,Kumanan chavadi
+566A,7,Poonamallee
+566A,8,Thirumazhisai
+566A,9,Vellavedu
+566A,10,Nemam
+566A,11,Pudhuchatiram
+566A,12,Mettukandigai
+566A,13,Arnavoyal kuppam
+566A,14,Arnavoyal
+566A,15,Murkancherry
+566A,16,Manavalan Nagar
+566A,17,Tambaram
+583A,0,Thiruvallur
+583A,1,Manavalan Nagar
+583A,2,Mel Nallathur
+583A,3,Kizh Nallathur
+583A,4,Polivakkam
+583A,5,Kattu Koot Road
+583A,6,Sriperumbudur
+596,0,Thiruvallur
+596,1,Koyambedu
+596,2,Nerkundram
+596,3,Madhuravoyal
+596,4,Kumanan chavadi
+596,5,Poonamallee
+596,6,Thirumazhisai
+596,7,Vellavedu
+596,8,Nemam
+596,9,Pudhuchatiram
+596,10,Mettukandigai
+596,11,Arnavoyal kuppam
+596,12,Arnavoyal
+596,13,Murkancherry
+596,14,Manavalan Nagar
+596,15,CMBT
+596P,0,Thiruvallur
+596P,1,Koyambedu
+596P,2,Nerkundram
+596P,3,Madhuravoyal
+596P,4,Kumanan chavadi
+596P,5,Poonamallee
+596P,6,Chembarabakkam
+596P,7,TSR Rajalakshmi Nagar
+596P,8,Mannur
+596P,9,Puduvallur Jn.
+596P,10,Sunnabukulam
+596P,11,Aranvoyal
+596P,12,Manavalan Nagar
+596P,13,CMBT
+M170,0,Thiruverka du
+M170,1,Velappan chavadi
+M170,2,Vanagaram
+M170,3,Maduravoyal
+M170,4,Nerkundram
+M170,5,Koyambedu Market
+M170,6,CMBT
+M170,7,Vadapalani
+M170,8,Ashok Pillar
+M170,9,Guindy
+M170,10,Checkpost
+M170,11,Velachery
+20K,0,Thiruverka du
+20K,1,Ambattur I.E
+20T,0,Thiruverka du
+20T,1,Ambattur I.E
+20T,2,Ayapakkam
+20T,3,Villivakkam
+27C,0,Thiruverka du
+27C,1,Panagal park
+27C,2,Bharathinagar
+27C,3,Liberty
+27C,4,Power house
+27C,5,Vadapalani
+27C,6,MMDA Colony
+27C,7,CMBT
+27C,8,Koyambedu Market
+27C,9,Nerkundram
+27C,10,Maduravoyal
+27C,11,Vanagaram
+27C,12,Velappan chavadi
+27C,13,T. Nagar
+29E,0,Thiruverka du
+29E,1,Otteri
+29E,2,Purasawakkam High Road
+29E,3,Kellys
+29E,4,Aminjikarai
+29E,5,Koyambedu
+29E,6,Nerkundram
+29E,7,Maduravoyal
+29E,8,Velappanchavadi
+29E,9,Perambur
+49R,0,Thiruverka du
+49R,1,Saidapet
+49R,2,Guindy
+49R,3,Ramapuram
+49R,4,Valasar awakkam
+49R,5,Maduravoyal
+49R,6,Velappan chavadi
+49R,7,T. Nagar
+50,0,Thiruverka du
+50,1,Central
+50,2,Dasaprakash
+50,3,KMC
+50,4,Amijikarai
+50,5,Arumbakkam
+50,6,Koyambedu
+50,7,Nerkundram
+50,8,Maduravoyal
+50,9,Vanagaram
+50,10,Velappan chavadi
+50,11,Broadway
+59,0,Thiruverka du
+59,1,Basinbridge
+59,2,Elephantgate
+59,3,Doveton
+59,4,Purasawakam
+59,5,KMC
+59,6,Aminjikarai
+59,7,Arumbakkam
+59,8,Maduravoyal
+59,9,Velappanchavadi
+59,10,V Nagar
+127B,0,Thiruverka du
+127B,1,Maduravoyal
+127B,2,KoyambeduMarket
+127B,3,Amijikarai
+127B,4,KMC
+127B,5,Chetpet
+127B,6,EgmoreR.S
+127B,7,Chindhatripet
+127B,8,Triplicane
+127B,9,Anna Square
+159,0,Thiruverka du
+159,1,Tollgate
+159,2,Tondiarpet
+159,3,V.Nagar
+159,4,Regal
+159,5,Choolai P.O.
+159,6,Purasawakkam High Road
+159,7,Kellys
+159,8,Aminjikarai
+159,9,Koyambedu
+159,10,Nerkundram
+159,11,Maduravoyal
+159,12,Velappanchavadi
+159,13,Thiruvottiyur
+170,0,Thiruverka du
+170,1,CMBT
+170,2,Vadapalani
+170,3,Guindy
+170,4,Pallavaram
+170,5,Chromepet
+170,6,Tambaram
+T553,0,Thiruverka du
+T553,1,Kumananchavadi
+T553,2,Poonamallee
+T553,3,Irrungattukottai
+T553,4,Sriperumbudur
+T553,5,Sung uvarchatiram
+T553,6,Kunnam
+1,0,Thiruvottiy ur
+1,1,Adyar
+1,2,Mylapore
+1,3,Royapettah
+1,4,Parry's Corner
+1,5,Kalmandapam
+1,6,Tollgate
+1,7,Rajaka dai
+1,8,Theradi
+1,9,Thiruvanmiyur
+1B,0,Thiruvottiy ur
+1B,1,Chromepet
+1B,2,Pallavaram
+1B,3,Guindy
+1B,4,Teynampet
+1B,5,D.M.S
+1B,6,L.I.C
+1B,7,Central R.S
+1B,8,Parry's Corner
+1B,9,Kalmandapam
+1B,10,Tollgate
+1B,11,Tambaram
+1G,0,Thiruvottiy ur
+1G,1,Saidapet
+1G,2,Annasalai
+1G,3,Parry's Corner
+1G,4,Kalmandapam
+1G,5,Tollgate
+1G,6,Velachery
+1G xt,0,Thiruvottiy ur
+1G xt,1,Velachery
+1G xt,2,Saidapet
+1G xt,3,TVS
+1G xt,4,LIC
+1G xt,5,Parry's Corner
+1G xt,6,Kalmandapam
+1G xt,7,Tollgate
+1G xt,8,Medavakkam
+1J,0,Thiruvottiy ur
+1J,1,Rajakadai
+1J,2,Tollgate
+1J,3,Kalmandappam
+1J,4,Pa rry's Corner
+1J,5,Central R.S
+1J,6,Triplicane
+4,0,Thiruvottiy ur
+4,1,Adyar
+4,2,Mylapore
+4,3,Luz
+4,4,Music Academy
+4,5,Royapettah
+4,6,LIC
+4,7,Central R.S
+4,8,Regal
+4,9,Vallalar Nagar
+4,10,Tondiarpet
+4,11,Tollgate
+4,12,Therady
+4,13,Thiruvanmiyur
+21H xt,0,Thiruvotriy ur
+21H xt,1,Tollgate
+21H xt,2,Broadway
+21H xt,3,Secretrariat
+21H xt,4,Anna Square
+21H xt,5,AIR
+21H xt,6,Santhome
+21H xt,7,Foreshore Estate
+21H xt,8,MRC Nagar
+21H xt,9,Adyar
+21H xt,10,SRP Tools
+21H xt,11,Perungudi
+21H xt,12,Sholinganallur
+21H xt,13,Navalu r
+21H xt,14,Kelambakkam
+28D,0,Thiruvottiy ur
+28D,1,Therady
+28D,2,Rajakadai
+28D,3,Tollgate
+28D,4,Tondiarpet
+28D,5,Vallalar nagar
+28D,6,Regal
+28D,7,Central
+28D,8,Zimson
+28D,9,LIC
+28D,10,TVS
+28D,11,Thousand Lights
+28D,12,DMS
+28D,13,Panagal park
+28D,14,T.Nagar
+34,0,Thiruvottiy ur
+34,1,Thirumangalam
+34,2,Rountana
+34,3,Chinthamani
+34,4,Kellys
+34,5,Purasaiwakkam
+34,6,Choolai P.O.
+34,7,Regal
+34,8,V.Nagar
+34,9,Tondiarpet
+34,10,Tollgate
+34,11,Therady
+34,12,Ambattur I.E
+34xt,0,Thiruvottiy ur
+34xt,1,Ambattur I.E
+34xt,2,Thirumangalam
+34xt,3,Rountana
+34xt,4,Chinthamani
+34xt,5,Kellys
+34xt,6,Purasaiwakkam
+34xt,7,Choolai P.O.
+34xt,8,Regal
+34xt,9,V.Nagar
+34xt,10,Tondiarpet
+34xt,11,Tollgate
+34xt,12,Therady
+34xt,13,Pattabiram
+119,0,Thiruvottri yur
+119,1,Broadway
+119,2,Marina Beach
+119,3,Thiruvanmiyur
+119,4,Injambakkam
+119,5,Kovalam
+134A,0,Thiruvottiy ur
+134A,1,Mogappair West
+138A,0,Thiruvottiy ur
+138A,1,Tondiarpet
+138A,2,Mint
+138A,3,Basin Bridge
+138A,4,Vyasarpadi
+138A,5,Moolakadai
+138A,6,TVK Nagar
+138A,7,Periyar Nagar
+156,0,Thiruvotriy ur
+156,1,Karanodai
+159,0,Thiruvottiy ur
+159,1,Tollgate
+159,2,Tondiarpet
+159,3,V.Nagar
+159,4,Regal
+159,5,Choolai P.O.
+159,6,Purasawakkam High Road
+159,7,Kellys
+159,8,Aminjikarai
+159,9,Koyambedu
+159,10,Nerkundram
+159,11,Maduravoyal
+159,12,Velappanchavadi
+159,13,Thiruverkadu
+159A,0,Thiruvotriy ur
+159A,1,Tollgate
+159A,2,Tondiarpet
+159A,3,V.Nagar
+159A,4,Regal
+159A,5,Choolai P.O.
+159A,6,Purasawakkam High Road
+159A,7,Kellys
+159A,8,Aminjikarai
+159A,9,Arumbakkam
+159A,10,CMBT
+159C,0,Thiruvottiy ur
+159C,1,Tollgate
+159C,2,Tondiarpet
+159C,3,V.Nagar
+159C,4,Regal
+159C,5,Choolai P.O.
+159C,6,Purasawakkam High Road
+159C,7,Kellys
+159C,8,Aminjikarai
+159C,9,Arumbakkam
+159C,10,Koyambedu Market
+556,0,Thiruvottiy ur
+556,1,Ernavoor Gate
+556,2,Sathiyamoorthy Nagar
+556,3,Andakuppam
+556,4,Athipattu Pudhunagar
+556,5,Ennore Thermal PowerStation
+556,6,L&T Harbour
+556,7,Kattupalli Village
+556,8,Kattupalli
+38D,0,Tiruvottiyu r
+38D,1,Parvathy Nagar (Kodungaiyur)
+56T,0,Tiruvottiyu r
+56T,1,MFL
+56T,2,Madhavaram
+28,0,Thiruvotriy ur
+28,1,Tollgate
+28,2,Tondiarpet
+28,3,Vallalarnagar
+28,4,Regal
+28,5,Central RS
+28,6,Chindatripet
+28,7,Egmore R.S
+595A,0,Thiruvottiy ur
+595A,1,Sathyamoorthy nagar
+595A,2,Minjur
+595A,3,Kadapakkam
+595A,4,Thathanmanji
+595A,5,Perliyambakkam
+595A,6,Pulicut
+595A,7,Pazhaverkadu
+T47,0,Tidel Park
+T47,1,Madiakailash
+T47,2,Saidapet
+T47,3,T. Nagar
+T47,4,Anna Hospital
+T47,5,ICF
+T47,6,Villivakkam
+6A,0,Tollgate
+6A,1,Adyar
+6A,2,Foreshore Estate
+6A,3,Triplicane
+6A,4,Parry's Corner
+6A,5,Maharani
+6A,6,Washermanpet
+6A,7,Besant Nagar
+8A,0,Tollgate
+8A,1,Tondiarpet
+8A,2,V.Nagar
+8A,3,Regal
+8A,4,Choolai P.O
+8A,5,Otteri
+8A,6,Jamalaya
+8A,7,Venus
+8A,8,Periyar Nagar
+10A,0,Tollgate
+10A,1,Kal mandapam
+10A,2,Parrys
+10A,3,Central R.S
+10A,4,Egmore R.S
+10A,5,Maternity Hospital
+10A,6,DPI
+10A,7,Sterling road
+10A,8,Valluvar Kottam
+10A,9,Panagal park
+10A,10,T.Nagar
+10A,11,Srinivasa Theater
+10A,12,Mettupalayam
+10A,13,Saidapet West
+32A,0,Tollgate
+32A,1,Maharani
+32A,2,Tondiarpet
+32A,3,Vallalar nagar
+32A,4,Broadway
+32A,5,Central R.S.
+32A,6,Triplicane
+32A,7,V.House
+32A,8,AIR
+32A,9,Santhome
+32A,10,Foreshore Estate
+159B,0,Tollgate
+159B,1,Tondiarpet
+159B,2,V.Nagar
+159B,3,Regal
+159B,4,Choolai P.O.
+159B,5,Purasawakkam High Road
+159B,6,Kellys
+159B,7,Aminjikarai
+159B,8,Arumbakkam
+159B,9,CMBT
+6D,0,Tollgate
+6D,1,Besant Nagar
+6D,2,Foreshore Estate
+6D,3,Parry's Corner
+6D,4,Thiruvanmiyur
+595,0,Tollgate
+595,1,Thiruvottriyur
+595,2,Sathyamoorthy nagar
+595,3,Minjur
+595,4,Kadapakkam
+595,5,Thathanmanji
+595,6,Perliyambakkam
+595,7,Pulicut
+595,8,Pazhaverkadu
+24A,0,V House
+24A,1,Shanthi Colony
+24A,2,K4 Police station
+24A,3,Chinthamani
+24A,4,Aminijikarai
+24A,5,Chetpet
+24A,6,Gemini
+24A,7,Royapetah
+24A,8,Anna Nagar West
+24C,0,V House
+24C,1,Ambattur OT
+24C,2,Collector Nagar
+24C,3,Blue Star
+24C,4,Chinthamani
+24C,5,Aminijikarai
+24C,6,Chetpet
+24C,7,Gemini
+24C,8,Royapetah
+24C,9,Avadi
+32,0,V. House
+32,1,Broadway
+32,2,Central R.S.
+32,3,Simpson
+32,4,Vallalar Nagar
+32B,0,V. House
+32B,1,Vallalar nagar
+32B,2,Broadway
+32B,3,Central R.S.
+32B,4,Simpson
+32B,5,Korukkupet
+12,0,Vivekanand a House
+12,1,Teynampet
+12,2,Alwarpet
+12,3,Luz
+12,4,Chennai Citi Centre
+12,5,T.Nagar
+29D,0,V House
+29D,1,Madhavaram Milk colony
+29D,2,Thapal petti
+29D,3,Moolakadai
+29D,4,Perambur
+29D,5,Otteri
+29D,6,Devoton
+29D,7,Egmore
+29D,8,Pudhupet
+29D,9,Walaja Road
+29D,10,Mathur MMDA
+38C,0,V House
+38C,1,Venus
+38C,2,Perambur
+38C,3,Pattalam
+38C,4,Bhuvaneswari
+38C,5,Doveton
+38C,6,Choolai P.O
+38C,7,Central R.S
+38C,8,Simpson
+38C,9,Adam market
+38C,10,Triplicane P.O
+38C,11,TVK Nagar
+45A,0,V.House
+45A,1,Saidapet
+45A,2,Nandanam
+45A,3,Adyar Gate
+45A,4,Velachery
+37D,0,V Nagar
+37D,1,Regal
+37D,2,Choolai P.O.
+37D,3,Purasaivakkam
+37D,4,KMC
+37D,5,Chetpet
+37D,6,Ste rling road
+37D,7,Valluvarkottam
+37D,8,Liberty
+37D,9,Samiarmadam
+37D,10,Udhayam
+37D,11,Nesapakkam
+37D,12,MGR Nagar
+37D,13,KK Nagar
+56A,0,V Nagar
+56A,1,Ennore
+56W,0,V Nagar
+56W,1,Tondiarpet
+56W,2,Thiruvottriyur
+56W,3,MFL
+56W,4,Madhavaram
+57,0,V Nagar
+57,1,Basin Bridge
+57,2,Vyasarpadi
+57,3,Moolakadai
+57,4,Puzhal
+57,5,Red Hills
+59,0,V Nagar
+59,1,Basinbridge
+59,2,Elephantgate
+59,3,Doveton
+59,4,Purasawakam
+59,5,KMC
+59,6,Aminjikarai
+59,7,Arumbakkam
+59,8,Maduravoyal
+59,9,Velappanchavadi
+59,10,Thiruverkadu
+248,0,V Nagar
+248,1,Ambattur
+248,2,Ambattur IE
+248,3,Padi
+248,4,Nadhamuni
+248,5,ICF
+248,6,Joint Office
+248,7,Otteri
+248,8,Pattalam
+248,9,Pulianthopu Police station
+248,10,Basin Bridge
+248,11,Pudur
+248xt,0,V Nagar
+248xt,1,Ambattur
+248xt,2,Ambattur IE
+248xt,3,Padi
+248xt,4,Lucas TVS
+248xt,5,ICF
+248xt,6,Joint Office
+248xt,7,Otteri
+248xt,8,Basin Bridge
+248xt,9,Oragadam
+248A,0,V Nagar
+248A,1,Pudur
+248A,2,Kallikuppam
+248P,0,V Nagar
+248P,1,Pudur
+248P,2,Puthagaram
+547,0,V Nagar
+547,1,Basin Bridge
+547,2,Vyasarpadi
+547,3,Moolakadai
+547,4,Puzhal
+547,5,Red Hills
+547,6,Karanodai
+547,7,Siruvapuri
+547,8,Periyapalayam
+547A,0,V Nagar
+547A,1,Basin Bridge
+547A,2,Vyasarpadi
+547A,3,Moolakadai
+547A,4,Puzhal
+547A,5,Red Hills
+547A,6,Karanodai
+547A,7,Akarambakkam
+547A,8,Arani
+547A,9,Kosavampettai
+547A,10,Periyapalayam
+557A,0,V Nagar
+557A,1,Basin Bridge
+557A,2,Vyasarpadi
+557A,3,Moolakadai
+557A,4,Puzhal
+557A,5,Red Hills
+557A,6,Karanodai
+557A,7,Thachur Koot Road
+557A,8,Puduvayal
+557A,9,Kavarapettai
+557A,10,Rettambedu
+558P,0,V.Nagar
+558P,1,Vysarpadi
+558P,2,Moolakadai
+558P,3,Madhavaram
+558P,4,Redhills
+558P,5,Karanodai
+558P,6,Ponneri
+558P,7,Chinnakuvanam
+558P,8,Perumbedu
+558P,9,Perumbedukup pam
+592,0,V Nagar
+592,1,Basin Bridge
+592,2,Vyasarpadi
+592,3,Moolakadai
+592,4,Puzhal
+592,5,Red Hills
+592,6,Karanodai
+592,7,Janappan Chathram x road
+592,8,Bandikavanoor
+592,9,Kannigaipair
+592,10,Periyapalayam
+592G,0,V Nagar
+592G,1,Basin Bridge
+592G,2,Vyasarpadi
+592G,3,Moolakadai
+592G,4,Puzhal
+592G,5,Red Hills
+592G,6,Karanodai
+592G,7,Pandy Kavanoor Rd JN
+592G,8,Kannigaipair
+592G,9,Periyapalayam
+592V,0,V Nagar
+592V,1,Basin Bridge
+592V,2,Vyasarpadi
+592V,3,Moolakadai
+592V,4,Puzhal
+592V,5,Red Hills
+592V,6,Karanodai
+592V,7,Poorivakkam
+592V,8,Vengal
+11A,0,Vallalar Nagar
+11A,1,Annasalai
+11A,2,Central R.S
+11A,3,Parry's Corner
+11A,4,Stanley Hospital
+11A,5,T.Nagar
+M11A,0,Vallalar Nagar
+M11A,1,Pangal Park
+M11A,2,Annasalai
+M11A,3,Central R.S
+M11A,4,Parry's Corner
+M11A,5,Rengarajapuram
+532,0,Vallalar Nagar
+532,1,Basin Bridge
+532,2,Vyasarpadi
+532,3,Moolakadai
+532,4,Puzhal
+532,5,Red Hills
+532,6,Karanodai
+532,7,Arani
+532,8,Periyapalayam
+32,0,Vallalar Nagar
+32,1,Broadway
+32,2,Central R.S.
+32,3,Simpson
+32,4,V. House
+37G,0,V Nagar
+37G,1,Regal
+37G,2,Choolai P.O.
+37G,3,Purasaivakkam
+37G,4,KMC
+37G,5,Chetpet
+37G,6,Ste rling road
+37G,7,Valluvarkottam
+37G,8,Liberty
+37G,9,Vadapalani
+37G,10,Porur
+37G,11,SRMC
+37G,12,Iyyapanthangal
+48,0,Vallalar Nagar
+48,1,ICF
+48,2,Railway Quarters
+48,3,Joint Office
+48,4,Sayani
+48,5,Otterri
+48,6,Basin Bridge
+48,7,Villivakkam
+48C,0,Vallalar Nagar
+48C,1,Thirumangalam
+48C,2,Anna Nagar West
+48C,3,Nadhamuni
+48C,4,ICF
+48C,5,Railway Quarters
+48C,6,Joint Office
+48C,7,Sayani
+48C,8,Otterri
+48C,9,Basin Bridge
+48C,10,CMBT
+54S,0,Vadaku Malaiyamb akkam
+54S,1,Poonamallee
+54S,2,Kumanan chavadi
+54S,3,Iyyppanthangal
+54S,4,Porur
+54S,5,Guindy
+54S,6,Saidapet
+54S,7,T.Nagar
+5E,0,Vadapalani
+5E,1,Nesapakkam
+5E,2,MGR Nagar
+5E,3,KK Nagar
+5E,4,Ashok pillar
+5E,5,Jafferkhanpet
+5E,6,Mettupalayam
+5E,7,Srinivasa theater
+5E,8,CIT nagar
+5E,9,Saidapet
+5E,10,Anna University
+5E,11,Adyar
+5E,12,Vannanthurai
+5E,13,Velankkani church
+5E,14,Besant Nagar
+5T,0,Vadapalani
+5T,1,Saidapet
+5T,2,T.Nagar
+5T,3,Ashok pillar
+5T,4,K.K.Nagar
+5T,5,Taramani
+17P,0,Vadapalani
+17P,1,Mangadu
+17P,2,Porur
+17P,3,Virugambakkam
+17P,4,Pattur
+G70,0,Vadapalani
+G70,1,Udhayam Theater
+G70,2,Pallavaram
+G70,3,Tambaram
+G70,4,Vandalur Zoo
+G70,5,Guduvanchery
+501,0,Vadapalani
+501,1,Virugamabakkam
+501,2,Valasarawakkam
+501,3,Porur
+501,4,Iyyapanthangal
+501,5,Kumananchavadi
+501,6,Poonamallee
+501,7,Thirumazhisai
+501,8,Nemam
+501,9,Manavalan Nagar
+501,10,Thiruvallur
+501,11,Poondi
+538,0,Vadapalani
+538,1,Virugamabakkam
+538,2,Valasarawakkam
+538,3,Porur
+538,4,Iyyapanthangal
+538,5,Kumananchavadi
+538,6,Poonamallee
+538,7,Thirumazhisai
+538,8,Nemam
+538,9,Manavalan Nagar
+538,10,Thiruvallur
+538,11,Thirupatchur
+538,12,Kadambathur
+12B,0,Vadapalani
+12B,1,Kodambakkam
+12B,2,Pondy Bazaar
+12B,3,Alwarpet
+12B,4,Luz
+12B,5,Santhome
+12B,6,Foreshore Estate
+15F,0,Vadapalani
+15F,1,Virugambakkam
+15F,2,Chinmaya nagar
+15F,3,Koyambedu Market
+15F,4,CMBT
+15F,5,Amijikarai
+15F,6,KMC
+15F,7,Dasaprakash
+15F,8,Central R.S
+15F,9,Broadway
+17,0,Vadapalani
+17,1,Central
+17,2,Chindatripet
+17,3,Egmore RS
+17,4,Chetpet
+17,5,Sterling road
+17,6,Loyola college
+17,7,Kodambakkam
+17,8,Broadway
+37,0,Vadapalani
+37,1,Regal
+37,2,Choolai P.O.
+37,3,Purasaivakkam
+37,4,KMC
+37,5,Chetpet
+37,6,Ste rling road
+37,7,Valluvarkottam
+37,8,Liberty
+37,9,V Nagar
+37C,0,Vadapalani
+37C,1,Kambar Arangam
+37C,2,Ayanavara
+37C,3,Kellys
+37C,4,Purasaiwak kam
+37C,5,Egmore
+37C,6,DPI
+37C,7,Sterling Road
+37C,8,Valluvarkottam
+37C,9,Liberty
+37C,10,Villivakkam
+37E,0,Vadapalani
+37E,1,Vysarpadi
+37E,2,V Nagar
+37E,3,Regal
+37E,4,Choolai P.O.
+37E,5,Purasaiwakkam
+37E,6,Egmore
+37E,7,DPI
+37E,8,Sterling Road
+37E,9,Valluvarkottam
+37E,10,Liberty
+37E,11,M.K.B Nagar
+M88,0,Vadapalani
+M88,1,Porur
+M88,2,Kundrathur
+578A,0,Vadapalani
+578A,1,Virugambakkam
+578A,2,Valasarawakkam
+578A,3,Porur
+578A,4,Kovoor
+578A,5,Kundrathur
+578A,6,Somangalam
+578A,7,Nallur
+578A,8,Sumtheramedu Koot road
+578A,9,Pillaipakkam
+578A,10,Pattunool
+578A,11,Sriperumbudur
+591B,0,Vadapalani
+591B,1,Virugambakkam
+591B,2,Porur
+591B,3,Poonamallee
+591B,4,Thandalam
+591B,5,Mannur
+591B,6,Kattukoot rd
+591B,7,Mappedu
+591B,8,Perambakkam
+A18,0,Vandalur Zoo
+A18,1,LIC
+A18,2,TVS
+A18,3,Saidapet
+A18,4,Guindy
+A18,5,Pallavaram
+A18,6,Chromepet
+A18,7,Tambaram
+A18,8,High Court
+B18,0,Vandalur Zoo
+B18,1,Broadway
+B18,2,LIC
+B18,3,TVS
+B18,4,Saidapet
+B18,5,Guindy
+B18,6,Pallavaram
+B18,7,Tambaram
+B18,8,Korukkupet
+170T,0,Vandalur Zoo
+170T,1,MR Nagar
+170T,2,Moolakadai
+170T,3,Retteri
+170T,4,Thirumangalam
+170T,5,CMBT
+170T,6,Vadapalani
+170T,7,Guindy
+170T,8,Pallavaram
+170T,9,Tambaram
+170T,10,Kaviarasu Kannadasan Nagar
+515V,0,Vandalur
+515V,1,Mambakkam
+515V,2,Kelambakkam
+A21,0,Vandalur Zoo
+A21,1,SRP Tools
+A21,2,Thorapakkam
+A21,3,Redial Road
+A21,4,Kamatchi Hospital
+A21,5,Eechangadu
+A21,6,Pallavaram
+A21,7,Chromepet
+A21,8,Tambaram
+A21,9,Perugalathur
+A21,10,Thiruvanmiyur
+PP66,0,Vandalur Zoo
+PP66,1,Tambaram
+PP66,2,Chromepet
+PP66,3,Pallavaram
+PP66,4,Pammal
+PP66,5,Anakaputhur
+PP66,6,Kundrathur
+PP66,7,Mangadu
+PP66,8,Karaiyanchavadi
+PP66,9,Poonamallee
+70A,0,Vandalur Zoo
+70A,1,Tambaram
+70A,2,Avadi
+114,0,Vandalur Zoo
+114,1,Tambaram
+114,2,Pallavaram
+114,3,Guindy
+114,4,Ashok nagar
+114,5,Vadapalani
+114,6,CMBT
+114,7,Thirumangalam
+114,8,Anna nagar west
+114,9,Padi
+114,10,Thathankuppam
+114,11,Kolathur
+114,12,Red Hills
+170A,0,Vandalur Zoo
+170A,1,Thapal petti
+170A,2,Moolakadai
+170A,3,Retteri
+170A,4,Thirumangalam
+170A,5,CMBT
+170A,6,Vadapalani
+170A,7,Guindy
+170A,8,Pallavaram
+170A,9,Tambaram
+170A,10,Madhavaram
+170L,0,Vandalur Zoo
+170L,1,Tambaram
+170L,2,Pallavaram
+170L,3,Guindy
+170L,4,Vadapalani
+170L,5,CMBT
+170L,6,Anna Nagar
+170L,7,Padi
+170L,8,Ambattur I.E
+170L,9,Ambattur OT
+170L,10,Pudur
+170L,11,Kallikuppam
+M14A,0,Velachery
+M14A,1,Vanuvampettai
+M14A,2,Madipakkam
+M14A,3,Kilkattalai
+M14A,4,Medavakkam Koot Road
+19V,0,Velachery
+19V,1,Taramani
+19V,2,SRP Tools
+19V,3,Jayanthi
+19V,4,Thiruvanmiyur
+19V,5,Injambakkam
+19V,6,MGM
+19V,7,Muttukadu
+19V,8,Kovalam
+21J,0,Velachery
+21J,1,Pallikkaranai
+21J,2,Medavakkam
+21J,3,Kamarajapuram
+21J,4,Camp Road
+21J,5,Poondi Bazar
+21J,6,Tambaram Sanatorium
+21J,7,Tambaram West
+21J,8,Vandalur
+21J,9,Guduvanchery
+21J cut,0,Velachery
+21J cut,1,Pallikkaranai
+21J cut,2,Medavakkam
+21J cut,3,Kamarajapuram
+21J cut,4,Camp Road
+21J cut,5,Poondi Bazar
+21J cut,6,Tambaram Sanatorium
+21J cut,7,Tambaram West
+21P,0,Velachery
+21P,1,Madipakkam
+21P,2,Kilkattalai
+21P,3,Eachangadu
+21P,4,Chromepet
+21P,5,Tambaram
+M21,0,Velachery
+M21,1,Narayanapuram
+M21,2,Pallikaranai
+M21,3,Medavakkam
+M21,4,Camp Road
+M21,5,Tambaram East
+M21,6,Tambaram West
+M21 cut,0,Velachery
+M21 cut,1,Narayanapuram
+M21 cut,2,Pallikaranai
+M21 cut,3,Medavakkam
+M21 cut,4,Medavakkam Koot Road
+M21B,0,Velachery
+M21B,1,Narayanapuram
+M21B,2,Pallikaranai
+M21B,3,Medavakkam
+M21B,4,Santhosapuram
+M21B,5,Sembakkam
+M21B,6,Thirumalai Nagar
+M21B,7,Hasthinapuram
+M21B,8,Chromepet
+23V,0,Velachery
+23V,1,ICF
+23V,2,Ayanavaram
+23V,3,Purasaiwakkam
+23V,4,Egmore
+23V,5,LIC
+23V,6,TVS
+23V,7,Saidapet
+23V,8,Check post
+23V,9,Villivakkam
+29N,0,Velachery
+29N,1,Saidapet
+29N,2,T. Nagar
+29N,3,DMS
+29N,4,Gemini
+29N,5,Sterling Road/College Road
+29N,6,KMC
+29N,7,Perambur
+B29N,0,Velachery
+B29N,1,Saidapet
+B29N,2,T. Nagar
+B29N,3,DMS
+B29N,4,Gemini
+B29N,5,Sterling Road/College Road
+B29N,6,KMC
+B29N,7,Doveton
+B29N,8,Perambur
+B29N,9,Venus
+B29N,10,Periyar nagar
+45A,0,Velachery
+45A,1,Saidapet
+45A,2,Nandanam
+45A,3,Adyar Gate
+45A,4,V.House
+M45A,0,Velachery
+M45A,1,Saidapet
+M45A,2,Nandanam
+M45A,3,Adyar Gate
+M45A,4,Anna Square
+170M,0,Velachery
+170M,1,Madhavaram Milk colony
+170M,2,Thapal petti
+170M,3,Moolakadai
+170M,4,TVK Nagar
+170M,5,Retteri
+170M,6,Thirumangalam
+170M,7,CMBT
+170M,8,Vadapalani
+170M,9,Ashok pillar
+170M,10,Guindy
+170M,11,Checkpost
+170M,12,Manali
+551,0,Velachery
+551,1,Medavakkam
+551,2,Sithalapakkam Koot road
+551,3,Kovilancherry
+551,4,Madurapakkam
+551,5,Ponmar
+551,6,Mambakkam
+551,7,Kayar
+551,8,Vembedu
+551,9,Chembakkam Village
+551,10,T. Acharavakkam
+552,0,Velachery
+552,1,Guindy
+552,2,Maraimalai Nagar
+1G,0,Velachery
+1G,1,Saidapet
+1G,2,Annasalai
+1G,3,Parry's Corner
+1G,4,Kalmandapam
+1G,5,Tollgate
+1G,6,Thiruvottiyur
+5R,0,Velachery
+5R,1,Guindy
+5R,2,N.G.O. Colony
+5R,3,St.Thomas Mount
+5R,4,Vanuvampet
+5R,5,Velachery MRTS
+5R,6,Saidapet
+21L,0,Velachery
+21L,1,Marina Beach
+21L,2,Foreshore Estate
+21L,3,MRC Nagar
+21L,4,Adyar
+21L,5,Anna University
+21L,6,Rajbhavan
+21L,7,Checkpost
+21L,8,Dhandeswarnagar
+21L,9,Broadway
+L21,0,Velachery
+L21,1,Marina Beach
+L21,2,Foreshore Estate
+L21,3,MRC Nagar
+L21,4,Adyar
+L21,5,SRP Tools
+L21,6,Broadway
+V51 cut,0,Velachery
+V51 cut,1,Ram Nagar
+V51 cut,2,Madipakkam
+V51 cut,3,Kilkattalai
+V51 cut,4,Kovilambakkam
+V51 cut,5,Medavakkam Koot Road
+V51 cut,6,Kamarajapuram
+V51 cut,7,Camp Road
+V51 cut,8,Tambaram West
+70W,0,Velachery
+70W,1,Wavin
+70W,2,Collector Nagar
+70W,3,CMBT
+70W,4,Vadapalani
+70W,5,Ashok Pillar
+70W,6,Guindy
+70W,7,Mugappair West
+D70,0,Velachery
+D70,1,Collector Nagar
+D70,2,CMBT
+D70,3,Vadapalani
+D70,4,Ashok nagar
+D70,5,Guindy
+D70,6,Checkpost
+D70,7,Velachery Bypass road
+D70,8,Ambattur I.E
+D70 xt,0,Velachery
+D70 xt,1,Avadi
+D70 xt,2,Ambattur O.T
+D70 xt,3,Ambattur I.E
+D70 xt,4,Pattabiram
+M170,0,Velachery
+M170,1,Velappan chavadi
+M170,2,Vanagaram
+M170,3,Maduravoyal
+M170,4,Nerkundram
+M170,5,Koyambedu Market
+M170,6,CMBT
+M170,7,Vadapalani
+M170,8,Ashok Pillar
+M170,9,Guindy
+M170,10,Checkpost
+M170,11,Thiruverkadu
+500J,0,Velachery
+500J,1,Pallikkaranai
+500J,2,Medavakkam
+500J,3,Kamarajapuram
+500J,4,Camp Road
+500J,5,Tambaram East
+500J,6,Tambaram West
+500J,7,Vandalur Zoo
+500J,8,Chengalpattu
+500V,0,Velachery
+500V,1,Guindy
+500V,2,Pallvaram
+500V,3,Tambaram West
+500V,4,Vandalur Zoo
+500V,5,Chengalpattu
+568B,0,Velachery
+568B,1,Sholinganallur
+568B,2,Kelambakkam
+568B,3,Thirupporur
+579V,0,Velachery
+579V,1,Mudichur
+579V,2,Tambaram
+579V,3,Chromepet
+579V,4,Eachangadu
+579V,5,Kilkattalai
+579V,6,Madipakkam
+579V,7,Ram Nagar
+579V,8,Padappai
+154E,0,Vellavedu
+154E,1,Poonamallee
+154E,2,Kumananchavadi
+154E,3,Porur
+154E,4,Guindy
+154E,5,Ekkaduthangal
+54L,0,Vellavedu
+54L,1,Poonamallee
+54L,2,Kumananchavadi
+54L,3,SRMC
+54L,4,Porur
+54L,5,Guindy
+54L,6,Saidapet
+54L,7,DMS
+54L,8,TVS
+54L,9,LIC
+54L,10,Central R.S
+54L,11,High Court
+G54,0,Vellavedu
+G54,1,Poonamallee
+G54,2,Kumananchavadi
+G54,3,SRMC
+G54,4,Porur
+G54,5,Guindy
+G54,6,Saidapet
+G54,7,T.Nagar
+253,0,Vellavedu
+253,1,NSK
+253,2,Mathuravoyal
+253,3,Vellapanchavadi
+253,4,Kumananchavadi
+253,5,Poonamallee
+253,6,Thirumazhisai
+253,7,Aminjikarai
+70P,0,Veppampat tu
+70P,1,Thirunindravur
+70P,2,Avadi
+70P,3,Ambattur OT
+70P,4,Collector Nagar
+70P,5,CMBT
+70P,6,Liberty
+70P,7,T. Nagar
+40A xt,0,Veppampat tu
+40A xt,1,KMC
+40A xt,2,Aminijikarai
+40A xt,3,Chinthamani
+40A xt,4,Blue Star
+40A xt,5,Collector Nagar
+40A xt,6,Ambattur OT
+40A xt,7,Avadi
+40A xt,8,Pattabiram
+40A xt,9,Thirunindravur
+40A xt,10,Egmore
+54V,0,Veppampat tu
+54V,1,Sri ram Engg college
+54V,2,Perumalpattu
+54V,3,Ramasamy nagar
+54V,4,Periyakottambedu
+54V,5,Pudhuchatiram
+54V,6,Vellavedu
+54V,7,Poonamallee
+54V,8,Kumananchavadi
+54V,9,SRMC
+54V,10,Porur
+54V,11,Guindy
+54V,12,Saidapet
+54V,13,T.Nagar
+70E,0,Veppampat tu
+70E,1,Collector Nagar
+70E,2,Ambattur OT
+70E,3,Avadi
+70E,4,Pattabiram
+70E,5,Thirunindravur
+70E,6,CMBT
+20T,0,Villivakka m
+20T,1,Ambattur I.E
+20T,2,Ayapakkam
+20T,3,Thiruverkadu
+37C,0,Villivakka m
+37C,1,Kambar Arangam
+37C,2,Ayanavara
+37C,3,Kellys
+37C,4,Purasaiwak kam
+37C,5,Egmore
+37C,6,DPI
+37C,7,Sterling Road
+37C,8,Valluvarkottam
+37C,9,Liberty
+37C,10,Vadapalani
+48,0,Villivakka m
+48,1,ICF
+48,2,Railway Quarters
+48,3,Joint Office
+48,4,Sayani
+48,5,Otterri
+48,6,Basin Bridge
+48,7,Vallalar Nagar
+70T,0,Villivakka m
+70T,1,Nadhamuni
+70T,2,Thirumangalam
+70T,3,CMBT
+70T,4,Vadapalani
+70T,5,Guindy
+70T,6,Pallavaram
+70T,7,Tambaram
+20,0,Villivakka m
+20,1,Broadway
+23V,0,Villivakka m
+23V,1,ICF
+23V,2,Ayanavaram
+23V,3,Purasaiwakkam
+23V,4,Egmore
+23V,5,LIC
+23V,6,TVS
+23V,7,Saidapet
+23V,8,Check post
+23V,9,Velachery
+27D,0,Villivakka m
+27D,1,Santhome
+27D,2,AIR
+27D,3,V.M.Street
+27D,4,Stella Maris College
+27D,5,Thousand Lights
+27D,6,LIC
+27D,7,Pudhupet
+27D,8,Maternity Hospital
+27D,9,Egmore RS
+27D,10,Dasaprakash
+27D,11,Purasaiwakkam
+27D,12,Kellys
+27D,13,Ayanavaram
+27D,14,ICF
+27D,15,Foreshore Estate
+47,0,Villivakka m
+47,1,T.Nagar
+47,2,Valluvar Kottam
+47,3,Pushpa nagar
+47,4,Loyola college
+47,5,Anna Nagar East
+47,6,Thiruvanmiyur/ Adyar
+47B,0,Villivakka m
+47B,1,Avvai Home
+47B,2,Adyar B.S
+47B,3,T.Nagar
+47B,4,Anna Nagar East
+47B,5,Besant Nagar
+T47,0,Villivakka m
+T47,1,Madiakailash
+T47,2,Saidapet
+T47,3,T. Nagar
+T47,4,Anna Hospital
+T47,5,ICF
+T47,6,Tidel Park
+65V,0,Villivakka m
+65V,1,Nadhamuni
+65V,2,Padi
+65V,3,Ambattur I.E
+65V,4,Ambattur OT
+65V,5,Avadi
+65V,6,Karaiyanchavadi
+65V,7,Poonamallee
+29,0,Vinayagapu ram
+29,1,Kolahur
+29,2,Agaram
+29,3,Venus
+29,4,Ptaaalam
+29,5,Doveton
+29,6,Egmore
+29,7,L.I.C
+29,8,Royapettah
+29,9,Luz
+29,10,Mylapore
+29,11,Mandaveli
+142,0,Vinayagapu ram
+142,1,Perambur
+9M,0,T.Nagar
+9M,1,Saidapet
+9M,2,Guindy
+9M,3,NGO Colony
+9M,4,Brindavan nagar
+9M,5,Kakkan Bridge
+9M,6,T.Nagar
+519A,0,Aalathur IE
+519A,1,Saidapet
+519A,2,Tidel park
+519A,3,Sholinganallur
+519A,4,Kelambakkam
+519A,5,Thirupporur
+519A,6,T. Nagar
+519A cut,0,Aalathur IE
+519A cut,1,SRP tools
+519A cut,2,Sholinganallur
+519A cut,3,Kelambakkam
+519A cut,4,Thirupporur
+519A cut,5,Adyar
+54F xt,0,Agaram Mel
+54F xt,1,Poonamallee
+54F xt,2,Kumananchavadi
+54F xt,3,Iyyapanthangal
+54F xt,4,Porur
+54F xt,5,Guindy
+54F xt,6,Adayar
+54F xt,7,Mylapore
+88R,0,Amarambe du
+88R,1,Gunidy
+88R,2,Porur
+88R,3,Kundrathur
+88R,4,Somangalam
+88R,5,High Court
+M89T,0,Amarambe du
+M89T,1,Porur
+M89T,2,Kundrathur
+M89T,3,Iyyapanthangal
+170R,0,Andarkupp am
+170R,1,Thirumangalam
+170R,2,Madhavaram
+170R,3,Kosappur
+170R,4,CMBT
+A1,0,Central R.S
+A1,1,Adyar
+A1,2,Mylapore
+A1,3,Royapettah
+A1,4,Thiruvanmiyur
+A1 xt,0,Central R.S
+A1 xt,1,SRP Tools
+A1 xt,2,Thiruvanmiyur
+A1 xt,3,Adyar
+A1 xt,4,Mylapor e
+A1 xt,5,Royapettah
+A1 xt,6,Okkiam Thorapakkam
+M21C,0,Central R.S
+M21C,1,Thoraipakkam
+M21C,2,Perungudi
+M21C,3,Thiruvanmiyur
+M21C,4,Adayar
+M21C,5,Mandaveli
+M21C,6,Kannagi Nagar
+221H,0,Central R.S
+221H,1,LIC
+221H,2,DMS
+221H,3,Saidapet
+221H,4,IIT Chennai
+221H,5,Madhya Kailash
+221H,6,Tidel Park
+221H,7,Thoraipakkam
+221H,8,Sholinganallur
+221H,9,SIRUSERI
+221H,10,Kelambakkam
+221H,11,Thirupporur
+221H,0,Central R.S
+221H,1,LIC
+221H,2,DMS
+221H,3,Saidapet
+221H,4,IIT Chennai
+221H,5,Madhya Kailash
+221H,6,Tidel Park
+221H,7,Thoraipakkam
+221H,8,Sholinganallur
+221H,9,SIRUSERI
+221H,10,Kelambakkam
+19D,0,Chemmenc hery
+19D,1,Thiruvanmiyur
+19D,2,SRP
+19D,3,Perungudi
+19D,4,Adyar
+H21,0,Chemmenc hery
+H21,1,Secretrariat
+H21,2,Anna Square
+H21,3,AIR
+H21,4,Santhome
+H21,5,Foreshore Estate
+H21,6,MRC Nagar
+H21,7,Adyar
+H21,8,SRP Tools
+H21,9,Perungudi
+H21,10,Sholinganallur
+H21,11,Broadway
+G21,0,Chromepet
+G21,1,Secretariat
+G21,2,Kannaki Statue
+G21,3,QMC
+G21,4,Kalyani Hospital
+G21,5,Sanskrit College
+G21,6,Luz
+G21,7,Mylapore
+G21,8,Mandaveli BS
+G21,9,Adyar Gate
+G21,10,Kotturpuram
+G21,11,Anna university
+G21,12,Guindy
+G21,13,Pallavaram
+G21,14,Broadway
+M21B,0,Chromepet
+M21B,1,Narayanapuram
+M21B,2,Pallikaranai
+M21B,3,Medavakkam
+M21B,4,Santhosapuram
+M21B,5,Sembakkam
+M21B,6,Thirumalai Nagar
+M21B,7,Hasthinapuram
+M21B,8,Velachery
+70B,0,Chromepet Lakshmi
+70B,1,Ambattur OT
+70B,2,Collector Nagar
+70B,3,CMBT
+70B,4,Vadapalani
+70B,5,Udhayam
+70B,6,Pallavaram
+70B,7,Avadi
+44A,0,I.O.C (Indian Oil Corporatio n)
+44A,1,Tondiarpet
+44A,2,Broadway
+44C,0,I.O.C
+44C,1,Korukkupet
+44C,2,Broadway
+44D,0,I.O.C
+44D,1,Sathiyamoorthy Nagar
+44D,2,Broadway
+170E,0,I.O.C
+170E,1,Korukkupettai
+170E,2,Kannadasan Nagar
+170E,3,Moolakadai
+170E,4,Retteri
+170E,5,Thirumangalam
+170E,6,CMBT
+170E,7,Vadapalani
+170E,8,Guindy
+170E,9,Pallavaram
+170E,10,Tambaram
+PP19,0,Injambakka m
+PP19,1,Marina Beach
+PP19,2,Thiruvanmiyur
+PP19,3,Broadway
+C51 cut,0,Injambakka m
+C51 cut,1,Camp Road
+C51 cut,2,Kamarajapuram
+C51 cut,3,Medavakkam
+C51 cut,4,Sholinganallur
+C51 cut,5,ECR
+C51 cut,6,Tambaram West
+11G,0,K K Nagar
+11G,1,MGR Nagar
+11G,2,Ashok Pillar
+11G,3,Pangal Park
+11G,4,Annasalai
+11G,5,Central R.S
+11G,6,Parry's Corner
+11G,7,High Court
+12G,0,K K Nagar
+12G,1,MGR Nagar
+12G,2,Ashok Pillar
+12G,3,West Mambalam
+12G,4,Alwarpet
+12G,5,Luz
+12G,6,Anna Square
+17D,0,K K Nagar
+17D,1,Central
+17D,2,Egmore
+17D,3,DPI
+17D,4,Sterling Road
+17D,5,Valluvarkottam
+17D,6,Liberty
+17D,7,Udhayam
+17D,8,Nesapakkam
+17D,9,Broadway
+37D,0,KK Nagar
+37D,1,Regal
+37D,2,Choolai P.O.
+37D,3,Purasaivakkam
+37D,4,KMC
+37D,5,Chetpet
+37D,6,Ste rling road
+37D,7,Valluvarkottam
+37D,8,Liberty
+37D,9,Samiarmadam
+37D,10,Udhayam
+37D,11,Nesapakkam
+37D,12,MGR Nagar
+37D,13,V Nagar
+57F,0,Karanodai
+57F,1,Beach R.S
+57F,2,Stanley
+57F,3,Mint
+57F,4,Basin Bridge
+57F,5,Vyasarpadi
+57F,6,Moolakadai
+57F,7,Puzhal
+57F,8,Red hills
+57F,9,High Court
+156,0,Karanodai
+156,1,Thiruvotriyur
+56,0,Kargil Nagar
+56,1,V.Nagar
+56,2,Tondiarpet
+56,3,Thiruvottriyur
+56,4,Sathyamoorthy nagar
+56,5,Broadway
+159K,0,Kargil Nagar
+159K,1,Thiruvottriyur
+159K,2,Therady
+159K,3,Tollgate
+159K,4,Tondiarpet
+159K,5,V.Nagar
+159K,6,Regal
+159K,7,Choolai P.O.
+159K,8,Purasawakkam High Road
+159K,9,Kellys
+159K,10,Aminjikarai
+159K,11,Arumbakkam
+159K,12,CMBT
+A1 xt,0,Kovalam
+A1 xt,1,Central
+A1 xt,2,LIC
+A1 xt,3,Royapettah
+A1 xt,4,Luz
+A1 xt,5,Mylapore
+A1 xt,6,Mandaveli
+A1 xt,7,AMS
+A1 xt,8,Adyar
+A1 xt,9,Thiruvanmiyur
+A1 xt,10,Kottivakkam
+A1 xt,11,Palavakkam
+A1 xt,12,Neelangarai
+A1 xt,13,Injambakkam
+A1 xt,14,Uthandi
+A1 xt,15,Kanathur
+A1 xt,16,Muttukadu boat yard
+A1 xt,17,Broadway
+19G,0,Kovalam
+19G,1,Central
+19G,2,LIC
+19G,3,DMS
+19G,4,SIET
+19G,5,Saidapet
+19G,6,Anna university
+19G,7,Adyar
+19G,8,Thiruvanmiyur
+19G,9,Kottivakkam
+19G,10,Palavakkam
+19G,11,Neelangarai
+19G,12,Injambakkam
+19G,13,Uthandi
+19G,14,Kanathur
+19G,15,Muttukadu boat yard
+19G,16,Broadway
+19V,0,Kovalam
+19V,1,Taramani
+19V,2,SRP Tools
+19V,3,Jayanthi
+19V,4,Thiruvanmiyur
+19V,5,Injambakkam
+19V,6,MGM
+19V,7,Muttukadu
+19V,8,Velachery
+PP49,0,Kovalam
+PP49,1,MMDA Colony
+PP49,2,Vadapalani
+PP49,3,Liberty
+PP49,4,T.Nagar
+PP49,5,Saidapet
+PP49,6,Adyar
+PP49,7,Thiruvanmiyur
+PP49,8,Kottivakkam
+PP49,9,Palavakkam
+PP49,10,Injambakkam
+PP49,11,Kanathur
+PP49,12,Muttukadu
+PP49,13,CMBT
+119,0,Kovalam
+119,1,Broadway
+119,2,Marina Beach
+119,3,Thiruvanmiyur
+119,4,Injambakkam
+119,5,Thiruvottriyur
+T151,0,Kovalam
+T151,1,CampRoad
+T151,2,Medavakkam
+T151,3,Shozhinganallur
+T151,4,Navalur
+T151,5,Kelambakkam
+T151,6,Tambaram East
+T151K,0,Kovalam
+T151K,1,CampRoad
+T151K,2,Medavakkam
+T151K,3,Shozhinganallur
+T151K,4,Panaiyur
+T151K,5,Uthandi
+T151K,6,Kanathur
+T151K,7,Muttukadu
+T151K,8,Tambaram West
+517K,0,Kovalam
+517K,1,Eachangadu
+517K,2,Kovilambakkam
+517K,3,Medavakkam Koot Road
+517K,4,Sholinganallur
+517K,5,Kelambakkam
+517K,6,Pallavaram
+566B,0,Kovalam
+566B,1,Kundrathur
+566B,2,Anakaputhur
+566B,3,Pammal
+566B,4,Pallavaram
+566B,5,Chromepet
+566B,6,Tambaram Sanatorium
+566B,7,Tambaram
+566B,8,Perugalathur
+566B,9,Vandalur
+566B,10,Kandigai
+566B,11,Mambakkam
+566B,12,Pudhupakkam
+566B,13,Chettinad Hospital
+566B,14,Kelambakkam
+566B,15,Pattur
+1G Cut,0,Madipakka m
+1G Cut,1,Velachery
+1G Cut,2,Saidapet
+1G Cut,3,TVS
+1G Cut,4,LIC
+1G Cut,5,Central
+1G Cut,6,Broadway
+51E,0,Madipakka m BS
+51E,1,Velachery
+51E,2,Ram Nagar
+51E,3,Saidapet
+51M,0,Madipakka m BS
+51M,1,Saidapet
+51M,2,Guindy
+51M,3,NGO Colony
+51M,4,ST Thomas Mount
+51M,5,Vanuvampet
+51M,6,Madipakkam Koot road
+51M,7,T. Nagar
+70D,0,Madipakka mB.S.
+70D,1,Collector Nagar
+70D,2,CMBT
+70D,3,Vadapalani
+70D,4,Ashok Nagar
+70D,5,Guindy
+70D,6,Velachery
+70D,7,Ram Nagar
+70D,8,Ambattur I.E
+28A,0,Manali
+28A,1,Andankuppam
+28A,2,Thiruvottriyur
+28A,3,Tollgate
+28A,4,Tondiarpet
+28A,5,Vallalarnagar
+28A,6,Regal
+28A,7,Central RS
+28A,8,Egmore R.S
+44,0,Manali
+44,1,V.Nagar
+44,2,Broadway
+56D,0,Manali
+56D,1,Beach R.S
+56D,2,Thambuchetty St.
+56D,3,Kalmandappam
+56D,4,Kasimedu
+56D,5,Tondirapet
+56D,6,Tollgate
+56D,7,Rajakadai
+56D,8,Thiruvotriyur R.S
+56D,9,Mattumandai
+56D,10,Broadway
+M64C,0,Manali
+M64C,1,Madhavaram Milk colony
+M64C,2,Thapal petti
+M64C,3,Moolakadai
+M64C,4,Vyasarpadi
+M64C,5,Pulianthope
+M64C,6,Doveton
+M64C,7,Central R.S
+M64C,8,Broadway
+121A,0,Manali
+121A,1,Madhavaram Milk Colony
+121A,2,Thapal petti
+121A,3,Moolakadai
+121A,4,Retteri
+121A,5,Lucas
+121A,6,Thirumangalam
+121A,7,CMBT
+164C,0,Manali
+164C,1,Broadway
+170C xt,0,Manali
+170C xt,1,Madhavaram Milk colony
+170C xt,2,Thapal petti
+170C xt,3,Moolakadai
+170C xt,4,TVK Nagar
+170C xt,5,Retteri
+170C xt,6,Thirumangalam
+170C xt,7,CMBT
+170C xt,8,Vadapalani
+170C xt,9,Guindy Estate
+170M,0,Manali
+170M,1,Madhavaram Milk colony
+170M,2,Thapal petti
+170M,3,Moolakadai
+170M,4,TVK Nagar
+170M,5,Retteri
+170M,6,Thirumangalam
+170M,7,CMBT
+170M,8,Vadapalani
+170M,9,Ashok pillar
+170M,10,Guindy
+170M,11,Checkpost
+170M,12,Velachery
+17B,0,Mangadu
+17B,1,Paranipathur
+17B,2,Baikadai
+17B,3,Moulivakkam
+17B,4,Porur
+17B,5,Virugambakkam
+17B,6,Vadapalani
+17B,7,Gemini
+17B,8,Thousand lights
+17B,9,Central
+17B,10,Broadway
+53E,0,Mangadu
+53E,1,Kumananchavadi
+53E,2,Mathruvayoil
+53E,3,Arumbakkam
+53E,4,Aminijikarai
+53E,5,KMC
+53E,6,Central R.S
+53E,7,Broadway
+54M,0,Mangadu
+54M,1,Paraniputhur
+54M,2,Baikadai
+54M,3,Moulivakkam
+54M,4,Porur
+54M,5,Guindy
+54M,6,Saidapet
+54M,7,DMS
+54M,8,TVS
+54M,9,LIC
+54M,10,Central R.S
+54M,11,High Court
+1G xt,0,Medavakka m
+1G xt,1,Velachery
+1G xt,2,Saidapet
+1G xt,3,TVS
+1G xt,4,LIC
+1G xt,5,Parry's Corner
+1G xt,6,Kalmandapam
+1G xt,7,Tollgate
+1G xt,8,Thiruvottiyur
+M14,0,Medavakka m Junction
+M14,1,Adambakkam
+M14,2,Vanuvampet
+M14,3,Ullagaram
+M14,4,Puzhithivakkam
+M14,5,Madipakkam Koot rd
+M14,6,Ganesh Nagar
+M14,7,Kilkattalai
+M14,8,Kovilambakkam
+M14,9,Vadakkupet
+M14,10,Vellaikal
+M14,11,Bell Nagar
+M14,12,Medavakkam
+M14,13,N.G.O Colony B.S
+M14A,0,Medavakka m Koot Road
+M14A,1,Vanuvampettai
+M14A,2,Madipakkam
+M14A,3,Kilkattalai
+M14A,4,Velachery
+M15,0,Medavakka m
+M15,1,Adyar
+M15,2,Thiruvanmiyur
+M15,3,SRP Tools
+M15,4,Velachery
+M15,5,Pallikaranai
+M15,6,Mylapore
+B21xt,0,Medavakka m Koot Road
+B21xt,1,V.Nagar
+B21xt,2,Parrys
+B21xt,3,Secretrariat
+B21xt,4,Anna Square
+B21xt,5,AIR
+B21xt,6,Santhome
+B21xt,7,Foreshore Estate
+B21xt,8,MRC Nagar
+B21xt,9,Adyar
+B21xt,10,SRP Tools
+B21xt,11,Velacherry
+B21xt,12,Madipakkam Koot road
+B21xt,13,Kilkatalai
+B21xt,14,Kovilambakkam
+B21xt,15,Vellakal
+B21xt,16,Korukkupet
+M21,0,Medavakka
+M21,1,Narayanapuram
+M21,2,Pallikaranai
+M21,3,Velachery
+D51,0,Medavakka m koot road
+D51,1,Medavakkam
+D51,2,Pallikkaranai
+D51,3,Velachery
+D51,4,Guindy Race Course
+D51,5,DMS
+D51,6,LIC
+D51,7,Central R.S
+D51,8,High Court
+D70 xt,0,Medavakka m
+D70 xt,1,Collector Nagar
+D70 xt,2,Vadapalani
+D70 xt,3,Ashok nagar
+D70 xt,4,Guindy
+D70 xt,5,Checkpost
+D70 xt,6,Velacherry
+D70 xt,7,Pallikaranai
+D70 xt,8,Ambattur I.E
+17G,0,Mogalivakk am
+17G,1,Kedar Hospital
+17G,2,Ramapuram
+17G,3,Angalamman Koil
+17G,4,Alwarthirunagar
+17G,5,Virugambakkam
+17G,6,Vadapalani
+17G,7,Gemini
+17G,8,Thousand lights
+17G,9,Central
+17G,10,Broadway
+G17,0,Mogalivakk am
+G17,1,Kedar Hospital
+G17,2,Porur
+G17,3,Valsarawakkam
+G17,4,Alwarthirunagar
+G17,5,Virugambakkam
+G17,6,Vadapalani
+G17,7,Gemini
+G17,8,Thousand lights
+G17,9,Central
+G17,10,Broadway
+M1A,0,Nanganallu r
+M1A,1,SRP Tools
+M1A,2,Velachery
+M1A,3,Kaiveli
+M1A,4,Ram Nagar
+M1A,5,Madipakkam
+M1A,6,Madipakkam Koot Road
+M1A,7,Thiruvanmiyur
+M18N,0,Nanganallu r
+M18N,1,Pazhavanthangal
+M18N,2,Pallavaram
+M18N,3,Chromepet
+M18N,4,Tambaram
+M18N,5,Vandalur Zoo
+M18N,6,Oorapakkam
+M18N,7,Guduvanchery
+M21G xt,0,Nanganallu r
+M21G xt,1,Secretariat
+M21G xt,2,Kannaki Statue
+M21G xt,3,QMC
+M21G xt,4,Kalyani Hospital
+M21G xt,5,Luz
+M21G xt,6,Mylapore
+M21G xt,7,Mandaveli BS
+M21G xt,8,Adyar Gate
+M21G xt,9,Kotturpuram
+M21G xt,10,Anna university
+M21G xt,11,Guindy
+M21G xt,12,Pazhavanthangal Station
+M21G xt,13,Broadway
+M45B,0,Nanganallu r
+M45B,1,Saidapet
+M45B,2,Nandanam
+M45B,3,Teynampet
+M45B,4,Alwarpet
+M45B,5,Luz
+M45B,6,Chennai Citi Centre
+M45B,7,Anna Square
+52L,0,Nanganallu r
+52L,1,Aasargana
+52L,2,Guindy
+52L,3,Anna Salai
+52L,4,High Court
+129C,0,Nanganallu r
+129C,1,T.Nagar
+129C,2,Sterling Road
+129C,3,Chetpet
+129C,4,Otteri
+129C,5,Perambur
+154B,0,Nanganallu r
+154B,1,Kumanachavadi
+154B,2,Porur
+154B,3,Guindy
+154B,4,St.Thomas Mount
+154B,5,Vanuvampet
+154B,6,Poonamallee
+M2,0,Ottiambakk am
+M2,1,Velachery
+M2,2,Medavakkam
+M2,3,Saidapet
+C21,0,Ottiyambak kam
+C21,1,Secretrariat
+C21,2,Anna Square
+C21,3,AIR
+C21,4,Santhome
+C21,5,Foreshore Estate
+C21,6,MRC Nagar
+C21,7,Adyar
+C21,8,SRP Tools
+C21,9,Perungudi
+C21,10,Sholinganallur
+C21,11,Perumbakkam
+C21,12,Nukkanpalayam
+C21,13,Arasan Kazhani
+C21,14,Broadway
+51B xt,0,Ottiyambak kam
+51B xt,1,Saidapet
+51B xt,2,Checkpost
+51B xt,3,Velachery
+51B xt,4,Narayanapuram
+51B xt,5,Pallikaranai
+51B xt,6,Medavakkam
+51B xt,7,Sithalapakkam koot road
+51B xt,8,Sithalapakkam
+51B xt,9,Arasan kazhani
+51B xt,10,T.Nagar
+M51C,0,Ottiambakk am
+M51C,1,Velachery
+M51C,2,MEDAVAKKAM
+M51C,3,Perumbakkam
+M51C,4,T. Nagar
+E51,0,Ottiambakk am
+E51,1,Arasan kazhani
+E51,2,Sithalapakkam
+E51,3,Sithalapakkam Koot road
+E51,4,Medavakkam
+E51,5,Pallikkaranai
+E51,6,Velachery
+E51,7,Guindy Race Course
+E51,8,DMS
+E51,9,LIC
+E51,10,Central R.S
+E51,11,High Court
+M51C,0,Ottiambakk am
+M51C,1,Arasan Kazhani
+M51C,2,Nukkanpalayam
+M51C,3,Perumbakkam
+M51C,4,Medavakkam
+M51C,5,Pallikaranai
+M51C,6,Velacherry
+M51C,7,Checkpost
+M51C,8,Saidapet
+M51C,9,T.Nagar
+51J,0,Ponmar
+51J,1,Central
+51J,2,LIC
+51J,3,DMS
+51J,4,SIET
+51J,5,Saidapet
+51J,6,CheckpostVelachery
+51J,7,Medavakkam
+51J,8,Sith alapakkam koot road
+51J,9,Kovilancherry
+51J,10,Madurapakkam
+51J,11,Broadway
+51T,0,Ponmar
+51T,1,Camp road
+51T,2,Balaji nagar
+51T,3,Thiruvancherry
+51T,4,Paduvancherry
+51T,5,Agaram then
+51T,6,Kovilancherry
+51T,7,Madurapakkam
+51T,8,Tambaram East
+536,0,Ponneri
+536,1,Avadi
+536,2,Ambattur O.T.
+536,3,Pudhur
+536,4,Puzhal
+536,5,Red Hills
+536,6,Pattabiram
+558,0,Ponneri
+558,1,Red Hills
+558,2,Karanodai
+558,3,V.Nagar
+562B,0,Ponneri
+562B,1,Janappan chathram x Road
+562B,2,Karanodai
+562B,3,Red Hills
+562B,4,Puzhal
+562B,5,Ambattur OT
+562B,6,Avadi
+562B,7,Karaiyanchavadi
+562B,8,Poonamallee
+10A,0,Saidapet West
+10A,1,Kal mandapam
+10A,2,Parrys
+10A,3,Central R.S
+10A,4,Egmore R.S
+10A,5,Maternity Hospital
+10A,6,DPI
+10A,7,Sterling road
+10A,8,Valluvar Kottam
+10A,9,Panagal park
+10A,10,T.Nagar
+10A,11,Srinivasa Theater
+10A,12,Mettupalayam
+10A,13,Tollgate
+18K,0,Saidapet W est
+18K,1,Central R.S
+18K,2,Simpson
+18K,3,LIC
+18K,4,TVS
+18K,5,DMS
+18K,6,Teynampet
+18K,7,Nandanam
+18K,8,CIT Nagar
+18K,9,Srinivasa
+18K,10,Mettupalayam
+18K,11,Broadway
+K18,0,Saidapet W est
+K18,1,Central R.S
+K18,2,Simpson
+K18,3,LIC
+K18,4,TVS
+K18,5,DMS
+K18,6,Teynampet
+K18,7,Nandanam
+K18,8,Saidapet
+K18,9,Guindy
+K18,10,Ekkaduthangal
+K18,11,Ashok nagar
+K18,12,Mettupalayam
+K18,13,Broadway
+88D,0,Saidapet West
+88D,1,Koovoor
+88D,2,Periyapannicherry
+88D,3,Baikadai
+88D,4,Porur
+88D,5,Guindy
+88D,6,Saidapet
+88D,7,Srinivasa Theater
+88D,8,Kundrathur
+19K,0,Siruseri
+19K,1,Thiruvanmiyur
+19K,2,Perungudi
+19K,3,Navalur
+19K,4,Thalambur
+19K,5,Adyar B.S.
+570S,0,SiruseriSIP COT
+570S,1,Vadapalani
+570S,2,Ashok Nagar
+570S,3,Guindy
+570S,4,Check post
+570S,5,Velachery
+570S,6,SRP tools
+570S,7,Perungudi
+570S,8,Sholinganallur
+570S,9,Navalur
+570S,10,CMBT
+5C,0,Taramani
+5C,1,Madhya Kailash
+5C,2,Kotturpuram
+5C,3,Alwarpet
+5C,4,Royapettah
+5C,5,Chennai Central
+5C,6,Broadway
+5K,0,Taramani
+5K,1,Mylapore
+5T,0,Taramani
+5T,1,Saidapet
+5T,2,T.Nagar
+5T,3,Ashok pillar
+5T,4,Vadapalani
+7K,0,Taramani
+7K,1,Saidapet
+7K,2,Anna university
+7K,3,CPT
+7K,4,WPT
+7K,5,Tidel park
+7K,6,T.Nagar
+1J,0,Triplicane
+1J,1,Rajakadai
+1J,2,Tollgate
+1J,3,Kalmandappam
+1J,4,Pa rry's Corner
+1J,5,Central R.S
+1J,6,Thiruvottiyur
+13B,0,Triplicane
+13B,1,Zambazzar
+13B,2,Express avenue
+13B,3,Royapettah
+13B,4,Gopalapuram playground
+13B,5,Thousand Lights
+13B,6,DMS
+13B,7,Pondy Bazzar
+13B,8,Panagal park
+13B,9,T. Nagar
+44B,0,Triplicane
+44B,1,Manali New Town

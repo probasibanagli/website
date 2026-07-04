@@ -34,6 +34,14 @@ export const checkRouteAvailability = async (
     return { isValid: false, message: 'Please enter both starting point and destination.' };
   }
 
+  const fallbackResponse = {
+    isValid: true,
+    estimatedDistance: 'Variable (Check Maps/App)',
+    estimatedTime: 'Variable (Check Maps/App)',
+    url: `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(from)}&destination=${encodeURIComponent(to)}&travelmode=${category === 'public' ? 'transit' : 'driving'}`,
+    modeUsed: privateMode ? privateMode.toUpperCase() : 'Transport'
+  };
+
   try {
     // 1. Geocode "from" location using OpenStreetMap's Nominatim (Free API)
     const fromRes = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(from)}&limit=1`, {
@@ -47,11 +55,8 @@ export const checkRouteAvailability = async (
     });
     const toData = await toRes.json();
 
-    if (!fromData || fromData.length === 0) {
-      return { isValid: false, message: `Could not find starting point: ${from}` };
-    }
-    if (!toData || toData.length === 0) {
-      return { isValid: false, message: `Could not find destination: ${to}` };
+    if (!fromData || fromData.length === 0 || !toData || toData.length === 0) {
+      return fallbackResponse;
     }
 
     const fromCoords = { lat: parseFloat(fromData[0].lat), lon: parseFloat(fromData[0].lon) };
@@ -116,8 +121,6 @@ export const checkRouteAvailability = async (
       const toName = encodeURIComponent(to);
 
       if (privateMode === 'uber') {
-        // Uber's universal link automatically opens app on mobile, and website on desktop
-        // Note: We URL-encode the square brackets to ensure the app parses the coordinates correctly
         bookingUrl = `https://m.uber.com/ul/?action=setPickup&client_id=passenger_app&pickup%5Blatitude%5D=${fromCoords.lat}&pickup%5Blongitude%5D=${fromCoords.lon}&pickup%5Bnickname%5D=${fromName}&dropoff%5Blatitude%5D=${toCoords.lat}&dropoff%5Blongitude%5D=${toCoords.lon}&dropoff%5Bnickname%5D=${toName}`;
         modeName = 'Uber';
       } else if (privateMode === 'ola') {
@@ -135,7 +138,7 @@ export const checkRouteAvailability = async (
         }
         modeName = 'Rapido';
       } else {
-        bookingUrl = `https://www.google.com/maps/dir/${fromCoords.lat},${fromCoords.lon}/${toCoords.lat},${toCoords.lon}/@${fromCoords.lat},${fromCoords.lon},12z/data=!4m2!4m1!3e0`;
+        bookingUrl = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(from)}&destination=${encodeURIComponent(to)}&travelmode=driving`;
         modeName = 'Private Transport';
       }
 
@@ -150,9 +153,6 @@ export const checkRouteAvailability = async (
 
   } catch (error) {
     console.error("Routing error:", error);
-    return {
-      isValid: false,
-      message: 'Failed to fetch accurate route information. Please check your network connection.'
-    };
+    return fallbackResponse;
   }
 };
