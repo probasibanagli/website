@@ -240,7 +240,7 @@ const PANJIKA_LINKS = [
     titleBn: 'বাংলা পঞ্জিকা',
     description: 'Complete yearly Bengali almanac with tithis, nakshatras, festivals, and auspicious timings.',
     icon: '📅',
-    url: 'https://www.thebengalipanjika.com/',
+    url: 'https://bengalipanjika.com/',
     color: 'from-orange-500 to-red-500',
   },
   {

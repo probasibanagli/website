@@ -676,7 +676,6 @@ export default function MatrimonialRegisterPage() {
                   <FormInput formData={formData} errors={errors} updateField={updateField} label="Email Address" field="email" type="email" placeholder="your@email.com" required disabled />
                   <FormInput formData={formData} errors={errors} updateField={updateField} label="Phone Number" field="phone" type="tel" placeholder="+91 9876543210" required disabled />
                 </div>
-                <FormInput formData={formData} errors={errors} updateField={updateField} label="Social Media Handle (Instagram / Facebook / LinkedIn)" field="social_handle" placeholder="e.g., @username" />
               </div>
             )}
 
@@ -1019,6 +1018,9 @@ export default function MatrimonialRegisterPage() {
                     </div>
                   )}
                 </div>
+
+                {/* Social Media Handle */}
+                <FormInput formData={formData} errors={errors} updateField={updateField} label="Social Media Handle (Instagram / Facebook / LinkedIn)" field="social_handle" placeholder="e.g., @username" />
 
                 {/* About Me Textarea */}
                 <div className="space-y-1.5">
