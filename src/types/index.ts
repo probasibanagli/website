@@ -144,9 +144,12 @@ export interface BengaliDoctor {
   id: string;
   doctor_name: string;
   specialization: string;
+  department?: string;
   hospital_id: string;
   experience: string;
+  qualifications?: string[];
   languages: string[];
+  consultation_timings?: string;
   photo: string;
   phone: string;
   email: string;
