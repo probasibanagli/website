@@ -165,11 +165,11 @@ function AadhaarCard({ service, IconComponent }: { service: any, IconComponent: 
 }
 
 export default function GovernmentPage() {
-  const higherPriorityIds = ['aadhaar', 'passport', 'visa', 'police-verification', 'biometrics', 'voter-id'];
+  const higherPriorityIds = ['aadhaar', 'biometrics', 'passport', 'visa', 'police-verification', 'voter-id'];
   
   const higherPriorityServices = useMemo(() => {
-    // Preserve ordering matching: Aadhaar, Passport, Visa, Police Verification, Biometric Services, Voter ID
-    const orderedIds = ['aadhaar', 'passport', 'visa', 'police-verification', 'biometrics', 'voter-id'];
+    // Preserve ordering matching: Aadhaar, Biometric Services, Passport, Visa, Police Verification, Voter ID
+    const orderedIds = ['aadhaar', 'biometrics', 'passport', 'visa', 'police-verification', 'voter-id'];
     return orderedIds
       .map(id => GOVT_SERVICES.find(s => s.id === id))
       .filter((s): s is typeof GOVT_SERVICES[0] => !!s);
