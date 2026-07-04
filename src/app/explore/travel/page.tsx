@@ -33,9 +33,213 @@ import {
   getMetroTimings,
   LOCAL_TRAINS,
   MTC_BUSES,
-  OUTSTATION_DESTINATIONS,
-  ONE_WAY_TAXI_PROVIDERS
+  OUTSTATION_DESTINATIONS
 } from '@/data/transport-data';
+import { SUBURBAN_TRAINS } from '@/data/suburban-trains-data';
+import { CHENNAI_METRO_FARES } from '@/data/chennai-metro-fares-data';
+
+const STATION_CODE_TO_NAME: Record<string, string> = {
+  'VLCY': 'Velachery',
+  'MSB': 'Chennai Beach',
+  'TRT': 'Tiruttani',
+  'AJJ': 'Arakkonam',
+  'TRL': 'Tiruvallur',
+  'MMC': 'Chennai Central (MMC)',
+  'AVD': 'Avadi',
+  'PTMS': 'Pattabiram Military Siding',
+  'SPE': 'Sullurupeta',
+  'GPD': 'Gummidipoondi',
+  'TBM': 'Tambaram',
+  'CGL': 'Chengalpattu',
+  'AJJ/TMLP': 'Arakkonam / Tirumalpur',
+  'CJ': 'Kanchipuram',
+  'TMLP/AJJ': 'Tirumalpur / Arakkonam'
+};
+
+const SUBURBAN_STATIONS = [
+  { code: 'AJJ', name: 'Arakkonam' },
+  { code: 'AJJ/TMLP', name: 'Arakkonam / Tirumalpur' },
+  { code: 'AVD', name: 'Avadi' },
+  { code: 'CGL', name: 'Chengalpattu' },
+  { code: 'MSB', name: 'Chennai Beach' },
+  { code: 'MMC', name: 'Chennai Central (MMC)' },
+  { code: 'GPD', name: 'Gummidipoondi' },
+  { code: 'CJ', name: 'Kanchipuram' },
+  { code: 'PTMS', name: 'Pattabiram Military Siding' },
+  { code: 'SPE', name: 'Sullurupeta' },
+  { code: 'TBM', name: 'Tambaram' },
+  { code: 'TRL', name: 'Tiruvallur' },
+  { code: 'TRT', name: 'Tiruttani' },
+  { code: 'TMLP/AJJ', name: 'Tirumalpur / Arakkonam' },
+  { code: 'VLCY', name: 'Velachery' }
+];
+
+function parseSuburbanTimeToMinutes(t: string): number {
+  if (!t) return 9999;
+  const first = t.split('/')[0];
+  const m = first.match(/(\d{1,2})[.:](\d{2})/);
+  if (!m) return 9999;
+  let h = parseInt(m[1], 10);
+  const min = parseInt(m[2], 10);
+  if (h === 24) h = 0;
+  return h * 60 + min;
+}
+
+function formatSuburbanTime(timeStr: string): string {
+  if (!timeStr) return '';
+  const parts = timeStr.split('.');
+  let h = parseInt(parts[0], 10);
+  const m = parts[1] || '00';
+  if (isNaN(h)) return timeStr;
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  h = h % 12;
+  if (h === 0) h = 12;
+  const min = m.padEnd(2, '0');
+  return `${h}:${min} ${ampm}`;
+}
+
+const METRO_BLUE_LINE = [
+  'Wimco Nagar Depot',
+  'Wimco Nagar',
+  'Thiruvotriyur',
+  'Thiruvotriyur Theredi',
+  'Kaladipet',
+  'Toll Gate',
+  'New Washermenpet',
+  'Tondiarpet',
+  'Thyagaraya College',
+  'Washermenpet',
+  'Mannadi',
+  'High Court',
+  'Puratchi Thalaivar Dr.M.G.Ramachandran Central Metro',
+  'Government Estate',
+  'LIC',
+  'Thousand Light',
+  'AG-DMS',
+  'Teynampet',
+  'Nandanam',
+  'Saidapet',
+  'Little Mount',
+  'Guindy',
+  'Arignar Anna Alandur Metro',
+  'Meenambakkam',
+  'Airport'
+];
+
+const METRO_GREEN_LINE = [
+  'Puratchi Thalaivar Dr.M.G.Ramachandran Central Metro',
+  'Egmore',
+  'Nehru Park',
+  'Kilpauk',
+  'Pachiappas College',
+  'Shenoy Nagar',
+  'Anna Nagar East',
+  'Anna Nagar Tower',
+  'Thirumangalam',
+  'Koyambedu',
+  'Puratchi Thalaivi Dr.J.Jayalalitha CMBT Metro',
+  'Arumbakkam',
+  'Vadapalani',
+  'Ashok Nagar',
+  'Ekkattuthangal',
+  'Arignar Anna Alandur Metro',
+  'St. Thomas Mount'
+];
+
+const METRO_STATION_COORDS: Record<string, [number, number]> = {
+  'Wimco Nagar Depot': [13.1720, 80.3015],
+  'Wimco Nagar': [13.1652, 80.3017],
+  'Thiruvotriyur': [13.1557, 80.3016],
+  'Thiruvotriyur Theredi': [13.1466, 80.2995],
+  'Kaladipet': [13.1368, 80.2965],
+  'Toll Gate': [13.1294, 80.2945],
+  'New Washermenpet': [13.1203, 80.2908],
+  'Tondiarpet': [13.1118, 80.2882],
+  'Thyagaraya College': [13.1044, 80.2872],
+  'Washermenpet': [13.0975, 80.2833],
+  'Mannadi': [13.0945, 80.2875],
+  'High Court': [13.0880, 80.2891],
+  'Puratchi Thalaivar Dr.M.G.Ramachandran Central Metro': [13.0818, 80.2721],
+  'Government Estate': [13.0673, 80.2718],
+  'LIC': [13.0617, 80.2673],
+  'Thousand Light': [13.0583, 80.2584],
+  'AG-DMS': [13.0440, 80.2505],
+  'Teynampet': [13.0371, 80.2472],
+  'Nandanam': [13.0305, 80.2435],
+  'Saidapet': [13.0223, 80.2372],
+  'Little Mount': [13.0180, 80.2307],
+  'Guindy': [13.0090, 80.2201],
+  'Arignar Anna Alandur Metro': [13.0039, 80.2014],
+  'Meenambakkam': [12.9877, 80.1764],
+  'Airport': [12.9818, 80.1718],
+  'Egmore': [13.0784, 80.2625],
+  'Nehru Park': [13.0792, 80.2514],
+  'Kilpauk': [13.0788, 80.2418],
+  'Pachiappas College': [13.0785, 80.2308],
+  'Shenoy Nagar': [13.0788, 80.2236],
+  'Anna Nagar East': [13.0847, 80.2198],
+  'Anna Nagar Tower': [13.0850, 80.2117],
+  'Thirumangalam': [13.0851, 80.2017],
+  'Koyambedu': [13.0734, 80.1948],
+  'Puratchi Thalaivi Dr.J.Jayalalitha CMBT Metro': [13.0674, 80.2052],
+  'Arumbakkam': [13.0617, 80.2117],
+  'Vadapalani': [13.0503, 80.2120],
+  'Ashok Nagar': [13.0354, 80.2114],
+  'Ekkattuthangal': [13.0167, 80.2054],
+  'St. Thomas Mount': [12.9980, 80.2023]
+};
+
+
+const getMetroPath = (from: string, to: string): string[] => {
+  if (!from || !to) return [];
+  if (from === to) return [from];
+
+  const fromInBlue = METRO_BLUE_LINE.indexOf(from);
+  const toInBlue = METRO_BLUE_LINE.indexOf(to);
+  const fromInGreen = METRO_GREEN_LINE.indexOf(from);
+  const toInGreen = METRO_GREEN_LINE.indexOf(to);
+
+  // Case 1: Both stations are on the Blue Line
+  if (fromInBlue !== -1 && toInBlue !== -1) {
+    const start = Math.min(fromInBlue, toInBlue);
+    const end = Math.max(fromInBlue, toInBlue);
+    const path = METRO_BLUE_LINE.slice(start, end + 1);
+    return fromInBlue < toInBlue ? path : [...path].reverse();
+  }
+
+  // Case 2: Both stations are on the Green Line
+  if (fromInGreen !== -1 && toInGreen !== -1) {
+    const start = Math.min(fromInGreen, toInGreen);
+    const end = Math.max(fromInGreen, toInGreen);
+    const path = METRO_GREEN_LINE.slice(start, end + 1);
+    return fromInGreen < toInGreen ? path : [...path].reverse();
+  }
+
+  // Case 3: Stations are on different lines (Requires Transfer)
+  const transferA = 'Arignar Anna Alandur Metro';
+  const transferC = 'Puratchi Thalaivar Dr.M.G.Ramachandran Central Metro';
+
+  let pathA: string[] = [];
+  try {
+    pathA = [
+      ...getMetroPath(from, transferA),
+      ...getMetroPath(transferA, to).slice(1)
+    ];
+  } catch (e) {}
+
+  let pathB: string[] = [];
+  try {
+    pathB = [
+      ...getMetroPath(from, transferC),
+      ...getMetroPath(transferC, to).slice(1)
+    ];
+  } catch (e) {}
+
+  if (pathA.length > 0 && pathB.length > 0) {
+    return pathA.length <= pathB.length ? pathA : pathB;
+  }
+  return pathA.length > 0 ? pathA : pathB;
+};
 
 type AppTab = 'planner' | 'metro' | 'train' | 'bus' | 'private' | 'timetable' | 'outstation';
 
@@ -59,11 +263,19 @@ export default function TravelPage() {
   const [trainFrom, setTrainFrom] = useState('');
   const [trainTo, setTrainTo] = useState('');
   const [trainSearchQuery, setTrainSearchQuery] = useState('');
+  const [trainActiveSection, setTrainActiveSection] = useState('ALL');
+  const [expandedTrainNo, setExpandedTrainNo] = useState<string | null>(null);
 
   // 4. MTC Bus State
   const [busSearch, setBusSearch] = useState('');
   const [busFromFilter, setBusFromFilter] = useState('');
   const [busToFilter, setBusToFilter] = useState('');
+  const [busSuggestionsFrom, setBusSuggestionsFrom] = useState<string[]>([]);
+  const [busSuggestionsTo, setBusSuggestionsTo] = useState<string[]>([]);
+  const [showSuggestionsFrom, setShowSuggestionsFrom] = useState(false);
+  const [showSuggestionsTo, setShowSuggestionsTo] = useState(false);
+  const [busSearchResult, setBusSearchResult] = useState<{ direct: any[]; transfers: any[] } | null>(null);
+  const [isBusLoading, setIsBusLoading] = useState(false);
 
   // 5. Private Operator State
   const [privateFrom, setPrivateFrom] = useState('');
@@ -78,10 +290,25 @@ export default function TravelPage() {
   const [cityFrom, setCityFrom] = useState('');
   const [cityTo, setCityTo] = useState('');
   const [cityTransportType, setCityTransportType] = useState<'public' | 'private'>('public');
+  const [cityPublicMode, setCityPublicMode] = useState<'metro' | 'train' | 'bus' | null>(null);
+  const [cityPrivateMode, setCityPrivateMode] = useState<'ola' | 'uber' | 'rapido' | 'nammayatri' | null>(null);
+  const [cityRouteResult, setCityRouteResult] = useState<RouteResponse | null>(null);
+  const [isCityRouteLoading, setIsCityRouteLoading] = useState(false);
+
+  // Leaflet map refs & loading state
+  const [leafletLoaded, setLeafletLoaded] = useState(false);
+  const mapRef = React.useRef<any>(null);
+  const mapContainerRef = React.useRef<HTMLDivElement>(null);
+  const pathPolylineRef = React.useRef<any>(null);
+  const markerLayersRef = React.useRef<{ station: string; marker: any }[]>([]);
+
   // Within State State
   const [stateFrom, setStateFrom] = useState('');
   const [stateTo, setStateTo] = useState('');
-  const [stateTransportType, setStateTransportType] = useState<'srtc' | 'redbus' | 'train' | 'redtaxi' | 'oneway'>('srtc');
+  const [stateTransportType, setStateTransportType] = useState<'public' | 'private'>('public');
+  const [statePublicMode, setStatePublicMode] = useState<'bus' | 'train' | null>(null);
+  const [statePrivateMode, setStatePrivateMode] = useState<'flight' | 'bus' | 'cab' | null>(null);
+
 
   useEffect(() => {
     // Detect if user is on a mobile device to correctly format deep links
@@ -91,10 +318,351 @@ export default function TravelPage() {
     return () => cancelAnimationFrame(handle);
   }, []);
 
+  // Load Leaflet dynamically from CDN
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    if ((window as any).L) {
+      setLeafletLoaded(true);
+      return;
+    }
+
+    let link = document.querySelector('link[href*="leaflet.css"]');
+    if (!link) {
+      link = document.createElement('link');
+      (link as any).rel = 'stylesheet';
+      (link as any).href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+      document.head.appendChild(link);
+    }
+
+    let script = document.querySelector('script[src*="leaflet.js"]');
+    if (!script) {
+      script = document.createElement('script');
+      (script as any).src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+      (script as any).async = true;
+      (script as any).onload = () => {
+        setLeafletLoaded(true);
+      };
+      document.head.appendChild(script);
+    } else {
+      const interval = setInterval(() => {
+        if ((window as any).L) {
+          setLeafletLoaded(true);
+          clearInterval(interval);
+        }
+      }, 100);
+      return () => clearInterval(interval);
+    }
+  }, []);
+
+  // Initialize Leaflet Map for Chennai Metro
+  useEffect(() => {
+    if (!leafletLoaded || !mapContainerRef.current || cityPublicMode !== 'metro') {
+      // Cleanup map if unmounted or mode changed
+      if (mapRef.current) {
+        mapRef.current.remove();
+        mapRef.current = null;
+      }
+      pathPolylineRef.current = null;
+      markerLayersRef.current = [];
+      return;
+    }
+
+    const L = (window as any).L;
+    if (!L) return;
+
+    if (!mapRef.current) {
+      const map = L.map(mapContainerRef.current, {
+        center: [13.06, 80.23],
+        zoom: 11,
+        minZoom: 10,
+        maxZoom: 15,
+        zoomControl: true,
+      });
+
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        subdomains: 'abcd',
+        maxZoom: 20
+      }).addTo(map);
+
+      mapRef.current = map;
+
+      // Extract coordinates lists for lines
+      const blueLineCoords = METRO_BLUE_LINE.map(stn => METRO_STATION_COORDS[stn]).filter(Boolean) as [number, number][];
+      const greenLineCoords = METRO_GREEN_LINE.map(stn => METRO_STATION_COORDS[stn]).filter(Boolean) as [number, number][];
+
+      L.polyline(blueLineCoords, { color: '#2563eb', weight: 4, opacity: 0.8 }).addTo(map);
+      L.polyline(greenLineCoords, { color: '#16a34a', weight: 4, opacity: 0.8 }).addTo(map);
+
+      const markers: { station: string; marker: any }[] = [];
+      const allStations = Array.from(new Set([...METRO_BLUE_LINE, ...METRO_GREEN_LINE]));
+
+      allStations.forEach(stn => {
+        const coords = METRO_STATION_COORDS[stn];
+        if (!coords) return;
+
+        const isInterchange = METRO_BLUE_LINE.includes(stn) && METRO_GREEN_LINE.includes(stn);
+        const isBlue = METRO_BLUE_LINE.includes(stn);
+
+        let markerColor = '#2563eb';
+        if (isInterchange) {
+          markerColor = '#7e22ce';
+        } else if (!isBlue) {
+          markerColor = '#16a34a';
+        }
+
+        const marker = L.circleMarker(coords, {
+          radius: isInterchange ? 6 : 5,
+          fillColor: markerColor,
+          color: '#ffffff',
+          weight: 1.5,
+          fillOpacity: 1
+        }).addTo(map);
+
+        let tooltipClass = 'metro-tooltip-blue';
+        if (isInterchange) {
+          tooltipClass = 'metro-tooltip-interchange';
+        } else if (!isBlue) {
+          tooltipClass = 'metro-tooltip-green';
+        }
+
+        marker.bindTooltip(stn, {
+          permanent: true,
+          direction: 'top',
+          offset: [0, -5],
+          opacity: 0.9,
+          className: `metro-tooltip ${tooltipClass}`
+        });
+
+        marker.on('click', () => {
+          setCityFrom(prevFrom => {
+            if (!prevFrom) {
+              return stn;
+            } else {
+              setCityTo(prevTo => {
+                if (prevFrom === stn) return prevTo;
+                return stn;
+              });
+              return prevFrom;
+            }
+          });
+        });
+
+        markers.push({ station: stn, marker });
+      });
+
+      markerLayersRef.current = markers;
+    }
+
+    // Force map to recalculate its size on container mount
+    setTimeout(() => {
+      if (mapRef.current) {
+        mapRef.current.invalidateSize();
+      }
+    }, 100);
+
+    return () => {
+      // Cleanup on tab switch or unmount
+      if (mapRef.current) {
+        mapRef.current.remove();
+        mapRef.current = null;
+      }
+      pathPolylineRef.current = null;
+      markerLayersRef.current = [];
+    };
+  }, [leafletLoaded, cityPublicMode]);
+
+  // Update Map Route Highlights dynamically
+  useEffect(() => {
+    if (!mapRef.current || !leafletLoaded || cityPublicMode !== 'metro') return;
+
+    const L = (window as any).L;
+    if (!L) return;
+
+    // Clear old path polyline
+    if (pathPolylineRef.current) {
+      mapRef.current.removeLayer(pathPolylineRef.current);
+      pathPolylineRef.current = null;
+    }
+
+    // Reset markers style
+    markerLayersRef.current.forEach(({ station, marker }) => {
+      const isInterchange = METRO_BLUE_LINE.includes(station) && METRO_GREEN_LINE.includes(station);
+      const isBlue = METRO_BLUE_LINE.includes(station);
+      let markerColor = '#2563eb';
+      if (isInterchange) {
+        markerColor = '#7e22ce';
+      } else if (!isBlue) {
+        markerColor = '#16a34a';
+      }
+
+      marker.setStyle({
+        radius: isInterchange ? 6 : 5,
+        fillColor: markerColor,
+        color: '#ffffff',
+        weight: 1.5
+      });
+    });
+
+    if (cityFrom && cityTo) {
+      const path = getMetroPath(cityFrom, cityTo);
+      const pathCoords = path.map(stn => METRO_STATION_COORDS[stn]).filter(Boolean) as [number, number][];
+
+      if (pathCoords.length > 0) {
+        // Draw path polyline
+        pathPolylineRef.current = L.polyline(pathCoords, {
+          color: '#ef4444',
+          weight: 6,
+          opacity: 0.9,
+          className: 'metro-path-animate'
+        }).addTo(mapRef.current);
+
+        // Highlight marker endpoints and path
+        markerLayersRef.current.forEach(({ station, marker }) => {
+          if (station === cityFrom) {
+            marker.setStyle({
+              radius: 9,
+              fillColor: '#10b981', // green for origin
+              color: '#ffffff',
+              weight: 3
+            });
+            marker.openTooltip();
+          } else if (station === cityTo) {
+            marker.setStyle({
+              radius: 9,
+              fillColor: '#ef4444', // red for destination
+              color: '#ffffff',
+              weight: 3
+            });
+            marker.openTooltip();
+          } else if (path.includes(station)) {
+            marker.setStyle({
+              radius: 6,
+              fillColor: '#ef4444',
+              color: '#ffffff',
+              weight: 2
+            });
+          }
+        });
+
+        // Zoom map to show route
+        try {
+          mapRef.current.fitBounds(L.polyline(pathCoords).getBounds(), {
+            padding: [50, 50],
+            maxZoom: 14
+          });
+        } catch (e) {}
+      }
+    } else {
+      mapRef.current.setView([13.06, 80.23], 11);
+    }
+  }, [cityFrom, cityTo, leafletLoaded, cityPublicMode]);
+
+
   // Clear route result when planner inputs change
   useEffect(() => {
     setRouteResult(null);
   }, [from, to, category, plannerPrivateMode]);
+
+  // Private Route details calculation for within city
+  useEffect(() => {
+    if (timetableCategory === 'city' && cityTransportType === 'private' && cityPrivateMode && cityFrom.trim() && cityTo.trim()) {
+      const delayDebounceFn = setTimeout(() => {
+        setIsCityRouteLoading(true);
+        checkRouteAvailability(cityFrom, cityTo, 'private', cityPrivateMode === 'nammayatri' ? 'ola' : cityPrivateMode, isMobile)
+          .then(res => {
+            if (cityPrivateMode === 'nammayatri' && res.isValid) {
+              res.modeUsed = 'Namma Yatri';
+              res.url = 'https://nammayatri.in/';
+            }
+            setCityRouteResult(res);
+          })
+          .catch(err => {
+            console.error(err);
+            setCityRouteResult(null);
+          })
+          .finally(() => {
+            setIsCityRouteLoading(false);
+          });
+      }, 500);
+      return () => clearTimeout(delayDebounceFn);
+    } else {
+      setCityRouteResult(null);
+    }
+  }, [cityFrom, cityTo, cityTransportType, cityPrivateMode, timetableCategory, isMobile]);
+
+  // Fetch MTC bus suggestions for autocomplete (From)
+  useEffect(() => {
+    if (timetableCategory === 'city' && cityPublicMode === 'bus' && cityFrom.trim().length > 0) {
+      const controller = new AbortController();
+      fetch(`/api/mtc-bus?autocomplete=${encodeURIComponent(cityFrom)}`, { signal: controller.signal })
+        .then(res => res.json())
+        .then(data => {
+          if (data.stops) {
+            setBusSuggestionsFrom(data.stops);
+            setShowSuggestionsFrom(true);
+          }
+        })
+        .catch(err => {
+          if (err.name !== 'AbortError') console.error(err);
+        });
+      return () => controller.abort();
+    } else {
+      setBusSuggestionsFrom([]);
+      setShowSuggestionsFrom(false);
+    }
+  }, [cityFrom, cityPublicMode, timetableCategory]);
+
+  // Fetch MTC bus suggestions for autocomplete (To)
+  useEffect(() => {
+    if (timetableCategory === 'city' && cityPublicMode === 'bus' && cityTo.trim().length > 0) {
+      const controller = new AbortController();
+      fetch(`/api/mtc-bus?autocomplete=${encodeURIComponent(cityTo)}`, { signal: controller.signal })
+        .then(res => res.json())
+        .then(data => {
+          if (data.stops) {
+            setBusSuggestionsTo(data.stops);
+            setShowSuggestionsTo(true);
+          }
+        })
+        .catch(err => {
+          if (err.name !== 'AbortError') console.error(err);
+        });
+      return () => controller.abort();
+    } else {
+      setBusSuggestionsTo([]);
+      setShowSuggestionsTo(false);
+    }
+  }, [cityTo, cityPublicMode, timetableCategory]);
+
+  // Fetch MTC bus search results (Direct + 1-Transfer)
+  useEffect(() => {
+    if (timetableCategory === 'city' && cityPublicMode === 'bus' && cityFrom.trim() && cityTo.trim()) {
+      setIsBusLoading(true);
+      const controller = new AbortController();
+      fetch(`/api/mtc-bus?from=${encodeURIComponent(cityFrom)}&to=${encodeURIComponent(cityTo)}`, { signal: controller.signal })
+        .then(res => res.json())
+        .then(data => {
+          setBusSearchResult({
+            direct: data.direct || [],
+            transfers: data.transfers || []
+          });
+        })
+        .catch(err => {
+          if (err.name !== 'AbortError') {
+            console.error('Error fetching MTC routes:', err);
+            setBusSearchResult(null);
+          }
+        })
+        .finally(() => {
+          setIsBusLoading(false);
+        });
+      return () => controller.abort();
+    } else {
+      setBusSearchResult(null);
+    }
+  }, [cityFrom, cityTo, cityPublicMode, timetableCategory]);
 
   const handleGetRoute = async () => {
     setIsLoading(true);
@@ -139,6 +707,19 @@ export default function TravelPage() {
   // Get active Metro timings
   const activeMetroTimings = metroFrom && metroTo ? getMetroTimings(metroFrom, metroTo) : null;
 
+  // Helper to match input station with database station names
+  const findMetroStation = (name: string) => {
+    if (!name) return null;
+    const lowerName = name.toLowerCase().trim();
+    // Try exact match first
+    let station = METRO_STATIONS.find(s => s.name.toLowerCase() === lowerName || s.id === lowerName);
+    if (!station) {
+      // Try substring match
+      station = METRO_STATIONS.find(s => s.name.toLowerCase().includes(lowerName) || lowerName.includes(s.name.toLowerCase()));
+    }
+    return station;
+  };
+
   // Filter Local Trains
   const filteredTrains = LOCAL_TRAINS.filter(train => {
     const matchesFrom = trainFrom ? train.from === trainFrom : true;
@@ -179,7 +760,7 @@ export default function TravelPage() {
             <span className="text-text-primary font-medium">Travel & Transport</span>
           </div>
           <h1 className="text-4xl sm:text-5xl font-black font-display text-text-primary tracking-tight">
-            Chennai Transport <span className="text-primary">Guide</span>
+            Travel and <span className="text-primary">Transport</span>
           </h1>
           <p className="mt-3 text-lg text-text-muted max-w-2xl">
             Check metro timings, local train time charts, MTC bus timetables, private ride booking, and outstation travel flows.
@@ -188,678 +769,41 @@ export default function TravelPage() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Navigation Tabs */}
-        <div className="flex flex-wrap gap-2 mb-8 bg-white p-2 rounded-2xl border border-border shadow-sm">
-          {[
-            { id: 'planner', label: 'Route Planner', icon: <Compass className="w-4 h-4" /> },
-            { id: 'metro', label: 'Chennai Metro', icon: <Train className="w-4 h-4 text-blue-500" /> },
-            { id: 'train', label: 'Suburban Trains', icon: <Train className="w-4 h-4 text-amber-500" /> },
-            { id: 'bus', label: 'MTC Bus Directory', icon: <Bus className="w-4 h-4 text-green-500" /> },
-            { id: 'private', label: 'Private Operators', icon: <Car className="w-4 h-4 text-emerald-500" /> },
-            { id: 'timetable', label: 'State & City Timetables', icon: <Clock className="w-4 h-4 text-purple-500" /> },
-            { id: 'outstation', label: 'Outstation Travel', icon: <Map className="w-4 h-4 text-indigo-500" /> }
-          ].map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id as AppTab)}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all cursor-pointer ${activeTab === tab.id
-                  ? 'bg-primary text-white shadow-md'
-                  : 'text-text-muted hover:bg-surface hover:text-text-primary'
-                }`}
-            >
-              {tab.icon}
-              {tab.label}
-            </button>
-          ))}
-        </div>
-
         {/* Main Dashboard Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left/Middle Content Area based on Selected Tab */}
           <div className="lg:col-span-2 space-y-6">
 
-            {/* 1. ROUTE PLANNER TAB */}
-            {activeTab === 'planner' && (
-              <Card padding="lg" className="border-primary/20">
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-2xl font-bold flex items-center gap-2 text-text-primary">
-                    <Compass className="w-6 h-6 text-primary" /> Route Planner
-                  </h2>
-                  <Badge variant="outline" className="text-primary border-primary/25 bg-primary/5">Real-time geocoding</Badge>
-                </div>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-semibold text-text-primary mb-1.5">From</label>
-                    <div className="relative">
-                      <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-green-500" />
-                      <input
-                        value={from}
-                        onChange={(e) => setFrom(e.target.value)}
-                        placeholder="Enter starting point (e.g. Egmore Railway Station)..."
-                        className="w-full pl-11 pr-4 py-3 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 bg-surface/50"
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-text-primary mb-1.5">To</label>
-                    <div className="relative">
-                      <Navigation className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-red-500" />
-                      <input
-                        value={to}
-                        onChange={(e) => setTo(e.target.value)}
-                        placeholder="Enter destination (e.g. Chennai Airport)..."
-                        className="w-full pl-11 pr-4 py-3 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 bg-surface/50"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mt-6">
-                  <label className="block text-sm font-semibold text-text-primary mb-3">Transport Category</label>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {[
-                      { id: 'public', label: 'Public Transport', icon: <Bus className="w-5 h-5" />, desc: 'Metro, Suburban Train, MTC Bus' },
-                      { id: 'private', label: 'Private Booking', icon: <Car className="w-5 h-5" />, desc: 'Ola, Uber, Rapido Cab/Auto/Bike' }
-                    ].map((c) => (
-                      <div
-                        key={c.id}
-                        onClick={() => setCategory(c.id as TransportCategory)}
-                        className={`flex flex-col p-4 rounded-xl border-2 transition-all cursor-pointer ${category === c.id
-                            ? 'border-primary bg-primary/5 shadow-sm'
-                            : 'border-border bg-white hover:border-gray-300'
-                          }`}
-                      >
-                        <div className="flex items-center gap-2 mb-1">
-                          <div className={category === c.id ? 'text-primary' : 'text-text-muted'}>
-                            {c.icon}
-                          </div>
-                          <span className={`font-bold ${category === c.id ? 'text-primary' : 'text-text-primary'}`}>
-                            {c.label}
-                          </span>
-                        </div>
-                        <span className="text-xs text-text-muted ml-7">{c.desc}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {category === 'private' && (
-                  <div className="mt-4 p-4 bg-surface rounded-xl border border-border">
-                    <label className="block text-xs font-bold text-text-muted uppercase tracking-wider mb-3">Select Ride-Hailing Provider</label>
-                    <div className="flex flex-wrap gap-2">
-                      {[
-                        { id: 'ola', label: 'Ola', color: 'bg-green-100 text-green-700 hover:bg-green-200' },
-                        { id: 'uber', label: 'Uber', color: 'bg-gray-900 text-white hover:bg-gray-800' },
-                        { id: 'rapido', label: 'Rapido', color: 'bg-yellow-100 text-yellow-700 hover:bg-yellow-200' }
-                      ].map((m) => {
-                        const isSelected = plannerPrivateMode === m.id;
-                        return (
-                          <button
-                            key={m.id}
-                            onClick={() => setPlannerPrivateMode(m.id as PrivateMode)}
-                            className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold transition-all cursor-pointer ${isSelected
-                                ? `${m.color} ring-2 ring-offset-2 ring-primary/50`
-                                : 'bg-white border border-border text-text-muted hover:border-gray-400'
-                              }`}
-                          >
-                            {m.label}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
-
-                <div className="mt-6">
-                  <Button
-                    variant="primary"
-                    size="lg"
-                    className="w-full shadow-lg"
-                    disabled={!from || !to || isLoading}
-                    onClick={handleGetRoute}
-                  >
-                    {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Navigation className="w-5 h-5" />}
-                    {isLoading ? 'Finding Best Route...' : 'Get Route & Check Availability'}
-                  </Button>
-                </div>
-
-                {routeResult && !routeResult.isValid && (
-                  <div className="mt-4 p-4 bg-red-50 text-red-800 rounded-xl border border-red-200 flex flex-col gap-3 items-start animate-fade-in">
-                    <div className="flex items-center gap-2">
-                      <AlertCircle className="w-5 h-5 text-red-600 animate-pulse" />
-                      <p className="font-semibold text-sm">{routeResult.message}</p>
-                    </div>
-                    {category === 'public' && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="bg-white hover:bg-red-50 text-red-700 border-red-200 hover:border-red-300"
-                        onClick={() => setCategory('private')}
-                      >
-                        <Car className="w-4 h-4 mr-2" /> Switch to Private Cabs
-                      </Button>
-                    )}
-                  </div>
-                )}
-
-                {routeResult && routeResult.isValid && (
-                  <div className="mt-6 p-5 bg-emerald-50/60 rounded-2xl border border-emerald-200 animate-fade-in">
-                    <h3 className="text-sm font-bold text-emerald-800 mb-4 border-b border-emerald-200/50 pb-2 flex items-center gap-1.5">
-                      <CheckCircle2 className="w-4 h-4" /> Route Calculated Successfully
-                    </h3>
-                    <div className="grid grid-cols-3 gap-4 mb-5">
-                      <div className="flex flex-col bg-white p-3 rounded-xl border border-emerald-100 shadow-sm">
-                        <span className="text-xs text-emerald-600 font-semibold mb-0.5">Est. Time</span>
-                        <span className="font-black text-lg text-emerald-950">{routeResult.estimatedTime}</span>
-                      </div>
-                      <div className="flex flex-col bg-white p-3 rounded-xl border border-emerald-100 shadow-sm">
-                        <span className="text-xs text-emerald-600 font-semibold mb-0.5">Road Distance</span>
-                        <span className="font-black text-lg text-emerald-950">{routeResult.estimatedDistance}</span>
-                      </div>
-                      <div className="flex flex-col bg-white p-3 rounded-xl border border-emerald-100 shadow-sm">
-                        <span className="text-xs text-emerald-600 font-semibold mb-0.5">Recommended Mode</span>
-                        <span className="font-black text-sm text-emerald-950 truncate mt-1">{routeResult.modeUsed}</span>
-                      </div>
-                    </div>
-                    <a href={routeResult.url} target="_blank" rel="noopener noreferrer" className="block">
-                      <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white shadow-md border-transparent">
-                        <ExternalLink className="w-4 h-4 mr-2" />
-                        {category === 'public' ? 'Open Directions in Google Maps' : `Confirm Booking on ${routeResult.modeUsed}`}
-                      </Button>
-                    </a>
-                  </div>
-                )}
-              </Card>
-            )}
-
-            {/* 2. CHENNAI METRO TAB */}
-            {activeTab === 'metro' && (
-              <Card padding="lg" className="border-blue-200">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-                  <h2 className="text-2xl font-bold flex items-center gap-2 text-text-primary">
-                    <Train className="w-6 h-6 text-blue-500" /> Chennai Metro timing Lookup
-                  </h2>
-                  <a
-                    href="https://chennaimetrorail.org/travel-information/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-blue-50 text-blue-700 hover:bg-blue-100 rounded-xl text-xs font-bold transition-all border border-blue-100"
-                  >
-                    <ExternalLink className="w-3.5 h-3.5" /> Official Metro Timing Page
-                  </a>
-                </div>
-
-                <div className="p-4 bg-blue-50/50 rounded-2xl border border-blue-100 mb-6">
-                  <p className="text-sm text-blue-800 font-medium">
-                    Chennai Metro operates Green and Blue lines connecting Washermanpet to Airport and Central to St. Thomas Mount. Peak frequency is every 5 minutes.
-                  </p>
-                </div>
-
-                {/* Station Selection Dropdowns */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-                  <div>
-                    <label className="block text-sm font-semibold text-text-primary mb-1.5">From Station</label>
-                    <select
-                      value={metroFrom}
-                      onChange={(e) => setMetroFrom(e.target.value)}
-                      className="w-full px-4 py-3 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 bg-white"
-                    >
-                      <option value="">Select origin station...</option>
-                      {METRO_STATIONS.map((station) => (
-                        <option key={station.id} value={station.id}>
-                          {station.name} ({station.line} Line)
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-text-primary mb-1.5">To Station</label>
-                    <select
-                      value={metroTo}
-                      onChange={(e) => setMetroTo(e.target.value)}
-                      className="w-full px-4 py-3 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 bg-white"
-                    >
-                      <option value="">Select destination station...</option>
-                      {METRO_STATIONS.map((station) => (
-                        <option key={station.id} value={station.id}>
-                          {station.name} ({station.line} Line)
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-                {/* Timing & Route Results */}
-                {activeMetroTimings ? (
-                  <div className="space-y-6 border border-blue-100 p-5 rounded-2xl bg-white shadow-sm">
-                    <div className="flex flex-wrap items-center justify-between border-b border-gray-100 pb-3 gap-2">
-                      <div>
-                        <span className="text-xs text-text-muted font-semibold uppercase tracking-wider block">Metro Route</span>
-                        <span className="font-bold text-lg text-text-primary">{activeMetroTimings.from} ➔ {activeMetroTimings.to}</span>
-                      </div>
-                      <Badge className="bg-blue-600 text-white font-bold px-3 py-1 rounded-full">{activeMetroTimings.line}</Badge>
-                    </div>
-
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                      <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-100 flex flex-col items-center text-center">
-                        <Clock className="w-5 h-5 text-blue-500 mb-1" />
-                        <span className="text-xs text-text-muted">Travel Time</span>
-                        <span className="font-bold text-text-primary text-sm mt-0.5">{activeMetroTimings.duration}</span>
-                      </div>
-                      <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-100 flex flex-col items-center text-center">
-                        <CreditCard className="w-5 h-5 text-blue-500 mb-1" />
-                        <span className="text-xs text-text-muted">Ticket Fare</span>
-                        <span className="font-bold text-text-primary text-sm mt-0.5">₹{activeMetroTimings.fare}</span>
-                      </div>
-                      <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-100 flex flex-col items-center text-center">
-                        <Navigation className="w-5 h-5 text-blue-500 mb-1" />
-                        <span className="text-xs text-text-muted">Stations</span>
-                        <span className="font-bold text-text-primary text-sm mt-0.5">{activeMetroTimings.stopsCount} stops</span>
-                      </div>
-                      <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-100 flex flex-col items-center text-center">
-                        <Clock className="w-5 h-5 text-blue-500 mb-1" />
-                        <span className="text-xs text-text-muted">Operating Hours</span>
-                        <span className="font-bold text-text-primary text-xs mt-0.5">05:00 AM - 11:00 PM</span>
-                      </div>
-                    </div>
-
-                    <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
-                      <h4 className="text-xs font-bold text-text-muted uppercase tracking-wider mb-2">Transit Interval & Frequency</h4>
-                      <p className="text-sm text-text-primary font-medium">{activeMetroTimings.frequency}</p>
-                    </div>
-
-                    {/* Visual Route Timeline */}
-                    <div>
-                      <h4 className="text-xs font-bold text-text-muted uppercase tracking-wider mb-3">Station Stops Track</h4>
-                      <div className="relative pl-6 space-y-4 before:absolute before:left-2 before:top-2 before:bottom-2 before:w-0.5 before:bg-blue-300">
-                        {activeMetroTimings.route.map((stationName, idx) => {
-                          const isTransfer = stationName === 'Alandur' || stationName === 'Chennai Central';
-                          return (
-                            <div key={idx} className="relative flex items-center gap-2">
-                              <span className={`absolute -left-5 w-4 h-4 rounded-full border-2 bg-white flex items-center justify-center ${idx === 0
-                                  ? 'border-green-500'
-                                  : idx === activeMetroTimings.route.length - 1
-                                    ? 'border-red-500'
-                                    : isTransfer
-                                      ? 'border-purple-500'
-                                      : 'border-blue-400'
-                                }`} />
-                              <span className={`text-sm ${idx === 0 || idx === activeMetroTimings.route.length - 1 || isTransfer
-                                  ? 'font-bold text-text-primary'
-                                  : 'text-text-muted'
-                                }`}>
-                                {stationName}
-                                {isTransfer && idx !== 0 && idx !== activeMetroTimings.route.length - 1 && (
-                                  <span className="text-xs text-purple-600 bg-purple-50 px-1.5 py-0.5 rounded ml-2 font-semibold">Transfer Point</span>
-                                )}
-                              </span>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="text-center py-10 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
-                    <Train className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-                    <h3 className="font-bold text-slate-800 text-base">Select Route Stations</h3>
-                    <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
-                      Choose "From" and "To" stations above to view live metro timings, fare estimations, and route timelines.
-                    </p>
-                  </div>
-                )}
-              </Card>
-            )}
-
-            {/* 3. SUBURBAN TRAIN TAB */}
-            {activeTab === 'train' && (
-              <Card padding="lg" className="border-amber-200">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-                  <h2 className="text-2xl font-bold flex items-center gap-2 text-text-primary">
-                    <Train className="w-6 h-6 text-amber-500" /> Suburban Train Time Chart
-                  </h2>
-                  <a
-                    href="https://whereismytrain.com/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-amber-50 text-amber-800 hover:bg-amber-100 rounded-xl text-xs font-bold transition-all border border-amber-100 shadow-sm"
-                  >
-                    <ExternalLink className="w-3.5 h-3.5 text-amber-700" /> "Where Is My Train" Web Search
-                  </a>
-                </div>
-
-                {/* Filters */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6 bg-slate-50 p-4 rounded-2xl border border-slate-100">
-                  <div>
-                    <label className="block text-xs font-bold text-text-muted uppercase tracking-wider mb-1">From Station</label>
-                    <select
-                      value={trainFrom}
-                      onChange={(e) => setTrainFrom(e.target.value)}
-                      className="w-full px-3 py-2.5 rounded-lg border border-border text-xs focus:outline-none focus:ring-2 focus:ring-amber-500/20 bg-white"
-                    >
-                      <option value="">All Origins</option>
-                      {trainOrigins.map((station) => (
-                        <option key={station} value={station}>{station}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-text-muted uppercase tracking-wider mb-1">To Station</label>
-                    <select
-                      value={trainTo}
-                      onChange={(e) => setTrainTo(e.target.value)}
-                      className="w-full px-3 py-2.5 rounded-lg border border-border text-xs focus:outline-none focus:ring-2 focus:ring-amber-500/20 bg-white"
-                    >
-                      <option value="">All Destinations</option>
-                      {trainDestinations.map((station) => (
-                        <option key={station} value={station}>{station}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-text-muted uppercase tracking-wider mb-1">Search Train</label>
-                    <div className="relative">
-                      <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted" />
-                      <input
-                        type="text"
-                        placeholder="Train name or number..."
-                        value={trainSearchQuery}
-                        onChange={(e) => setTrainSearchQuery(e.target.value)}
-                        className="w-full pl-8 pr-3 py-2 rounded-lg border border-border text-xs focus:outline-none focus:ring-2 focus:ring-amber-500/20 bg-white"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Train Schedule Table */}
-                <div className="overflow-x-auto rounded-xl border border-border">
-                  <table className="w-full border-collapse text-left text-sm bg-white">
-                    <thead className="bg-slate-50 border-b border-border">
-                      <tr>
-                        <th className="px-4 py-3 font-semibold text-text-primary text-xs uppercase tracking-wider">Train No</th>
-                        <th className="px-4 py-3 font-semibold text-text-primary text-xs uppercase tracking-wider">Train Name</th>
-                        <th className="px-4 py-3 font-semibold text-text-primary text-xs uppercase tracking-wider">Route</th>
-                        <th className="px-4 py-3 font-semibold text-text-primary text-xs uppercase tracking-wider">Departure</th>
-                        <th className="px-4 py-3 font-semibold text-text-primary text-xs uppercase tracking-wider">Arrival</th>
-                        <th className="px-4 py-3 font-semibold text-text-primary text-xs uppercase tracking-wider">Runs</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-border">
-                      {filteredTrains.length > 0 ? (
-                        filteredTrains.map((train) => (
-                          <tr key={train.number} className="hover:bg-slate-50/50 transition-colors">
-                            <td className="px-4 py-3.5 font-bold text-xs text-amber-700 bg-amber-50/20">{train.number}</td>
-                            <td className="px-4 py-3.5 font-semibold text-text-primary">
-                              <div className="flex flex-col">
-                                <span>{train.name}</span>
-                                <span className="text-[10px] text-text-muted font-normal mt-0.5">{train.type}</span>
-                              </div>
-                            </td>
-                            <td className="px-4 py-3.5 text-xs text-text-primary">
-                              <div className="flex items-center gap-1">
-                                <span>{train.from}</span>
-                                <ArrowRight className="w-3.5 h-3.5 text-text-muted" />
-                                <span>{train.to}</span>
-                              </div>
-                            </td>
-                            <td className="px-4 py-3.5 font-bold text-xs text-text-primary">{train.departure}</td>
-                            <td className="px-4 py-3.5 font-bold text-xs text-text-primary">{train.arrival}</td>
-                            <td className="px-4 py-3.5 text-xs">
-                              <Badge variant="outline" className="text-emerald-700 border-emerald-100 bg-emerald-50 text-[10px] font-semibold">
-                                {train.frequency}
-                              </Badge>
-                            </td>
-                          </tr>
-                        ))
-                      ) : (
-                        <tr>
-                          <td colSpan={6} className="px-4 py-8 text-center text-text-muted text-xs">
-                            No suburban train schedules matched your search criteria.
-                          </td>
-                        </tr>
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-              </Card>
-            )}
-
-            {/* 4. MTC BUS TAB */}
-            {activeTab === 'bus' && (
-              <Card padding="lg" className="border-green-200">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-                  <h2 className="text-2xl font-bold flex items-center gap-2 text-text-primary">
-                    <Bus className="w-6 h-6 text-green-500" /> MTC Bus Directory & Timetables
-                  </h2>
-                  <a
-                    href="https://chalo.com/app/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-green-50 text-green-700 hover:bg-green-100 rounded-xl text-xs font-bold transition-all border border-green-100 shadow-sm"
-                  >
-                    <ExternalLink className="w-3.5 h-3.5" /> Download Chalo App for Live Tracking
-                  </a>
-                </div>
-
-                {/* Filters */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6 bg-slate-50 p-4 rounded-2xl border border-slate-100">
-                  <div className="relative col-span-1 sm:col-span-3">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
-                    <input
-                      type="text"
-                      placeholder="Search bus number or destination..."
-                      value={busSearch}
-                      onChange={(e) => setBusSearch(e.target.value)}
-                      className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-green-500/20 bg-white"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-text-muted uppercase tracking-wider mb-1">Passes Through / From</label>
-                    <input
-                      type="text"
-                      placeholder="e.g. Guindy"
-                      value={busFromFilter}
-                      onChange={(e) => setBusFromFilter(e.target.value)}
-                      className="w-full px-3 py-2 rounded-lg border border-border text-xs focus:outline-none focus:ring-2 focus:ring-green-500/20 bg-white"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-text-muted uppercase tracking-wider mb-1">Heading Toward / To</label>
-                    <input
-                      type="text"
-                      placeholder="e.g. Tambaram"
-                      value={busToFilter}
-                      onChange={(e) => setBusToFilter(e.target.value)}
-                      className="w-full px-3 py-2 rounded-lg border border-border text-xs focus:outline-none focus:ring-2 focus:ring-green-500/20 bg-white"
-                    />
-                  </div>
-                  <div className="flex items-end">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="w-full text-xs font-bold py-2 border-dashed border-gray-300"
-                      onClick={() => {
-                        setBusSearch('');
-                        setBusFromFilter('');
-                        setBusToFilter('');
-                      }}
-                    >
-                      Reset Filters
-                    </Button>
-                  </div>
-                </div>
-
-                {/* Bus List */}
-                <div className="space-y-4">
-                  {filteredBuses.length > 0 ? (
-                    filteredBuses.map((bus) => (
-                      <div key={bus.number} className="border border-border p-5 rounded-2xl bg-white hover:shadow-md transition-all">
-                        <div className="flex items-center justify-between mb-3 border-b border-slate-50 pb-2">
-                          <div className="flex items-center gap-2">
-                            <div className="bg-green-600 text-white text-base font-black px-3.5 py-1.5 rounded-xl shadow-sm tracking-wide">
-                              {bus.number}
-                            </div>
-                            <span className="font-bold text-text-primary text-sm">
-                              {bus.from} ➔ {bus.to}
-                            </span>
-                          </div>
-                          <Badge variant="secondary" className="bg-green-50 text-green-700 text-xs font-semibold px-2 py-0.5 rounded">
-                            {bus.frequency}
-                          </Badge>
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-4 text-xs text-text-muted mb-3.5 bg-slate-50 p-2.5 rounded-lg border border-slate-100">
-                          <div>
-                            <span className="font-semibold text-text-primary block">First Bus departure</span>
-                            <span>{bus.firstBus}</span>
-                          </div>
-                          <div>
-                            <span className="font-semibold text-text-primary block">Last Bus departure</span>
-                            <span>{bus.lastBus}</span>
-                          </div>
-                        </div>
-
-                        <div>
-                          <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider block mb-1.5">Key Route Stops</span>
-                          <div className="flex flex-wrap gap-1.5">
-                            {bus.stops.map((stop, i) => (
-                              <Badge key={i} variant="outline" className="bg-slate-50 text-slate-700 border-slate-200 text-[10px] font-medium">
-                                {stop}
-                              </Badge>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="text-center py-10 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
-                      <Bus className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-                      <h3 className="font-bold text-slate-800 text-base">No Buses Found</h3>
-                      <p className="text-xs text-slate-500 mt-1">
-                        Try searching for another route number, or broaden your "Passes Through" / "Heading Toward" filters.
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </Card>
-            )}
-
-            {/* 5. PRIVATE OPERATOR MODULE */}
-            {activeTab === 'private' && (
-              <Card padding="lg" className="border-emerald-200">
-                <div className="flex items-center justify-between mb-6 border-b border-slate-50 pb-3">
-                  <h2 className="text-2xl font-bold flex items-center gap-2 text-text-primary">
-                    <Car className="w-6 h-6 text-emerald-500" /> Private Operator Booker
-                  </h2>
-                  <Badge variant="outline" className="text-emerald-700 border-emerald-100 bg-emerald-50 font-bold">App Integrations</Badge>
-                </div>
-
-                <div className="space-y-4 mb-6">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">From Location</label>
-                      <input
-                        type="text"
-                        value={privateFrom}
-                        onChange={(e) => setPrivateFrom(e.target.value)}
-                        placeholder="Enter starting spot (e.g. Guindy)..."
-                        className="w-full px-4 py-3 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 bg-white"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">To Location</label>
-                      <input
-                        type="text"
-                        value={privateTo}
-                        onChange={(e) => setPrivateTo(e.target.value)}
-                        placeholder="Enter destination (e.g. Central)..."
-                        className="w-full px-4 py-3 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 bg-white"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-semibold text-text-primary mb-3">Travel Mode Option</label>
-                    <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
-                      {[
-                        { id: 'ola', name: 'Ola', desc: 'Auto/Cab booking', url: 'https://book.olacabs.com/' },
-                        { id: 'uber', name: 'Uber', desc: 'Fast ride bookings', url: 'https://m.uber.com/' },
-                        { id: 'rapido', name: 'Rapido', desc: 'Bike taxi, cabs', url: 'https://www.rapido.bike/' },
-                        { id: 'appauto', name: 'App Auto', desc: 'Local Autos', url: 'https://m.uber.com/' },
-                        { id: 'nammayatri', name: 'Namma Yatri', desc: 'Direct Auto/Cab', url: 'https://nammayatri.in/' }
-                      ].map((op) => (
-                        <button
-                          key={op.id}
-                          onClick={() => setSelectedPrivateOperator(op.id)}
-                          className={`flex flex-col items-center justify-center p-3 rounded-xl border text-center transition-all cursor-pointer ${selectedPrivateOperator === op.id
-                              ? 'border-emerald-600 bg-emerald-50 ring-2 ring-emerald-500/20'
-                              : 'border-border bg-white hover:border-gray-300'
-                            }`}
-                        >
-                          <span className="font-bold text-sm text-text-primary">{op.name}</span>
-                          <span className="text-[9px] text-text-muted mt-0.5">{op.desc}</span>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <Button
-                    className="w-full bg-emerald-600 hover:bg-emerald-700 text-white shadow-md font-bold mt-2"
-                    disabled={!privateFrom || !privateTo || isPrivateLoading}
-                    onClick={handlePrivateOperatorSearch}
-                  >
-                    {isPrivateLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Navigation className="w-4 h-4 mr-1.5" />}
-                    {isPrivateLoading ? 'Calculating route...' : 'Show Operator Availability & Fare'}
-                  </Button>
-                </div>
-
-                {privateModeResult && privateModeResult.isValid && (
-                  <div className="p-5 bg-slate-50 rounded-2xl border border-border animate-fade-in">
-                    <h3 className="text-sm font-bold text-text-primary mb-3">Operator Route availability Details</h3>
-                    <div className="grid grid-cols-2 gap-4 mb-4">
-                      <div className="bg-white p-3 rounded-xl border border-slate-100 shadow-sm">
-                        <span className="text-[10px] text-text-muted font-bold uppercase tracking-wider block">Estimated Distance</span>
-                        <span className="font-extrabold text-base text-text-primary">{privateModeResult.estimatedDistance}</span>
-                      </div>
-                      <div className="bg-white p-3 rounded-xl border border-slate-100 shadow-sm">
-                        <span className="text-[10px] text-text-muted font-bold uppercase tracking-wider block">Estimated Time</span>
-                        <span className="font-extrabold text-base text-text-primary">{privateModeResult.estimatedTime}</span>
-                      </div>
-                    </div>
-                    <div className="flex flex-col gap-3">
-                      <p className="text-xs text-text-muted font-medium">
-                        Redirection matches: Clicking the booking button will launch the selected operator platform. Available for cabs and autos on this route.
-                      </p>
-                      <a href={privateModeResult.url} target="_blank" rel="noopener noreferrer">
-                        <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white shadow-md font-bold border-transparent">
-                          <ExternalLink className="w-4 h-4 mr-2" />
-                          Redirect to Book {selectedPrivateOperator === 'nammayatri' ? 'Namma Yatri' : selectedPrivateOperator === 'appauto' ? 'App Auto' : selectedPrivateOperator.toUpperCase()}
-                        </Button>
-                      </a>
-                    </div>
-                  </div>
-                )}
-              </Card>
-            )}
-
             {/* 6. TIMETABLE MODULE (NEW) */}
-            {activeTab === 'timetable' && (
+            
               <div className="space-y-6">
                 <Card padding="lg" className="border-purple-200">
                   <div className="flex items-center justify-between mb-6 border-b border-slate-100 pb-3">
                     <h2 className="text-2xl font-bold flex items-center gap-2 text-text-primary">
-                      <Clock className="w-6 h-6 text-purple-500" /> State & City Timetables
+                      <Clock className="w-6 h-6 text-purple-500" /> Planner
                     </h2>
                     <div className="flex bg-slate-100 p-1 rounded-xl">
                       <button
-                        onClick={() => setTimetableCategory('city')}
+                        onClick={() => {
+                          setTimetableCategory('city');
+                          setCityFrom('');
+                          setCityTo('');
+                          setCityPublicMode(null);
+                          setCityPrivateMode(null);
+                        }}
                         className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${timetableCategory === 'city' ? 'bg-white text-purple-700 shadow-sm' : 'text-text-muted'
                           }`}
                       >
                         Within the City
                       </button>
                       <button
-                        onClick={() => setTimetableCategory('state')}
+                        onClick={() => {
+                          setTimetableCategory('state');
+                          setStateFrom('');
+                          setStateTo('');
+                          setStatePublicMode(null);
+                          setStatePrivateMode(null);
+                        }}
                         className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${timetableCategory === 'state' ? 'bg-white text-purple-700 shadow-sm' : 'text-text-muted'
                           }`}
                       >
@@ -871,34 +815,17 @@ export default function TravelPage() {
                   {/* TIMETABLE CATEGORY A: WITHIN THE CITY */}
                   {timetableCategory === 'city' && (
                     <div className="space-y-5">
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                          <label className="block text-sm font-semibold text-text-primary mb-1.5">From Station / Area</label>
-                          <input
-                            type="text"
-                            value={cityFrom}
-                            onChange={(e) => setCityFrom(e.target.value)}
-                            placeholder="Enter city starting point (e.g. Beach)..."
-                            className="w-full px-4 py-3 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/20 bg-white"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-sm font-semibold text-text-primary mb-1.5">To Station / Area</label>
-                          <input
-                            type="text"
-                            value={cityTo}
-                            onChange={(e) => setCityTo(e.target.value)}
-                            placeholder="Enter city destination (e.g. Guindy)..."
-                            className="w-full px-4 py-3 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/20 bg-white"
-                          />
-                        </div>
-                      </div>
-
+                      {/* Step A: Select Transport Category */}
                       <div>
-                        <label className="block text-sm font-semibold text-text-primary mb-3">Transport Type</label>
+                        <label className="block text-sm font-semibold text-text-primary mb-3">1. Select Transport Category</label>
                         <div className="grid grid-cols-2 gap-3">
                           <button
-                            onClick={() => setCityTransportType('public')}
+                            onClick={() => {
+                              setCityTransportType('public');
+                              setCityPublicMode(null);
+                              setCityFrom('');
+                              setCityTo('');
+                            }}
                             className={`flex items-center justify-center gap-2 p-3.5 rounded-xl border font-bold transition-all cursor-pointer ${cityTransportType === 'public'
                                 ? 'border-purple-600 bg-purple-50 text-purple-700 ring-2 ring-purple-500/10'
                                 : 'border-border bg-white text-text-muted hover:border-gray-300'
@@ -907,7 +834,12 @@ export default function TravelPage() {
                             <Bus className="w-4 h-4" /> Public (Metro / Train / Bus)
                           </button>
                           <button
-                            onClick={() => setCityTransportType('private')}
+                            onClick={() => {
+                              setCityTransportType('private');
+                              setCityPrivateMode(null);
+                              setCityFrom('');
+                              setCityTo('');
+                            }}
                             className={`flex items-center justify-center gap-2 p-3.5 rounded-xl border font-bold transition-all cursor-pointer ${cityTransportType === 'private'
                                 ? 'border-purple-600 bg-purple-50 text-purple-700 ring-2 ring-purple-500/10'
                                 : 'border-border bg-white text-text-muted hover:border-gray-300'
@@ -918,79 +850,750 @@ export default function TravelPage() {
                         </div>
                       </div>
 
-                      {/* Display relevant timetable information */}
-                      {cityFrom && cityTo && (
-                        <div className="mt-4 p-5 bg-purple-50/30 rounded-2xl border border-purple-100/50 space-y-4">
-                          <h3 className="text-sm font-bold text-purple-950 flex items-center gap-1">
-                            <span>Schedules matching:</span>
-                            <span className="text-purple-700 font-extrabold">{cityFrom} ➔ {cityTo}</span>
-                          </h3>
+                      {/* Step B: Select Mode of Transport */}
+                      {cityTransportType === 'public' && (
+                        <div>
+                          <label className="block text-sm font-semibold text-text-primary mb-3">2. Select Mode of Transport</label>
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => {
+                                setCityPublicMode('metro');
+                                setCityFrom('');
+                                setCityTo('');
+                              }}
+                              className={`px-4 py-2 rounded-xl border text-sm font-bold transition-all ${cityPublicMode === 'metro' ? 'bg-blue-50 border-blue-500 text-blue-700 ring-2 ring-blue-500/10' : 'bg-white border-border text-text-muted hover:border-gray-300'}`}
+                            >
+                              Chennai Metro
+                            </button>
+                            <button
+                              onClick={() => {
+                                setCityPublicMode('train');
+                                setCityFrom('');
+                                setCityTo('');
+                              }}
+                              className={`px-4 py-2 rounded-xl border text-sm font-bold transition-all ${cityPublicMode === 'train' ? 'bg-amber-50 border-amber-500 text-amber-700 ring-2 ring-amber-500/10' : 'bg-white border-border text-text-muted hover:border-gray-300'}`}
+                            >
+                              Suburban Train
+                            </button>
+                            <button
+                              onClick={() => {
+                                setCityPublicMode('bus');
+                                setCityFrom('');
+                                setCityTo('');
+                              }}
+                              className={`px-4 py-2 rounded-xl border text-sm font-bold transition-all ${cityPublicMode === 'bus' ? 'bg-green-50 border-green-500 text-green-700 ring-2 ring-green-500/10' : 'bg-white border-border text-text-muted hover:border-gray-300'}`}
+                            >
+                              MTC Bus
+                            </button>
+                          </div>
+                        </div>
+                      )}
 
-                          {cityTransportType === 'public' ? (
-                            <div className="space-y-3">
-                              {/* Metro Check */}
-                              <div className="p-4 bg-white rounded-xl border border-border shadow-sm">
-                                <h4 className="font-bold text-xs text-blue-600 uppercase tracking-wider mb-1">Recommended Chennai Metro Route</h4>
-                                <p className="text-sm text-text-primary font-medium">Use Metro Timing tab to check specific Blue or Green line connectivity and view exact fares.</p>
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  className="mt-2.5 text-xs text-blue-600 border-blue-200 hover:bg-blue-50/50"
-                                  onClick={() => setActiveTab('metro')}
-                                >
-                                  Open Metro Lookup
-                                </Button>
+                      {cityTransportType === 'private' && (
+                        <div>
+                          <label className="block text-sm font-semibold text-text-primary mb-3">2. Select Ride-Hailing App</label>
+                          <div className="flex flex-wrap gap-2">
+                            {[
+                              { id: 'ola', name: 'Ola Cabs' },
+                              { id: 'uber', name: 'Uber' },
+                              { id: 'rapido', name: 'Rapido' },
+                              { id: 'nammayatri', name: 'Namma Yatri' }
+                            ].map(app => (
+                              <button
+                                key={app.id}
+                                onClick={() => {
+                                  setCityPrivateMode(app.id as any);
+                                  setCityFrom('');
+                                  setCityTo('');
+                                }}
+                                className={`px-4 py-2 rounded-xl border text-sm font-bold transition-all ${cityPrivateMode === app.id ? 'bg-emerald-50 border-emerald-500 text-emerald-700 ring-2 ring-emerald-500/10' : 'bg-white border-border text-text-muted hover:border-gray-300'}`}
+                              >
+                                {app.name}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Step C: Show From & To Inputs (Only after mode is selected!) */}
+                      {((cityTransportType === 'public' && cityPublicMode) || (cityTransportType === 'private' && cityPrivateMode)) && (
+                        <div className="space-y-4">
+                          {cityPublicMode === 'metro' ? (
+                            <div className="space-y-4">
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                  <label className="block text-sm font-semibold text-text-primary mb-1.5">From Station</label>
+                                  <select
+                                    value={cityFrom}
+                                    onChange={(e) => setCityFrom(e.target.value)}
+                                    className="w-full px-4 py-3 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/20 bg-white"
+                                  >
+                                    <option value="">-- Select Origin Station --</option>
+                                    <optgroup label="Blue Line (Wimco Nagar Depot ↔ Airport)">
+                                      {METRO_BLUE_LINE.map(station => (
+                                        <option key={`from-blue-${station}`} value={station}>{station}</option>
+                                      ))}
+                                    </optgroup>
+                                    <optgroup label="Green Line (Central ↔ St. Thomas Mount)">
+                                      {METRO_GREEN_LINE.map(station => (
+                                        <option key={`from-green-${station}`} value={station}>{station}</option>
+                                      ))}
+                                    </optgroup>
+                                  </select>
+                                </div>
+                                <div>
+                                  <label className="block text-sm font-semibold text-text-primary mb-1.5">To Station</label>
+                                  <select
+                                    value={cityTo}
+                                    onChange={(e) => setCityTo(e.target.value)}
+                                    className="w-full px-4 py-3 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/20 bg-white"
+                                  >
+                                    <option value="">-- Select Destination Station --</option>
+                                    <optgroup label="Blue Line (Wimco Nagar Depot ↔ Airport)">
+                                      {METRO_BLUE_LINE.map(station => (
+                                        <option key={`to-blue-${station}`} value={station}>{station}</option>
+                                      ))}
+                                    </optgroup>
+                                    <optgroup label="Green Line (Central ↔ St. Thomas Mount)">
+                                      {METRO_GREEN_LINE.map(station => (
+                                        <option key={`to-green-${station}`} value={station}>{station}</option>
+                                      ))}
+                                    </optgroup>
+                                  </select>
+                                </div>
                               </div>
 
-                              {/* Train Check */}
-                              <div className="p-4 bg-white rounded-xl border border-border shadow-sm">
-                                <h4 className="font-bold text-xs text-amber-700 uppercase tracking-wider mb-1">Suburban Rail Schedules</h4>
-                                <p className="text-sm text-text-primary">Regular locals operate between central terminals on South & West lines.</p>
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  className="mt-2.5 text-xs text-amber-700 border-amber-200 hover:bg-amber-50/50"
-                                  onClick={() => setActiveTab('train')}
-                                >
-                                  Open Suburban Directory
-                                </Button>
-                              </div>
-
-                              {/* MTC Bus Check */}
-                              <div className="p-4 bg-white rounded-xl border border-border shadow-sm">
-                                <h4 className="font-bold text-xs text-green-700 uppercase tracking-wider mb-1">MTC Buses on Route</h4>
-                                <p className="text-sm text-text-primary">Buses like 18A, 21G, 102 connect central hubs. Frequency ranges 10-15 mins.</p>
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  className="mt-2.5 text-xs text-green-700 border-green-200 hover:bg-green-50/50"
-                                  onClick={() => setActiveTab('bus')}
-                                >
-                                  Open MTC Bus Search
-                                </Button>
-                              </div>
-                            </div>
-                          ) : (
-                            <div className="space-y-3">
-                              <div className="p-4 bg-white rounded-xl border border-border shadow-sm">
-                                <h4 className="font-bold text-xs text-emerald-600 uppercase tracking-wider mb-2">Available Ride-Hailing Booking Apps</h4>
-                                <div className="grid grid-cols-2 gap-2 text-xs text-text-primary">
-                                  <a href="https://book.olacabs.com/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 hover:text-emerald-600">
-                                    <ExternalLink className="w-3.5 h-3.5 text-emerald-500" /> Ola Auto & Cab
-                                  </a>
-                                  <a href="https://m.uber.com/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 hover:text-emerald-600">
-                                    <ExternalLink className="w-3.5 h-3.5 text-emerald-500" /> Uber Auto & Ride
-                                  </a>
-                                  <a href="https://www.rapido.bike/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 hover:text-emerald-600">
-                                    <ExternalLink className="w-3.5 h-3.5 text-emerald-500" /> Rapido Bike & Cab
-                                  </a>
-                                  <a href="https://nammayatri.in/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 hover:text-emerald-600">
-                                    <ExternalLink className="w-3.5 h-3.5 text-emerald-500" /> Namma Yatri Auto
-                                  </a>
+                              {/* Interactive Leaflet Map */}
+                              <div className="relative">
+                                {!leafletLoaded && (
+                                  <div className="absolute inset-0 bg-slate-50 flex items-center justify-center rounded-xl border border-border h-[400px] z-20">
+                                    <Loader2 className="w-6 h-6 animate-spin text-blue-600" />
+                                    <span className="text-xs text-text-muted ml-2 font-semibold">Loading interactive map...</span>
+                                  </div>
+                                )}
+                                <div 
+                                  ref={mapContainerRef} 
+                                  style={{ height: '400px' }} 
+                                  className="w-full rounded-xl border border-border overflow-hidden shadow-sm z-0" 
+                                />
+                                <div className="absolute bottom-2 right-2 bg-white/90 backdrop-blur-xs px-2.5 py-1.5 rounded-lg border border-border text-[10px] font-bold text-text-muted z-10 flex gap-2.5 shadow-xs">
+                                  <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-blue-600 border border-white" /> Blue Line</span>
+                                  <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-green-600 border border-white" /> Green Line</span>
+                                  <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-purple-600 border border-white animate-pulse" /> Interchange</span>
                                 </div>
                               </div>
                             </div>
+                          ) : cityPublicMode === 'train' ? (
+                            <div className="space-y-4 bg-slate-50/50 p-4 rounded-xl border border-border">
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                  <label className="block text-sm font-semibold text-text-primary mb-1.5 font-sans">From Station</label>
+                                  <select
+                                    value={trainFrom}
+                                    onChange={(e) => setTrainFrom(e.target.value)}
+                                    className="w-full px-4 py-3 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/20 bg-white font-semibold text-text-primary"
+                                  >
+                                    <option value="">Any Station</option>
+                                    {SUBURBAN_STATIONS.map(stn => (
+                                      <option key={`train-from-${stn.code}`} value={stn.code}>{stn.name}</option>
+                                    ))}
+                                  </select>
+                                </div>
+                                <div>
+                                  <label className="block text-sm font-semibold text-text-primary mb-1.5 font-sans">To Station</label>
+                                  <select
+                                    value={trainTo}
+                                    onChange={(e) => setTrainTo(e.target.value)}
+                                    className="w-full px-4 py-3 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/20 bg-white font-semibold text-text-primary"
+                                  >
+                                    <option value="">Any Station</option>
+                                    {SUBURBAN_STATIONS.map(stn => (
+                                      <option key={`train-to-${stn.code}`} value={stn.code}>{stn.name}</option>
+                                    ))}
+                                  </select>
+                                </div>
+                              </div>
+
+                              <div className="flex flex-wrap items-center gap-3">
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const tmp = trainFrom;
+                                    setTrainFrom(trainTo);
+                                    setTrainTo(tmp);
+                                  }}
+                                  className="px-3 py-1.5 border border-border hover:bg-slate-100 rounded-lg text-xs font-bold flex items-center gap-1 cursor-pointer transition-colors"
+                                >
+                                  Swap Stations ⇄
+                                </button>
+                                <div className="flex-1 min-w-[200px] relative">
+                                  <Search className="absolute left-3 top-2.5 w-4 h-4 text-text-muted" />
+                                  <input
+                                    type="text"
+                                    placeholder="Search Train Number (e.g. 43501)..."
+                                    value={trainSearchQuery}
+                                    onChange={(e) => setTrainSearchQuery(e.target.value)}
+                                    className="w-full pl-9 pr-4 py-2 border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/20 bg-white"
+                                  />
+                                </div>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setTrainFrom('');
+                                    setTrainTo('');
+                                    setTrainSearchQuery('');
+                                    setTrainActiveSection('ALL');
+                                    setExpandedTrainNo(null);
+                                  }}
+                                  className="text-xs text-amber-600 hover:text-amber-700 font-bold underline cursor-pointer"
+                                >
+                                  Clear Filters
+                                </button>
+                              </div>
+
+                              <div>
+                                <label className="block text-[10px] font-bold uppercase tracking-wider text-text-muted mb-2 font-sans">Filter by Line / Section</label>
+                                <div className="flex flex-wrap gap-1.5">
+                                  {[
+                                    { id: 'ALL', name: 'All Lines' },
+                                    { id: 'MAS-AJJ', name: 'MAS-AJJ (Arakkonam/Tiruttani)' },
+                                    { id: 'MAS-GPD', name: 'MAS-GPD (Gummidipoondi/Sullurupeta)' },
+                                    { id: 'MRTS Beach-Velachery', name: 'MRTS (Beach-Velachery)' },
+                                    { id: 'MSB-CGL-TMLP-CJ', name: 'MSB-CGL (Beach-Chengalpattu/Tirumalpur)' }
+                                  ].map(tab => (
+                                    <button
+                                      key={tab.id}
+                                      type="button"
+                                      onClick={() => setTrainActiveSection(tab.id)}
+                                      className={`px-3 py-1.5 rounded-full text-xs font-bold border transition-all cursor-pointer ${
+                                        trainActiveSection === tab.id
+                                          ? 'bg-amber-600 border-amber-600 text-white shadow-sm'
+                                          : 'bg-white border-border text-text-muted hover:border-gray-300'
+                                      }`}
+                                    >
+                                      {tab.name}
+                                    </button>
+                                  ))}
+                                </div>
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                              <div className="relative">
+                                <label className="block text-sm font-semibold text-text-primary mb-1.5">From Station / Area</label>
+                                <input
+                                  type="text"
+                                  value={cityFrom}
+                                  onChange={(e) => setCityFrom(e.target.value)}
+                                  onFocus={() => { if (cityPublicMode === 'bus') setShowSuggestionsFrom(true); }}
+                                  onBlur={() => {
+                                    if (cityPublicMode === 'bus') {
+                                      setTimeout(() => setShowSuggestionsFrom(false), 200);
+                                    }
+                                  }}
+                                  placeholder={cityTransportType === 'private' ? 'Enter pickup point...' : 'Enter starting point...'}
+                                  className="w-full px-4 py-3 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/20 bg-white"
+                                />
+                                {cityPublicMode === 'bus' && showSuggestionsFrom && busSuggestionsFrom.length > 0 && (
+                                  <div className="absolute left-0 right-0 z-50 mt-1 max-h-60 overflow-y-auto bg-white border border-border rounded-xl shadow-lg text-sm">
+                                    {busSuggestionsFrom.map((stop, idx) => (
+                                      <div
+                                        key={`sugg-from-${idx}`}
+                                        onMouseDown={() => {
+                                          setCityFrom(stop);
+                                          setShowSuggestionsFrom(false);
+                                        }}
+                                        className="px-4 py-2 hover:bg-slate-50 cursor-pointer text-text-primary border-b border-slate-100 last:border-0 font-medium"
+                                      >
+                                        {stop}
+                                      </div>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+                              <div className="relative">
+                                <label className="block text-sm font-semibold text-text-primary mb-1.5">To Station / Area</label>
+                                <input
+                                  type="text"
+                                  value={cityTo}
+                                  onChange={(e) => setCityTo(e.target.value)}
+                                  onFocus={() => { if (cityPublicMode === 'bus') setShowSuggestionsTo(true); }}
+                                  onBlur={() => {
+                                    if (cityPublicMode === 'bus') {
+                                      setTimeout(() => setShowSuggestionsTo(false), 200);
+                                    }
+                                  }}
+                                  placeholder={cityTransportType === 'private' ? 'Enter dropoff point...' : 'Enter destination...'}
+                                  className="w-full px-4 py-3 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/20 bg-white"
+                                />
+                                {cityPublicMode === 'bus' && showSuggestionsTo && busSuggestionsTo.length > 0 && (
+                                  <div className="absolute left-0 right-0 z-50 mt-1 max-h-60 overflow-y-auto bg-white border border-border rounded-xl shadow-lg text-sm">
+                                    {busSuggestionsTo.map((stop, idx) => (
+                                      <div
+                                        key={`sugg-to-${idx}`}
+                                        onMouseDown={() => {
+                                          setCityTo(stop);
+                                          setShowSuggestionsTo(false);
+                                        }}
+                                        className="px-4 py-2 hover:bg-slate-50 cursor-pointer text-text-primary border-b border-slate-100 last:border-0 font-medium"
+                                      >
+                                        {stop}
+                                      </div>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
                           )}
+
+
+                          {/* Display relevant timetable / route results */}
+                          {cityFrom && cityTo && (
+                            <div className="mt-4 p-5 bg-purple-50/30 rounded-2xl border border-purple-100/50 space-y-4">
+                              {cityTransportType === 'public' ? (
+                                <div className="space-y-4">
+                                  {cityPublicMode === 'metro' && (() => {
+                                    const fromStation = cityFrom;
+                                    const toStation = cityTo;
+                                    const fareRecord = CHENNAI_METRO_FARES.find(f => 
+                                      (f.from === fromStation && f.to === toStation) || 
+                                      (f.from === toStation && f.to === fromStation)
+                                    );
+                                    const path = fromStation && toStation ? getMetroPath(fromStation, toStation) : [];
+
+                                    return (
+                                      <div className="space-y-4">
+                                        <div className="p-5 bg-white rounded-xl border border-border shadow-sm space-y-4">
+                                          <h4 className="font-bold text-lg text-blue-600">Chennai Metro Trip Details</h4>
+                                          
+                                          {fromStation && toStation && fareRecord ? (
+                                            <div className="space-y-4">
+                                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-xl text-sm items-center">
+                                                <div>
+                                                  <span className="text-xs text-text-muted block font-semibold">Route</span>
+                                                  <span className="font-bold text-blue-700">{fromStation} ➔ {toStation}</span>
+                                                </div>
+                                                <div className="flex flex-wrap items-center justify-between gap-3">
+                                                  <div>
+                                                    <span className="text-xs text-text-muted block font-semibold">Stops Count</span>
+                                                    <span className="font-bold text-text-primary">{Math.max(0, path.length - 2)} stops</span>
+                                                  </div>
+                                                  <a 
+                                                    href="https://travelplanner.chennaimetrorail.org/" 
+                                                    target="_blank" 
+                                                    rel="noopener noreferrer" 
+                                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 rounded-lg text-xs font-bold transition-colors"
+                                                  >
+                                                    Official Metro Travel Planner <ExternalLink className="w-3.5 h-3.5" />
+                                                  </a>
+                                                </div>
+                                              </div>
+
+                                              <div className="border border-blue-100 bg-blue-50/50 p-4 rounded-xl space-y-2">
+                                                <h5 className="font-bold text-xs text-blue-800 uppercase tracking-wider">Fare Calculation</h5>
+                                                <div className="grid grid-cols-3 gap-2 text-center text-xs">
+                                                  <div className="bg-white p-2.5 rounded-lg border border-blue-100 flex flex-col justify-center">
+                                                    <span className="text-text-muted block mb-0.5 font-semibold">Normal Fare</span>
+                                                    <span className="text-sm font-extrabold text-text-primary">₹{fareRecord.normal}</span>
+                                                  </div>
+                                                  <div className="bg-white p-2.5 rounded-lg border border-blue-100 flex flex-col justify-center">
+                                                    <span className="text-text-muted block mb-0.5 font-semibold">QR/Smart Card</span>
+                                                    <span className="text-sm font-extrabold text-green-600">₹{fareRecord.discounted} <span className="text-[10px] font-normal">(20% off)</span></span>
+                                                  </div>
+                                                  <a 
+                                                    href="https://tickets.chennaimetrorail.org/onlineticket" 
+                                                    target="_blank" 
+                                                    rel="noopener noreferrer" 
+                                                    className="bg-blue-600 hover:bg-blue-700 text-white p-2.5 rounded-lg border border-blue-600 flex flex-col items-center justify-center text-center cursor-pointer transition-colors shadow-xs"
+                                                  >
+                                                    <span className="block mb-0.5 font-bold">Book Tickets</span>
+                                                    <span className="text-[9px] font-medium flex items-center gap-1 opacity-90">Online Ticket <ExternalLink className="w-2.5 h-2.5"/></span>
+                                                  </a>
+                                                </div>
+                                              </div>
+
+                                              {/* Route Station Paths - Rendered Beautifully */}
+                                              <div className="p-4 bg-slate-50 rounded-xl space-y-3">
+                                                <strong className="block text-xs text-text-primary uppercase tracking-wider">Route Station Path ({path.length} Stations)</strong>
+                                                <div className="relative pl-6 border-l-2 border-dashed border-blue-400 flex flex-col gap-3 mt-2">
+                                                  {path.map((station, index) => {
+                                                    const isStart = index === 0;
+                                                    const isEnd = index === path.length - 1;
+                                                    const isTransfer = station === 'Arignar Anna Alandur Metro' || station === 'Puratchi Thalaivar Dr.M.G.Ramachandran Central Metro';
+                                                    
+                                                    // Determine dot color
+                                                    let dotColor = "bg-blue-500";
+                                                    if (METRO_GREEN_LINE.includes(station) && !METRO_BLUE_LINE.includes(station)) {
+                                                      dotColor = "bg-green-600";
+                                                    } else if (METRO_BLUE_LINE.includes(station) && METRO_GREEN_LINE.includes(station)) {
+                                                      dotColor = "bg-purple-600 animate-pulse";
+                                                    }
+                                                    
+                                                    return (
+                                                      <div key={index} className="relative flex items-center gap-3">
+                                                        <div className={`absolute -left-[30px] w-3.5 h-3.5 rounded-full border-2 border-white flex items-center justify-center ${dotColor}`}>
+                                                          {isTransfer && <div className="w-1.5 h-1.5 bg-white rounded-full" />}
+                                                        </div>
+                                                        <span className={`text-xs ${isStart || isEnd ? 'font-bold text-text-primary' : 'text-text-muted'} ${isTransfer ? 'text-purple-700 font-bold' : ''}`}>
+                                                          {station}
+                                                          {isTransfer && <span className="ml-1.5 px-1 py-0.2 text-[8px] font-black uppercase tracking-wider bg-purple-100 text-purple-700 rounded-md">Interchange</span>}
+                                                          {isStart && <span className="ml-1.5 text-[9px] text-emerald-600 font-bold">(Origin)</span>}
+                                                          {isEnd && <span className="ml-1.5 text-[9px] text-red-500 font-bold">(Destination)</span>}
+                                                        </span>
+                                                      </div>
+                                                    );
+                                                  })}
+                                                </div>
+                                              </div>
+                                            </div>
+                                          ) : (
+                                            <p className="text-xs text-text-muted">
+                                              Select Origin and Destination station above to calculate fare and view route path.
+                                            </p>
+                                          )}
+                                        </div>
+                                      </div>
+                                    );
+                                  })()}
+
+                                  {cityPublicMode === 'bus' && (() => {
+                                    if (isBusLoading) {
+                                      return (
+                                        <div className="flex items-center justify-center p-6 bg-slate-50 rounded-xl border border-border">
+                                          <Loader2 className="w-5 h-5 animate-spin text-green-600" />
+                                          <span className="text-xs text-text-muted ml-2 font-semibold font-sans">Searching MTC route database...</span>
+                                        </div>
+                                      );
+                                    }
+
+                                    const direct = busSearchResult?.direct || [];
+                                    const transfers = busSearchResult?.transfers || [];
+
+                                    if (!cityFrom || !cityTo) {
+                                      return (
+                                        <div className="p-6 bg-white rounded-xl border border-border shadow-sm text-center text-text-muted space-y-2">
+                                          <div className="text-3xl">🚌</div>
+                                          <h4 className="font-bold text-sm text-text-primary">Ready to Search</h4>
+                                          <p className="text-xs">
+                                            Select or type a From and To stop above to find MTC bus options.
+                                          </p>
+                                        </div>
+                                      );
+                                    }
+
+                                    if (direct.length === 0 && transfers.length === 0) {
+                                      return (
+                                        <div className="p-6 bg-white rounded-xl border border-border shadow-sm text-center text-text-muted space-y-2">
+                                          <div className="text-3xl">🔍</div>
+                                          <h4 className="font-bold text-sm text-text-primary text-red-600">No Routes Found</h4>
+                                          <p className="text-xs leading-relaxed">
+                                            No direct or one-transfer routes found in our MTC database between <strong>{cityFrom}</strong> and <strong>{cityTo}</strong>.
+                                            Try typing nearby landmarks (e.g. <strong>Adyar</strong>, <strong>Tambaram</strong>, <strong>Guindy</strong>, <strong>Central</strong>).
+                                          </p>
+                                        </div>
+                                      );
+                                    }
+
+                                    return (
+                                      <div className="p-4 bg-white rounded-xl border border-border shadow-sm space-y-4">
+                                        <h4 className="font-bold text-lg text-green-700">MTC Bus Routes</h4>
+
+                                        {direct.length > 0 && (
+                                          <div className="space-y-3">
+                                            <h5 className="font-bold text-xs uppercase tracking-wider text-green-800 flex items-center gap-1.5">
+                                              Direct Buses <span className="px-2 py-0.5 bg-green-100 text-green-800 rounded-full font-extrabold text-[10px]">{direct.length}</span>
+                                            </h5>
+                                            <div className="max-h-80 overflow-y-auto border border-border rounded-xl text-xs space-y-3 p-1">
+                                              {direct.map((item, idx) => (
+                                                <div key={`direct-${idx}`} className="p-3 border-l-4 border-l-green-600 border border-border rounded-r-xl bg-slate-50 space-y-2 hover:bg-slate-100/50 transition-colors">
+                                                  <div className="flex items-center justify-between">
+                                                    <span className="px-2.5 py-1 bg-green-100 text-green-800 rounded font-black text-sm">{item.busNo}</span>
+                                                    <span className="text-text-muted text-[10px] uppercase font-bold tracking-wider">{item.areaSection} Section</span>
+                                                  </div>
+                                                  <div className="text-text-primary font-bold text-xs">
+                                                    {item.start} ➔ {item.destination}
+                                                  </div>
+                                                  <div className="text-text-muted text-[10px] leading-relaxed bg-white/70 p-2 rounded-lg border border-slate-100">
+                                                    <p className="mb-1 text-slate-800 font-bold">Journey Details:</p>
+                                                    <p>• Board: <strong className="text-green-700">{item.stops[item.boardIndex]}</strong></p>
+                                                    <p>• Alight: <strong className="text-red-600">{item.stops[item.alightIndex]}</strong></p>
+                                                    <p className="mt-1 opacity-75">({item.alightIndex - item.boardIndex} stops total)</p>
+                                                  </div>
+                                                  <div className="text-text-muted text-[10px] leading-relaxed">
+                                                    <strong>Full Sequence:</strong> {item.stops.join(' ➔ ')}
+                                                  </div>
+                                                </div>
+                                              ))}
+                                            </div>
+                                          </div>
+                                        )}
+
+                                        {transfers.length > 0 && (
+                                          <div className="space-y-3 border-t border-border pt-4">
+                                            <h5 className="font-bold text-xs uppercase tracking-wider text-amber-800 flex items-center gap-1.5">
+                                              With One Transfer <span className="px-2 py-0.5 bg-amber-100 text-amber-800 rounded-full font-extrabold text-[10px]">{transfers.length}</span>
+                                            </h5>
+                                            <div className="max-h-80 overflow-y-auto border border-border rounded-xl text-xs space-y-3 p-1">
+                                              {transfers.map((item, idx) => (
+                                                <div key={`transfer-${idx}`} className="p-3 border-l-4 border-l-amber-500 border border-border rounded-r-xl bg-slate-50 space-y-2 hover:bg-slate-100/50 transition-colors">
+                                                  <div className="flex items-center justify-between">
+                                                    <div className="flex items-center gap-1.5">
+                                                      <span className="px-2.5 py-1 bg-green-100 text-green-800 rounded font-black text-sm">{item.busNoA}</span>
+                                                      <span className="text-text-muted font-bold">➔</span>
+                                                      <span className="px-2.5 py-1 bg-blue-100 text-blue-800 rounded font-black text-sm">{item.busNoB}</span>
+                                                    </div>
+                                                    <span className="px-2 py-0.5 bg-amber-100 text-amber-800 rounded-full font-bold text-[9px] uppercase tracking-wider">1 Transfer</span>
+                                                  </div>
+                                                  <div className="text-text-primary text-xs font-semibold leading-relaxed">
+                                                    Board at <span className="text-green-700">{cityFrom}</span> on <span className="font-bold">{item.busNoA}</span>, transfer at <span className="text-amber-600 font-extrabold">{item.transferStop}</span> to <span className="font-bold">{item.busNoB}</span> to reach <span className="text-red-600">{cityTo}</span>.
+                                                  </div>
+                                                  <div className="text-text-muted text-[10px] leading-relaxed bg-white/70 p-2 rounded-lg border border-slate-100 space-y-1">
+                                                    <div>
+                                                      <strong>Leg 1 ({item.busNoA}):</strong> {item.startA} ➔ {item.destinationA}
+                                                      <p className="pl-3 text-[9px]">• Board: {item.stopsA[item.boardIndexA]}</p>
+                                                      <p className="pl-3 text-[9px]">• Alight/Transfer: {item.stopsA[item.transferIndexA]}</p>
+                                                    </div>
+                                                    <div className="pt-1 border-t border-slate-100">
+                                                      <strong>Leg 2 ({item.busNoB}):</strong> {item.startB} ➔ {item.destinationB}
+                                                      <p className="pl-3 text-[9px]">• Board: {item.stopsB[item.transferIndexB]}</p>
+                                                      <p className="pl-3 text-[9px]">• Alight: {item.stopsB[item.alightIndexB]}</p>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              ))}
+                                            </div>
+                                          </div>
+                                        )}
+
+                                        <div className="flex flex-wrap gap-2 pt-3 border-t border-border">
+                                          <a href="https://chalo.com/app/" target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 bg-green-600 text-white rounded text-xs font-bold flex items-center gap-1 hover:bg-green-700">Chalo App (Live Tracking) <ExternalLink className="w-3 h-3"/></a>
+                                        </div>
+                                      </div>
+                                    );
+                                  })()}
+                                </div>
+                              ) : (
+                                <div className="space-y-3">
+                                  {isCityRouteLoading ? (
+                                    <div className="flex items-center justify-center p-6 bg-slate-50 rounded-xl border border-border">
+                                      <Loader2 className="w-5 h-5 animate-spin text-purple-600" />
+                                      <span className="text-xs text-text-muted ml-2 font-semibold">Calculating estimated ride details...</span>
+                                    </div>
+                                  ) : cityRouteResult?.isValid ? (
+                                    <div className="p-4 bg-emerald-50/50 border border-emerald-100 rounded-xl space-y-2">
+                                      <h5 className="font-bold text-xs text-emerald-800 uppercase tracking-wider">Estimated Route Details</h5>
+                                      <div className="grid grid-cols-2 gap-4 text-sm text-text-primary">
+                                        <div className="flex items-center gap-2">
+                                          <Clock className="w-4 h-4 text-emerald-600" />
+                                          <div>
+                                            <span className="text-xs text-text-muted block">Duration</span>
+                                            <span className="font-bold">{cityRouteResult.estimatedTime}</span>
+                                          </div>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                          <Navigation className="w-4 h-4 text-emerald-600" />
+                                          <div>
+                                            <span className="text-xs text-text-muted block">Distance</span>
+                                            <span className="font-bold">{cityRouteResult.estimatedDistance}</span>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  ) : null}
+
+                                  <div className="p-4 bg-white rounded-xl border border-border shadow-sm">
+                                     <h4 className="font-bold text-xs text-emerald-600 uppercase tracking-wider mb-3">Book via {cityPrivateMode === 'ola' ? 'Ola Cabs' : cityPrivateMode === 'uber' ? 'Uber' : cityPrivateMode === 'rapido' ? 'Rapido' : 'Namma Yatri'}</h4>
+                                     <div>
+                                       {cityPrivateMode === 'ola' && (
+                                         <a href="https://book.olacabs.com/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-xl text-xs font-bold hover:bg-emerald-700 transition-colors shadow-xs">
+                                           Book on Ola Cabs <ExternalLink className="w-3.5 h-3.5" />
+                                         </a>
+                                       )}
+                                       {cityPrivateMode === 'uber' && (
+                                         <a href="https://m.uber.com/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-xl text-xs font-bold hover:bg-emerald-700 transition-colors shadow-xs">
+                                           Book on Uber <ExternalLink className="w-3.5 h-3.5" />
+                                         </a>
+                                       )}
+                                       {cityPrivateMode === 'rapido' && (
+                                         <a href="https://www.rapido.bike/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-xl text-xs font-bold hover:bg-emerald-700 transition-colors shadow-xs">
+                                           Book on Rapido <ExternalLink className="w-3.5 h-3.5" />
+                                         </a>
+                                       )}
+                                       {cityPrivateMode === 'nammayatri' && (
+                                         <a href="https://nammayatri.in/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-xl text-xs font-bold hover:bg-emerald-700 transition-colors shadow-xs">
+                                           Book on Namma Yatri <ExternalLink className="w-3.5 h-3.5" />
+                                         </a>
+                                       )}
+                                     </div>
+                                   </div>
+                                </div>
+                              )}
+                            </div>
+                          )}
+
+                          {cityPublicMode === 'train' && (() => {
+                            // Filter matched trains
+                            const matchedTrains = SUBURBAN_TRAINS.filter(train => {
+                              if (trainActiveSection !== 'ALL' && train.section !== trainActiveSection) {
+                                return false;
+                              }
+                              if (trainSearchQuery.trim() && !train.train_no.toLowerCase().includes(trainSearchQuery.toLowerCase().trim())) {
+                                return false;
+                              }
+                              const stops = train.stops || [];
+                              if (trainFrom && trainTo) {
+                                const idxF = stops.findIndex(s => s.station === trainFrom);
+                                const idxT = stops.findIndex(s => s.station === trainTo);
+                                return idxF !== -1 && idxT !== -1 && idxF < idxT;
+                              } else if (trainFrom) {
+                                return stops.some(s => s.station === trainFrom);
+                              } else if (trainTo) {
+                                return stops.some(s => s.station === trainTo);
+                              }
+                              return true;
+                            });
+
+                            // Map to row objects
+                            const trainRows = matchedTrains.map(train => {
+                              const stops = train.stops || [];
+                              const idxF = trainFrom ? stops.findIndex(s => s.station === trainFrom) : 0;
+                              const idxT = trainTo ? stops.findIndex(s => s.station === trainTo) : stops.length - 1;
+
+                              const depStation = trainFrom || train.origin;
+                              const depTime = stops[idxF]?.time || '';
+                              const arrStation = trainTo || train.destination;
+                              const arrTime = stops[idxT]?.time || '';
+
+                              return {
+                                train,
+                                depStation,
+                                depTime,
+                                arrStation,
+                                arrTime
+                              };
+                            });
+
+                            // Sort by departure time
+                            trainRows.sort((a, b) => {
+                              const ma = parseSuburbanTimeToMinutes(a.depTime);
+                              const mb = parseSuburbanTimeToMinutes(b.depTime);
+                              return ma - mb;
+                            });
+
+                            return (
+                              <div className="mt-4 p-5 bg-amber-50/20 border border-amber-100 rounded-2xl space-y-4">
+                                <div className="flex items-center justify-between border-b border-amber-200/50 pb-2">
+                                  <div>
+                                    <h4 className="font-bold text-lg text-amber-800 flex items-center gap-2">
+                                      <Train className="w-5 h-5 animate-pulse" /> Chennai Suburban Weekday Timetable
+                                    </h4>
+                                    <p className="text-xs text-text-muted mt-0.5 font-medium">
+                                      {trainRows.length} train{trainRows.length === 1 ? '' : 's'} found • Click row to expand full schedule
+                                    </p>
+                                  </div>
+                                </div>
+
+                                {trainRows.length === 0 ? (
+                                  <div className="p-8 text-center bg-white rounded-xl border border-border text-text-muted text-xs font-semibold">
+                                    No trains match this combination. Try clearing filters or picking different stations.
+                                  </div>
+                                ) : (
+                                  <div className="space-y-3 max-h-[500px] overflow-y-auto pr-1">
+                                    {trainRows.map((row, index) => {
+                                      const isExpanded = expandedTrainNo === row.train.train_no;
+                                      const sectionNameMap: Record<string, string> = {
+                                        'MAS-AJJ': 'Arakkonam/Tiruttani Line',
+                                        'MAS-GPD': 'Gummidipoondi Line',
+                                        'MRTS Beach-Velachery': 'MRTS Line',
+                                        'MSB-CGL-TMLP-CJ': 'Chengalpattu Line'
+                                      };
+                                      const sectionLabel = sectionNameMap[row.train.section] || row.train.section;
+
+                                      return (
+                                        <div key={`${row.train.train_no}-${index}`} className="bg-white border border-border rounded-xl shadow-sm overflow-hidden transition-all duration-200 hover:shadow-md">
+                                          <div
+                                            onClick={() => setExpandedTrainNo(isExpanded ? null : row.train.train_no)}
+                                            className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 cursor-pointer select-none hover:bg-slate-50/50 transition-colors"
+                                          >
+                                            <div className="space-y-1.5">
+                                              <div className="flex items-center gap-2">
+                                                <span className="font-mono font-black text-sm text-amber-800">{row.train.train_no}</span>
+                                                <span className={`px-2 py-0.5 rounded font-black text-[9px] uppercase tracking-wider text-white ${
+                                                  row.train.direction === 'UP' ? 'bg-teal-600' : 'bg-orange-600'
+                                                }`}>
+                                                  {row.train.direction}
+                                                </span>
+                                                <Badge variant="outline" className="text-[10px] font-bold border-amber-200 bg-amber-50/50 text-amber-800">
+                                                  {sectionLabel}
+                                                </Badge>
+                                              </div>
+                                              <div className="flex items-center gap-2 text-xs font-semibold text-text-primary">
+                                                <span className={trainFrom ? 'text-amber-700 font-extrabold' : ''}>{STATION_CODE_TO_NAME[row.depStation] || row.depStation}</span>
+                                                <span className="text-text-muted">➔</span>
+                                                <span className={trainTo ? 'text-amber-700 font-extrabold' : ''}>{STATION_CODE_TO_NAME[row.arrStation] || row.arrStation}</span>
+                                              </div>
+                                            </div>
+
+                                            <div className="flex items-center justify-between sm:justify-end gap-4">
+                                              <div className="text-right">
+                                                <span className="block text-[10px] text-text-muted font-bold uppercase tracking-wider">Departure Time</span>
+                                                <span className="text-sm font-extrabold text-amber-800">{formatSuburbanTime(row.depTime)}</span>
+                                              </div>
+                                              <span className={`text-lg text-amber-500 font-black transition-transform duration-200 ${
+                                                isExpanded ? 'rotate-90' : ''
+                                              }`}>
+                                                ›
+                                              </span>
+                                            </div>
+                                          </div>
+
+                                          {isExpanded && (
+                                            <div className="p-4 bg-slate-50 border-t border-slate-100 space-y-3">
+                                              <h5 className="font-bold text-xs uppercase tracking-wider text-amber-900">Full Timeline ({row.train.stops.length} stops)</h5>
+                                              <div className="flex flex-wrap gap-2">
+                                                {row.train.stops.map((stop, stopIdx) => {
+                                                  const isStart = stop.station === row.depStation;
+                                                  const isEnd = stop.station === row.arrStation;
+                                                  const stnFullName = STATION_CODE_TO_NAME[stop.station] || stop.station;
+
+                                                  let highlightClass = "bg-white border-border text-text-primary";
+                                                  if (isStart) {
+                                                    highlightClass = "bg-emerald-50 border-emerald-400 text-emerald-800 ring-2 ring-emerald-500/10 font-bold";
+                                                  } else if (isEnd) {
+                                                    highlightClass = "bg-rose-50 border-rose-400 text-rose-800 ring-2 ring-rose-500/10 font-bold";
+                                                  }
+
+                                                  return (
+                                                    <div key={stopIdx} className={`flex flex-col p-2.5 rounded-lg border text-center min-w-[90px] shadow-sm ${highlightClass}`}>
+                                                      <span className="text-[10px] text-text-muted font-bold">{formatSuburbanTime(stop.time)}</span>
+                                                      <span className="text-xs mt-0.5 truncate max-w-[120px]" title={stnFullName}>
+                                                        {stnFullName}
+                                                      </span>
+                                                      {isStart && <span className="text-[8px] text-emerald-600 font-black uppercase tracking-wider mt-0.5">Board</span>}
+                                                      {isEnd && <span className="text-[8px] text-rose-600 font-black uppercase tracking-wider mt-0.5">Alight</span>}
+                                                    </div>
+                                                  );
+                                                })}
+                                              </div>
+                                            </div>
+                                          )}
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                )}
+
+                                <div className="flex flex-wrap gap-2 pt-3 border-t border-amber-200/50">
+                                  <a href="https://play.google.com/store/apps/details?id=com.cris.utsmobile&hl=en-US" target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded text-xs font-bold flex items-center gap-1 transition-colors">
+                                    UTS Ticket Booking <ExternalLink className="w-3 h-3"/>
+                                  </a>
+                                  <a href="https://www.railyatri.in/live-train-status" target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 bg-amber-100 hover:bg-amber-200 text-amber-800 rounded text-xs font-bold flex items-center gap-1 transition-colors">
+                                    Live Train Status <ExternalLink className="w-3 h-3"/>
+                                  </a>
+                                </div>
+                              </div>
+                            );
+                          })()}
                         </div>
                       )}
                     </div>
@@ -999,168 +1602,184 @@ export default function TravelPage() {
                   {/* TIMETABLE CATEGORY B: WITHIN THE STATE */}
                   {timetableCategory === 'state' && (
                     <div className="space-y-5">
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                          <label className="block text-sm font-semibold text-text-primary mb-1.5">From City</label>
-                          <input
-                            type="text"
-                            value={stateFrom}
-                            onChange={(e) => setStateFrom(e.target.value)}
-                            placeholder="Starting city (e.g. Chennai)..."
-                            className="w-full px-4 py-3 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/20 bg-white"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-sm font-semibold text-text-primary mb-1.5">To Destination City</label>
-                          <input
-                            type="text"
-                            value={stateTo}
-                            onChange={(e) => setStateTo(e.target.value)}
-                            placeholder="Destination city (e.g. Pondicherry)..."
-                            className="w-full px-4 py-3 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/20 bg-white"
-                          />
-                        </div>
-                      </div>
-
-                      {/* State Transport Options */}
+                      {/* Step A: Select Transport Category */}
                       <div>
-                        <label className="block text-sm font-semibold text-text-primary mb-3">State Transport Mode Selection</label>
-                        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
-                          {[
-                            { id: 'srtc', label: 'SRTC Bus', desc: 'Govt SETC' },
-                            { id: 'redbus', label: 'RedBus', desc: 'Private Bus' },
-                            { id: 'train', label: 'Train (IR)', desc: 'Railways' },
-                            { id: 'redtaxi', label: 'RedTaxi', desc: 'Local App' },
-                            { id: 'oneway', label: 'One-Way Cab', desc: 'Intercity drop' }
-                          ].map((opt) => (
-                            <button
-                              key={opt.id}
-                              onClick={() => setStateTransportType(opt.id as any)}
-                              className={`flex flex-col items-center justify-center p-2.5 rounded-xl border text-center transition-all cursor-pointer ${stateTransportType === opt.id
-                                  ? 'border-purple-600 bg-purple-50 text-purple-700 ring-2 ring-purple-500/10'
-                                  : 'border-border bg-white hover:border-gray-300'
-                                }`}
-                            >
-                              <span className="font-bold text-xs">{opt.label}</span>
-                              <span className="text-[9px] text-text-muted mt-0.5">{opt.desc}</span>
-                            </button>
-                          ))}
+                        <label className="block text-sm font-semibold text-text-primary mb-3">1. Select Transport Category</label>
+                        <div className="grid grid-cols-2 gap-2">
+                          <button
+                            onClick={() => {
+                              setStateTransportType('public');
+                              setStatePublicMode(null);
+                              setStateFrom('');
+                              setStateTo('');
+                            }}
+                            className={`flex items-center justify-center gap-2 p-3.5 rounded-xl border font-bold transition-all cursor-pointer ${stateTransportType === 'public'
+                                ? 'border-purple-600 bg-purple-50 text-purple-700 ring-2 ring-purple-500/10'
+                                : 'border-border bg-white text-text-muted hover:border-gray-300'
+                              }`}
+                          >
+                            Public Transit
+                          </button>
+                          <button
+                            onClick={() => {
+                              setStateTransportType('private');
+                              setStatePrivateMode(null);
+                              setStateFrom('');
+                              setStateTo('');
+                            }}
+                            className={`flex items-center justify-center gap-2 p-3.5 rounded-xl border font-bold transition-all cursor-pointer ${stateTransportType === 'private'
+                                ? 'border-purple-600 bg-purple-50 text-purple-700 ring-2 ring-purple-500/10'
+                                : 'border-border bg-white text-text-muted hover:border-gray-300'
+                              }`}
+                          >
+                            Private & Outstation
+                          </button>
                         </div>
                       </div>
 
-                      {/* Dynamic Timetable details based on selected route and mode */}
-                      {stateFrom && stateTo && (
-                        <div className="mt-4 p-5 bg-slate-50 rounded-2xl border border-border space-y-4">
+                      {/* Step B: Select Mode of Transport */}
+                      {stateTransportType === 'public' && (
+                        <div>
+                          <label className="block text-sm font-semibold text-text-primary mb-3">2. Select Public Mode</label>
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => {
+                                setStatePublicMode('bus');
+                                setStateFrom('');
+                                setStateTo('');
+                              }}
+                              className={`px-4 py-2 rounded-xl border text-sm font-bold transition-all ${statePublicMode === 'bus' ? 'bg-purple-50 border-purple-500 text-purple-700 ring-2 ring-purple-500/10' : 'bg-white border-border text-text-muted hover:border-gray-300'}`}
+                            >
+                              State Buses (TNSTC & SETC)
+                            </button>
+                            <button
+                              onClick={() => {
+                                setStatePublicMode('train');
+                                setStateFrom('');
+                                setStateTo('');
+                              }}
+                              className={`px-4 py-2 rounded-xl border text-sm font-bold transition-all ${statePublicMode === 'train' ? 'bg-purple-50 border-purple-500 text-purple-700 ring-2 ring-purple-500/10' : 'bg-white border-border text-text-muted hover:border-gray-300'}`}
+                            >
+                              Indian Railways
+                            </button>
+                          </div>
+                        </div>
+                      )}
+
+                      {stateTransportType === 'private' && (
+                        <div>
+                          <label className="block text-sm font-semibold text-text-primary mb-3">2. Select Private Option</label>
+                          <div className="flex flex-wrap gap-2">
+                            {[
+                              { id: 'flight', name: 'Flights' },
+                              { id: 'bus', name: 'Private Buses' },
+                              { id: 'cab', name: 'Outstation Cabs' }
+                            ].map(opt => (
+                              <button
+                                key={opt.id}
+                                onClick={() => {
+                                  setStatePrivateMode(opt.id as any);
+                                  setStateFrom('');
+                                  setStateTo('');
+                                }}
+                                className={`px-4 py-2 rounded-xl border text-sm font-bold transition-all ${statePrivateMode === opt.id ? 'bg-purple-50 border-purple-500 text-purple-700 ring-2 ring-purple-500/10' : 'bg-white border-border text-text-muted hover:border-gray-300'}`}
+                              >
+                                {opt.name}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      {/* Step C: Directly show booking redirects (No From/To inputs for within state!) */}
+                      {stateTransportType === 'public' && statePublicMode && (
+                        <div className="mt-4 p-5 bg-slate-50 rounded-2xl border border-border space-y-4 animate-fadeIn">
                           <div className="flex items-center justify-between border-b border-gray-200/60 pb-3">
-                            <h3 className="text-sm font-bold text-text-primary flex items-center gap-1.5">
-                              <span>Intercity schedules:</span>
-                              <span className="text-purple-700">{stateFrom} ➔ {stateTo}</span>
+                            <h3 className="text-sm font-bold text-text-primary">
+                              Public Intercity Booking Redirections
                             </h3>
                             <Badge className="bg-purple-600 text-white font-bold text-xs uppercase px-2 py-0.5 rounded">
-                              {stateTransportType === 'srtc' ? 'SETC Bus' : stateTransportType.toUpperCase()}
+                              Public
                             </Badge>
                           </div>
-
-                          {/* Mode specific timetable renderings */}
-                          {stateTransportType === 'srtc' && (
-                            <div className="space-y-3 text-sm text-text-primary">
-                              <p className="font-semibold">SETC & TNSTC (State Road Transport Corporation) Services:</p>
-                              <div className="bg-white p-3 rounded-xl border border-slate-100 text-xs space-y-2">
-                                <div>• <strong>Frequent Departures:</strong> Premium AC Sleeper & Ultra Deluxe buses from CMBT/Kilambakkam.</div>
-                                <div>• <strong>First Bus:</strong> departures start early 05:00 AM, with overnight schedules hourly.</div>
-                                <div>• <strong>Average Cost:</strong> ₹250 to ₹700 depending on bus tier.</div>
+                          <div className="space-y-4">
+                            {statePublicMode === 'bus' && (
+                              <div className="p-4 bg-white rounded-xl border border-border shadow-sm">
+                                <h4 className="font-bold text-sm text-purple-800 mb-2">State Buses (TNSTC & SETC)</h4>
+                                <p className="text-xs text-text-muted mb-3 font-medium">Book express and deluxe coaches across Tamil Nadu directly via the official portal.</p>
+                                <a href="https://www.tnstc.in/OTRSOnline/" target="_blank" rel="noopener noreferrer" className="inline-flex px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-xs font-bold transition-colors">
+                                  Book on TNSTC Portal
+                                </a>
                               </div>
-                              <a href="https://www.tnesevai.tn.gov.in/" target="_blank" rel="noopener noreferrer" className="block">
-                                <Button className="w-full bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold shadow-sm">
-                                  <ExternalLink className="w-3.5 h-3.5 mr-1.5" /> Book on State TNSTC Portal
-                                </Button>
-                              </a>
-                            </div>
-                          )}
-
-                          {stateTransportType === 'redbus' && (
-                            <div className="space-y-3 text-sm text-text-primary">
-                              <p className="font-semibold">Private Multi-Operator Booking (RedBus):</p>
-                              <p className="text-xs text-text-muted">Explore AC Sleeper, Semi-Sleeper, and Seater schedules from operators like Parveen, SRM, and SRS Travels.</p>
-                              <a href={`https://www.redbus.in/bus-tickets/${stateFrom.toLowerCase()}-to-${stateTo.toLowerCase()}`} target="_blank" rel="noopener noreferrer" className="block">
-                                <Button className="w-full bg-red-600 hover:bg-red-700 text-white text-xs font-bold shadow-sm">
-                                  <ExternalLink className="w-3.5 h-3.5 mr-1.5" /> Search schedules on RedBus
-                                </Button>
-                              </a>
-                            </div>
-                          )}
-
-                          {stateTransportType === 'train' && (
-                            <div className="space-y-3 text-sm text-text-primary">
-                              <p className="font-semibold">Indian Railways Intercity Express Timings:</p>
-                              <div className="bg-white p-3.5 rounded-xl border border-slate-100 text-xs space-y-2">
-                                <div>• <strong>Daily Express / Shatabdi / Vande Bharat:</strong> Runs from Chennai Central & Egmore.</div>
-                                <div>• <strong>Train Numbers:</strong> Shatabdi (12007), Vande Bharat (20607), Kovai Express (12675).</div>
-                                <div>• <strong>Advance booking:</strong> Highly recommended via IRCTC.</div>
+                            )}
+                            {statePublicMode === 'train' && (
+                              <div className="p-4 bg-white rounded-xl border border-border shadow-sm">
+                                <h4 className="font-bold text-sm text-amber-700 mb-2">Indian Railways</h4>
+                                <p className="text-xs text-text-muted mb-3 font-medium">Search trains and book reserve tickets on IRCTC website.</p>
+                                <a href="https://www.irctc.co.in/nget/train-search" target="_blank" rel="noopener noreferrer" className="inline-block px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold transition-colors">
+                                  book ticket on irctc
+                                </a>
                               </div>
-                              <a href="https://www.irctc.co.in/" target="_blank" rel="noopener noreferrer" className="block">
-                                <Button className="w-full bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold shadow-sm">
-                                  <ExternalLink className="w-3.5 h-3.5 mr-1.5" /> Search Seats on IRCTC Portal
-                                </Button>
-                              </a>
-                            </div>
-                          )}
+                            )}
+                          </div>
+                        </div>
+                      )}
 
-                          {stateTransportType === 'redtaxi' && (
-                            <div className="space-y-3 text-sm text-text-primary">
-                              <p className="font-semibold">RedTaxi Outstation Booking:</p>
-                              <p className="text-xs text-text-muted">RedTaxi operates heavily inside Tamil Nadu (Coimbatore, Salem, Trichy, Chennai, Madurai) with reliable, upfront outstation pricing.</p>
-                              <a href="https://www.redtaxi.co.in/" target="_blank" rel="noopener noreferrer" className="block">
-                                <Button className="w-full bg-red-600 hover:bg-red-700 text-white text-xs font-bold shadow-sm">
-                                  <ExternalLink className="w-3.5 h-3.5 mr-1.5" /> Visit RedTaxi Website
-                                </Button>
-                              </a>
-                            </div>
-                          )}
-
-                          {stateTransportType === 'oneway' && (
-                            <div className="space-y-4">
-                              <div className="bg-emerald-50/50 p-4 rounded-xl border border-emerald-100">
-                                <h4 className="text-xs font-bold text-emerald-800 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                                  <CheckCircle2 className="w-4 h-4" /> One-Way taxi services availability (Intercity Drop)
-                                </h4>
-                                <p className="text-xs text-emerald-950 font-medium">
-                                  One-way outstation taxi drops are fully available from Chennai to anywhere in Tamil Nadu, Pondicherry, and Bangalore. You are charged strictly for the distance traveled one-way.
-                                </p>
+                      {stateTransportType === 'private' && statePrivateMode && (
+                        <div className="mt-4 p-5 bg-slate-50 rounded-2xl border border-border space-y-4 animate-fadeIn">
+                          <div className="flex items-center justify-between border-b border-gray-200/60 pb-3">
+                            <h3 className="text-sm font-bold text-text-primary">
+                              Private Outstation Booking Redirections
+                            </h3>
+                            <Badge className="bg-purple-600 text-white font-bold text-xs uppercase px-2 py-0.5 rounded">
+                              Private
+                            </Badge>
+                          </div>
+                          <div className="space-y-4">
+                            {statePrivateMode === 'flight' && (
+                              <div className="p-4 bg-white rounded-xl border border-border shadow-sm">
+                                <h4 className="font-bold text-sm text-blue-700 mb-2">Flights</h4>
+                                <p className="text-xs text-text-muted mb-3 font-medium">Compare airfares and book flights from Chennai to other airport cities in Tamil Nadu.</p>
+                                <div className="flex flex-wrap gap-2 text-xs">
+                                  <a href="https://www.goibibo.com/flights/" target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 border border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 rounded-lg font-bold">Goibibo</a>
+                                  <a href="https://www.ixigo.com/flights" target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 border border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 rounded-lg font-bold">Ixigo</a>
+                                  <a href="https://www.yatra.com/" target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 border border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 rounded-lg font-bold">Yatra</a>
+                                </div>
                               </div>
+                            )}
 
-                              <div className="space-y-3">
-                                <span className="text-xs font-bold text-text-primary uppercase tracking-wider block">Recommended Providers</span>
-                                {ONE_WAY_TAXI_PROVIDERS.map((provider) => (
-                                  <div key={provider.name} className="bg-white p-3.5 rounded-xl border border-slate-100 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                                    <div>
-                                      <span className="font-bold text-sm text-text-primary block">{provider.name}</span>
-                                      <p className="text-xs text-text-muted mt-0.5">{provider.desc}</p>
-                                      <div className="flex flex-wrap gap-2.5 mt-2">
-                                        <Badge variant="outline" className="text-green-700 bg-green-50 border-green-100 text-[10px]">{provider.baseRate}</Badge>
-                                        <Badge variant="outline" className="text-blue-700 bg-blue-50 border-blue-100 text-[10px]">{provider.tollPolicy}</Badge>
-                                      </div>
-                                    </div>
-                                    <a href={provider.url} target="_blank" rel="noopener noreferrer" className="sm:self-center">
-                                      <Button variant="outline" size="sm" className="text-xs py-1.5 border-emerald-200 text-emerald-700 hover:bg-emerald-50">
-                                        Book Drop
-                                      </Button>
-                                    </a>
-                                  </div>
-                                ))}
+                            {statePrivateMode === 'bus' && (
+                              <div className="p-4 bg-white rounded-xl border border-border shadow-sm">
+                                <h4 className="font-bold text-sm text-red-700 mb-2">Private Buses</h4>
+                                <p className="text-xs text-text-muted mb-3 font-medium">Book luxury private buses (sleeper, semi-sleeper) to various towns.</p>
+                                <div className="flex flex-wrap gap-2 text-xs">
+                                  <a href="https://www.redbus.in/" target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 border border-red-200 bg-red-50 text-red-700 hover:bg-red-100 rounded-lg font-bold">RedBus</a>
+                                  <a href="https://www.abhibus.com/" target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 border border-red-200 bg-red-50 text-red-700 hover:bg-red-100 rounded-lg font-bold">AbhiBus</a>
+                                  <a href="https://www.ixigo.com/buses" target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 border border-red-200 bg-red-50 text-red-700 hover:bg-red-100 rounded-lg font-bold">Ixigo</a>
+                                  <a href="https://www.goibibo.com/bus/" target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 border border-red-200 bg-red-50 text-red-700 hover:bg-red-100 rounded-lg font-bold">Goibibo</a>
+                                </div>
                               </div>
-                            </div>
-                          )}
+                            )}
+
+                            {statePrivateMode === 'cab' && (
+                              <div className="p-4 bg-white rounded-xl border border-border shadow-sm">
+                                <h4 className="font-bold text-sm text-emerald-700 mb-2">Outstation Cabs & Rentals</h4>
+                                <p className="text-xs text-text-muted mb-3 font-medium">Book intercity cabs, taxi rentals or one-way drop taxis.</p>
+                                <div className="flex flex-wrap gap-2 text-xs">
+                                  <a href="https://www.makemytrip.com/cabs/" target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 border border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 rounded-lg font-bold">MakeMyTrip Cabs</a>
+                                  <a href="https://www.olacabs.com/outstation" target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 border border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 rounded-lg font-bold">Ola Intercity</a>
+                                  <a href="https://www.olacabs.com/rentals" target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 border border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 rounded-lg font-bold">Ola Rentals</a>
+                                </div>
+                              </div>
+                            )}
+                          </div>
                         </div>
                       )}
                     </div>
                   )}
                 </Card>
               </div>
-            )}
-
             {/* 7. OUTSTATION TRAVEL TAB */}
-            {activeTab === 'outstation' && (
+            {false && (
               <div className="space-y-6">
                 <Card padding="lg" className="border-indigo-200">
                   <div className="flex items-center gap-2 mb-4">
@@ -1236,38 +1855,6 @@ export default function TravelPage() {
               </div>
             )}
 
-            {/* General transport card guide underneath */}
-            <Card>
-              <h3 className="text-lg font-bold mb-4">Chennai Transit Quick Links</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {[
-                  { title: 'MTC Bus (Chalo)', desc: 'Metropolitan Transport Corp — covers Chennai metro area. Fare: ₹5-₹30', color: 'bg-green-50 text-green-700 border-green-100', url: 'https://chalo.com/app/' },
-                  { title: 'Chennai Metro Timing', desc: '2 lines covering central networks. Fare: ₹10-₹60', color: 'bg-blue-50 text-blue-700 border-blue-100', url: 'https://chennaimetrorail.org/travel-information/' },
-                  { title: 'MRTS Suburban Rail', desc: 'Beach to Velachery elevated loop. Fare: ₹5-₹15', color: 'bg-purple-50 text-purple-700 border-purple-100', url: 'https://whereismytrain.com/' },
-                  { title: 'Suburban Train App', desc: 'Southern Railway suburban. Cheapest transit.', color: 'bg-amber-50 text-amber-700 border-amber-100', url: 'https://whereismytrain.com/' },
-                ].map((t) => {
-                  const content = (
-                    <>
-                      <h4 className="font-bold text-sm flex items-center gap-1.5">
-                        {t.title} <ExternalLink className="w-3.5 h-3.5 opacity-70" />
-                      </h4>
-                      <p className="text-xs mt-1 opacity-80">{t.desc}</p>
-                    </>
-                  );
-                  return (
-                    <a
-                      key={t.title}
-                      href={t.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={`block p-4 rounded-xl border hover:scale-[1.02] transition-transform cursor-pointer ${t.color}`}
-                    >
-                      {content}
-                    </a>
-                  );
-                })}
-              </div>
-            </Card>
 
             {/* Cab Apps Shortcut */}
             <Card>
@@ -1289,13 +1876,50 @@ export default function TravelPage() {
             </Card>
           </div>
 
-          {/* Right Column: Tamil Words Helper */}
-          <div className="space-y-6">
-            <Card className="sticky top-20">
-              <h3 className="text-lg font-bold mb-4 inline-flex items-center gap-2">
+          {/* Right Column: Timings, Route Map and Tamil Word Helper */}
+          <div className="space-y-6 lg:sticky lg:top-8 h-fit">
+            {/* Metro Service Timings & Network Map - Only shown when Chennai Metro is selected */}
+            {timetableCategory === 'city' && cityTransportType === 'public' && cityPublicMode === 'metro' && (
+              <>
+                {/* Metro Service Timings Card */}
+                <Card className="border-blue-100">
+                  <h3 className="text-lg font-bold mb-4 flex items-center gap-2 text-text-primary border-b border-slate-100 pb-2">
+                    <Clock className="w-5 h-5 text-blue-600" /> Metro Service Timings
+                  </h3>
+                  <div className="space-y-4 text-xs text-text-muted font-medium">
+                    <div>
+                      <strong className="text-text-primary block mb-1">Weekdays & Saturdays:</strong>
+                      <p>• Operating Hours: 05:00 AM - 11:00 PM</p>
+                      <p className="mt-1">• Peak Hours (08:00 AM - 11:00 AM, 05:00 PM - 08:00 PM): Every 5 mins</p>
+                      <p className="mt-1">• Non-Peak Hours: Every 9 mins</p>
+                      <p className="mt-1">• Late Night (10:00 PM - 11:00 PM): Every 15 mins</p>
+                    </div>
+                    <div className="border-t border-slate-100 pt-3">
+                      <strong className="text-text-primary block mb-1">Sundays & Public Holidays:</strong>
+                      <p>• Operating Hours: 08:00 AM - 10:00 PM</p>
+                      <p className="mt-1">• Frequency: Every 10 mins throughout the day</p>
+                    </div>
+                  </div>
+                </Card>
+
+                {/* Metro Network Route Map Card */}
+                <Card className="border-blue-100">
+                  <h3 className="text-lg font-bold mb-4 flex items-center gap-2 text-text-primary border-b border-slate-100 pb-2">
+                    <Map className="w-5 h-5 text-blue-600" /> Metro Network Map
+                  </h3>
+                  <div className="space-y-2">
+                    <img src="/chennai-metro-route.png" alt="Chennai Metro Route Map" className="w-full rounded-xl border border-border shadow-sm hover:scale-[1.02] transition-transform duration-300" />
+                  </div>
+                </Card>
+              </>
+            )}
+
+            {/* Tamil Word Helper */}
+            <Card>
+              <h3 className="text-lg font-bold mb-4 inline-flex items-center gap-2 text-text-primary">
                 <Megaphone className="w-5 h-5 text-primary animate-bounce" /> Tamil Word Helper
               </h3>
-              <p className="text-sm text-text-muted mb-4">Common Tamil words you&apos;ll need while traveling:</p>
+              <p className="text-sm text-text-muted mb-4 font-medium">Common Tamil words you&apos;ll need while traveling:</p>
               <div className="space-y-3">
                 {TAMIL_WORDS.map((word) => (
                   <div key={word.tamil} className="flex items-start gap-3 p-3 bg-surface rounded-xl hover:bg-primary/5 transition-all">

@@ -193,3 +193,56 @@ body {
 .goog-te-banner {
     display: none !important;
 }
+
+/* ============================================================
+   LEAFLET MAP CUSTOM STYLES
+   ============================================================ */
+
+.leaflet-tooltip.metro-tooltip {
+  background-color: #ffffff !important;
+  border-radius: 4px !important;
+  padding: 2px 5px !important;
+  font-size: 9.5px !important;
+  font-weight: 700 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12) !important;
+  white-space: nowrap !important;
+}
+
+.leaflet-tooltip.metro-tooltip-blue {
+  color: #2563eb !important;
+  border: 1.5px solid #2563eb !important;
+}
+
+.leaflet-tooltip-top.metro-tooltip-blue::before {
+  border-top-color: #2563eb !important;
+}
+
+.leaflet-tooltip.metro-tooltip-green {
+  color: #16a34a !important;
+  border: 1.5px solid #16a34a !important;
+}
+
+.leaflet-tooltip-top.metro-tooltip-green::before {
+  border-top-color: #16a34a !important;
+}
+
+.leaflet-tooltip.metro-tooltip-interchange {
+  color: #1e293b !important;
+  border: 1.5px solid #1e293b !important;
+}
+
+.leaflet-tooltip-top.metro-tooltip-interchange::before {
+  border-top-color: #1e293b !important;
+}
+
+@keyframes dash {
+  to {
+    stroke-dashoffset: -20;
+  }
+}
+
+.metro-path-animate {
+  stroke-dasharray: 6, 8;
+  animation: dash 1.5s linear infinite;
+}
+

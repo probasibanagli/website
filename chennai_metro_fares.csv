@@ -1,0 +1,821 @@
+﻿From Station,To Station,Normal Fare (Rs),"Discounted Fare (Rs, 20% off)"
+Airport,Meenambakkam,10,8
+Airport,Nanganallur Road,20,16
+Airport,Arignar Anna Alandur Metro,20,16
+Airport,Guindy,30,24
+Airport,Little Mount,30,24
+Airport,Saidapet,30,24
+Airport,Nandanam,30,24
+Airport,Teynampet,30,24
+Airport,AG-DMS,40,32
+Airport,Thousand Light,40,32
+Airport,LIC,40,32
+Airport,Government Estate,40,32
+Airport,Puratchi Thalaivar Dr.M.G.Ramachandran Central Metro,40,32
+Airport,High Court,40,32
+Airport,Mannadi,40,32
+Airport,Washermenpet,50,40
+Airport,Thyagaraya College,50,40
+Airport,Tondiarpet,50,40
+Airport,New Washermenpet,50,40
+Airport,Toll Gate,50,40
+Airport,Kaladipet,50,40
+Airport,Thiruvotriyur Theredi,50,40
+Airport,Thiruvotriyur,50,40
+Airport,Wimco Nagar,50,40
+Airport,Wimco Nagar Depot,50,40
+Airport,Ekkattuthangal,30,24
+Airport,Ashok Nagar,30,24
+Airport,Vadapalani,30,24
+Airport,Arumbakkam,30,24
+Airport,Puratchi Thalaivi Dr.J.Jayalalitha CMBT Metro,40,32
+Airport,Koyambedu,40,32
+Airport,Thirumangalam,40,32
+Airport,Anna Nagar Tower,40,32
+Airport,Anna Nagar East,40,32
+Airport,Shenoy Nagar,40,32
+Airport,Pachiappas College,40,32
+Airport,Kilpauk,50,40
+Airport,Nehru Park,40,32
+Airport,Egmore,40,32
+Airport,St. Thomas Mount,30,24
+Meenambakkam,Nanganallur Road,20,16
+Meenambakkam,Arignar Anna Alandur Metro,20,16
+Meenambakkam,Guindy,20,16
+Meenambakkam,Little Mount,30,24
+Meenambakkam,Saidapet,30,24
+Meenambakkam,Nandanam,30,24
+Meenambakkam,Teynampet,30,24
+Meenambakkam,AG-DMS,30,24
+Meenambakkam,Thousand Light,40,32
+Meenambakkam,LIC,40,32
+Meenambakkam,Government Estate,40,32
+Meenambakkam,Puratchi Thalaivar Dr.M.G.Ramachandran Central Metro,40,32
+Meenambakkam,High Court,40,32
+Meenambakkam,Mannadi,40,32
+Meenambakkam,Washermenpet,40,32
+Meenambakkam,Thyagaraya College,50,40
+Meenambakkam,Tondiarpet,50,40
+Meenambakkam,New Washermenpet,50,40
+Meenambakkam,Toll Gate,50,40
+Meenambakkam,Kaladipet,50,40
+Meenambakkam,Thiruvotriyur Theredi,50,40
+Meenambakkam,Thiruvotriyur,50,40
+Meenambakkam,Wimco Nagar,50,40
+Meenambakkam,Wimco Nagar Depot,50,40
+Meenambakkam,Ekkattuthangal,20,16
+Meenambakkam,Ashok Nagar,30,24
+Meenambakkam,Vadapalani,30,24
+Meenambakkam,Arumbakkam,30,24
+Meenambakkam,Puratchi Thalaivi Dr.J.Jayalalitha CMBT Metro,30,24
+Meenambakkam,Koyambedu,40,32
+Meenambakkam,Thirumangalam,40,32
+Meenambakkam,Anna Nagar Tower,40,32
+Meenambakkam,Anna Nagar East,40,32
+Meenambakkam,Shenoy Nagar,40,32
+Meenambakkam,Pachiappas College,40,32
+Meenambakkam,Kilpauk,40,32
+Meenambakkam,Nehru Park,40,32
+Meenambakkam,Egmore,40,32
+Meenambakkam,St. Thomas Mount,20,16
+Nanganallur Road,Arignar Anna Alandur Metro,10,8
+Nanganallur Road,Guindy,20,16
+Nanganallur Road,Little Mount,20,16
+Nanganallur Road,Saidapet,20,16
+Nanganallur Road,Nandanam,30,24
+Nanganallur Road,Teynampet,30,24
+Nanganallur Road,AG-DMS,30,24
+Nanganallur Road,Thousand Light,30,24
+Nanganallur Road,LIC,30,24
+Nanganallur Road,Government Estate,40,32
+Nanganallur Road,Puratchi Thalaivar Dr.M.G.Ramachandran Central Metro,40,32
+Nanganallur Road,High Court,40,32
+Nanganallur Road,Mannadi,40,32
+Nanganallur Road,Washermenpet,40,32
+Nanganallur Road,Thyagaraya College,40,32
+Nanganallur Road,Tondiarpet,40,32
+Nanganallur Road,New Washermenpet,50,40
+Nanganallur Road,Toll Gate,50,40
+Nanganallur Road,Kaladipet,50,40
+Nanganallur Road,Thiruvotriyur Theredi,50,40
+Nanganallur Road,Thiruvotriyur,50,40
+Nanganallur Road,Wimco Nagar,50,40
+Nanganallur Road,Wimco Nagar Depot,50,40
+Nanganallur Road,Ekkattuthangal,20,16
+Nanganallur Road,Ashok Nagar,20,16
+Nanganallur Road,Vadapalani,30,24
+Nanganallur Road,Arumbakkam,30,24
+Nanganallur Road,Puratchi Thalaivi Dr.J.Jayalalitha CMBT Metro,30,24
+Nanganallur Road,Koyambedu,30,24
+Nanganallur Road,Thirumangalam,40,32
+Nanganallur Road,Anna Nagar Tower,40,32
+Nanganallur Road,Anna Nagar East,40,32
+Nanganallur Road,Shenoy Nagar,40,32
+Nanganallur Road,Pachiappas College,40,32
+Nanganallur Road,Kilpauk,40,32
+Nanganallur Road,Nehru Park,40,32
+Nanganallur Road,Egmore,40,32
+Nanganallur Road,St. Thomas Mount,20,16
+Arignar Anna Alandur Metro,Guindy,10,8
+Arignar Anna Alandur Metro,Little Mount,20,16
+Arignar Anna Alandur Metro,Saidapet,20,16
+Arignar Anna Alandur Metro,Nandanam,30,24
+Arignar Anna Alandur Metro,Teynampet,30,24
+Arignar Anna Alandur Metro,AG-DMS,30,24
+Arignar Anna Alandur Metro,Thousand Light,30,24
+Arignar Anna Alandur Metro,LIC,30,24
+Arignar Anna Alandur Metro,Government Estate,30,24
+Arignar Anna Alandur Metro,Puratchi Thalaivar Dr.M.G.Ramachandran Central Metro,40,32
+Arignar Anna Alandur Metro,High Court,40,32
+Arignar Anna Alandur Metro,Mannadi,40,32
+Arignar Anna Alandur Metro,Washermenpet,40,32
+Arignar Anna Alandur Metro,Thyagaraya College,40,32
+Arignar Anna Alandur Metro,Tondiarpet,40,32
+Arignar Anna Alandur Metro,New Washermenpet,40,32
+Arignar Anna Alandur Metro,Toll Gate,50,40
+Arignar Anna Alandur Metro,Kaladipet,50,40
+Arignar Anna Alandur Metro,Thiruvotriyur Theredi,50,40
+Arignar Anna Alandur Metro,Thiruvotriyur,50,40
+Arignar Anna Alandur Metro,Wimco Nagar,50,40
+Arignar Anna Alandur Metro,Wimco Nagar Depot,50,40
+Arignar Anna Alandur Metro,Ekkattuthangal,10,8
+Arignar Anna Alandur Metro,Ashok Nagar,20,16
+Arignar Anna Alandur Metro,Vadapalani,30,24
+Arignar Anna Alandur Metro,Arumbakkam,30,24
+Arignar Anna Alandur Metro,Puratchi Thalaivi Dr.J.Jayalalitha CMBT Metro,30,24
+Arignar Anna Alandur Metro,Koyambedu,30,24
+Arignar Anna Alandur Metro,Thirumangalam,30,24
+Arignar Anna Alandur Metro,Anna Nagar Tower,30,24
+Arignar Anna Alandur Metro,Anna Nagar East,40,32
+Arignar Anna Alandur Metro,Shenoy Nagar,40,32
+Arignar Anna Alandur Metro,Pachiappas College,40,32
+Arignar Anna Alandur Metro,Kilpauk,40,32
+Arignar Anna Alandur Metro,Nehru Park,40,32
+Arignar Anna Alandur Metro,Egmore,40,32
+Arignar Anna Alandur Metro,St. Thomas Mount,10,8
+Guindy,Little Mount,10,8
+Guindy,Saidapet,20,16
+Guindy,Nandanam,20,16
+Guindy,Teynampet,20,16
+Guindy,AG-DMS,30,24
+Guindy,Thousand Light,30,24
+Guindy,LIC,30,24
+Guindy,Government Estate,30,24
+Guindy,Puratchi Thalaivar Dr.M.G.Ramachandran Central Metro,30,24
+Guindy,High Court,40,32
+Guindy,Mannadi,40,32
+Guindy,Washermenpet,40,32
+Guindy,Thyagaraya College,40,32
+Guindy,Tondiarpet,40,32
+Guindy,New Washermenpet,40,32
+Guindy,Toll Gate,40,32
+Guindy,Kaladipet,40,32
+Guindy,Thiruvotriyur Theredi,50,40
+Guindy,Thiruvotriyur,50,40
+Guindy,Wimco Nagar,50,40
+Guindy,Wimco Nagar Depot,50,40
+Guindy,Ekkattuthangal,20,16
+Guindy,Ashok Nagar,20,16
+Guindy,Vadapalani,30,24
+Guindy,Arumbakkam,30,24
+Guindy,Puratchi Thalaivi Dr.J.Jayalalitha CMBT Metro,30,24
+Guindy,Koyambedu,30,24
+Guindy,Thirumangalam,40,32
+Guindy,Anna Nagar Tower,40,32
+Guindy,Anna Nagar East,40,32
+Guindy,Shenoy Nagar,40,32
+Guindy,Pachiappas College,40,32
+Guindy,Kilpauk,40,32
+Guindy,Nehru Park,40,32
+Guindy,Egmore,40,32
+Guindy,St. Thomas Mount,20,16
+Little Mount,Saidapet,10,8
+Little Mount,Nandanam,20,16
+Little Mount,Teynampet,20,16
+Little Mount,AG-DMS,20,16
+Little Mount,Thousand Light,30,24
+Little Mount,LIC,30,24
+Little Mount,Government Estate,30,24
+Little Mount,Puratchi Thalaivar Dr.M.G.Ramachandran Central Metro,30,24
+Little Mount,High Court,30,24
+Little Mount,Mannadi,40,32
+Little Mount,Washermenpet,40,32
+Little Mount,Thyagaraya College,40,32
+Little Mount,Tondiarpet,40,32
+Little Mount,New Washermenpet,40,32
+Little Mount,Toll Gate,40,32
+Little Mount,Kaladipet,40,32
+Little Mount,Thiruvotriyur Theredi,40,32
+Little Mount,Thiruvotriyur,50,40
+Little Mount,Wimco Nagar,50,40
+Little Mount,Wimco Nagar Depot,50,40
+Little Mount,Ekkattuthangal,20,16
+Little Mount,Ashok Nagar,30,24
+Little Mount,Vadapalani,30,24
+Little Mount,Arumbakkam,30,24
+Little Mount,Puratchi Thalaivi Dr.J.Jayalalitha CMBT Metro,30,24
+Little Mount,Koyambedu,30,24
+Little Mount,Thirumangalam,40,32
+Little Mount,Anna Nagar Tower,40,32
+Little Mount,Anna Nagar East,40,32
+Little Mount,Shenoy Nagar,40,32
+Little Mount,Pachiappas College,40,32
+Little Mount,Kilpauk,40,32
+Little Mount,Nehru Park,40,32
+Little Mount,Egmore,30,24
+Little Mount,St. Thomas Mount,20,16
+Saidapet,Nandanam,10,8
+Saidapet,Teynampet,20,16
+Saidapet,AG-DMS,20,16
+Saidapet,Thousand Light,30,24
+Saidapet,LIC,30,24
+Saidapet,Government Estate,30,24
+Saidapet,Puratchi Thalaivar Dr.M.G.Ramachandran Central Metro,30,24
+Saidapet,High Court,30,24
+Saidapet,Mannadi,30,24
+Saidapet,Washermenpet,40,32
+Saidapet,Thyagaraya College,40,32
+Saidapet,Tondiarpet,40,32
+Saidapet,New Washermenpet,40,32
+Saidapet,Toll Gate,40,32
+Saidapet,Kaladipet,40,32
+Saidapet,Thiruvotriyur Theredi,40,32
+Saidapet,Thiruvotriyur,40,32
+Saidapet,Wimco Nagar,50,40
+Saidapet,Wimco Nagar Depot,50,40
+Saidapet,Ekkattuthangal,30,24
+Saidapet,Ashok Nagar,30,24
+Saidapet,Vadapalani,30,24
+Saidapet,Arumbakkam,30,24
+Saidapet,Puratchi Thalaivi Dr.J.Jayalalitha CMBT Metro,30,24
+Saidapet,Koyambedu,40,32
+Saidapet,Thirumangalam,40,32
+Saidapet,Anna Nagar Tower,40,32
+Saidapet,Anna Nagar East,40,32
+Saidapet,Shenoy Nagar,40,32
+Saidapet,Pachiappas College,40,32
+Saidapet,Kilpauk,40,32
+Saidapet,Nehru Park,30,24
+Saidapet,Egmore,30,24
+Saidapet,St. Thomas Mount,30,24
+Nandanam,Teynampet,10,8
+Nandanam,AG-DMS,10,8
+Nandanam,Thousand Light,20,16
+Nandanam,LIC,20,16
+Nandanam,Government Estate,30,24
+Nandanam,Puratchi Thalaivar Dr.M.G.Ramachandran Central Metro,30,24
+Nandanam,High Court,30,24
+Nandanam,Mannadi,30,24
+Nandanam,Washermenpet,30,24
+Nandanam,Thyagaraya College,40,32
+Nandanam,Tondiarpet,40,32
+Nandanam,New Washermenpet,40,32
+Nandanam,Toll Gate,40,32
+Nandanam,Kaladipet,40,32
+Nandanam,Thiruvotriyur Theredi,40,32
+Nandanam,Thiruvotriyur,40,32
+Nandanam,Wimco Nagar,40,32
+Nandanam,Wimco Nagar Depot,40,32
+Nandanam,Ekkattuthangal,30,24
+Nandanam,Ashok Nagar,30,24
+Nandanam,Vadapalani,30,24
+Nandanam,Arumbakkam,40,32
+Nandanam,Puratchi Thalaivi Dr.J.Jayalalitha CMBT Metro,40,32
+Nandanam,Koyambedu,40,32
+Nandanam,Thirumangalam,40,32
+Nandanam,Anna Nagar Tower,40,32
+Nandanam,Anna Nagar East,40,32
+Nandanam,Shenoy Nagar,40,32
+Nandanam,Pachiappas College,30,24
+Nandanam,Kilpauk,30,24
+Nandanam,Nehru Park,30,24
+Nandanam,Egmore,30,24
+Nandanam,St. Thomas Mount,30,24
+Teynampet,AG-DMS,10,8
+Teynampet,Thousand Light,20,16
+Teynampet,LIC,20,16
+Teynampet,Government Estate,20,16
+Teynampet,Puratchi Thalaivar Dr.M.G.Ramachandran Central Metro,30,24
+Teynampet,High Court,30,24
+Teynampet,Mannadi,30,24
+Teynampet,Washermenpet,30,24
+Teynampet,Thyagaraya College,30,24
+Teynampet,Tondiarpet,40,32
+Teynampet,New Washermenpet,40,32
+Teynampet,Toll Gate,40,32
+Teynampet,Kaladipet,40,32
+Teynampet,Thiruvotriyur Theredi,40,32
+Teynampet,Thiruvotriyur,40,32
+Teynampet,Wimco Nagar,40,32
+Teynampet,Wimco Nagar Depot,40,32
+Teynampet,Ekkattuthangal,30,24
+Teynampet,Ashok Nagar,30,24
+Teynampet,Vadapalani,30,24
+Teynampet,Arumbakkam,40,32
+Teynampet,Puratchi Thalaivi Dr.J.Jayalalitha CMBT Metro,40,32
+Teynampet,Koyambedu,40,32
+Teynampet,Thirumangalam,40,32
+Teynampet,Anna Nagar Tower,40,32
+Teynampet,Anna Nagar East,40,32
+Teynampet,Shenoy Nagar,40,32
+Teynampet,Pachiappas College,30,24
+Teynampet,Kilpauk,30,24
+Teynampet,Nehru Park,30,24
+Teynampet,Egmore,30,24
+Teynampet,St. Thomas Mount,30,24
+AG-DMS,Thousand Light,10,8
+AG-DMS,LIC,20,16
+AG-DMS,Government Estate,20,16
+AG-DMS,Puratchi Thalaivar Dr.M.G.Ramachandran Central Metro,30,24
+AG-DMS,High Court,30,24
+AG-DMS,Mannadi,30,24
+AG-DMS,Washermenpet,30,24
+AG-DMS,Thyagaraya College,30,24
+AG-DMS,Tondiarpet,30,24
+AG-DMS,New Washermenpet,40,32
+AG-DMS,Toll Gate,40,32
+AG-DMS,Kaladipet,40,32
+AG-DMS,Thiruvotriyur Theredi,40,32
+AG-DMS,Thiruvotriyur,40,32
+AG-DMS,Wimco Nagar,40,32
+AG-DMS,Wimco Nagar Depot,40,32
+AG-DMS,Ekkattuthangal,30,24
+AG-DMS,Ashok Nagar,30,24
+AG-DMS,Vadapalani,40,32
+AG-DMS,Arumbakkam,40,32
+AG-DMS,Puratchi Thalaivi Dr.J.Jayalalitha CMBT Metro,40,32
+AG-DMS,Koyambedu,40,32
+AG-DMS,Thirumangalam,40,32
+AG-DMS,Anna Nagar Tower,40,32
+AG-DMS,Anna Nagar East,40,32
+AG-DMS,Shenoy Nagar,30,24
+AG-DMS,Pachiappas College,30,24
+AG-DMS,Kilpauk,30,24
+AG-DMS,Nehru Park,30,24
+AG-DMS,Egmore,30,24
+AG-DMS,St. Thomas Mount,30,24
+Thousand Light,LIC,10,8
+Thousand Light,Government Estate,10,8
+Thousand Light,Puratchi Thalaivar Dr.M.G.Ramachandran Central Metro,20,16
+Thousand Light,High Court,30,24
+Thousand Light,Mannadi,30,24
+Thousand Light,Washermenpet,30,24
+Thousand Light,Thyagaraya College,30,24
+Thousand Light,Tondiarpet,30,24
+Thousand Light,New Washermenpet,30,24
+Thousand Light,Toll Gate,40,32
+Thousand Light,Kaladipet,40,32
+Thousand Light,Thiruvotriyur Theredi,40,32
+Thousand Light,Thiruvotriyur,40,32
+Thousand Light,Wimco Nagar,40,32
+Thousand Light,Wimco Nagar Depot,40,32
+Thousand Light,Ekkattuthangal,30,24
+Thousand Light,Ashok Nagar,40,32
+Thousand Light,Vadapalani,40,32
+Thousand Light,Arumbakkam,40,32
+Thousand Light,Puratchi Thalaivi Dr.J.Jayalalitha CMBT Metro,40,32
+Thousand Light,Koyambedu,40,32
+Thousand Light,Thirumangalam,40,32
+Thousand Light,Anna Nagar Tower,30,24
+Thousand Light,Anna Nagar East,30,24
+Thousand Light,Shenoy Nagar,30,24
+Thousand Light,Pachiappas College,30,24
+Thousand Light,Kilpauk,30,24
+Thousand Light,Nehru Park,30,24
+Thousand Light,Egmore,30,24
+Thousand Light,St. Thomas Mount,30,24
+LIC,Government Estate,10,8
+LIC,Puratchi Thalaivar Dr.M.G.Ramachandran Central Metro,20,16
+LIC,High Court,20,16
+LIC,Mannadi,30,24
+LIC,Washermenpet,30,24
+LIC,Thyagaraya College,30,24
+LIC,Tondiarpet,30,24
+LIC,New Washermenpet,30,24
+LIC,Toll Gate,30,24
+LIC,Kaladipet,30,24
+LIC,Thiruvotriyur Theredi,40,32
+LIC,Thiruvotriyur,40,32
+LIC,Wimco Nagar,40,32
+LIC,Wimco Nagar Depot,40,32
+LIC,Ekkattuthangal,30,24
+LIC,Ashok Nagar,40,32
+LIC,Vadapalani,40,32
+LIC,Arumbakkam,40,32
+LIC,Puratchi Thalaivi Dr.J.Jayalalitha CMBT Metro,40,32
+LIC,Koyambedu,40,32
+LIC,Thirumangalam,30,24
+LIC,Anna Nagar Tower,30,24
+LIC,Anna Nagar East,30,24
+LIC,Shenoy Nagar,30,24
+LIC,Pachiappas College,30,24
+LIC,Kilpauk,30,24
+LIC,Nehru Park,30,24
+LIC,Egmore,20,16
+LIC,St. Thomas Mount,30,24
+Government Estate,Puratchi Thalaivar Dr.M.G.Ramachandran Central Metro,10,8
+Government Estate,High Court,20,16
+Government Estate,Mannadi,20,16
+Government Estate,Washermenpet,30,24
+Government Estate,Thyagaraya College,30,24
+Government Estate,Tondiarpet,30,24
+Government Estate,New Washermenpet,30,24
+Government Estate,Toll Gate,30,24
+Government Estate,Kaladipet,30,24
+Government Estate,Thiruvotriyur Theredi,40,32
+Government Estate,Thiruvotriyur,40,32
+Government Estate,Wimco Nagar,40,32
+Government Estate,Wimco Nagar Depot,40,32
+Government Estate,Ekkattuthangal,40,32
+Government Estate,Ashok Nagar,40,32
+Government Estate,Vadapalani,40,32
+Government Estate,Arumbakkam,40,32
+Government Estate,Puratchi Thalaivi Dr.J.Jayalalitha CMBT Metro,40,32
+Government Estate,Koyambedu,40,32
+Government Estate,Thirumangalam,30,24
+Government Estate,Anna Nagar Tower,30,24
+Government Estate,Anna Nagar East,30,24
+Government Estate,Shenoy Nagar,30,24
+Government Estate,Pachiappas College,30,24
+Government Estate,Kilpauk,30,24
+Government Estate,Nehru Park,20,16
+Government Estate,Egmore,20,16
+Government Estate,St. Thomas Mount,40,32
+Puratchi Thalaivar Dr.M.G.Ramachandran Central Metro,High Court,10,8
+Puratchi Thalaivar Dr.M.G.Ramachandran Central Metro,Mannadi,20,16
+Puratchi Thalaivar Dr.M.G.Ramachandran Central Metro,Washermenpet,20,16
+Puratchi Thalaivar Dr.M.G.Ramachandran Central Metro,Thyagaraya College,30,24
+Puratchi Thalaivar Dr.M.G.Ramachandran Central Metro,Tondiarpet,30,24
+Puratchi Thalaivar Dr.M.G.Ramachandran Central Metro,New Washermenpet,30,24
+Puratchi Thalaivar Dr.M.G.Ramachandran Central Metro,Toll Gate,30,24
+Puratchi Thalaivar Dr.M.G.Ramachandran Central Metro,Kaladipet,30,24
+Puratchi Thalaivar Dr.M.G.Ramachandran Central Metro,Thiruvotriyur Theredi,30,24
+Puratchi Thalaivar Dr.M.G.Ramachandran Central Metro,Thiruvotriyur,30,24
+Puratchi Thalaivar Dr.M.G.Ramachandran Central Metro,Wimco Nagar,40,32
+Puratchi Thalaivar Dr.M.G.Ramachandran Central Metro,Wimco Nagar Depot,40,32
+Puratchi Thalaivar Dr.M.G.Ramachandran Central Metro,Ekkattuthangal,40,32
+Puratchi Thalaivar Dr.M.G.Ramachandran Central Metro,Ashok Nagar,40,32
+Puratchi Thalaivar Dr.M.G.Ramachandran Central Metro,Vadapalani,40,32
+Puratchi Thalaivar Dr.M.G.Ramachandran Central Metro,Arumbakkam,40,32
+Puratchi Thalaivar Dr.M.G.Ramachandran Central Metro,Puratchi Thalaivi Dr.J.Jayalalitha CMBT Metro,30,24
+Puratchi Thalaivar Dr.M.G.Ramachandran Central Metro,Koyambedu,30,24
+Puratchi Thalaivar Dr.M.G.Ramachandran Central Metro,Thirumangalam,30,24
+Puratchi Thalaivar Dr.M.G.Ramachandran Central Metro,Anna Nagar Tower,30,24
+Puratchi Thalaivar Dr.M.G.Ramachandran Central Metro,Anna Nagar East,30,24
+Puratchi Thalaivar Dr.M.G.Ramachandran Central Metro,Shenoy Nagar,30,24
+Puratchi Thalaivar Dr.M.G.Ramachandran Central Metro,Pachiappas College,20,16
+Puratchi Thalaivar Dr.M.G.Ramachandran Central Metro,Kilpauk,20,16
+Puratchi Thalaivar Dr.M.G.Ramachandran Central Metro,Nehru Park,20,16
+Puratchi Thalaivar Dr.M.G.Ramachandran Central Metro,Egmore,10,8
+Puratchi Thalaivar Dr.M.G.Ramachandran Central Metro,St. Thomas Mount,40,32
+High Court,Mannadi,10,8
+High Court,Washermenpet,20,16
+High Court,Thyagaraya College,20,16
+High Court,Tondiarpet,20,16
+High Court,New Washermenpet,30,24
+High Court,Toll Gate,30,24
+High Court,Kaladipet,30,24
+High Court,Thiruvotriyur Theredi,30,24
+High Court,Thiruvotriyur,30,24
+High Court,Wimco Nagar,30,24
+High Court,Wimco Nagar Depot,30,24
+High Court,Ekkattuthangal,40,32
+High Court,Ashok Nagar,40,32
+High Court,Vadapalani,40,32
+High Court,Arumbakkam,40,32
+High Court,Puratchi Thalaivi Dr.J.Jayalalitha CMBT Metro,40,32
+High Court,Koyambedu,40,32
+High Court,Thirumangalam,30,24
+High Court,Anna Nagar Tower,30,24
+High Court,Anna Nagar East,30,24
+High Court,Shenoy Nagar,30,24
+High Court,Pachiappas College,30,24
+High Court,Kilpauk,20,16
+High Court,Nehru Park,20,16
+High Court,Egmore,20,16
+High Court,St. Thomas Mount,40,32
+Mannadi,Washermenpet,10,8
+Mannadi,Thyagaraya College,20,16
+Mannadi,Tondiarpet,20,16
+Mannadi,New Washermenpet,20,16
+Mannadi,Toll Gate,30,24
+Mannadi,Kaladipet,30,24
+Mannadi,Thiruvotriyur Theredi,30,24
+Mannadi,Thiruvotriyur,30,24
+Mannadi,Wimco Nagar,30,24
+Mannadi,Wimco Nagar Depot,30,24
+Mannadi,Ekkattuthangal,40,32
+Mannadi,Ashok Nagar,40,32
+Mannadi,Vadapalani,40,32
+Mannadi,Arumbakkam,40,32
+Mannadi,Puratchi Thalaivi Dr.J.Jayalalitha CMBT Metro,40,32
+Mannadi,Koyambedu,40,32
+Mannadi,Thirumangalam,30,24
+Mannadi,Anna Nagar Tower,30,24
+Mannadi,Anna Nagar East,30,24
+Mannadi,Shenoy Nagar,30,24
+Mannadi,Pachiappas College,30,24
+Mannadi,Kilpauk,30,24
+Mannadi,Nehru Park,20,16
+Mannadi,Egmore,20,16
+Mannadi,St. Thomas Mount,40,32
+Washermenpet,Thyagaraya College,10,8
+Washermenpet,Tondiarpet,10,8
+Washermenpet,New Washermenpet,20,16
+Washermenpet,Toll Gate,20,16
+Washermenpet,Kaladipet,20,16
+Washermenpet,Thiruvotriyur Theredi,30,24
+Washermenpet,Thiruvotriyur,30,24
+Washermenpet,Wimco Nagar,30,24
+Washermenpet,Wimco Nagar Depot,30,24
+Washermenpet,Ekkattuthangal,40,32
+Washermenpet,Ashok Nagar,40,32
+Washermenpet,Vadapalani,40,32
+Washermenpet,Arumbakkam,40,32
+Washermenpet,Puratchi Thalaivi Dr.J.Jayalalitha CMBT Metro,40,32
+Washermenpet,Koyambedu,40,32
+Washermenpet,Thirumangalam,40,32
+Washermenpet,Anna Nagar Tower,40,32
+Washermenpet,Anna Nagar East,30,24
+Washermenpet,Shenoy Nagar,30,24
+Washermenpet,Pachiappas College,30,24
+Washermenpet,Kilpauk,30,24
+Washermenpet,Nehru Park,30,24
+Washermenpet,Egmore,30,24
+Washermenpet,St. Thomas Mount,40,32
+Thyagaraya College,Tondiarpet,10,8
+Thyagaraya College,New Washermenpet,10,8
+Thyagaraya College,Toll Gate,20,16
+Thyagaraya College,Kaladipet,20,16
+Thyagaraya College,Thiruvotriyur Theredi,20,16
+Thyagaraya College,Thiruvotriyur,30,24
+Thyagaraya College,Wimco Nagar,30,24
+Thyagaraya College,Wimco Nagar Depot,30,24
+Thyagaraya College,Ekkattuthangal,40,32
+Thyagaraya College,Ashok Nagar,50,40
+Thyagaraya College,Vadapalani,40,32
+Thyagaraya College,Arumbakkam,40,32
+Thyagaraya College,Puratchi Thalaivi Dr.J.Jayalalitha CMBT Metro,40,32
+Thyagaraya College,Koyambedu,40,32
+Thyagaraya College,Thirumangalam,40,32
+Thyagaraya College,Anna Nagar Tower,40,32
+Thyagaraya College,Anna Nagar East,30,24
+Thyagaraya College,Shenoy Nagar,30,24
+Thyagaraya College,Pachiappas College,30,24
+Thyagaraya College,Kilpauk,30,24
+Thyagaraya College,Nehru Park,30,24
+Thyagaraya College,Egmore,30,24
+Thyagaraya College,St. Thomas Mount,40,32
+Tondiarpet,New Washermenpet,10,8
+Tondiarpet,Toll Gate,20,16
+Tondiarpet,Kaladipet,20,16
+Tondiarpet,Thiruvotriyur Theredi,20,16
+Tondiarpet,Thiruvotriyur,30,24
+Tondiarpet,Wimco Nagar,30,24
+Tondiarpet,Wimco Nagar Depot,30,24
+Tondiarpet,Ekkattuthangal,40,32
+Tondiarpet,Ashok Nagar,50,40
+Tondiarpet,Vadapalani,40,32
+Tondiarpet,Arumbakkam,40,32
+Tondiarpet,Puratchi Thalaivi Dr.J.Jayalalitha CMBT Metro,40,32
+Tondiarpet,Koyambedu,40,32
+Tondiarpet,Thirumangalam,40,32
+Tondiarpet,Anna Nagar Tower,40,32
+Tondiarpet,Anna Nagar East,40,32
+Tondiarpet,Shenoy Nagar,30,24
+Tondiarpet,Pachiappas College,30,24
+Tondiarpet,Kilpauk,30,24
+Tondiarpet,Nehru Park,30,24
+Tondiarpet,Egmore,30,24
+Tondiarpet,St. Thomas Mount,40,32
+New Washermenpet,Toll Gate,10,8
+New Washermenpet,Kaladipet,10,8
+New Washermenpet,Thiruvotriyur Theredi,20,16
+New Washermenpet,Thiruvotriyur,20,16
+New Washermenpet,Wimco Nagar,30,24
+New Washermenpet,Wimco Nagar Depot,30,24
+New Washermenpet,Ekkattuthangal,50,40
+New Washermenpet,Ashok Nagar,50,40
+New Washermenpet,Vadapalani,50,40
+New Washermenpet,Arumbakkam,40,32
+New Washermenpet,Puratchi Thalaivi Dr.J.Jayalalitha CMBT Metro,40,32
+New Washermenpet,Koyambedu,40,32
+New Washermenpet,Thirumangalam,40,32
+New Washermenpet,Anna Nagar Tower,40,32
+New Washermenpet,Anna Nagar East,40,32
+New Washermenpet,Shenoy Nagar,40,32
+New Washermenpet,Pachiappas College,30,24
+New Washermenpet,Kilpauk,30,24
+New Washermenpet,Nehru Park,30,24
+New Washermenpet,Egmore,30,24
+New Washermenpet,St. Thomas Mount,50,40
+Toll Gate,Kaladipet,10,8
+Toll Gate,Thiruvotriyur Theredi,10,8
+Toll Gate,Thiruvotriyur,20,16
+Toll Gate,Wimco Nagar,20,16
+Toll Gate,Wimco Nagar Depot,20,16
+Toll Gate,Ekkattuthangal,50,40
+Toll Gate,Ashok Nagar,50,40
+Toll Gate,Vadapalani,50,40
+Toll Gate,Arumbakkam,50,40
+Toll Gate,Puratchi Thalaivi Dr.J.Jayalalitha CMBT Metro,40,32
+Toll Gate,Koyambedu,40,32
+Toll Gate,Thirumangalam,40,32
+Toll Gate,Anna Nagar Tower,40,32
+Toll Gate,Anna Nagar East,40,32
+Toll Gate,Shenoy Nagar,40,32
+Toll Gate,Pachiappas College,40,32
+Toll Gate,Kilpauk,30,24
+Toll Gate,Nehru Park,30,24
+Toll Gate,Egmore,30,24
+Toll Gate,St. Thomas Mount,50,40
+Kaladipet,Thiruvotriyur Theredi,10,8
+Kaladipet,Thiruvotriyur,20,16
+Kaladipet,Wimco Nagar,20,16
+Kaladipet,Wimco Nagar Depot,20,16
+Kaladipet,Ekkattuthangal,50,40
+Kaladipet,Ashok Nagar,50,40
+Kaladipet,Vadapalani,50,40
+Kaladipet,Arumbakkam,50,40
+Kaladipet,Puratchi Thalaivi Dr.J.Jayalalitha CMBT Metro,50,40
+Kaladipet,Koyambedu,40,32
+Kaladipet,Thirumangalam,40,32
+Kaladipet,Anna Nagar Tower,40,32
+Kaladipet,Anna Nagar East,40,32
+Kaladipet,Shenoy Nagar,40,32
+Kaladipet,Pachiappas College,40,32
+Kaladipet,Kilpauk,40,32
+Kaladipet,Nehru Park,30,24
+Kaladipet,Egmore,30,24
+Kaladipet,St. Thomas Mount,50,40
+Thiruvotriyur Theredi,Thiruvotriyur,10,8
+Thiruvotriyur Theredi,Wimco Nagar,20,16
+Thiruvotriyur Theredi,Wimco Nagar Depot,20,16
+Thiruvotriyur Theredi,Ekkattuthangal,50,40
+Thiruvotriyur Theredi,Ashok Nagar,50,40
+Thiruvotriyur Theredi,Vadapalani,50,40
+Thiruvotriyur Theredi,Arumbakkam,50,40
+Thiruvotriyur Theredi,Puratchi Thalaivi Dr.J.Jayalalitha CMBT Metro,50,40
+Thiruvotriyur Theredi,Koyambedu,40,32
+Thiruvotriyur Theredi,Thirumangalam,40,32
+Thiruvotriyur Theredi,Anna Nagar Tower,40,32
+Thiruvotriyur Theredi,Anna Nagar East,40,32
+Thiruvotriyur Theredi,Shenoy Nagar,40,32
+Thiruvotriyur Theredi,Pachiappas College,40,32
+Thiruvotriyur Theredi,Kilpauk,40,32
+Thiruvotriyur Theredi,Nehru Park,40,32
+Thiruvotriyur Theredi,Egmore,30,24
+Thiruvotriyur Theredi,St. Thomas Mount,50,40
+Thiruvotriyur,Wimco Nagar,10,8
+Thiruvotriyur,Wimco Nagar Depot,10,8
+Thiruvotriyur,Ekkattuthangal,50,40
+Thiruvotriyur,Ashok Nagar,50,40
+Thiruvotriyur,Vadapalani,50,40
+Thiruvotriyur,Arumbakkam,50,40
+Thiruvotriyur,Puratchi Thalaivi Dr.J.Jayalalitha CMBT Metro,50,40
+Thiruvotriyur,Koyambedu,50,40
+Thiruvotriyur,Thirumangalam,40,32
+Thiruvotriyur,Anna Nagar Tower,40,32
+Thiruvotriyur,Anna Nagar East,40,32
+Thiruvotriyur,Shenoy Nagar,40,32
+Thiruvotriyur,Pachiappas College,40,32
+Thiruvotriyur,Kilpauk,40,32
+Thiruvotriyur,Nehru Park,40,32
+Thiruvotriyur,Egmore,40,32
+Thiruvotriyur,St. Thomas Mount,50,40
+Wimco Nagar,Wimco Nagar Depot,10,8
+Wimco Nagar,Ekkattuthangal,50,40
+Wimco Nagar,Ashok Nagar,50,40
+Wimco Nagar,Vadapalani,50,40
+Wimco Nagar,Arumbakkam,50,40
+Wimco Nagar,Puratchi Thalaivi Dr.J.Jayalalitha CMBT Metro,50,40
+Wimco Nagar,Koyambedu,50,40
+Wimco Nagar,Thirumangalam,50,40
+Wimco Nagar,Anna Nagar Tower,40,32
+Wimco Nagar,Anna Nagar East,40,32
+Wimco Nagar,Shenoy Nagar,40,32
+Wimco Nagar,Pachiappas College,40,32
+Wimco Nagar,Kilpauk,40,32
+Wimco Nagar,Nehru Park,40,32
+Wimco Nagar,Egmore,40,32
+Wimco Nagar,St. Thomas Mount,50,40
+Wimco Nagar Depot,Ekkattuthangal,50,40
+Wimco Nagar Depot,Ashok Nagar,50,40
+Wimco Nagar Depot,Vadapalani,50,40
+Wimco Nagar Depot,Arumbakkam,50,40
+Wimco Nagar Depot,Puratchi Thalaivi Dr.J.Jayalalitha CMBT Metro,50,40
+Wimco Nagar Depot,Koyambedu,50,40
+Wimco Nagar Depot,Thirumangalam,50,40
+Wimco Nagar Depot,Anna Nagar Tower,50,40
+Wimco Nagar Depot,Anna Nagar East,40,32
+Wimco Nagar Depot,Shenoy Nagar,40,32
+Wimco Nagar Depot,Pachiappas College,40,32
+Wimco Nagar Depot,Kilpauk,40,32
+Wimco Nagar Depot,Nehru Park,40,32
+Wimco Nagar Depot,Egmore,40,32
+Wimco Nagar Depot,St. Thomas Mount,50,40
+Ekkattuthangal,Ashok Nagar,20,16
+Ekkattuthangal,Vadapalani,20,16
+Ekkattuthangal,Arumbakkam,30,24
+Ekkattuthangal,Puratchi Thalaivi Dr.J.Jayalalitha CMBT Metro,30,24
+Ekkattuthangal,Koyambedu,30,24
+Ekkattuthangal,Thirumangalam,30,24
+Ekkattuthangal,Anna Nagar Tower,30,24
+Ekkattuthangal,Anna Nagar East,30,24
+Ekkattuthangal,Shenoy Nagar,40,32
+Ekkattuthangal,Pachiappas College,40,32
+Ekkattuthangal,Kilpauk,40,32
+Ekkattuthangal,Nehru Park,40,32
+Ekkattuthangal,Egmore,40,32
+Ekkattuthangal,St. Thomas Mount,20,16
+Ashok Nagar,Vadapalani,10,8
+Ashok Nagar,Arumbakkam,20,16
+Ashok Nagar,Puratchi Thalaivi Dr.J.Jayalalitha CMBT Metro,20,16
+Ashok Nagar,Koyambedu,30,24
+Ashok Nagar,Thirumangalam,30,24
+Ashok Nagar,Anna Nagar Tower,30,24
+Ashok Nagar,Anna Nagar East,30,24
+Ashok Nagar,Shenoy Nagar,30,24
+Ashok Nagar,Pachiappas College,30,24
+Ashok Nagar,Kilpauk,40,32
+Ashok Nagar,Nehru Park,40,32
+Ashok Nagar,Egmore,40,32
+Ashok Nagar,St. Thomas Mount,20,16
+Vadapalani,Arumbakkam,10,8
+Vadapalani,Puratchi Thalaivi Dr.J.Jayalalitha CMBT Metro,20,16
+Vadapalani,Koyambedu,20,16
+Vadapalani,Thirumangalam,30,24
+Vadapalani,Anna Nagar Tower,30,24
+Vadapalani,Anna Nagar East,30,24
+Vadapalani,Shenoy Nagar,30,24
+Vadapalani,Pachiappas College,30,24
+Vadapalani,Kilpauk,30,24
+Vadapalani,Nehru Park,30,24
+Vadapalani,Egmore,40,32
+Vadapalani,St. Thomas Mount,30,24
+Arumbakkam,Puratchi Thalaivi Dr.J.Jayalalitha CMBT Metro,10,8
+Arumbakkam,Koyambedu,20,16
+Arumbakkam,Thirumangalam,20,16
+Arumbakkam,Anna Nagar Tower,30,24
+Arumbakkam,Anna Nagar East,30,24
+Arumbakkam,Shenoy Nagar,30,24
+Arumbakkam,Pachiappas College,30,24
+Arumbakkam,Kilpauk,30,24
+Arumbakkam,Nehru Park,30,24
+Arumbakkam,Egmore,30,24
+Arumbakkam,St. Thomas Mount,30,24
+Puratchi Thalaivi Dr.J.Jayalalitha CMBT Metro,Koyambedu,10,8
+Puratchi Thalaivi Dr.J.Jayalalitha CMBT Metro,Thirumangalam,20,16
+Puratchi Thalaivi Dr.J.Jayalalitha CMBT Metro,Anna Nagar Tower,20,16
+Puratchi Thalaivi Dr.J.Jayalalitha CMBT Metro,Anna Nagar East,20,16
+Puratchi Thalaivi Dr.J.Jayalalitha CMBT Metro,Shenoy Nagar,30,24
+Puratchi Thalaivi Dr.J.Jayalalitha CMBT Metro,Pachiappas College,30,24
+Puratchi Thalaivi Dr.J.Jayalalitha CMBT Metro,Kilpauk,30,24
+Puratchi Thalaivi Dr.J.Jayalalitha CMBT Metro,Nehru Park,30,24
+Puratchi Thalaivi Dr.J.Jayalalitha CMBT Metro,Egmore,30,24
+Puratchi Thalaivi Dr.J.Jayalalitha CMBT Metro,St. Thomas Mount,30,24
+Koyambedu,Thirumangalam,10,8
+Koyambedu,Anna Nagar Tower,20,16
+Koyambedu,Anna Nagar East,20,16
+Koyambedu,Shenoy Nagar,20,16
+Koyambedu,Pachiappas College,30,24
+Koyambedu,Kilpauk,30,24
+Koyambedu,Nehru Park,30,24
+Koyambedu,Egmore,30,24
+Koyambedu,St. Thomas Mount,30,24
+Thirumangalam,Anna Nagar Tower,10,8
+Thirumangalam,Anna Nagar East,10,8
+Thirumangalam,Shenoy Nagar,20,16
+Thirumangalam,Pachiappas College,20,16
+Thirumangalam,Kilpauk,30,24
+Thirumangalam,Nehru Park,30,24
+Thirumangalam,Egmore,30,24
+Thirumangalam,St. Thomas Mount,40,32
+Anna Nagar Tower,Anna Nagar East,10,8
+Anna Nagar Tower,Shenoy Nagar,20,16
+Anna Nagar Tower,Pachiappas College,20,16
+Anna Nagar Tower,Kilpauk,20,16
+Anna Nagar Tower,Nehru Park,30,24
+Anna Nagar Tower,Egmore,30,24
+Anna Nagar Tower,St. Thomas Mount,40,32
+Anna Nagar East,Shenoy Nagar,10,8
+Anna Nagar East,Pachiappas College,20,16
+Anna Nagar East,Kilpauk,20,16
+Anna Nagar East,Nehru Park,20,16
+Anna Nagar East,Egmore,30,24
+Anna Nagar East,St. Thomas Mount,40,32
+Shenoy Nagar,Pachiappas College,10,8
+Shenoy Nagar,Kilpauk,20,16
+Shenoy Nagar,Nehru Park,20,16
+Shenoy Nagar,Egmore,20,16
+Shenoy Nagar,St. Thomas Mount,40,32
+Pachiappas College,Kilpauk,10,8
+Pachiappas College,Nehru Park,10,8
+Pachiappas College,Egmore,20,16
+Pachiappas College,St. Thomas Mount,40,32
+Kilpauk,Nehru Park,10,8
+Kilpauk,Egmore,10,8
+Kilpauk,St. Thomas Mount,40,32
+Nehru Park,Egmore,10,8
+Nehru Park,St. Thomas Mount,40,32
+Egmore,St. Thomas Mount,40,32
