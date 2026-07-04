@@ -242,6 +242,162 @@ export const GOVT_SERVICES = [
   { id: 'scholarships', title: 'Scholarship Schemes', description: 'Central and state scholarship schemes for students from economically weaker sections.', category: 'Education', url: 'https://scholarships.gov.in/', icon: 'GraduationHat01' },
 ];
 
+/* ──────────────── Government Service Centres Data ──────────────── */
+
+export const TN_DISTRICTS = [
+  'All Districts',
+  'Ariyalur', 'Chengalpattu', 'Chennai', 'Coimbatore', 'Cuddalore',
+  'Dharmapuri', 'Dindigul', 'Erode', 'Kallakurichi', 'Kanchipuram',
+  'Kanyakumari', 'Karur', 'Krishnagiri', 'Madurai', 'Mayiladuthurai',
+  'Nagapattinam', 'Namakkal', 'Nilgiris', 'Perambalur', 'Pudukkottai',
+  'Ramanathapuram', 'Ranipet', 'Salem', 'Sivaganga', 'Tenkasi',
+  'Thanjavur', 'Theni', 'Thoothukudi', 'Tiruchirappalli', 'Tirunelveli',
+  'Tirupathur', 'Tiruppur', 'Tiruvallur', 'Tiruvannamalai', 'Tiruvarur',
+  'Vellore', 'Viluppuram', 'Virudhunagar',
+] as const;
+
+export const AADHAAR_CENTRES = [
+  { id: 1, name: 'CSC Aadhaar Kendra - T Nagar', address: '12, North Usman Road, T Nagar, Chennai', type: 'CSC / Enrolment Centre', city: 'Chennai', phone: '044-24321000' },
+  { id: 2, name: 'UIDAI Authorized Update Centre', address: 'Post Office Building, Anna Nagar, Chennai', type: 'Update Centre', city: 'Chennai', phone: '044-26212345' },
+  { id: 3, name: 'CSC Aadhaar Kendra - Vadapalani', address: '23, Arcot Road, Vadapalani, Chennai', type: 'CSC / Enrolment Centre', city: 'Chennai', phone: '044-23456789' },
+  { id: 4, name: 'India Post Aadhaar Centre - Mylapore', address: 'Head Post Office, Mylapore, Chennai', type: 'Update Centre', city: 'Chennai', phone: '044-24981234' },
+  { id: 5, name: 'CSC Aadhaar Kendra - RS Puram', address: '45, DB Road, RS Puram, Coimbatore', type: 'CSC / Enrolment Centre', city: 'Coimbatore', phone: '0422-2541000' },
+  { id: 6, name: 'India Post Aadhaar Centre', address: 'Head Post Office, Town Hall Road, Coimbatore', type: 'Update Centre', city: 'Coimbatore', phone: '0422-2391234' },
+  { id: 7, name: 'UIDAI Authorized Update Centre', address: 'Head Post Office, KK Nagar, Madurai', type: 'Update Centre', city: 'Madurai', phone: '0452-2531000' },
+  { id: 8, name: 'CSC Aadhaar Kendra - Goripalayam', address: '78, Goripalayam Main Road, Madurai', type: 'CSC / Enrolment Centre', city: 'Madurai', phone: '0452-2345678' },
+  { id: 9, name: 'CSC Aadhaar Kendra - Cantonment', address: '15, Cantonment Road, Tiruchirappalli', type: 'CSC / Enrolment Centre', city: 'Tiruchirappalli', phone: '0431-2701000' },
+  { id: 10, name: 'India Post Aadhaar Centre', address: 'GPO Building, Thillainagar, Tiruchirappalli', type: 'Update Centre', city: 'Tiruchirappalli', phone: '0431-2414567' },
+  { id: 11, name: 'CSC Aadhaar Kendra - Palayamkottai', address: '22, South Car Street, Palayamkottai, Tirunelveli', type: 'CSC / Enrolment Centre', city: 'Tirunelveli', phone: '0462-2501000' },
+  { id: 12, name: 'CSC Aadhaar Kendra - Hasthampatti', address: '5, Junction Road, Hasthampatti, Salem', type: 'CSC / Enrolment Centre', city: 'Salem', phone: '0427-2316789' },
+  { id: 13, name: 'India Post Aadhaar Centre', address: 'GPO, Omalur Main Road, Salem', type: 'Update Centre', city: 'Salem', phone: '0427-2211234' },
+  { id: 14, name: 'CSC Aadhaar Kendra - Katpadi', address: '10, Katpadi Road, Vellore', type: 'CSC / Enrolment Centre', city: 'Vellore', phone: '0416-2241000' },
+  { id: 15, name: 'CSC Aadhaar Kendra - Tiruppur', address: '88, Avinashi Road, Tiruppur', type: 'CSC / Enrolment Centre', city: 'Tiruppur', phone: '0421-2201000' },
+];
+
+export const PASSPORT_SEVA_KENDRAS = [
+  { id: 1, name: 'Passport Seva Kendra, Chennai', address: 'Shastri Bhawan Annexe, 26 Haddows Road, Nungambakkam, Chennai - 600006', type: 'PSK', district: 'Chennai', phone: '1800-258-1800', timings: 'Mon-Fri, 9:30 AM - 5:30 PM' },
+  { id: 2, name: 'Post Office Passport Seva Kendra, Anna Nagar', address: 'Head Post Office, Anna Nagar, Chennai - 600040', type: 'POPSK', district: 'Chennai', phone: '1800-258-1800', timings: 'Mon-Fri, 9:30 AM - 5:30 PM' },
+  { id: 3, name: 'Post Office Passport Seva Kendra, Tambaram', address: 'Tambaram Head Post Office, GST Road, Tambaram, Chennai', type: 'POPSK', district: 'Chengalpattu', phone: '1800-258-1800', timings: 'Mon-Fri, 9:30 AM - 5:30 PM' },
+  { id: 4, name: 'Passport Seva Kendra, Coimbatore', address: 'Valankulam Main Road, Behind BSNL Office, Coimbatore - 641002', type: 'PSK', district: 'Coimbatore', phone: '1800-258-1800', timings: 'Mon-Fri, 9:30 AM - 5:30 PM' },
+  { id: 5, name: 'Passport Seva Kendra, Madurai', address: 'No.1, North Veli Street, Madurai - 625001', type: 'PSK', district: 'Madurai', phone: '1800-258-1800', timings: 'Mon-Fri, 9:30 AM - 5:30 PM' },
+  { id: 6, name: 'Passport Seva Kendra, Tiruchirappalli', address: 'Collector Office Complex, Tiruchirappalli - 620001', type: 'PSK', district: 'Tiruchirappalli', phone: '1800-258-1800', timings: 'Mon-Fri, 9:30 AM - 5:30 PM' },
+  { id: 7, name: 'Post Office Passport Seva Kendra, Salem', address: 'Head Post Office, Omalur Road, Salem - 636001', type: 'POPSK', district: 'Salem', phone: '1800-258-1800', timings: 'Mon-Fri, 9:30 AM - 5:30 PM' },
+  { id: 8, name: 'Post Office Passport Seva Kendra, Tirunelveli', address: 'Tirunelveli Head Post Office, South Car Street, Tirunelveli', type: 'POPSK', district: 'Tirunelveli', phone: '1800-258-1800', timings: 'Mon-Fri, 9:30 AM - 5:30 PM' },
+  { id: 9, name: 'Post Office Passport Seva Kendra, Vellore', address: 'Vellore Head Post Office, Officers Line, Vellore', type: 'POPSK', district: 'Vellore', phone: '1800-258-1800', timings: 'Mon-Fri, 9:30 AM - 5:30 PM' },
+  { id: 10, name: 'Post Office Passport Seva Kendra, Thanjavur', address: 'Head Post Office, South Main Street, Thanjavur', type: 'POPSK', district: 'Thanjavur', phone: '1800-258-1800', timings: 'Mon-Fri, 9:30 AM - 5:30 PM' },
+];
+
+export const VISA_COUNTRIES = [
+  {
+    name: 'United States', code: 'US',
+    visaPortalUrl: 'https://ceac.state.gov/genniv/',
+    vacAddress: 'VFS Global, No. 10, Haddows Road, Nungambakkam, Chennai - 600006',
+    vacPhone: '044-4253 5000',
+    applicationProcess: ['Fill DS-160 form online at ceac.state.gov', 'Pay visa fee ($185 for B1/B2) at designated bank', 'Schedule appointment at ustraveldocs.com', 'Attend visa interview at US Consulate, Chennai', 'Wait for passport to be returned with visa stamp'],
+    biometricProcess: ['Biometrics collected at US Consulate during interview', 'Fingerprint scan (10 fingers) and digital photo taken', 'No separate biometric appointment required'],
+  },
+  {
+    name: 'United Kingdom', code: 'GB',
+    visaPortalUrl: 'https://www.gov.uk/apply-to-come-to-the-uk',
+    vacAddress: 'VFS Global UK VAC, Shafee Mohammed Road, Nungambakkam, Chennai - 600034',
+    vacPhone: '044-6631 3334',
+    applicationProcess: ['Apply online at gov.uk/apply-to-come-to-the-uk', 'Pay visa fee (£100-£363 depending on type)', 'Upload supporting documents online', 'Book biometric appointment at VFS', 'Wait 15-20 working days for decision'],
+    biometricProcess: ['Book appointment at VFS Global Chennai', 'Visit VFS centre with appointment confirmation', 'Fingerprints and photograph captured', 'Submit passport at VFS centre'],
+  },
+  {
+    name: 'Canada', code: 'CA',
+    visaPortalUrl: 'https://www.canada.ca/en/immigration-refugees-citizenship/services/visit-canada.html',
+    vacAddress: 'VFS Global Canada VAC, No. 10, Haddows Road, Nungambakkam, Chennai - 600006',
+    vacPhone: '044-4253 5000',
+    applicationProcess: ['Create account on IRCC portal', 'Fill application form and pay fee (CAD $100)', 'Upload documents (passport, photo, financials, travel history)', 'Submit biometrics at VFS Global', 'Wait 30-60 days for processing'],
+    biometricProcess: ['Pay biometric fee (CAD $85) during application', 'Book biometric appointment at VFS Global Chennai', 'Visit centre with appointment letter and passport', 'Fingerprints and photo captured digitally'],
+  },
+  {
+    name: 'Australia', code: 'AU',
+    visaPortalUrl: 'https://immi.homeaffairs.gov.au/',
+    vacAddress: 'VFS Global Australia VAC, New No. 10, Haddows Road, Nungambakkam, Chennai - 600006',
+    vacPhone: '044-4253 5000',
+    applicationProcess: ['Apply online at immi.homeaffairs.gov.au', 'Pay visa fee (AUD $190 for visitor visa)', 'Upload all supporting documents', 'Attend biometric collection at VFS', 'Wait 20-30 days for decision (typically grant by email)'],
+    biometricProcess: ['Biometric instruction letter received after applying', 'Book appointment at VFS Global Chennai', 'Visit with appointment letter and passport', 'Fingerprints and photo captured'],
+  },
+  {
+    name: 'Germany / Schengen', code: 'DE',
+    visaPortalUrl: 'https://videx.diplo.de/',
+    vacAddress: 'VFS Global Germany VAC, Khader Nawaz Khan Road, Nungambakkam, Chennai - 600006',
+    vacPhone: '044-4253 5000',
+    applicationProcess: ['Fill Videx application form online', 'Book appointment at VFS Global website', 'Pay visa fee (€80 for short stay)', 'Submit application with documents at VFS', 'Attend interview if required at German Consulate'],
+    biometricProcess: ['Biometrics collected at VFS Global during submission', 'Fingerprints (10 fingers) and digital photo taken', 'Valid for 59 months — re-use for subsequent applications', 'No separate appointment needed'],
+  },
+  {
+    name: 'Singapore', code: 'SG',
+    visaPortalUrl: 'https://eservices.ica.gov.sg/esvclandingpage/save',
+    vacAddress: 'VFS Global Singapore VAC, No. 10, Haddows Road, Nungambakkam, Chennai - 600006',
+    vacPhone: '044-4253 5000',
+    applicationProcess: ['Obtain a local contact / authorised visa agent in Singapore', 'Submit application through ICA SAVE portal', 'Pay visa fee (SGD $30)', 'Upload documents (passport copy, photo, itinerary, financials)', 'E-visa approval emailed in 3-5 working days'],
+    biometricProcess: ['No biometric appointment required for Singapore visa', 'Visa is processed electronically', 'E-visa letter received by email upon approval'],
+  },
+  {
+    name: 'UAE (Dubai)', code: 'AE',
+    visaPortalUrl: 'https://smartservices.icp.gov.ae/echannels/web/client/default.html',
+    vacAddress: 'VFS Global UAE VAC, Khader Nawaz Khan Road, Nungambakkam, Chennai - 600006',
+    vacPhone: '044-4253 5000',
+    applicationProcess: ['Apply through UAE ICP Smart Services portal or sponsor in UAE', 'Upload passport copy, photo, and flight tickets', 'Pay visa fee (AED 100-300 depending on duration)', 'E-visa emailed within 3-5 working days', 'Print e-visa and carry during travel'],
+    biometricProcess: ['No biometric appointment required for UAE tourist visa', 'Biometrics captured at UAE airport upon arrival', 'Eye scan and fingerprints taken at immigration'],
+  },
+  {
+    name: 'France / Schengen', code: 'FR',
+    visaPortalUrl: 'https://france-visas.gouv.fr/',
+    vacAddress: 'VFS Global France VAC, Khader Nawaz Khan Road, Nungambakkam, Chennai - 600006',
+    vacPhone: '044-4253 5000',
+    applicationProcess: ['Create account on france-visas.gouv.fr', 'Fill application form and download it', 'Book appointment at VFS Global Chennai', 'Submit documents and pay fee (€80) at VFS', 'Wait 15 working days for decision'],
+    biometricProcess: ['Biometrics collected at VFS Global during submission', 'Fingerprints and digital photo captured', 'Valid for 59 months for Schengen area', 'First-time applicants must appear in person'],
+  },
+  {
+    name: 'Japan', code: 'JP',
+    visaPortalUrl: 'https://www.in.emb-japan.go.jp/itpr_en/visa.html',
+    vacAddress: 'Consulate-General of Japan, No. 12/1, Cenotaph Road, Teynampet, Chennai - 600018',
+    vacPhone: '044-2432 3860',
+    applicationProcess: ['Download visa application form from embassy website', 'Collect required documents (invitation letter, itinerary, financials)', 'Submit application at Japanese Consulate Chennai', 'Processing takes 5-7 working days', 'Collect passport with visa stamp from Consulate'],
+    biometricProcess: ['No biometric collection in India for Japan visa', 'Biometrics captured at Japanese airport upon arrival', 'Fingerprints and photo taken at immigration counter'],
+  },
+  {
+    name: 'South Korea', code: 'KR',
+    visaPortalUrl: 'https://www.visa.go.kr/openPage.do?MENU_ID=10101',
+    vacAddress: 'VFS Global Korea VAC, No. 10, Haddows Road, Nungambakkam, Chennai - 600006',
+    vacPhone: '044-4253 5000',
+    applicationProcess: ['Apply online at visa.go.kr or fill paper form', 'Book appointment at VFS Global Chennai', 'Submit documents and pay fee at VFS', 'Processing takes 7-10 working days', 'Collect passport with visa from VFS'],
+    biometricProcess: ['Biometrics collected at VFS Global Chennai', 'Fingerprints and photo captured during submission', 'No separate biometric appointment needed'],
+  },
+];
+
+export const POLICE_STATIONS = [
+  { id: 1, name: 'Commissioner Office - Cybercrime Cell', address: 'Vepery, Chennai - 600007', type: 'Cybercrime Cell', city: 'Chennai', phone: '044-2539 0978' },
+  { id: 2, name: 'T. Nagar Police Station', address: 'Usman Road, T. Nagar, Chennai - 600017', type: 'Police Station', city: 'Chennai', phone: '044-2434 5566' },
+  { id: 3, name: 'Anna Nagar Police Station', address: '2nd Avenue, Anna Nagar, Chennai - 600040', type: 'Police Station', city: 'Chennai', phone: '044-2621 3456' },
+  { id: 4, name: 'Adyar Police Station', address: 'LB Road, Adyar, Chennai - 600020', type: 'Police Station', city: 'Chennai', phone: '044-2441 2345' },
+  { id: 5, name: 'RS Puram Police Station', address: 'DB Road, RS Puram, Coimbatore - 641002', type: 'Police Station', city: 'Coimbatore', phone: '0422-254 1000' },
+  { id: 6, name: 'Town Hall Police Station', address: 'Big Bazaar Street, Coimbatore - 641001', type: 'Police Station', city: 'Coimbatore', phone: '0422-239 0100' },
+  { id: 7, name: 'Goripalayam Police Station', address: 'Goripalayam Main Road, Madurai - 625002', type: 'Police Station', city: 'Madurai', phone: '0452-253 1000' },
+  { id: 8, name: 'Tallakulam Police Station', address: 'Tallakulam, Madurai - 625002', type: 'Police Station', city: 'Madurai', phone: '0452-234 5678' },
+  { id: 9, name: 'Cantonment Police Station', address: 'Cantonment Road, Tiruchirappalli - 620001', type: 'Police Station', city: 'Tiruchirappalli', phone: '0431-270 1000' },
+  { id: 10, name: 'Town Police Station', address: 'Big Bazaar Street, Salem - 636001', type: 'Police Station', city: 'Salem', phone: '0427-231 6789' },
+  { id: 11, name: 'Palayamkottai Police Station', address: 'South Car Street, Palayamkottai, Tirunelveli', type: 'Police Station', city: 'Tirunelveli', phone: '0462-250 1000' },
+  { id: 12, name: 'Katpadi Police Station', address: 'Katpadi Road, Vellore - 632007', type: 'Police Station', city: 'Vellore', phone: '0416-224 1000' },
+];
+
+export const ELECTION_OFFICES = [
+  { id: 1, name: 'District Election Office, Chennai', address: 'Collectorate Complex, Rajaji Salai, Chennai - 600001', type: 'District Election Office', city: 'Chennai', phone: '044-2536 0211' },
+  { id: 2, name: 'Voter Service Centre - Anna Nagar', address: 'Taluk Office, Anna Nagar, Chennai - 600040', type: 'Voter Service Centre', city: 'Chennai', phone: '044-2621 7890' },
+  { id: 3, name: 'Voter Service Centre - Mylapore', address: 'Revenue Divisional Office, Mylapore, Chennai', type: 'Voter Service Centre', city: 'Chennai', phone: '044-2498 5678' },
+  { id: 4, name: 'District Election Office, Coimbatore', address: 'Collectorate Complex, Coimbatore - 641018', type: 'District Election Office', city: 'Coimbatore', phone: '0422-230 1111' },
+  { id: 5, name: 'District Election Office, Madurai', address: 'Collectorate Complex, Madurai - 625020', type: 'District Election Office', city: 'Madurai', phone: '0452-253 7890' },
+  { id: 6, name: 'District Election Office, Tiruchirappalli', address: 'Collectorate Complex, Tiruchirappalli - 620001', type: 'District Election Office', city: 'Tiruchirappalli', phone: '0431-270 5678' },
+  { id: 7, name: 'District Election Office, Salem', address: 'Collectorate Complex, Salem - 636001', type: 'District Election Office', city: 'Salem', phone: '0427-231 1234' },
+  { id: 8, name: 'District Election Office, Tirunelveli', address: 'Collectorate Complex, Tirunelveli - 627001', type: 'District Election Office', city: 'Tirunelveli', phone: '0462-250 2345' },
+  { id: 9, name: 'District Election Office, Vellore', address: 'Collectorate Complex, Vellore - 632004', type: 'District Election Office', city: 'Vellore', phone: '0416-224 5678' },
+  { id: 10, name: 'District Election Office, Thanjavur', address: 'Collectorate Complex, Thanjavur - 613001', type: 'District Election Office', city: 'Thanjavur', phone: '04362-230 123' },
+];
+
 export const TAMIL_WORDS = [
   { meaning: 'Hello / Welcome', pronunciation: 'Vanakkam', tamil: 'வணக்கம்', bengali: 'ভানাক্কাম' },
   { meaning: 'Thank you', pronunciation: 'Nandri', tamil: 'நன்றி', bengali: 'নানদ্রি' },

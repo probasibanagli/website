@@ -1,14 +1,14 @@
 'use client';
 
-import React, { useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { 
-  ExternalLink, 
-  Building, 
-  Shield, 
-  Landmark, 
-  CreditCard, 
-  FileText, 
+import {
+  ExternalLink,
+  Building,
+  Shield,
+  Landmark,
+  CreditCard,
+  FileText,
   Globe,
   Fingerprint,
   User,
@@ -19,13 +19,31 @@ import {
   Heart,
   Users,
   Briefcase,
-  GraduationCap
+  GraduationCap,
+  MapPin,
+  Phone,
+  Clock,
+  ChevronDown,
+  ChevronUp,
+  Search,
+  Plane,
+  Vote,
+  ShieldCheck,
 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/Badge';
-import { GOVT_SERVICES } from '@/lib/constants';
+import {
+  GOVT_SERVICES,
+  AADHAAR_CENTRES,
+  PASSPORT_SEVA_KENDRAS,
+  TN_DISTRICTS,
+  VISA_COUNTRIES,
+  POLICE_STATIONS,
+  ELECTION_OFFICES,
+} from '@/lib/constants';
 
+/* ─── Icon map for lower priority service cards ─── */
 const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   Building01: Building,
   Shield01: Shield,
@@ -41,49 +59,110 @@ const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   Map01: Compass,
   UserCheck01: UserCheck,
   Briefcase01: Briefcase,
-  GraduationHat01: GraduationCap
+  GraduationHat01: GraduationCap,
 };
 
-const MOCK_CENTRES = [
-  { id: 1, name: 'CSC Aadhaar Kendra - T Nagar', address: '12, North Usman Road, T Nagar, Chennai', type: 'CSC / Enrolment Centre', distance: '1.2 km' },
-  { id: 2, name: 'UIDAI Authorized Update Centre', address: 'Post Office Building, Anna Nagar, Chennai', type: 'Update Centre', distance: '3.5 km' },
-  { id: 3, name: 'CSC Aadhaar Kendra - RS Puram', address: '45, DB Road, RS Puram, Coimbatore', type: 'CSC / Enrolment Centre', distance: '2.1 km' },
-  { id: 4, name: 'UIDAI Authorized Update Centre', address: 'Head Post Office, KK Nagar, Madurai', type: 'Update Centre', distance: '1.5 km' },
-];
+/* ─── Shared Online/Offline Tab Toggle ─── */
+function TabToggle({ mode, setMode }: { mode: 'online' | 'offline'; setMode: (m: 'online' | 'offline') => void }) {
+  return (
+    <div className="flex border-b border-border">
+      <button
+        onClick={() => setMode('online')}
+        className={`flex-1 py-3 text-sm font-bold transition-colors cursor-pointer ${mode === 'online' ? 'text-primary border-b-2 border-primary bg-primary/5' : 'text-text-muted hover:text-text-primary'}`}
+      >
+        🌐 Online
+      </button>
+      <button
+        onClick={() => setMode('offline')}
+        className={`flex-1 py-3 text-sm font-bold transition-colors cursor-pointer ${mode === 'offline' ? 'text-primary border-b-2 border-primary bg-primary/5' : 'text-text-muted hover:text-text-primary'}`}
+      >
+        📍 Offline Centres
+      </button>
+    </div>
+  );
+}
 
-function AadhaarCard({ service, IconComponent }: { service: any, IconComponent: any }) {
-  const [mode, setMode] = React.useState<'online' | 'offline'>('online');
-  const [loadingLoc, setLoadingLoc] = React.useState(false);
-  const [city, setCity] = React.useState('');
-  const [centres, setCentres] = React.useState<typeof MOCK_CENTRES | null>(null);
+/* ─── Shared Centre List Card ─── */
+function CentreCard({ centre }: { centre: { name: string; address: string; type: string; phone?: string; timings?: string } }) {
+  return (
+    <div className="p-3.5 bg-surface/50 border border-border rounded-xl">
+      <div className="flex justify-between items-start gap-2">
+        <h5 className="font-bold text-sm text-text-primary leading-tight">{centre.name}</h5>
+        <span className="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full whitespace-nowrap shrink-0">{centre.type}</span>
+      </div>
+      <p className="text-xs text-text-muted mt-1.5 flex items-start gap-1.5">
+        <MapPin className="w-3 h-3 shrink-0 mt-0.5" />
+        {centre.address}
+      </p>
+      {centre.phone && (
+        <p className="text-xs text-text-muted mt-1 flex items-center gap-1.5">
+          <Phone className="w-3 h-3 shrink-0" />
+          <a href={`tel:${centre.phone}`} className="text-primary hover:underline">{centre.phone}</a>
+        </p>
+      )}
+      {centre.timings && (
+        <p className="text-xs text-text-muted mt-1 flex items-center gap-1.5">
+          <Clock className="w-3 h-3 shrink-0" />
+          {centre.timings}
+        </p>
+      )}
+    </div>
+  );
+}
 
-  const findNearby = () => {
-    setLoadingLoc(true);
+/* ─── City Search Input ─── */
+function CitySearch({ city, setCity, onSearch, loading }: { city: string; setCity: (c: string) => void; onSearch: () => void; loading: boolean }) {
+  return (
+    <div className="space-y-3">
+      <div className="flex gap-2">
+        <div className="relative flex-1">
+          <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" />
+          <input
+            type="text"
+            placeholder="Enter city (e.g. Chennai)"
+            value={city}
+            onChange={e => setCity(e.target.value)}
+            onKeyDown={e => e.key === 'Enter' && onSearch()}
+            className="w-full pl-9 pr-3 py-2.5 border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+          />
+        </div>
+        <Button variant="primary" size="sm" onClick={onSearch} disabled={loading} className="cursor-pointer shrink-0">
+          {loading ? 'Searching...' : 'Search'}
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   1. AADHAAR SERVICE CARD
+   ═══════════════════════════════════════════════════════════════════ */
+function AadhaarServiceCard({ service, IconComponent }: { service: typeof GOVT_SERVICES[0]; IconComponent: React.ComponentType<{ className?: string }> }) {
+  const [mode, setMode] = useState<'online' | 'offline'>('online');
+  const [city, setCity] = useState('');
+  const [searchCity, setSearchCity] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [searched, setSearched] = useState(false);
+
+  const filteredCentres = useMemo(() => {
+    if (!searchCity) return AADHAAR_CENTRES;
+    return AADHAAR_CENTRES.filter(c => c.city.toLowerCase().includes(searchCity.toLowerCase()) || c.address.toLowerCase().includes(searchCity.toLowerCase()));
+  }, [searchCity]);
+
+  const handleSearch = () => {
+    setLoading(true);
     setTimeout(() => {
-      setLoadingLoc(false);
-      setCentres(MOCK_CENTRES.filter(c => city ? c.address.toLowerCase().includes(city.toLowerCase()) : true));
-    }, 800);
-  };
-
-  const useCurrentLocation = () => {
-    setLoadingLoc(true);
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(() => {
-        setTimeout(() => {
-          setLoadingLoc(false);
-          setCentres(MOCK_CENTRES.slice(0, 2)); // Mocking nearest 2
-        }, 800);
-      }, () => {
-        setLoadingLoc(false);
-        alert('Location access denied. Please enter city manually.');
-      });
-    }
+      setSearchCity(city);
+      setSearched(true);
+      setLoading(false);
+    }, 400);
   };
 
   return (
-    <Card className="group flex flex-col border-amber-200/60 bg-amber-50/5 hover:border-amber-400 hover:shadow-lg transition-all duration-300">
+    <Card padding="none" className="group flex flex-col border-amber-200/60 bg-gradient-to-br from-amber-50/30 to-white hover:border-amber-400 hover:shadow-lg transition-all duration-300">
       <div className="flex items-start gap-4 p-5 pb-0">
-        <div className="w-14 h-14 rounded-2xl bg-amber-100/50 flex items-center justify-center text-primary shrink-0">
+        <div className="w-14 h-14 rounded-2xl bg-amber-100/60 flex items-center justify-center shrink-0">
           <IconComponent className="w-8 h-8 text-amber-700" />
         </div>
         <div className="flex-1">
@@ -94,21 +173,14 @@ function AadhaarCard({ service, IconComponent }: { service: any, IconComponent: 
           </div>
         </div>
       </div>
-      
+
       <p className="text-sm text-text-muted mt-4 px-5 leading-relaxed flex-1">
         {service.description}
       </p>
-      
+
       <div className="mt-5 border-t border-border">
-        <div className="flex border-b border-border">
-          <button onClick={() => setMode('online')} className={`flex-1 py-3 text-sm font-bold transition-colors ${mode === 'online' ? 'text-primary border-b-2 border-primary bg-primary/5' : 'text-text-muted hover:text-text-primary'}`}>
-            Online Portal
-          </button>
-          <button onClick={() => setMode('offline')} className={`flex-1 py-3 text-sm font-bold transition-colors ${mode === 'offline' ? 'text-primary border-b-2 border-primary bg-primary/5' : 'text-text-muted hover:text-text-primary'}`}>
-            Offline Centres
-          </button>
-        </div>
-        
+        <TabToggle mode={mode} setMode={setMode} />
+
         <div className="p-5">
           {mode === 'online' ? (
             <a href={service.url} target="_blank" rel="noopener noreferrer" className="block">
@@ -118,43 +190,25 @@ function AadhaarCard({ service, IconComponent }: { service: any, IconComponent: 
             </a>
           ) : (
             <div className="space-y-4">
-              <div className="flex gap-2">
-                <input 
-                  type="text" 
-                  placeholder="Enter city (e.g. Chennai)" 
-                  value={city} 
-                  onChange={e => setCity(e.target.value)}
-                  className="flex-1 px-3 py-2 border border-border rounded-lg text-sm"
-                />
-                <Button variant="outline" size="sm" onClick={findNearby} className="cursor-pointer bg-white">
-                  Search
-                </Button>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="h-px bg-border flex-1"></div>
-                <span className="text-xs text-text-muted">OR</span>
-                <div className="h-px bg-border flex-1"></div>
-              </div>
-              <Button variant="outline" size="sm" onClick={useCurrentLocation} disabled={loadingLoc} className="w-full cursor-pointer bg-white">
-                {loadingLoc ? 'Locating...' : 'Use My Current Location'} <Compass className="w-3.5 h-3.5 ml-1.5" />
-              </Button>
-              
-              {centres && (
-                <div className="mt-4 space-y-3">
-                  <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider">Nearby Centres</h4>
-                  {centres.length > 0 ? centres.map(c => (
-                    <div key={c.id} className="p-3 bg-white border border-border rounded-xl shadow-sm">
-                      <div className="flex justify-between items-start">
-                        <h5 className="font-bold text-sm text-text-primary">{c.name}</h5>
-                        <span className="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full">{c.distance}</span>
-                      </div>
-                      <p className="text-xs text-text-muted mt-1">{c.address}</p>
-                      <p className="text-[10px] font-medium text-amber-600 mt-2">{c.type}</p>
+              <CitySearch city={city} setCity={setCity} onSearch={handleSearch} loading={loading} />
+
+              {searched && (
+                <div className="space-y-3 animate-fade-in">
+                  <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider">
+                    {filteredCentres.length > 0 ? `Nearby CSC / Aadhaar Centres${searchCity ? ` in ${searchCity}` : ''}` : 'No centres found'}
+                  </h4>
+                  {filteredCentres.length > 0 ? (
+                    <div className="space-y-2.5 max-h-[320px] overflow-y-auto pr-1">
+                      {filteredCentres.map(c => <CentreCard key={c.id} centre={c} />)}
                     </div>
-                  )) : (
-                    <p className="text-sm text-text-muted italic">No centres found in this area.</p>
+                  ) : (
+                    <p className="text-sm text-text-muted italic">No centres found for &quot;{searchCity}&quot;. Try a different city name.</p>
                   )}
                 </div>
+              )}
+
+              {!searched && (
+                <p className="text-xs text-text-muted text-center">Search a city to find nearby Aadhaar centres</p>
               )}
             </div>
           )}
@@ -164,16 +218,428 @@ function AadhaarCard({ service, IconComponent }: { service: any, IconComponent: 
   );
 }
 
+
+/* ═══════════════════════════════════════════════════════════════════
+   2. PASSPORT SERVICE CARD
+   ═══════════════════════════════════════════════════════════════════ */
+function PassportServiceCard() {
+  const [mode, setMode] = useState<'online' | 'offline'>('online');
+  const [district, setDistrict] = useState('All Districts');
+
+  const filteredKendras = useMemo(() => {
+    if (district === 'All Districts') return PASSPORT_SEVA_KENDRAS;
+    return PASSPORT_SEVA_KENDRAS.filter(k => k.district === district);
+  }, [district]);
+
+  return (
+    <Card padding="none" className="group flex flex-col border-amber-200/60 bg-gradient-to-br from-amber-50/30 to-white hover:border-amber-400 hover:shadow-lg transition-all duration-300">
+      <div className="flex items-start gap-4 p-5 pb-0">
+        <div className="w-14 h-14 rounded-2xl bg-amber-100/60 flex items-center justify-center shrink-0">
+          <Compass className="w-8 h-8 text-amber-700" />
+        </div>
+        <div className="flex-1">
+          <h3 className="text-lg font-bold text-text-primary">Passport Seva</h3>
+          <div className="flex flex-wrap gap-1.5 mt-1.5">
+            <Badge variant="amber" className="text-[10px] py-0.5 px-2">High Priority</Badge>
+            <Badge variant="default" className="text-[10px] py-0.5 px-2">Travel</Badge>
+          </div>
+        </div>
+      </div>
+
+      <p className="text-sm text-text-muted mt-4 px-5 leading-relaxed flex-1">
+        Apply for a new passport, renew, or re-issue your passport. Find nearby Passport Seva Kendras (PSK) in Tamil Nadu.
+      </p>
+
+      <div className="mt-5 border-t border-border">
+        <TabToggle mode={mode} setMode={setMode} />
+
+        <div className="p-5">
+          {mode === 'online' ? (
+            <div className="space-y-3">
+              <a href="https://passportindia.gov.in/" target="_blank" rel="noopener noreferrer" className="block">
+                <Button variant="primary" size="sm" className="w-full bg-amber-600 hover:bg-amber-700 text-white border-none shadow-sm cursor-pointer">
+                  Apply / Renew Passport Online <ExternalLink className="w-3.5 h-3.5 ml-1.5" />
+                </Button>
+              </a>
+              <a href="https://passportindia.gov.in/AppointmentAvailability/checkSlotAvailability" target="_blank" rel="noopener noreferrer" className="block">
+                <Button variant="outline" size="sm" className="w-full cursor-pointer">
+                  Check Appointment Availability <ExternalLink className="w-3.5 h-3.5 ml-1.5" />
+                </Button>
+              </a>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {/* State + District Filter */}
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-bold text-text-muted mb-1 uppercase tracking-wider">State</label>
+                  <select disabled className="w-full px-3 py-2.5 border border-border rounded-xl text-sm bg-gray-50 text-text-muted cursor-not-allowed">
+                    <option>Tamil Nadu</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-text-muted mb-1 uppercase tracking-wider">District</label>
+                  <select
+                    value={district}
+                    onChange={e => setDistrict(e.target.value)}
+                    className="w-full px-3 py-2.5 border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary cursor-pointer"
+                  >
+                    {TN_DISTRICTS.map(d => <option key={d} value={d}>{d}</option>)}
+                  </select>
+                </div>
+              </div>
+
+              {/* Results */}
+              <div className="space-y-3">
+                <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider">
+                  {filteredKendras.length > 0 ? `Passport Seva Kendras${district !== 'All Districts' ? ` in ${district}` : ''}` : 'No PSKs found'}
+                </h4>
+                {filteredKendras.length > 0 ? (
+                  <div className="space-y-2.5 max-h-[320px] overflow-y-auto pr-1">
+                    {filteredKendras.map(k => <CentreCard key={k.id} centre={k} />)}
+                  </div>
+                ) : (
+                  <div className="text-center py-4">
+                    <p className="text-sm text-text-muted italic mb-3">No Passport Seva Kendras found in {district}.</p>
+                    <a href="https://passportindia.gov.in/AppointmentAvailability/checkSlotAvailability" target="_blank" rel="noopener noreferrer">
+                      <Button variant="outline" size="sm" className="cursor-pointer">
+                        Find PSK on Official Website <ExternalLink className="w-3.5 h-3.5 ml-1.5" />
+                      </Button>
+                    </a>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </Card>
+  );
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   3. VISA SERVICE CARD
+   ═══════════════════════════════════════════════════════════════════ */
+function VisaServiceCard() {
+  const [mode, setMode] = useState<'online' | 'offline'>('online');
+  const [selectedCountry, setSelectedCountry] = useState('');
+  const [showApplicationSteps, setShowApplicationSteps] = useState(true);
+  const [showBiometricSteps, setShowBiometricSteps] = useState(false);
+
+  const country = useMemo(() => {
+    return VISA_COUNTRIES.find(c => c.code === selectedCountry);
+  }, [selectedCountry]);
+
+  return (
+    <Card padding="none" className="group flex flex-col border-amber-200/60 bg-gradient-to-br from-amber-50/30 to-white hover:border-amber-400 hover:shadow-lg transition-all duration-300 lg:col-span-2">
+      <div className="flex items-start gap-4 p-5 pb-0">
+        <div className="w-14 h-14 rounded-2xl bg-amber-100/60 flex items-center justify-center shrink-0">
+          <Plane className="w-8 h-8 text-amber-700" />
+        </div>
+        <div className="flex-1">
+          <h3 className="text-lg font-bold text-text-primary">Visa Services</h3>
+          <div className="flex flex-wrap gap-1.5 mt-1.5">
+            <Badge variant="amber" className="text-[10px] py-0.5 px-2">High Priority</Badge>
+            <Badge variant="default" className="text-[10px] py-0.5 px-2">Travel</Badge>
+          </div>
+        </div>
+      </div>
+
+      <p className="text-sm text-text-muted mt-4 px-5 leading-relaxed">
+        Apply for visas to popular destinations. Select your country to see the official application process, biometric requirements, and nearest Visa Application Centre.
+      </p>
+
+      {/* Country Selector */}
+      <div className="px-5 mt-4">
+        <label className="block text-xs font-bold text-text-muted mb-1.5 uppercase tracking-wider">Select Destination Country</label>
+        <select
+          value={selectedCountry}
+          onChange={e => { setSelectedCountry(e.target.value); setShowApplicationSteps(true); setShowBiometricSteps(false); }}
+          className="w-full px-3 py-2.5 border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary cursor-pointer"
+        >
+          <option value="">Choose a country...</option>
+          {VISA_COUNTRIES.map(c => <option key={c.code} value={c.code}>{c.name}</option>)}
+        </select>
+      </div>
+
+      {/* Country-specific content */}
+      {country && (
+        <div className="px-5 mt-4 space-y-3 animate-fade-in">
+          {/* Visa Application Process */}
+          <div className="border border-border rounded-xl overflow-hidden">
+            <button
+              onClick={() => setShowApplicationSteps(!showApplicationSteps)}
+              className="w-full flex items-center justify-between p-3.5 bg-blue-50/50 hover:bg-blue-50 transition-colors cursor-pointer"
+            >
+              <span className="text-sm font-bold text-text-primary flex items-center gap-2">
+                📋 Visa Application Process — {country.name}
+              </span>
+              {showApplicationSteps ? <ChevronUp className="w-4 h-4 text-text-muted" /> : <ChevronDown className="w-4 h-4 text-text-muted" />}
+            </button>
+            {showApplicationSteps && (
+              <div className="p-4 border-t border-border">
+                <ol className="space-y-2.5">
+                  {country.applicationProcess.map((step, i) => (
+                    <li key={i} className="flex gap-3 text-sm text-text-muted">
+                      <span className="w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-bold flex items-center justify-center shrink-0">{i + 1}</span>
+                      <span className="pt-0.5">{step}</span>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            )}
+          </div>
+
+          {/* Biometric Appointment Process */}
+          <div className="border border-border rounded-xl overflow-hidden">
+            <button
+              onClick={() => setShowBiometricSteps(!showBiometricSteps)}
+              className="w-full flex items-center justify-between p-3.5 bg-emerald-50/50 hover:bg-emerald-50 transition-colors cursor-pointer"
+            >
+              <span className="text-sm font-bold text-text-primary flex items-center gap-2">
+                🔐 Biometric Appointment Process — {country.name}
+              </span>
+              {showBiometricSteps ? <ChevronUp className="w-4 h-4 text-text-muted" /> : <ChevronDown className="w-4 h-4 text-text-muted" />}
+            </button>
+            {showBiometricSteps && (
+              <div className="p-4 border-t border-border">
+                <ol className="space-y-2.5">
+                  {country.biometricProcess.map((step, i) => (
+                    <li key={i} className="flex gap-3 text-sm text-text-muted">
+                      <span className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold flex items-center justify-center shrink-0">{i + 1}</span>
+                      <span className="pt-0.5">{step}</span>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      <div className="mt-5 border-t border-border flex-1 flex flex-col">
+        <TabToggle mode={mode} setMode={setMode} />
+
+        <div className="p-5 flex-1">
+          {!country ? (
+            <p className="text-sm text-text-muted text-center py-4 italic">Please select a destination country above to see visa portal and VAC details.</p>
+          ) : mode === 'online' ? (
+            <a href={country.visaPortalUrl} target="_blank" rel="noopener noreferrer" className="block">
+              <Button variant="primary" size="sm" className="w-full bg-amber-600 hover:bg-amber-700 text-white border-none shadow-sm cursor-pointer">
+                Go to {country.name} Visa Portal <ExternalLink className="w-3.5 h-3.5 ml-1.5" />
+              </Button>
+            </a>
+          ) : (
+            <div className="space-y-3">
+              <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider">Visa Application Centre (VAC)</h4>
+              <div className="p-3.5 bg-surface/50 border border-border rounded-xl">
+                <h5 className="font-bold text-sm text-text-primary">{country.name} — VAC / Embassy</h5>
+                <p className="text-xs text-text-muted mt-1.5 flex items-start gap-1.5">
+                  <MapPin className="w-3 h-3 shrink-0 mt-0.5" />
+                  {country.vacAddress}
+                </p>
+                <p className="text-xs text-text-muted mt-1 flex items-center gap-1.5">
+                  <Phone className="w-3 h-3 shrink-0" />
+                  <a href={`tel:${country.vacPhone}`} className="text-primary hover:underline">{country.vacPhone}</a>
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </Card>
+  );
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   4. POLICE VERIFICATION CARD
+   ═══════════════════════════════════════════════════════════════════ */
+function PoliceVerificationCard() {
+  const [mode, setMode] = useState<'online' | 'offline'>('online');
+  const [city, setCity] = useState('');
+  const [searchCity, setSearchCity] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [searched, setSearched] = useState(false);
+
+  const filteredStations = useMemo(() => {
+    if (!searchCity) return POLICE_STATIONS;
+    return POLICE_STATIONS.filter(s => s.city.toLowerCase().includes(searchCity.toLowerCase()) || s.address.toLowerCase().includes(searchCity.toLowerCase()));
+  }, [searchCity]);
+
+  const handleSearch = () => {
+    setLoading(true);
+    setTimeout(() => {
+      setSearchCity(city);
+      setSearched(true);
+      setLoading(false);
+    }, 400);
+  };
+
+  return (
+    <Card padding="none" className="group flex flex-col border-amber-200/60 bg-gradient-to-br from-amber-50/30 to-white hover:border-amber-400 hover:shadow-lg transition-all duration-300">
+      <div className="flex items-start gap-4 p-5 pb-0">
+        <div className="w-14 h-14 rounded-2xl bg-amber-100/60 flex items-center justify-center shrink-0">
+          <ShieldCheck className="w-8 h-8 text-amber-700" />
+        </div>
+        <div className="flex-1">
+          <h3 className="text-lg font-bold text-text-primary">Police Verification</h3>
+          <div className="flex flex-wrap gap-1.5 mt-1.5">
+            <Badge variant="amber" className="text-[10px] py-0.5 px-2">High Priority</Badge>
+            <Badge variant="default" className="text-[10px] py-0.5 px-2">Safety</Badge>
+          </div>
+        </div>
+      </div>
+
+      <p className="text-sm text-text-muted mt-4 px-5 leading-relaxed flex-1">
+        File police verification requests, report cyber fraud, or locate your nearest police station for in-person verification.
+      </p>
+
+      <div className="mt-5 border-t border-border">
+        <TabToggle mode={mode} setMode={setMode} />
+
+        <div className="p-5">
+          {mode === 'online' ? (
+            <div className="space-y-3">
+              <a href="https://cybercrime.gov.in/" target="_blank" rel="noopener noreferrer" className="block">
+                <Button variant="primary" size="sm" className="w-full bg-amber-600 hover:bg-amber-700 text-white border-none shadow-sm cursor-pointer">
+                  Cyber Crime Portal <ExternalLink className="w-3.5 h-3.5 ml-1.5" />
+                </Button>
+              </a>
+              <a href="https://eservices.tnpolice.gov.in/" target="_blank" rel="noopener noreferrer" className="block">
+                <Button variant="outline" size="sm" className="w-full cursor-pointer">
+                  TN Police e-Services <ExternalLink className="w-3.5 h-3.5 ml-1.5" />
+                </Button>
+              </a>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              <CitySearch city={city} setCity={setCity} onSearch={handleSearch} loading={loading} />
+
+              {searched && (
+                <div className="space-y-3 animate-fade-in">
+                  <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider">
+                    {filteredStations.length > 0 ? `Police Stations${searchCity ? ` in ${searchCity}` : ''}` : 'No stations found'}
+                  </h4>
+                  {filteredStations.length > 0 ? (
+                    <div className="space-y-2.5 max-h-[320px] overflow-y-auto pr-1">
+                      {filteredStations.map(s => <CentreCard key={s.id} centre={s} />)}
+                    </div>
+                  ) : (
+                    <p className="text-sm text-text-muted italic">No police stations found for &quot;{searchCity}&quot;. Try a different city.</p>
+                  )}
+                </div>
+              )}
+
+              {!searched && (
+                <p className="text-xs text-text-muted text-center">Search a city to find nearby police stations</p>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+    </Card>
+  );
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   5. VOTER ID SERVICE CARD
+   ═══════════════════════════════════════════════════════════════════ */
+function VoterIdServiceCard() {
+  const [mode, setMode] = useState<'online' | 'offline'>('online');
+  const [city, setCity] = useState('');
+  const [searchCity, setSearchCity] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [searched, setSearched] = useState(false);
+
+  const filteredOffices = useMemo(() => {
+    if (!searchCity) return ELECTION_OFFICES;
+    return ELECTION_OFFICES.filter(o => o.city.toLowerCase().includes(searchCity.toLowerCase()) || o.address.toLowerCase().includes(searchCity.toLowerCase()));
+  }, [searchCity]);
+
+  const handleSearch = () => {
+    setLoading(true);
+    setTimeout(() => {
+      setSearchCity(city);
+      setSearched(true);
+      setLoading(false);
+    }, 400);
+  };
+
+  return (
+    <Card padding="none" className="group flex flex-col border-amber-200/60 bg-gradient-to-br from-amber-50/30 to-white hover:border-amber-400 hover:shadow-lg transition-all duration-300">
+      <div className="flex items-start gap-4 p-5 pb-0">
+        <div className="w-14 h-14 rounded-2xl bg-amber-100/60 flex items-center justify-center shrink-0">
+          <Vote className="w-8 h-8 text-amber-700" />
+        </div>
+        <div className="flex-1">
+          <h3 className="text-lg font-bold text-text-primary">Voter ID (EPIC)</h3>
+          <div className="flex flex-wrap gap-1.5 mt-1.5">
+            <Badge variant="amber" className="text-[10px] py-0.5 px-2">High Priority</Badge>
+            <Badge variant="default" className="text-[10px] py-0.5 px-2">Election</Badge>
+          </div>
+        </div>
+      </div>
+
+      <p className="text-sm text-text-muted mt-4 px-5 leading-relaxed flex-1">
+        Register as a voter, update your address, correct details, or download your e-EPIC. Find nearby Election Offices and Voter Service Centres.
+      </p>
+
+      <div className="mt-5 border-t border-border">
+        <TabToggle mode={mode} setMode={setMode} />
+
+        <div className="p-5">
+          {mode === 'online' ? (
+            <div className="space-y-3">
+              <a href="https://voters.eci.gov.in/" target="_blank" rel="noopener noreferrer" className="block">
+                <Button variant="primary" size="sm" className="w-full bg-amber-600 hover:bg-amber-700 text-white border-none shadow-sm cursor-pointer">
+                  Voter Portal (Register / Update) <ExternalLink className="w-3.5 h-3.5 ml-1.5" />
+                </Button>
+              </a>
+              <a href="https://voterportal.eci.gov.in/" target="_blank" rel="noopener noreferrer" className="block">
+                <Button variant="outline" size="sm" className="w-full cursor-pointer">
+                  Download e-EPIC Card <ExternalLink className="w-3.5 h-3.5 ml-1.5" />
+                </Button>
+              </a>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              <CitySearch city={city} setCity={setCity} onSearch={handleSearch} loading={loading} />
+
+              {searched && (
+                <div className="space-y-3 animate-fade-in">
+                  <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider">
+                    {filteredOffices.length > 0 ? `Election Offices${searchCity ? ` in ${searchCity}` : ''}` : 'No offices found'}
+                  </h4>
+                  {filteredOffices.length > 0 ? (
+                    <div className="space-y-2.5 max-h-[320px] overflow-y-auto pr-1">
+                      {filteredOffices.map(o => <CentreCard key={o.id} centre={o} />)}
+                    </div>
+                  ) : (
+                    <p className="text-sm text-text-muted italic">No election offices found for &quot;{searchCity}&quot;. Try a different city.</p>
+                  )}
+                </div>
+              )}
+
+              {!searched && (
+                <p className="text-xs text-text-muted text-center">Search a city to find nearby election offices</p>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+    </Card>
+  );
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   MAIN PAGE
+   ═══════════════════════════════════════════════════════════════════ */
 export default function GovernmentPage() {
   const higherPriorityIds = ['aadhaar', 'biometrics', 'passport', 'visa', 'police-verification', 'voter-id'];
-  
-  const higherPriorityServices = useMemo(() => {
-    // Preserve ordering matching: Aadhaar, Biometric Services, Passport, Visa, Police Verification, Voter ID
-    const orderedIds = ['aadhaar', 'biometrics', 'passport', 'visa', 'police-verification', 'voter-id'];
-    return orderedIds
-      .map(id => GOVT_SERVICES.find(s => s.id === id))
-      .filter((s): s is typeof GOVT_SERVICES[0] => !!s);
-  }, []);
 
   const lowerPriorityServices = useMemo(() => {
     return GOVT_SERVICES.filter(s => !higherPriorityIds.includes(s.id));
@@ -188,7 +654,7 @@ export default function GovernmentPage() {
             <span className="text-text-primary font-medium">Government Services</span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-bold font-display text-text-primary">Government Services</h1>
-          <p className="mt-2 text-text-muted">Quick access to essential government portals, security verification, and social schemes.</p>
+          <p className="mt-2 text-text-muted">Quick access to essential government portals, identity services, visa applications, and security verification.</p>
         </div>
       </div>
 
@@ -197,71 +663,48 @@ export default function GovernmentPage() {
         <div>
           <div className="mb-6">
             <h2 className="text-2xl font-bold font-display text-text-primary flex items-center gap-2">
-              ⭐ Higher Priority Services
+              ⭐ Essential Services
             </h2>
             <p className="text-sm text-text-muted mt-1">
-              Essential identity credentials, security safety checks, and international travel documentation.
+              Identity credentials, travel documentation, security verification, and voter services — with both Online and Offline access.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {higherPriorityServices.map((service) => {
-              const IconComponent = service.id === 'biometrics' 
-                ? Fingerprint 
-                : (ICON_MAP[service.icon] || Building);
-                
-              if (service.id === 'aadhaar' || service.id === 'biometrics') {
-                return <AadhaarCard key={service.id} service={service} IconComponent={IconComponent} />;
-              }
-                
-              return (
-                <Card key={service.id} className="group flex flex-col border-amber-200/60 bg-amber-50/5 hover:border-amber-400 hover:shadow-lg transition-all duration-300">
-                  <div className="flex items-start gap-4 p-5 pb-0">
-                    <div className="w-14 h-14 rounded-2xl bg-amber-100/50 flex items-center justify-center text-primary shrink-0 group-hover:scale-110 transition-transform">
-                      <IconComponent className="w-8 h-8 text-amber-700" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between gap-2">
-                        <h3 className="text-lg font-bold text-text-primary group-hover:text-primary transition-colors">
-                          {service.title}
-                        </h3>
-                      </div>
-                      <div className="flex flex-wrap gap-1.5 mt-1.5">
-                        <Badge variant="amber" className="text-[10px] py-0.5 px-2">
-                          High Priority
-                        </Badge>
-                        <Badge variant="default" className="text-[10px] py-0.5 px-2">
-                          {service.category}
-                        </Badge>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <p className="text-sm text-text-muted mt-4 px-5 leading-relaxed flex-1">
-                    {service.description}
-                  </p>
-                  
-                  <div className="mt-5 p-5 border-t border-border">
-                    <a href={service.url} target="_blank" rel="noopener noreferrer" className="block">
-                      <Button variant="primary" size="sm" className="w-full bg-amber-600 hover:bg-amber-700 text-white border-none shadow-sm cursor-pointer">
-                        Go to Official Portal <ExternalLink className="w-3.5 h-3.5 ml-1.5" />
-                      </Button>
-                    </a>
-                  </div>
-                </Card>
-              );
-            })}
+            {/* Aadhaar Update */}
+            <AadhaarServiceCard
+              service={GOVT_SERVICES.find(s => s.id === 'aadhaar')!}
+              IconComponent={User}
+            />
+
+            {/* Aadhaar Biometrics */}
+            <AadhaarServiceCard
+              service={GOVT_SERVICES.find(s => s.id === 'biometrics')!}
+              IconComponent={Fingerprint}
+            />
+
+            {/* Passport */}
+            <PassportServiceCard />
+
+            {/* Police Verification */}
+            <PoliceVerificationCard />
+
+            {/* Voter ID */}
+            <VoterIdServiceCard />
+
+            {/* Visa — spans 2 cols on lg */}
+            <VisaServiceCard />
           </div>
         </div>
 
-        {/* ── LOWER PRIORITY SERVICES ── */}
+        {/* ── OTHER SERVICES ── */}
         <div>
           <div className="mb-6 pt-4 border-t border-border">
             <h2 className="text-2xl font-bold font-display text-text-primary flex items-center gap-2 mt-8">
-              📋 Lower Priority Services
+              📋 Other Government Services
             </h2>
             <p className="text-sm text-text-muted mt-1">
-              General state welfare schemes, transport facilities, and public sector employment portals.
+              State welfare schemes, transport facilities, employment registration, and public sector portals.
             </p>
           </div>
 
@@ -283,11 +726,11 @@ export default function GovernmentPage() {
                       </span>
                     </div>
                   </div>
-                  
+
                   <p className="text-sm text-text-muted mt-4 leading-relaxed flex-1">
                     {service.description}
                   </p>
-                  
+
                   <div className="mt-5 pt-4 border-t border-border">
                     <a href={service.url} target="_blank" rel="noopener noreferrer" className="block">
                       <Button variant="outline" size="sm" className="w-full cursor-pointer">

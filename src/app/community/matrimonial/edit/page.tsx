@@ -256,6 +256,7 @@ export default function EditMatrimonialProfile() {
       phone: formData.phone as string,
       email: formData.email as string,
       whatsapp: formData.whatsapp as string,
+      social_handle: formData.social_handle as string,
       photos: (formData.photos as string[]) || profile.photos || [],
       video: (formData.video as string) || profile.video || '',
       updated_at: new Date().toISOString(),
@@ -358,7 +359,7 @@ export default function EditMatrimonialProfile() {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <FormInput label="Phone" field="phone" type="tel" placeholder="+91..." />
                 <FormInput label="Email" field="email" type="email" />
-                <FormInput label="WhatsApp" field="whatsapp" type="tel" />
+                <FormInput label="Social Media Handle" field="social_handle" placeholder="@username" />
               </div>
             </div>
           )}

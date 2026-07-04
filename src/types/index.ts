@@ -286,6 +286,7 @@ export interface MatrimonialProfile {
   phone?: string;
   email?: string;
   whatsapp?: string;
+  social_handle?: string;
 
   // Photos & Videos
   profile_photo?: string;

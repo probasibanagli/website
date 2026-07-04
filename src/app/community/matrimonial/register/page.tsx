@@ -39,7 +39,7 @@ interface FormData {
 
 const initialFormData: FormData = {
   profile_for: '',
-  full_name: '', email: '', phone: '', whatsapp: '',
+  full_name: '', email: '', phone: '', social_handle: '',
   date_of_birth: '', gender: '', height: '', weight: '', complexion: '', blood_group: '',
   marital_status: '', mother_tongue: 'Bengali', physical_disability: 'None',
   city: '', native_district: '',
@@ -464,7 +464,8 @@ export default function MatrimonialRegisterPage() {
       pref_marital_status: formData.pref_marital_status as string,
       phone: formData.phone as string,
       email: formData.email as string,
-      whatsapp: formData.whatsapp as string,
+      whatsapp: '',
+      social_handle: formData.social_handle as string,
       photos: (formData.photos as string[]) || [],
       video: (formData.video as string) || '',
       verified: false,
@@ -675,7 +676,7 @@ export default function MatrimonialRegisterPage() {
                   <FormInput formData={formData} errors={errors} updateField={updateField} label="Email Address" field="email" type="email" placeholder="your@email.com" required disabled />
                   <FormInput formData={formData} errors={errors} updateField={updateField} label="Phone Number" field="phone" type="tel" placeholder="+91 9876543210" required disabled />
                 </div>
-                <FormInput formData={formData} errors={errors} updateField={updateField} label="WhatsApp Number (if different)" field="whatsapp" type="tel" placeholder="+91 9876543210" />
+                <FormInput formData={formData} errors={errors} updateField={updateField} label="Social Media Handle (Instagram / Facebook / LinkedIn)" field="social_handle" placeholder="e.g., @username" />
               </div>
             )}
 

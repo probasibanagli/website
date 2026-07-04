@@ -6,7 +6,7 @@ import { useParams } from 'next/navigation';
 import {
   ArrowLeft, MapPin, GraduationCap, Briefcase, CheckCircle2, Lock, Heart,
   MessageCircle, Star, Share2, Flag, User, Users, BookOpen, Utensils,
-  Ruler, Droplets, Phone, Mail, Sparkles, ChevronRight, Eye, Video, UserPlus, ArrowRight, AlertCircle
+  Ruler, Droplets, Phone, Mail, Sparkles, ChevronRight, Eye, Video, UserPlus, ArrowRight, AlertCircle, Globe
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/Badge';
@@ -601,17 +601,19 @@ export default function MatrimonialDetailPage() {
             {/* Contact Card */}
             <Card hover={false} className="bg-gradient-to-br from-pink-50 to-white sticky top-4">
               <h3 className="text-lg font-bold mb-4">Contact Information</h3>
-              <div className="relative">
-                <div className="blur-md select-none space-y-3 text-sm">
-                  <p className="flex items-center gap-2"><Phone className="w-4 h-4" /> +91 98765 43210</p>
-                  <p className="flex items-center gap-2"><Mail className="w-4 h-4" /> name@example.com</p>
-                  <p className="flex items-center gap-2"><MessageCircle className="w-4 h-4" /> WhatsApp available</p>
-                </div>
-                <div className="absolute inset-0 bg-white/60 backdrop-blur-sm rounded-xl flex flex-col items-center justify-center gap-3 p-4">
-                  <Lock className="w-8 h-8 text-primary" />
-                  <p className="text-sm font-medium text-text-primary text-center">Login to view contact details</p>
-                  <Link href="/auth/login"><Button variant="primary" size="sm">Login Now</Button></Link>
-                </div>
+              <div className="space-y-3 text-sm text-text-primary">
+                {profile.phone && (
+                  <p className="flex items-center gap-2"><Phone className="w-4 h-4 text-primary shrink-0" /> {profile.phone}</p>
+                )}
+                {profile.email && (
+                  <p className="flex items-center gap-2"><Mail className="w-4 h-4 text-primary shrink-0" /> {profile.email}</p>
+                )}
+                {profile.social_handle && (
+                  <p className="flex items-center gap-2"><Globe className="w-4 h-4 text-primary shrink-0" /> {profile.social_handle}</p>
+                )}
+                {!profile.phone && !profile.email && !profile.social_handle && (
+                  <p className="text-xs text-text-muted italic">No contact details provided.</p>
+                )}
               </div>
             </Card>
 
