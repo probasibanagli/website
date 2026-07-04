@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { COLLECTIONS } from '@/lib/firestore/collections';
@@ -28,12 +29,21 @@ export default function BengaliStaffPage() {
   const [staffList, setStaffList] = useState<BengaliStaff[]>([]);
   const [hospitals, setHospitals] = useState<Record<string, Hospital>>({});
   const [loading, setLoading] = useState(true);
+  const [isVerified, setIsVerified] = useState(false);
+  const router = useRouter();
   
   const [search, setSearch] = useState('');
   const [roleFilter, setRoleFilter] = useState('');
   const [langFilter, setLangFilter] = useState('');
 
   useEffect(() => {
+    const verified = localStorage.getItem('directory_verified') === 'true';
+    if (!verified) {
+      router.replace('/emergency/hospitals/general/verify?redirect=/emergency/hospitals/bengali-staff');
+      return;
+    }
+    setIsVerified(true);
+
     async function loadData() {
       try {
         const staffSnap = await getDocs(collection(db, COLLECTIONS.bengali_staff || 'bengali_staff'));
@@ -66,7 +76,7 @@ export default function BengaliStaffPage() {
       }
     }
     loadData();
-  }, []);
+  }, [router]);
 
   const roles = useMemo(() => Array.from(new Set(staffList.map(s => s.role).filter(Boolean))), [staffList]);
   const allLangs = useMemo(() => {
@@ -107,9 +117,12 @@ export default function BengaliStaffPage() {
               <p className="mt-2 text-text-muted">Find and connect with Bengali-speaking support and administrative staff.</p>
             </div>
             
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
                <Link href="/emergency/hospitals/bengali-hospitals">
-                 <Button variant="outline" className="shadow-sm">View Hospital Directory <ChevronRight className="w-4 h-4 ml-1"/></Button>
+                 <Button variant="outline" className="shadow-sm">View Hospitals <ChevronRight className="w-4 h-4 ml-1"/></Button>
+               </Link>
+               <Link href="/emergency/hospitals/bengali-doctors">
+                 <Button variant="primary" className="shadow-sm bg-primary hover:bg-primary-dark text-white border-none">View Bengali Doctors <ChevronRight className="w-4 h-4 ml-1"/></Button>
                </Link>
             </div>
           </div>
@@ -146,7 +159,7 @@ export default function BengaliStaffPage() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {loading ? (
+        {(loading || !isVerified) ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
              {[1, 2, 3, 4, 5, 6].map(i => (
                <Card key={i} className="animate-pulse p-6">

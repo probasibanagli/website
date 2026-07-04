@@ -1,52 +1,91 @@
 import { NextResponse } from 'next/server';
-import { doc, getDoc, updateDoc, deleteDoc } from 'firebase/firestore';
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  updateDoc,
+  doc,
+  getDoc,
+} from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { COLLECTIONS } from '@/lib/firestore/collections';
 import { cookies } from 'next/headers';
 
 export async function POST(request: Request) {
   try {
-    const { phone, email, phoneOtp, emailOtp } = await request.json();
-    
-    if (!phone || !email || !phoneOtp || !emailOtp) {
-      return NextResponse.json({ error: 'All fields are required' }, { status: 400 });
+    const body = await request.json();
+    const { type, phone, email, phoneOtp, emailOtp } = body;
+
+    if (!type || !phone) {
+      return NextResponse.json({ error: 'Type and Phone are required' }, { status: 400 });
     }
 
-    const otpDocId = Buffer.from(`${phone}_${email}`).toString('base64');
-    const otpRef = doc(db, COLLECTIONS.otps || 'otps', otpDocId);
-    const otpSnap = await getDoc(otpRef);
+    const normalizedPhone = phone.trim();
+    const otpDocId = Buffer.from(`phone_${normalizedPhone}`).toString('base64');
+    const otpDocRef = doc(db, COLLECTIONS.otps, otpDocId);
+    const otpSnap = await getDoc(otpDocRef);
 
     if (!otpSnap.exists()) {
-      return NextResponse.json({ error: 'OTP request not found or expired' }, { status: 404 });
+      return NextResponse.json({ error: 'OTP request not found.' }, { status: 404 });
+    }
+    const otpData = otpSnap.data();
+
+    if (Date.now() > otpData.expiresAt) {
+      return NextResponse.json({ error: 'OTP has expired.' }, { status: 400 });
     }
 
-    const data = otpSnap.data();
+    if (type === 'phone') {
+      if (!phoneOtp) {
+        return NextResponse.json({ error: 'Phone OTP required' }, { status: 400 });
+      }
+      
+      const enteredPhoneOtp = phoneOtp.toString().trim();
+      const storedPhoneOtp = otpData.phoneOtp?.toString().trim();
 
-    // Check expiration
-    if (Date.now() > data.expiresAt) {
-      await deleteDoc(otpRef);
-      return NextResponse.json({ error: 'OTPs have expired. Please request new ones.' }, { status: 400 });
+      if (enteredPhoneOtp !== storedPhoneOtp) {
+        return NextResponse.json({ error: 'Invalid Phone OTP.' }, { status: 400 });
+      }
+
+      await updateDoc(otpDocRef, { phoneVerified: true });
+      return NextResponse.json({ success: true, message: 'Phone verified' });
+
+    } else if (type === 'email') {
+      if (!email || !emailOtp) {
+        return NextResponse.json({ error: 'Email and Email OTP required' }, { status: 400 });
+      }
+
+      const normalizedEmail = email.trim().toLowerCase();
+      
+      // Ensure email matches what was sent
+      if (otpData.email !== normalizedEmail) {
+        return NextResponse.json({ error: 'Email mismatch' }, { status: 400 });
+      }
+
+      const enteredEmailOtp = emailOtp.toString().trim();
+      const storedEmailOtp = otpData.emailOtp?.toString().trim();
+
+      if (enteredEmailOtp !== storedEmailOtp) {
+        return NextResponse.json({ error: 'Invalid Email OTP.' }, { status: 400 });
+      }
+
+      await updateDoc(otpDocRef, { verified: true, verifiedAt: Date.now() });
+
+      // Set cookie since both are verified
+      const cookieStore = await cookies();
+      const sessionToken = Buffer.from(`${normalizedPhone}_${normalizedEmail}_${Date.now()}`).toString('base64');
+      cookieStore.set('verified_directory_user', sessionToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 60 * 60 * 24 * 7, // 7 days
+        path: '/',
+        sameSite: 'lax',
+      });
+
+      return NextResponse.json({ success: true, message: 'Fully verified' });
     }
 
-    // Verify OTPs
-    if (data.phoneOtp !== phoneOtp || data.emailOtp !== emailOtp) {
-      return NextResponse.json({ error: 'Invalid OTP(s) provided' }, { status: 400 });
-    }
-
-    // Mark as verified
-    await updateDoc(otpRef, { verified: true });
-    
-    // Instead of forcing a full firebase auth session, we can drop a secure cookie 
-    // to identify this user has verified their OTPs for the directory session.
-    const cookieStore = await cookies();
-    cookieStore.set('verified_directory_user', otpDocId, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      maxAge: 60 * 60 * 24, // 1 day
-      path: '/'
-    });
-
-    return NextResponse.json({ success: true, message: 'OTP verified successfully' });
+    return NextResponse.json({ error: 'Invalid type' }, { status: 400 });
   } catch (error) {
     console.error('Error verifying OTP:', error);
     return NextResponse.json({ error: 'Failed to process request' }, { status: 500 });
