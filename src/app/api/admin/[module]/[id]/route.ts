@@ -28,7 +28,7 @@ async function verify(request: Request, module: string, required: PermissionLeve
   } catch { return { error: 'Invalid token', status: 401 }; }
 }
 
-export async function GET(request: Request, ctx: RouteContext<'/api/admin/[module]/[id]'>) {
+export async function GET(request: Request, ctx: any) {
   const { module, id } = await ctx.params;
   const col = MODULE_COLLECTIONS[module];
   if (!col) return NextResponse.json({ error: 'Unknown module' }, { status: 400 });
@@ -39,7 +39,7 @@ export async function GET(request: Request, ctx: RouteContext<'/api/admin/[modul
   return NextResponse.json({ item: { id: doc.id, ...doc.data() } });
 }
 
-export async function PATCH(request: Request, ctx: RouteContext<'/api/admin/[module]/[id]'>) {
+export async function PATCH(request: Request, ctx: any) {
   const { module, id } = await ctx.params;
   const col = MODULE_COLLECTIONS[module];
   if (!col) return NextResponse.json({ error: 'Unknown module' }, { status: 400 });
@@ -50,7 +50,7 @@ export async function PATCH(request: Request, ctx: RouteContext<'/api/admin/[mod
   return NextResponse.json({ status: 'ok' });
 }
 
-export async function DELETE(request: Request, ctx: RouteContext<'/api/admin/[module]/[id]'>) {
+export async function DELETE(request: Request, ctx: any) {
   const { module, id } = await ctx.params;
   const col = MODULE_COLLECTIONS[module];
   if (!col) return NextResponse.json({ error: 'Unknown module' }, { status: 400 });

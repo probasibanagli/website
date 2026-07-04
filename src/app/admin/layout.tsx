@@ -2,11 +2,11 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import {
   LayoutDashboard, Home, UtensilsCrossed, Bus, AlertTriangle,
   Users, GraduationCap, FileText, UserCog, LogOut, Menu, X,
-  ChevronRight, Crown, Shield, Heart
+  ChevronRight, Crown, Shield, Heart, Activity
 } from 'lucide-react';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { getAccessibleModules } from '@/lib/permissions';
@@ -16,7 +16,6 @@ import { MODULE_LABELS } from '@/types';
 const moduleIcons: Record<ModuleKey, React.ReactNode> = {
   stay: <Home className="w-4 h-4" />,
   food: <UtensilsCrossed className="w-4 h-4" />,
-  travel: <Bus className="w-4 h-4" />,
   emergency: <AlertTriangle className="w-4 h-4" />,
   community: <Users className="w-4 h-4" />,
   services: <GraduationCap className="w-4 h-4" />,
@@ -28,10 +27,21 @@ const moduleIcons: Record<ModuleKey, React.ReactNode> = {
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { profile, loading, logOut } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [mfaChecked, setMfaChecked] = useState(false);
 
-  if (loading) {
+  React.useEffect(() => {
+    const isMfa = sessionStorage.getItem('mfa_verified') === 'true';
+    if (!isMfa) {
+      router.push('/auth/login');
+    } else {
+      setMfaChecked(true);
+    }
+  }, [router]);
+
+  if (loading || !mfaChecked) {
     return (
       <div className="min-h-screen bg-surface flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
@@ -62,7 +72,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const isSuperAdmin = profile.role === 'superadmin';
   const accessibleModules = getAccessibleModules(profile.role, profile.permissions);
 
-  const sidebarItems: { key: string; label: string; href: string; icon: React.ReactNode }[] = [
+  const sidebarItems: { key: string; label: string; href: string; icon: React.ReactNode }[] = isSuperAdmin ? [
+    { key: 'dashboard', label: 'Dashboard', href: '/admin', icon: <LayoutDashboard className="w-4 h-4" /> },
+    { key: 'admin-mgmt', label: 'Admin Management', href: '/admin/users?tab=admins', icon: <Shield className="w-4 h-4" /> },
+    { key: 'user-mgmt', label: 'User Management', href: '/admin/users?tab=users', icon: <Users className="w-4 h-4" /> },
+    { key: 'activity-log', label: 'Activity Tracking', href: '/admin/users?tab=activities', icon: <Activity className="w-4 h-4" /> },
+  ] : [
     { key: 'dashboard', label: 'Dashboard', href: '/admin', icon: <LayoutDashboard className="w-4 h-4" /> },
     ...accessibleModules.map((mod) => ({
       key: mod,
@@ -73,6 +88,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   ];
 
   const handleLogout = async () => {
+    sessionStorage.removeItem('mfa_verified');
     await logOut();
     router.push('/');
   };
@@ -113,9 +129,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* Nav items */}
       <nav className="flex-1 p-3 space-y-0.5 mt-2 overflow-y-auto">
         {sidebarItems.map((item) => {
-          const isActive = item.href === '/admin'
-            ? pathname === '/admin'
-            : pathname.startsWith(item.href);
+          let isActive = false;
+          if (item.href.startsWith('/admin/users')) {
+            const itemUrl = new URL(item.href, 'http://localhost');
+            const itemTab = itemUrl.searchParams.get('tab');
+            const currentTab = searchParams.get('tab') || 'users'; // default is users
+            isActive = pathname.startsWith('/admin/users') && itemTab === currentTab;
+          } else {
+            isActive = item.href === '/admin'
+              ? pathname === '/admin'
+              : pathname.startsWith(item.href);
+          }
 
           return (
             <Link

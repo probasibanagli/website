@@ -723,7 +723,6 @@ export default function EventsPage() {
                                 {getPlatformIcon(group.platform)}
                                 <span className="capitalize">{group.platform}</span>
                                 {group.city && <span>• {group.city}</span>}
-                                {group.member_count && <span>• {group.member_count} members</span>}
                               </div>
                             </div>
                             

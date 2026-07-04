@@ -8,6 +8,7 @@ import { ChatWidget } from '@/components/chatbot/ChatWidget';
 import { AuthProvider } from '@/lib/auth/AuthContext';
 import { GlobalLoader } from '@/components/layout/GlobalLoader';
 import { LanguageProvider } from '@/lib/contexts/LanguageContext';
+import { BlockedCheck } from '@/components/layout/BlockedCheck';
 
 export const metadata: Metadata = {
   title: 'ProbasiBangali – Bengali Community in Tamil Nadu',
@@ -81,13 +82,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
         <LanguageProvider>
           <AuthProvider>
-            <Suspense fallback={null}>
-              <GlobalLoader />
-            </Suspense>
-            <Navbar />
-            <main className="flex-1">{children}</main>
-            <Footer />
-            <ChatWidget />
+            <BlockedCheck>
+              <Suspense fallback={null}>
+                <GlobalLoader />
+              </Suspense>
+              <Navbar />
+              <main className="flex-1">{children}</main>
+              <Footer />
+              <ChatWidget />
+            </BlockedCheck>
           </AuthProvider>
         </LanguageProvider>
       </body>

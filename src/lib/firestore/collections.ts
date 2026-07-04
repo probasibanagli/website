@@ -26,7 +26,6 @@ export const COLLECTIONS = {
 export const MODULE_TO_COLLECTION: Record<ModuleKey, string> = {
   stay: COLLECTIONS.listings,
   food: COLLECTIONS.food_listings,
-  travel: COLLECTIONS.travel_info,
   emergency: COLLECTIONS.hospitals,
   community: COLLECTIONS.community_groups,
   services: COLLECTIONS.colleges,

@@ -33,7 +33,7 @@ async function verifyAndAuthorize(request: Request, module: string, required: Pe
   } catch { return { error: 'Invalid token', status: 401 }; }
 }
 
-export async function GET(request: Request, ctx: RouteContext<'/api/admin/[module]'>) {
+export async function GET(request: Request, ctx: any) {
   const { module } = await ctx.params;
   const col = MODULE_COLLECTIONS[module];
   if (!col) return NextResponse.json({ error: 'Unknown module' }, { status: 400 });
@@ -45,7 +45,7 @@ export async function GET(request: Request, ctx: RouteContext<'/api/admin/[modul
   return NextResponse.json({ items: snap.docs.map(d => ({ id: d.id, ...d.data() })) });
 }
 
-export async function POST(request: Request, ctx: RouteContext<'/api/admin/[module]'>) {
+export async function POST(request: Request, ctx: any) {
   const { module } = await ctx.params;
   const col = MODULE_COLLECTIONS[module];
   if (!col) return NextResponse.json({ error: 'Unknown module' }, { status: 400 });

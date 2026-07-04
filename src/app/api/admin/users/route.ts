@@ -15,7 +15,14 @@ async function verifyRequest(request: Request) {
 
 export async function GET(request: Request) {
   const user = await verifyRequest(request);
-  if (!user || (user.role !== 'superadmin')) {
+  if (!user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
+  }
+
+  const isSuperAdmin = user.role === 'superadmin';
+  const hasUsersPermission = user.role === 'admin' && user.permissions?.users && user.permissions.users !== 'none';
+
+  if (!isSuperAdmin && !hasUsersPermission) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
   }
   const snap = await adminDb.collection('users').orderBy('created_at', 'desc').get();
@@ -35,9 +42,10 @@ export async function POST(request: Request) {
     const newUser = await adminAuth.createUser({ email, password, displayName: full_name });
     const now = new Date().toISOString();
     await adminDb.collection('users').doc(newUser.uid).set({
-      uid: newUser.uid, email, full_name, role: role || 'admin',
+      uid: newUser.uid, email: email.toLowerCase(), full_name, role: role || 'admin',
       permissions: permissions || {},
       created_at: now, updated_at: now, created_by: user.uid, is_active: true,
+      is_first_login: false,
     });
     return NextResponse.json({ uid: newUser.uid });
   } catch (err: unknown) {

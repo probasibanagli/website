@@ -7,7 +7,6 @@ export type PermissionLevel = 'none' | 'view' | 'edit' | 'manage';
 export type ModuleKey =
   | 'stay'
   | 'food'
-  | 'travel'
   | 'emergency'
   | 'community'
   | 'services'
@@ -32,6 +31,7 @@ export interface UserProfile {
   is_active: boolean;
   phone_verified?: boolean;
   email_verified?: boolean;
+  is_first_login?: boolean;
 }
 
 /* ──────────────── Module Labels (for UI) ──────────────── */
@@ -39,7 +39,6 @@ export interface UserProfile {
 export const MODULE_LABELS: Record<ModuleKey, string> = {
   stay: 'Stay & Accommodation',
   food: 'Bengali Food & Sweets',
-  travel: 'Travel & Transport',
   emergency: 'Hospital Management',
   community: 'Community',
   services: 'Campus & Government',
@@ -74,6 +73,17 @@ export interface Listing {
   verified: boolean;
   available_rooms?: number;
   deposit_amount?: number;
+  accommodation_type?: 'PG' | 'Hotel' | 'Service Apartment' | 'Rental Home';
+  contact_person_name?: string;
+  contact_whatsapp?: string;
+  contact_email?: string;
+  contact_phone?: string;
+  price_range?: string;
+  price_daily?: number;
+  price_monthly?: number;
+  website_link?: string;
+  nearby_hospital?: string;
+  landmark?: string;
   created_at: string;
 }
 

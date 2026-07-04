@@ -28,9 +28,10 @@ interface AuthState {
 
 interface AuthContextType extends AuthState {
   signIn: (email: string, password: string) => Promise<void>;
-  signUp: (email: string, password: string, fullName: string, phone?: string, phoneVerified?: boolean) => Promise<void>;
+  signUp: (email: string, password: string, fullName: string, phone?: string, phoneVerified?: boolean, emailVerified?: boolean) => Promise<void>;
   logOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
+  triggerMfaSuccess: () => Promise<void>;
   sendPhoneOtp: (phoneNumber: string, recaptchaContainerId: string, flow?: 'login' | 'register') => Promise<ConfirmationResult>;
   verifyPhoneOtp: (confirmationResult: ConfirmationResult, otp: string) => Promise<void>;
   sendVerificationEmail: () => Promise<void>;
@@ -67,6 +68,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setState((prev) => ({ ...prev, profile }));
   }, [state.firebaseUser, fetchProfile]);
 
+  const triggerMfaSuccess = useCallback(async () => {
+    if (auth.currentUser) {
+      const profile = await fetchProfile(auth.currentUser);
+      setState({ firebaseUser: auth.currentUser, profile, loading: false });
+    }
+  }, [fetchProfile]);
+
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (user) => {
       if (user) {
@@ -94,7 +102,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           console.error('Session sync error:', err);
         }
 
-        setState({ firebaseUser: user, profile, loading: false });
+        const isMfaRequired = profile && (profile.role === 'admin' || profile.role === 'superadmin');
+        const isMfaVerified = typeof window !== 'undefined' && sessionStorage.getItem('mfa_verified') === 'true';
+
+        if (isMfaRequired && !isMfaVerified) {
+          setState({ firebaseUser: null, profile: null, loading: false });
+        } else {
+          setState({ firebaseUser: user, profile, loading: false });
+        }
       } else {
         // Clear session cookie
         try {
@@ -112,7 +127,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await signInWithEmailAndPassword(auth, email, password);
   };
 
-  const signUp = async (email: string, password: string, fullName: string, phone?: string, phoneVerified = false) => {
+  const signUp = async (email: string, password: string, fullName: string, phone?: string, phoneVerified = false, emailVerified = false) => {
     const credential = await createUserWithEmailAndPassword(auth, email, password);
     const user = credential.user;
 
@@ -130,7 +145,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       created_at: now,
       updated_at: now,
       is_active: true,
-      email_verified: false,
+      email_verified: emailVerified,
       phone_verified: phoneVerified,
     };
 
@@ -270,16 +285,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+
+
   const logOut = async () => {
     await firebaseSignOut(auth);
   };
 
   return (
-    <AuthContext.Provider value={{
-      ...state, signIn, signUp, logOut, refreshProfile,
-      sendPhoneOtp, verifyPhoneOtp, sendVerificationEmail,
-      linkPhoneToAccount, confirmLinkPhone,
-    }}>
+    <AuthContext.Provider
+      value={{
+        ...state,
+        signIn,
+        signUp,
+        logOut,
+        refreshProfile,
+        triggerMfaSuccess,
+        sendPhoneOtp,
+        verifyPhoneOtp,
+        sendVerificationEmail,
+        linkPhoneToAccount,
+        confirmLinkPhone,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
