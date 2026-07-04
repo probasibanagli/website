@@ -129,10 +129,6 @@ export default function LoginPage() {
 
         setAdminFirstLogin(true);
         setAdminFirstLoginStep('double-otp');
-        setSuccess('First-time Admin detected. Verification codes sent to your registered phone and email!');
-        setLoading(false);
-        return;
-      }
         setLoading(false);
         return;
       }
