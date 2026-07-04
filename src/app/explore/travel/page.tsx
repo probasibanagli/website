@@ -1523,7 +1523,7 @@ export default function TravelPage() {
                                                 }`}>
                                                   {row.train.direction}
                                                 </span>
-                                                <Badge variant="outline" className="text-[10px] font-bold border-amber-200 bg-amber-50/50 text-amber-800">
+                                                <Badge variant="default" className="text-[10px] font-bold border-amber-200 bg-amber-50/50 text-amber-800">
                                                   {sectionLabel}
                                                 </Badge>
                                               </div>
@@ -1798,7 +1798,7 @@ export default function TravelPage() {
                       >
                         <div className="flex items-center justify-between mb-2">
                           <h3 className="text-lg font-black">{dest.name}</h3>
-                          <Badge variant="secondary" className="bg-white/70 font-semibold text-xs border-transparent">
+                          <Badge variant="default" className="bg-white/70 font-semibold text-xs border-transparent">
                             {dest.distance} • {dest.duration}
                           </Badge>
                         </div>
@@ -1826,23 +1826,23 @@ export default function TravelPage() {
 
                         <div className="flex flex-wrap gap-1.5 border-t border-black/5 pt-3 mt-auto">
                           <a href={dest.trainLink} target="_blank" rel="noopener noreferrer">
-                            <Badge variant="outline" className="bg-white/40 border-black/10 text-black text-[10px] hover:bg-white flex items-center gap-0.5">
+                            <Badge variant="default" className="bg-white/40 border-black/10 text-black text-[10px] hover:bg-white flex items-center gap-0.5">
                               IRCTC <ExternalLink className="w-2.5 h-2.5 opacity-60" />
                             </Badge>
                           </a>
                           <a href={dest.busLink} target="_blank" rel="noopener noreferrer">
-                            <Badge variant="outline" className="bg-white/40 border-black/10 text-black text-[10px] hover:bg-white flex items-center gap-0.5">
+                            <Badge variant="default" className="bg-white/40 border-black/10 text-black text-[10px] hover:bg-white flex items-center gap-0.5">
                               RedBus <ExternalLink className="w-2.5 h-2.5 opacity-60" />
                             </Badge>
                           </a>
                           <a href={dest.taxiLink} target="_blank" rel="noopener noreferrer">
-                            <Badge variant="outline" className="bg-white/40 border-black/10 text-black text-[10px] hover:bg-white flex items-center gap-0.5">
+                            <Badge variant="default" className="bg-white/40 border-black/10 text-black text-[10px] hover:bg-white flex items-center gap-0.5">
                               DropTaxi <ExternalLink className="w-2.5 h-2.5 opacity-60" />
                             </Badge>
                           </a>
                           {dest.flightLink && (
                             <a href={dest.flightLink} target="_blank" rel="noopener noreferrer">
-                              <Badge variant="outline" className="bg-white/40 border-black/10 text-black text-[10px] hover:bg-white flex items-center gap-0.5">
+                              <Badge variant="default" className="bg-white/40 border-black/10 text-black text-[10px] hover:bg-white flex items-center gap-0.5">
                                 Flights <ExternalLink className="w-2.5 h-2.5 opacity-60" />
                               </Badge>
                             </a>
@@ -1927,7 +1927,7 @@ export default function TravelPage() {
                       <p className="text-sm font-bold text-primary">{word.tamil}</p>
                       <p className="text-xs text-text-muted">{word.meaning}</p>
                     </div>
-                    <span className="text-xs text-text-muted font-bold font-tamil">{word.script}</span>
+                    <span className="text-xs text-text-muted font-bold font-tamil">{word.pronunciation}</span>
                   </div>
                 ))}
               </div>
