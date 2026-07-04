@@ -18,6 +18,8 @@ export const COLLECTIONS = {
   blog_posts: 'blog_posts',
   travel_info: 'travel_info',
   bengali_doctors: 'bengali_doctors',
+  bengali_staff: 'bengali_staff',
+  otps: 'otps',
 } as const;
 
 /**

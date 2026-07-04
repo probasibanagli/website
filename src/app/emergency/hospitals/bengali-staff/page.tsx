@@ -5,8 +5,8 @@ import Link from 'next/link';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { COLLECTIONS } from '@/lib/firestore/collections';
-import type { BengaliDoctor, Hospital } from '@/types';
-import { Search, Phone, ChevronRight, UserRound, Award, Languages, Building2, Stethoscope, Mail, ArrowLeft } from 'lucide-react';
+import type { BengaliStaff, Hospital } from '@/types';
+import { Search, Phone, ChevronRight, Users, Award, Languages, Building2, Stethoscope, Mail, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 
@@ -18,29 +18,27 @@ const SAMPLE_HOSPITALS: Record<string, Hospital> = {
   'h5': { id: 'h5', name: 'SIMS Hospital Chennai', city: 'Chennai', area: 'Vadapalani', specializations: [], is_24_7: true, has_bengali_doctor: true, images: ['/images/hospitals/sims-hospital.jpg'], created_at: '' }
 };
 
-const SAMPLE_DOCTORS: BengaliDoctor[] = [
-  { id: 'd1', doctor_name: 'Dr. Anirban Roy', specialization: 'Cardiologist', hospital_id: 'h1', experience: '15 years', languages: ['Bengali', 'English', 'Tamil'], photo: '', phone: '', email: '' },
-  { id: 'd2', doctor_name: 'Dr. Saptarshi Chatterjee', specialization: 'Neurologist', hospital_id: 'h2', experience: '12 years', languages: ['Bengali', 'English'], photo: '', phone: '', email: '' },
-  { id: 'd3', doctor_name: 'Dr. Debasish Banerjee', specialization: 'Orthopedic Surgeon', hospital_id: 'h3', experience: '20 years', languages: ['Bengali', 'English', 'Hindi'], photo: '', phone: '', email: '' },
-  { id: 'd4', doctor_name: 'Dr. Soumya Mukherjee', specialization: 'General Physician', hospital_id: 'h4', experience: '8 years', languages: ['Bengali', 'English', 'Tamil'], photo: '', phone: '', email: '' },
-  { id: 'd5', doctor_name: 'Dr. Priyanka Ghosh', specialization: 'Gynecologist', hospital_id: 'h5', experience: '10 years', languages: ['Bengali', 'English'], photo: '', phone: '', email: '' }
+const SAMPLE_STAFF: BengaliStaff[] = [
+  { id: 's1', name: 'Amit Roy', role: 'Nursing Staff', department: 'Cardiology', hospital_id: 'h1', experience: '5 years', languages: ['Bengali', 'Tamil', 'English'], photo: '', phone: '', email: '', availability: 'Day Shift', description: '' },
+  { id: 's2', name: 'Riya Das', role: 'Patient Coordinator', department: 'General', hospital_id: 'h2', experience: '3 years', languages: ['Bengali', 'English'], photo: '', phone: '', email: '', availability: '24/7 on call', description: '' },
+  { id: 's3', name: 'Sanjay Sen', role: 'Technician', department: 'Radiology', hospital_id: 'h3', experience: '8 years', languages: ['Bengali', 'Tamil', 'Hindi'], photo: '', phone: '', email: '', availability: 'Night Shift', description: '' }
 ];
 
-export default function BengaliDoctorsPage() {
-  const [doctors, setDoctors] = useState<BengaliDoctor[]>([]);
+export default function BengaliStaffPage() {
+  const [staffList, setStaffList] = useState<BengaliStaff[]>([]);
   const [hospitals, setHospitals] = useState<Record<string, Hospital>>({});
   const [loading, setLoading] = useState(true);
   
   const [search, setSearch] = useState('');
-  const [specialtyFilter, setSpecialtyFilter] = useState('');
+  const [roleFilter, setRoleFilter] = useState('');
   const [langFilter, setLangFilter] = useState('');
 
   useEffect(() => {
     async function loadData() {
       try {
-        const docSnap = await getDocs(collection(db, COLLECTIONS.bengali_doctors));
-        const docsData = docSnap.docs.map(doc => ({ id: doc.id, ...doc.data() } as BengaliDoctor));
-        setDoctors(docsData.length > 0 ? docsData : SAMPLE_DOCTORS);
+        const staffSnap = await getDocs(collection(db, COLLECTIONS.bengali_staff || 'bengali_staff'));
+        const docsData = staffSnap.docs.map(doc => ({ id: doc.id, ...doc.data() } as BengaliStaff));
+        setStaffList(docsData.length > 0 ? docsData : SAMPLE_STAFF);
         
         const hospSnap = await getDocs(collection(db, COLLECTIONS.hospitals));
         const hospData: Record<string, Hospital> = {};
@@ -49,7 +47,7 @@ export default function BengaliDoctorsPage() {
         });
         
         let finalHospitals = { ...hospData };
-        // If we fell back to SAMPLE_DOCTORS, we need to ensure the sample hospitals exist in the mapping
+        // If we fell back to SAMPLE_STAFF, we need to ensure the sample hospitals exist in the mapping
         if (docsData.length === 0) {
            finalHospitals = { ...SAMPLE_HOSPITALS, ...finalHospitals };
         }
@@ -61,7 +59,7 @@ export default function BengaliDoctorsPage() {
         }
       } catch (err) {
         console.error(err);
-        setDoctors(SAMPLE_DOCTORS);
+        setStaffList(SAMPLE_STAFF);
         setHospitals(SAMPLE_HOSPITALS);
       } finally {
         setLoading(false);
@@ -70,21 +68,21 @@ export default function BengaliDoctorsPage() {
     loadData();
   }, []);
 
-  const specialties = useMemo(() => Array.from(new Set(doctors.map(d => d.specialization).filter(Boolean))), [doctors]);
+  const roles = useMemo(() => Array.from(new Set(staffList.map(s => s.role).filter(Boolean))), [staffList]);
   const allLangs = useMemo(() => {
     const langs = new Set<string>();
-    doctors.forEach(d => d.languages?.forEach(l => langs.add(l)));
+    staffList.forEach(s => s.languages?.forEach(l => langs.add(l)));
     return Array.from(langs);
-  }, [doctors]);
+  }, [staffList]);
 
   const filtered = useMemo(() => {
-    return doctors.filter(d => {
-      if (specialtyFilter && d.specialization !== specialtyFilter) return false;
-      if (langFilter && (!d.languages || !d.languages.includes(langFilter))) return false;
-      if (search && !d.doctor_name.toLowerCase().includes(search.toLowerCase())) return false;
+    return staffList.filter(s => {
+      if (roleFilter && s.role !== roleFilter) return false;
+      if (langFilter && (!s.languages || !s.languages.includes(langFilter))) return false;
+      if (search && !s.name.toLowerCase().includes(search.toLowerCase())) return false;
       return true;
     });
-  }, [doctors, specialtyFilter, langFilter, search]);
+  }, [staffList, roleFilter, langFilter, search]);
 
   return (
     <div className="min-h-screen bg-surface">
@@ -94,7 +92,7 @@ export default function BengaliDoctorsPage() {
           <div className="flex items-center gap-2 text-sm text-text-muted mb-4">
             <Link href="/" className="hover:text-primary">Home</Link><span>/</span>
             <Link href="/emergency/hospitals" className="hover:text-primary">Hospitals</Link><span>/</span>
-            <span className="text-text-primary font-medium">Bengali Doctors</span>
+            <span className="text-text-primary font-medium">Bengali Staff</span>
           </div>
           
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
@@ -103,10 +101,10 @@ export default function BengaliDoctorsPage() {
                  <ArrowLeft className="w-4 h-4" /> Back to Emergency
               </Link>
               <h1 className="text-3xl sm:text-4xl font-bold font-display text-text-primary flex items-center gap-3">
-                <UserRound className="w-8 h-8 text-primary" />
-                Bengali Doctors Directory
+                <Users className="w-8 h-8 text-primary" />
+                Bengali Staff Directory
               </h1>
-              <p className="mt-2 text-text-muted">Find and connect with highly experienced Bengali-speaking doctors.</p>
+              <p className="mt-2 text-text-muted">Find and connect with Bengali-speaking support and administrative staff.</p>
             </div>
             
             <div className="flex gap-2">
@@ -123,17 +121,17 @@ export default function BengaliDoctorsPage() {
               <input 
                 value={search} 
                 onChange={(e) => setSearch(e.target.value)} 
-                placeholder="Search doctor name..." 
+                placeholder="Search staff name..." 
                 className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 bg-surface/50" 
               />
             </div>
             <select 
-              value={specialtyFilter} 
-              onChange={(e) => setSpecialtyFilter(e.target.value)} 
+              value={roleFilter} 
+              onChange={(e) => setRoleFilter(e.target.value)} 
               className="px-4 py-2.5 rounded-xl border border-border text-sm bg-surface/50 min-w-[150px] cursor-pointer"
             >
-              <option value="">All Specialties</option>
-              {specialties.map((s) => <option key={s} value={s}>{s}</option>)}
+              <option value="">All Roles</option>
+              {roles.map((r) => <option key={r} value={r}>{r}</option>)}
             </select>
             <select 
               value={langFilter} 
@@ -168,32 +166,32 @@ export default function BengaliDoctorsPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filtered.map((doctor) => {
-              const hospital = hospitals[doctor.hospital_id];
+            {filtered.map((staff) => {
+              const hospital = hospitals[staff.hospital_id];
               return (
-                <Card key={doctor.id} className="group hover:shadow-lg transition-all duration-300 relative overflow-hidden">
+                <Card key={staff.id} className="group hover:shadow-lg transition-all duration-300 relative overflow-hidden">
                   <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full -z-10 transition-transform group-hover:scale-110 duration-500" />
                   
                   <div className="flex items-start gap-4">
                     <div className="w-20 h-20 rounded-2xl bg-surface border-2 border-white shadow-md overflow-hidden shrink-0 relative">
-                      {doctor.photo ? (
-                        <img src={doctor.photo} alt={doctor.doctor_name} className="w-full h-full object-cover" />
+                      {staff.photo ? (
+                        <img src={staff.photo} alt={staff.name} className="w-full h-full object-cover" />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center bg-primary/10 text-primary">
-                          <Stethoscope className="w-8 h-8" />
+                          <Users className="w-8 h-8" />
                         </div>
                       )}
                     </div>
                     <div className="flex-1 pt-1">
                       <h3 className="text-lg font-bold text-text-primary leading-tight group-hover:text-primary transition-colors">
-                        {doctor.doctor_name}
+                        {staff.name}
                       </h3>
-                      <p className="text-primary font-medium text-sm mt-1">{doctor.specialization}</p>
+                      <p className="text-primary font-medium text-sm mt-1">{staff.role}</p>
                       
-                      {doctor.experience && (
+                      {staff.experience && (
                         <div className="flex items-center gap-1 mt-1.5 text-xs text-text-muted font-medium">
                           <Award className="w-3.5 h-3.5 text-amber-500" />
-                          {doctor.experience} Experience
+                          {staff.experience} Experience
                         </div>
                       )}
                     </div>
@@ -210,11 +208,11 @@ export default function BengaliDoctorsPage() {
                       </div>
                     )}
                     
-                    {doctor.languages && doctor.languages.length > 0 && (
+                    {staff.languages && staff.languages.length > 0 && (
                       <div className="flex items-start gap-2.5 text-sm text-text-primary px-1">
                         <Languages className="w-4 h-4 text-text-muted shrink-0 mt-0.5" />
                         <div className="flex flex-wrap gap-1">
-                          {doctor.languages.map(l => (
+                          {staff.languages.map(l => (
                             <span key={l} className="px-2 py-0.5 bg-surface rounded-md text-xs text-text-muted border border-border/50">
                               {l}
                             </span>
@@ -225,7 +223,7 @@ export default function BengaliDoctorsPage() {
                   </div>
 
                   <div className="mt-6 pt-4 border-t border-border flex items-center gap-2">
-                    <Link href={`/emergency/hospitals/bengali-doctors/${doctor.id}`} className="flex-1">
+                    <Link href={`/emergency/hospitals/bengali-staff/${staff.id}`} className="flex-1">
                       <Button variant="primary" size="sm" className="w-full">
                         View Profile
                       </Button>
@@ -238,8 +236,8 @@ export default function BengaliDoctorsPage() {
         )}
         {!loading && filtered.length === 0 && (
           <div className="text-center py-20 bg-white rounded-3xl border border-border mt-8">
-            <p className="text-5xl mb-4">👨‍⚕️</p>
-            <h3 className="text-xl font-bold mb-2">No doctors found</h3>
+            <p className="text-5xl mb-4">👥</p>
+            <h3 className="text-xl font-bold mb-2">No staff found</h3>
             <p className="text-text-muted">Try adjusting your search or filters.</p>
           </div>
         )}

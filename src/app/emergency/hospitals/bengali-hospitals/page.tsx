@@ -28,13 +28,22 @@ export default function BengaliHospitalsPage() {
 
   useEffect(() => {
     async function loadHospitals() {
-      setHospitals(SAMPLE_HOSPITALS);
-      setLoading(false);
+      try {
+        const snap = await getDocs(collection(db, COLLECTIONS.hospitals));
+        const data = snap.docs.map(doc => doc.data() as Hospital);
+        
+        // Only show hospitals that have a bengali doctor OR bengali staff OR are explicitly bengali hospitals
+        const bengaliHospitals = data.filter(h => h.has_bengali_doctor || h.has_bengali_staff);
+        
+        setHospitals(bengaliHospitals.length > 0 ? bengaliHospitals : SAMPLE_HOSPITALS);
+      } catch (err) {
+        console.error(err);
+        setHospitals(SAMPLE_HOSPITALS);
+      } finally {
+        setLoading(false);
+      }
     }
-    const handle = requestAnimationFrame(() => {
-      loadHospitals();
-    });
-    return () => cancelAnimationFrame(handle);
+    loadHospitals();
   }, []);
 
   const cities = useMemo(() => Array.from(new Set(hospitals.map(h => h.city).filter(Boolean))), [hospitals]);
@@ -55,7 +64,7 @@ export default function BengaliHospitalsPage() {
           <div className="flex items-center gap-2 text-sm text-text-muted mb-4">
             <Link href="/" className="hover:text-primary">Home</Link><span>/</span>
             <Link href="/emergency/hospitals" className="hover:text-primary">Hospitals</Link><span>/</span>
-            <span className="text-text-primary font-medium">Bengali Hospitals</span>
+            <span className="text-text-primary font-medium">Hospital Directory</span>
           </div>
           
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
@@ -65,7 +74,7 @@ export default function BengaliHospitalsPage() {
               </Link>
               <h1 className="text-3xl sm:text-4xl font-bold font-display text-text-primary flex items-center gap-3">
                 <Building2 className="w-8 h-8 text-primary" />
-                Bengali Hospitals Directory
+                Hospital Directory
               </h1>
               <p className="mt-2 text-text-muted">Find reliable hospitals with Bengali-speaking facilities and top-tier services.</p>
             </div>

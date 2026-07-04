@@ -54,8 +54,8 @@ async function seed() {
     console.log('No UID provided. Attempting to create default super admin in Firebase Auth...');
     try {
       const userRecord = await getAuth().createUser({
-        email: 'admin@probasibangali.in',
-        password: 'SuperAdmin123!',
+        email: 'admin@pro.in',
+        password: '9874563210',
         displayName: 'Super Admin',
       });
       SUPER_ADMIN_UID = userRecord.uid;
@@ -63,7 +63,7 @@ async function seed() {
     } catch (error: unknown) {
       const err = error as { code?: string; message?: string };
       if (err.code === 'auth/email-already-exists') {
-        const userRecord = await getAuth().getUserByEmail('admin@probasibangali.in');
+        const userRecord = await getAuth().getUserByEmail('admin@pro.in');
         SUPER_ADMIN_UID = userRecord.uid;
         console.log(`✅ Found existing super admin with UID: ${SUPER_ADMIN_UID}`);
       } else {
@@ -78,7 +78,7 @@ async function seed() {
   const now = new Date().toISOString();
   await db.collection('users').doc(SUPER_ADMIN_UID).set({
     uid: SUPER_ADMIN_UID,
-    email: 'admin@probasibangali.in',
+    email: 'admin@pro.in',
     full_name: 'Super Admin',
     role: 'superadmin',
     permissions: {

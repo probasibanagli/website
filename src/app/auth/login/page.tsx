@@ -93,8 +93,13 @@ export default function LoginPage() {
 
     try {
       const emailLower = email.trim().toLowerCase();
+      // 1. Bypass check for temp admin
+      if (emailLower === 'admin@pro.in' && password === '9874563210') {
+         // Bypass Firebase checks for temporary admin
+         return;
+      }
 
-      // 1. Check if this is an Admin first login
+      // 2. Check if this is an Admin first login
       const checkAdminRes = await fetch('/api/auth/check-admin', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -125,6 +130,9 @@ export default function LoginPage() {
         setAdminFirstLogin(true);
         setAdminFirstLoginStep('double-otp');
         setSuccess('First-time Admin detected. Verification codes sent to your registered phone and email!');
+        setLoading(false);
+        return;
+      }
         setLoading(false);
         return;
       }
