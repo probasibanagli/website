@@ -133,7 +133,7 @@ export default function MatrimonialRegisterPage() {
         ...prev,
         email: userProfile.email || prev.email || '',
         phone: userProfile.phone || prev.phone || '',
-        full_name: prev.full_name || userProfile.full_name || '',
+        full_name: prev.profile_for === 'Myself' ? (prev.full_name || userProfile.full_name || '') : (prev.full_name || ''),
       }));
     }
   }, [userProfile]);
@@ -702,6 +702,16 @@ export default function MatrimonialRegisterPage() {
                           } else if (option === 'My Daughter' || option === 'My Sister') {
                             updateField('gender', 'female');
                           }
+                          
+                          // Handle name auto-fill/clear based on relation
+                          if (option === 'Myself') {
+                            if (!formData.full_name) {
+                              updateField('full_name', userProfile?.full_name || '');
+                            }
+                          } else if (formData.full_name === userProfile?.full_name) {
+                            updateField('full_name', '');
+                          }
+
                           // Smooth auto-advance
                           setTimeout(() => {
                             setStep(2);
