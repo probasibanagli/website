@@ -4,22 +4,29 @@ const { getAuth } = require('firebase-admin/auth');
 require('dotenv').config({ path: '.env.local' });
 
 if (getApps().length === 0) {
-  initializeApp({
-    credential: cert({
-      projectId: process.env.FIREBASE_ADMIN_PROJECT_ID,
-      clientEmail: process.env.FIREBASE_ADMIN_CLIENT_EMAIL,
-      privateKey: process.env.FIREBASE_ADMIN_PRIVATE_KEY?.replace(/\\n/g, '\n'),
-    }),
-  });
+  try {
+    initializeApp({
+      credential: cert({
+        projectId: process.env.FIREBASE_ADMIN_PROJECT_ID,
+        clientEmail: process.env.FIREBASE_ADMIN_CLIENT_EMAIL,
+        privateKey: process.env.FIREBASE_ADMIN_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+      }),
+    });
+  } catch (error) {
+    console.warn('Firebase Admin cert init failed, falling back to default credential initialization...');
+    initializeApp({
+      projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'probasibangali-5c90f'
+    });
+  }
 }
 
 const db = getFirestore();
 const auth = getAuth();
 
 async function run() {
-  const email = 'admin@probasibangali.in';
+  const email = 'admin@pro.in';
   const password = 'SuperAdmin123!';
-  const phone = '+919626855406';
+  const phone = '+919874563210';
   let uid = '';
 
   console.log(`Setting up Super Admin: ${email}`);

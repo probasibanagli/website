@@ -72,19 +72,21 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const isSuperAdmin = profile.role === 'superadmin';
   const accessibleModules = getAccessibleModules(profile.role, profile.permissions);
 
-  const sidebarItems: { key: string; label: string; href: string; icon: React.ReactNode }[] = isSuperAdmin ? [
+  const sidebarItems: { key: string; label: string; href: string; icon: React.ReactNode }[] = [
     { key: 'dashboard', label: 'Dashboard', href: '/admin', icon: <LayoutDashboard className="w-4 h-4" /> },
-    { key: 'admin-mgmt', label: 'Admin Management', href: '/admin/users?tab=admins', icon: <Shield className="w-4 h-4" /> },
-    { key: 'user-mgmt', label: 'User Management', href: '/admin/users?tab=users', icon: <Users className="w-4 h-4" /> },
-    { key: 'activity-log', label: 'Activity Tracking', href: '/admin/users?tab=activities', icon: <Activity className="w-4 h-4" /> },
-  ] : [
-    { key: 'dashboard', label: 'Dashboard', href: '/admin', icon: <LayoutDashboard className="w-4 h-4" /> },
-    ...accessibleModules.map((mod) => ({
-      key: mod,
-      label: MODULE_LABELS[mod],
-      href: `/admin/${mod}`,
-      icon: moduleIcons[mod],
-    })),
+    ...(isSuperAdmin ? [
+      { key: 'admin-mgmt', label: 'Admin Management', href: '/admin/users?tab=admins', icon: <Shield className="w-4 h-4" /> },
+      { key: 'user-mgmt', label: 'User Management', href: '/admin/users?tab=users', icon: <Users className="w-4 h-4" /> },
+      { key: 'activity-log', label: 'Activity Tracking', href: '/admin/users?tab=activities', icon: <Activity className="w-4 h-4" /> },
+    ] : []),
+    ...accessibleModules
+      .filter((mod) => mod !== 'users')
+      .map((mod) => ({
+        key: mod,
+        label: MODULE_LABELS[mod],
+        href: `/admin/${mod}`,
+        icon: moduleIcons[mod],
+      })),
   ];
 
   const handleLogout = async () => {

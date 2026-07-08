@@ -3,14 +3,14 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { collection, getDocs, query, orderBy } from 'firebase/firestore';
+import { collection, getDocs, query, orderBy, doc, deleteDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useAuth } from '@/lib/auth/AuthContext';
 import type { UserProfile, ModuleKey, PermissionLevel } from '@/types';
 import { MODULE_LABELS } from '@/types';
 import {
   Shield, Crown, Search, ChevronRight, Check, X, Loader2,
-  UserPlus, Users, Trash2, Ban, UserCheck, Activity, Eye, Settings
+  UserPlus, Users, Trash2, Ban, UserCheck, Activity, Eye, Settings, ShieldCheck
 } from 'lucide-react';
 
 const ADMIN_DEFAULT_PERMISSIONS = {
@@ -50,13 +50,21 @@ export default function AdminUsersPage() {
   const { profile, firebaseUser } = useAuth();
   const [users, setUsers] = useState<UserProfile[]>([]);
   const [activities, setActivities] = useState<any[]>([]);
+  const [visitors, setVisitors] = useState<any[]>([]);
+
+  const getIdToken = async (): Promise<string> => {
+    if (!firebaseUser) return 'temp_token';
+    return typeof firebaseUser.getIdToken === 'function'
+      ? await firebaseUser.getIdToken()
+      : 'temp_token';
+  };
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'admins' | 'users' | 'activities'>('users');
+  const [activeTab, setActiveTab] = useState<'admins' | 'users' | 'activities' | 'visitors'>('users');
   const searchParams = useSearchParams();
   const tabParam = searchParams.get('tab');
 
   useEffect(() => {
-    if (tabParam === 'admins' || tabParam === 'users' || tabParam === 'activities') {
+    if (tabParam === 'admins' || tabParam === 'users' || tabParam === 'activities' || tabParam === 'visitors') {
       setActiveTab(tabParam);
     }
   }, [tabParam]);
@@ -81,17 +89,29 @@ export default function AdminUsersPage() {
 
   useEffect(() => {
     if (canView && firebaseUser) {
-      loadUsers();
-      if (isSuperAdmin) {
-        loadActivities();
-      }
+      loadData();
     }
   }, [canView, isSuperAdmin, firebaseUser]);
+
+  async function loadData() {
+    setLoading(true);
+    try {
+      await Promise.all([
+        loadUsers(),
+        loadVisitors(),
+        isSuperAdmin ? loadActivities() : Promise.resolve()
+      ]);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   async function loadUsers() {
     if (!firebaseUser) return;
     try {
-      const token = await firebaseUser.getIdToken();
+      const token = await getIdToken();
       const res = await fetch('/api/admin/users', {
         headers: {
           'Authorization': `Bearer ${token}`
@@ -101,7 +121,6 @@ export default function AdminUsersPage() {
       const data = await res.json() as { users: UserProfile[] };
       const list = data.users || [];
       
-      // Sort client-side safely to avoid Firestore index requirements
       list.sort((a, b) => {
         const dateA = a.created_at ? new Date(a.created_at).getTime() : 0;
         const dateB = b.created_at ? new Date(b.created_at).getTime() : 0;
@@ -110,16 +129,30 @@ export default function AdminUsersPage() {
       setUsers(list);
     } catch (e: any) {
       console.error('Error loading users:', e);
-      alert('Failed to load users: ' + (e.message || e));
-    } finally {
-      setLoading(false);
+    }
+  }
+
+  async function loadVisitors() {
+    try {
+      const snap = await getDocs(collection(db, 'otps'));
+      const list: any[] = [];
+      snap.forEach(doc => {
+        const data = doc.data();
+        if (data.verified) {
+          list.push({ id: doc.id, ...data });
+        }
+      });
+      list.sort((a, b) => (b.verifiedAt || 0) - (a.verifiedAt || 0));
+      setVisitors(list);
+    } catch (e) {
+      console.error('Error loading visitors:', e);
     }
   }
 
   async function loadActivities() {
     if (!firebaseUser) return;
     try {
-      const token = await firebaseUser.getIdToken();
+      const token = await getIdToken();
       const res = await fetch('/api/admin/activities', {
         headers: {
           'Authorization': `Bearer ${token}`
@@ -138,7 +171,7 @@ export default function AdminUsersPage() {
   async function handleToggleBlock(uid: string, currentActive: boolean) {
     if (!canEdit || !firebaseUser) return;
     try {
-      const token = await firebaseUser.getIdToken();
+      const token = await getIdToken();
       const res = await fetch(`/api/admin/users/${uid}`, {
         method: 'PATCH',
         headers: {
@@ -149,7 +182,6 @@ export default function AdminUsersPage() {
       });
       if (!res.ok) throw new Error('Failed to update status');
 
-      // Update state locally
       setUsers((prev) => prev.map((u) => u.uid === uid ? { ...u, is_active: !currentActive } : u));
       if (isSuperAdmin) loadActivities();
       alert(`User ${currentActive ? 'blocked' : 'unblocked'} successfully!`);
@@ -164,7 +196,7 @@ export default function AdminUsersPage() {
     if (!confirm('Are you sure you want to permanently delete this user? This action cannot be undone.')) return;
 
     try {
-      const token = await firebaseUser.getIdToken();
+      const token = await getIdToken();
       const res = await fetch(`/api/admin/users/${uid}`, {
         method: 'DELETE',
         headers: {
@@ -178,6 +210,19 @@ export default function AdminUsersPage() {
       alert('User account deleted permanently!');
     } catch (e: any) {
       alert(e.message || 'Error deleting user');
+    }
+  }
+
+  // Delete Visitor log
+  async function handleDeleteVisitor(id: string) {
+    if (!canManage) return;
+    if (!confirm('Are you sure you want to delete this visitor log?')) return;
+    try {
+      await deleteDoc(doc(db, 'otps', id));
+      setVisitors(prev => prev.filter(v => v.id !== id));
+      alert('Visitor verification log deleted successfully.');
+    } catch (err: any) {
+      alert('Failed to delete visitor log: ' + err.message);
     }
   }
 
@@ -198,16 +243,15 @@ export default function AdminUsersPage() {
       setCreateError('Please enter a valid 10-digit phone number.');
       return;
     }
-    const formattedPhone = '+91' + phoneDigits;
 
     setCreating(true);
     try {
-      const perms: Record<string, string> = { ...USER_DEFAULT_PERMISSIONS };
-      for (const [mod, isSelected] of Object.entries(selectedModules)) {
-        if (isSelected) perms[mod] = 'edit';
-      }
+      const perms: Record<string, string> = {};
+      AVAILABLE_MODULES.forEach(m => {
+        perms[m.key] = selectedModules[m.key] ? 'edit' : 'none';
+      });
 
-      const token = await firebaseUser.getIdToken();
+      const token = await getIdToken();
       const res = await fetch('/api/admin/users', {
         method: 'POST',
         headers: {
@@ -215,8 +259,10 @@ export default function AdminUsersPage() {
           'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
-          ...createForm,
-          phone: formattedPhone,
+          email: createForm.email.trim(),
+          password: createForm.password,
+          full_name: createForm.full_name.trim(),
+          phone: `+91${phoneDigits}`,
           role: 'admin',
           permissions: perms
         })
@@ -227,7 +273,6 @@ export default function AdminUsersPage() {
         throw new Error(data.error || 'Failed to create admin');
       }
 
-      // Log activity
       await fetch('/api/admin/activities', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -264,6 +309,16 @@ export default function AdminUsersPage() {
     return name.toLowerCase().includes(searchTerm.toLowerCase()) || email.toLowerCase().includes(searchTerm.toLowerCase());
   });
 
+  // Filter visitors
+  const registeredPhones = new Set(users.map(u => u.phone?.trim()).filter(Boolean));
+  const registeredEmails = new Set(users.map(u => u.email?.trim().toLowerCase()).filter(Boolean));
+
+  const filteredVisitors = visitors.filter((v) => {
+    const phone = v.phone || '';
+    const email = v.email || '';
+    return phone.toLowerCase().includes(searchTerm.toLowerCase()) || email.toLowerCase().includes(searchTerm.toLowerCase());
+  });
+
   if (!canView) {
     return (
       <div className="text-center py-20">
@@ -280,20 +335,15 @@ export default function AdminUsersPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-text-primary">
-            {isSuperAdmin
-              ? activeTab === 'admins'
-                ? 'Admin Management'
-                : activeTab === 'activities'
-                ? 'Activity Tracking'
-                : 'User Management'
-              : 'User Management'}
+            {activeTab === 'admins' ? 'Admin Management' :
+             activeTab === 'activities' ? 'Activity Tracking' :
+             activeTab === 'visitors' ? 'Directory Visitors' : 'User Management'}
           </h1>
           <p className="text-text-muted text-sm mt-1">
-            {activeTab === 'admins'
-              ? `${adminsList.length} total administrators`
-              : activeTab === 'activities'
-              ? `${activities.length} total activities logged`
-              : `${regularUsersList.length} total users registered`}
+            {activeTab === 'admins' ? `${adminsList.length} total administrators` :
+             activeTab === 'activities' ? `${activities.length} total activities logged` :
+             activeTab === 'visitors' ? `${visitors.length} directory visitors (OTP verified)` :
+             `${regularUsersList.length} total users registered`}
           </p>
         </div>
         {isSuperAdmin && activeTab === 'admins' && (
@@ -303,27 +353,43 @@ export default function AdminUsersPage() {
         )}
       </div>
 
-      {/* Tabs */}
-      {!isSuperAdmin && (
-        <div className="flex border-b border-border gap-6">
+      {/* Tabs Switcher */}
+      <div className="flex border-b border-border gap-6">
+        <button
+          onClick={() => setActiveTab('users')}
+          className={`pb-3 text-sm font-bold border-b-2 transition-colors cursor-pointer ${
+            activeTab === 'users' ? 'border-primary text-primary' : 'border-transparent text-text-muted hover:text-text-primary'
+          }`}
+        >
+          Users ({regularUsersList.length})
+        </button>
+        <button
+          onClick={() => setActiveTab('admins')}
+          className={`pb-3 text-sm font-bold border-b-2 transition-colors cursor-pointer ${
+            activeTab === 'admins' ? 'border-primary text-primary' : 'border-transparent text-text-muted hover:text-text-primary'
+          }`}
+        >
+          Admins ({adminsList.length})
+        </button>
+        <button
+          onClick={() => setActiveTab('visitors')}
+          className={`pb-3 text-sm font-bold border-b-2 transition-colors cursor-pointer ${
+            activeTab === 'visitors' ? 'border-primary text-primary' : 'border-transparent text-text-muted hover:text-text-primary'
+          }`}
+        >
+          Directory Visitors ({visitors.length})
+        </button>
+        {isSuperAdmin && (
           <button
-            onClick={() => setActiveTab('users')}
+            onClick={() => setActiveTab('activities')}
             className={`pb-3 text-sm font-bold border-b-2 transition-colors cursor-pointer ${
-              activeTab === 'users' ? 'border-primary text-primary' : 'border-transparent text-text-muted hover:text-text-primary'
+              activeTab === 'activities' ? 'border-primary text-primary' : 'border-transparent text-text-muted hover:text-text-primary'
             }`}
           >
-            Users ({regularUsersList.length})
+            Activity Logs ({activities.length})
           </button>
-          <button
-            onClick={() => setActiveTab('admins')}
-            className={`pb-3 text-sm font-bold border-b-2 transition-colors cursor-pointer ${
-              activeTab === 'admins' ? 'border-primary text-primary' : 'border-transparent text-text-muted hover:text-text-primary'
-            }`}
-          >
-            Admins ({adminsList.length})
-          </button>
-        </div>
-      )}
+        )}
+      </div>
 
       {/* Filters */}
       {activeTab !== 'activities' && (
@@ -331,7 +397,7 @@ export default function AdminUsersPage() {
           <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" />
           <input
             type="text"
-            placeholder={`Search ${activeTab}...`}
+            placeholder={`Search ${activeTab === 'visitors' ? 'visitors by phone/email' : activeTab}...`}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-10 pr-4 py-2.5 bg-white border border-border rounded-xl text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary/20"
@@ -451,31 +517,23 @@ export default function AdminUsersPage() {
                           </div>
                         </td>
                         <td className="px-5 py-4">
-                          {u.role === 'superadmin' ? (
-                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-700 text-xs font-bold">
-                              <Crown className="w-3.5 h-3.5" /> Super Admin
-                            </span>
-                          ) : (
-                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-primary/10 text-primary text-xs font-bold">
-                              <Shield className="w-3.5 h-3.5" /> Admin
-                            </span>
-                          )}
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200 uppercase">
+                            {u.role}
+                          </span>
                         </td>
                         <td className="px-5 py-4">
                           {u.role === 'superadmin' ? (
-                            <span className="text-xs text-text-muted font-medium">All Permissions (Full Access)</span>
-                          ) : (
-                            <div className="flex flex-wrap gap-1 max-w-sm">
-                              {activePermissions.length === 0 ? (
-                                <span className="text-xs text-text-muted italic">No Permissions assigned</span>
-                              ) : (
-                                activePermissions.map((mod) => (
-                                  <span key={mod} className="inline-flex items-center text-[10px] font-semibold px-2 py-0.5 bg-surface border border-border rounded-full text-text-muted">
-                                    {MODULE_LABELS[mod as ModuleKey] || mod}
-                                  </span>
-                                ))
-                              )}
+                            <span className="text-xs font-semibold text-amber-700">All permissions granted</span>
+                          ) : activePermissions.length > 0 ? (
+                            <div className="flex flex-wrap gap-1">
+                              {activePermissions.map(p => (
+                                <span key={p} className="px-2 py-0.5 rounded bg-surface border border-border text-[10px] font-semibold text-text-muted capitalize">
+                                  {MODULE_LABELS[p as ModuleKey] || p}
+                                </span>
+                              ))}
                             </div>
+                          ) : (
+                            <span className="text-xs text-text-muted">No permissions</span>
                           )}
                         </td>
                         <td className="px-5 py-4">
@@ -513,7 +571,65 @@ export default function AdminUsersPage() {
             </div>
           )}
 
-          {/* TAB 3: ACTIVITY LOGS */}
+          {/* TAB 3: VISITORS */}
+          {activeTab === 'visitors' && (
+            <div className="bg-white rounded-2xl border border-border overflow-hidden shadow-sm">
+              <table className="w-full">
+                <thead>
+                  <tr className="bg-surface/50 border-b border-border">
+                    <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Visitor Phone</th>
+                    <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Email Address</th>
+                    <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">User Classification</th>
+                    <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Verified Time</th>
+                    {(canManage) && <th className="text-right px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Actions</th>}
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border">
+                  {filteredVisitors.map((v) => {
+                    const isRegPhone = v.phone && registeredPhones.has(v.phone.trim());
+                    const isRegEmail = v.email && registeredEmails.has(v.email.trim().toLowerCase());
+                    const isRegistered = isRegPhone || isRegEmail;
+                    
+                    return (
+                      <tr key={v.id} className="hover:bg-surface transition-colors">
+                        <td className="px-5 py-4 text-sm font-semibold text-text-primary">{v.phone || '—'}</td>
+                        <td className="px-5 py-4 text-sm text-text-muted">{v.email || '—'}</td>
+                        <td className="px-5 py-4">
+                          {isRegistered ? (
+                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-green-50 text-green-700 border border-green-200">
+                              <ShieldCheck className="w-3.5 h-3.5 text-green-600 mr-1" /> Registered Member
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-50 text-blue-700 border border-blue-200">
+                              New Visitor
+                            </span>
+                          )}
+                        </td>
+                        <td className="px-5 py-4 text-xs text-text-muted">
+                          {v.verifiedAt ? new Date(v.verifiedAt).toLocaleString('en-IN') : '—'}
+                        </td>
+                        {canManage && (
+                          <td className="px-5 py-4 text-right">
+                            <button
+                              onClick={() => handleDeleteVisitor(v.id)}
+                              className="p-2 rounded-xl border border-red-100 text-red-500 hover:bg-red-50 transition-colors cursor-pointer"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </td>
+                        )}
+                      </tr>
+                    );
+                  })}
+                  {filteredVisitors.length === 0 && (
+                    <tr><td colSpan={5} className="px-5 py-12 text-center text-text-muted text-sm italic">No visitors found</td></tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          {/* TAB 4: ACTIVITY LOGS */}
           {activeTab === 'activities' && isSuperAdmin && (
             <div className="bg-white rounded-2xl border border-border overflow-hidden shadow-sm">
               <table className="w-full">

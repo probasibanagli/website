@@ -42,7 +42,7 @@ export default function DoctorDetailsPage({ params }: { params: Promise<{ id: st
   const id = resolvedParams.id;
   
   const [doctor, setDoctor] = useState<BengaliDoctor | null>(null);
-  const [hospital, setHospital] = useState<Hospital | null>(null);
+  const [associatedHospitals, setAssociatedHospitals] = useState<Hospital[]>([]);
   const [loading, setLoading] = useState(true);
   const [isVerified, setIsVerified] = useState(false);
   const [showOtpModal, setShowOtpModal] = useState(false);
@@ -50,45 +50,46 @@ export default function DoctorDetailsPage({ params }: { params: Promise<{ id: st
   const router = useRouter();
 
   useEffect(() => {
-    const verified = localStorage.getItem('directory_verified') === 'true';
-    if (!verified) {
-      router.replace(`/emergency/hospitals/general/verify?redirect=/emergency/hospitals/bengali-doctors/${id}`);
-      return;
+    async function loadDoctorAndCheckOtp() {
+      try {
+        const docSnap = await getDoc(doc(db, COLLECTIONS.bengali_doctors, id));
+        if (docSnap.exists()) {
+          const d = { id: docSnap.id, ...docSnap.data() } as BengaliDoctor;
+          setDoctor(d);
+          
+          const verified = localStorage.getItem('directory_verified') === 'true';
+          const otpRequired = d.otp_required !== false;
+          
+          if (otpRequired && !verified) {
+            router.replace(`/emergency/hospitals/general/verify?redirect=/emergency/hospitals/bengali-doctors/${id}`);
+            return;
+          }
+          
+          setIsVerified(true);
+          
+          // Fetch associated hospitals
+          const hospIds = d.hospital_ids || (d.hospital_id ? [d.hospital_id] : []);
+          const hospData: Hospital[] = [];
+          for (const hid of hospIds) {
+            const hSnap = await getDoc(doc(db, COLLECTIONS.hospitals, hid));
+            if (hSnap.exists()) {
+              hospData.push({ id: hSnap.id, ...hSnap.data() } as Hospital);
+            }
+          }
+          setAssociatedHospitals(hospData);
+        }
+      } catch (e) {
+        console.error("Error loading doctor data:", e);
+      } finally {
+        setLoading(false);
+      }
     }
-    setIsVerified(true);
+    loadDoctorAndCheckOtp();
   }, [id, router]);
 
   const canViewContact = isVerified;
 
-  useEffect(() => {
-    if (isVerified) {
-      loadData();
-    }
-  }, [id, isVerified]);
-
-  const loadData = async () => {
-    try {
-      const docSnap = await getDoc(doc(db, COLLECTIONS.bengali_doctors, id));
-      if (docSnap.exists()) {
-        const d = { id: docSnap.id, ...docSnap.data() } as BengaliDoctor;
-        setDoctor(d);
-        
-        // Fetch hospital
-        if (d.hospital_id) {
-          const hSnap = await getDoc(doc(db, COLLECTIONS.hospitals, d.hospital_id));
-          if (hSnap.exists()) {
-            setHospital({ id: hSnap.id, ...hSnap.data() } as Hospital);
-          }
-        }
-      }
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  if (loading || !isVerified) {
+  if (loading) {
     return (
       <div className="min-h-screen bg-surface flex items-center justify-center">
          <div className="w-10 h-10 border-3 border-primary border-t-transparent rounded-full animate-spin" />
@@ -197,16 +198,20 @@ export default function DoctorDetailsPage({ params }: { params: Promise<{ id: st
               {/* Hospital Affiliation */}
               <div className="p-5 rounded-2xl bg-surface/50 border border-border/50">
                 <h3 className="font-semibold text-text-primary mb-3 flex items-center gap-2">
-                  <Building2 className="w-4 h-4 text-primary" /> Associated Hospital
+                  <Building2 className="w-4 h-4 text-primary" /> Associated Hospitals
                 </h3>
-                {hospital ? (
-                  <Link href={`/emergency/hospitals/${hospital.id}`} className="block group">
-                    <p className="font-bold text-text-primary group-hover:text-primary transition-colors">{hospital.name}</p>
-                    <p className="text-sm text-text-muted mt-1">{hospital.city} • {hospital.area}</p>
-                  </Link>
-                ) : (
-                  <p className="text-sm text-text-muted">Hospital information not available.</p>
-                )}
+                <div className="space-y-3">
+                  {associatedHospitals.length > 0 ? (
+                    associatedHospitals.map(h => (
+                      <Link key={h.id} href={`/emergency/hospitals/${h.id}`} className="block group border-b border-border/50 pb-2 last:border-b-0 last:pb-0">
+                        <p className="font-bold text-text-primary group-hover:text-primary transition-colors">{h.name}</p>
+                        <p className="text-xs text-text-muted mt-0.5">{h.city} • {h.area}</p>
+                      </Link>
+                    ))
+                  ) : (
+                    <p className="text-sm text-text-muted">No associated hospitals configured.</p>
+                  )}
+                </div>
               </div>
 
               {/* Contact Information */}

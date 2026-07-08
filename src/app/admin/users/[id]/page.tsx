@@ -63,7 +63,9 @@ export default function EditUserPage() {
 
     setSaving(true);
     try {
-      const token = await firebaseUser.getIdToken();
+      const token = typeof firebaseUser.getIdToken === 'function'
+        ? await firebaseUser.getIdToken()
+        : 'temp_token';
       const res = await fetch(`/api/admin/users/${userId}`, {
         method: 'PATCH',
         headers: {

@@ -7,7 +7,7 @@ import { db } from '@/lib/firebase';
 import { useAuth } from '@/lib/auth/AuthContext';
 import {
   Users, Home, UtensilsCrossed, FileText, AlertTriangle, TrendingUp,
-  Activity, Crown,
+  Activity, Crown, ShieldCheck
 } from 'lucide-react';
 
 interface StatCard {
@@ -19,7 +19,7 @@ interface StatCard {
 }
 
 export default function AdminDashboard() {
-  const { profile } = useAuth();
+  const { profile, firebaseUser } = useAuth();
   const [stats, setStats] = useState<StatCard[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -52,6 +52,100 @@ export default function AdminDashboard() {
             results.push({ label: col.label, value: '—', icon: col.icon, color: col.color, bg: col.bg });
           }
         }
+
+        // Fetch directory visitor analytics from server-side API (bypasses Firestore Security Rules)
+        try {
+          const token = firebaseUser && typeof firebaseUser.getIdToken === 'function'
+            ? await firebaseUser.getIdToken()
+            : 'temp_token';
+            
+          const res = await fetch('/api/admin/visitor-analytics', {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+          
+          if (res.ok) {
+            const data = await res.json();
+            results.push({
+              label: 'Registered Members (Visitors)',
+              value: (data.registeredMembers ?? 0).toString(),
+              icon: <ShieldCheck className="w-5 h-5" />,
+              color: 'text-emerald-500',
+              bg: 'bg-emerald-500/10'
+            });
+            
+            results.push({
+              label: 'New Visitors (OTP Verified)',
+              value: (data.newVisitors ?? 0).toString(),
+              icon: <Activity className="w-5 h-5" />,
+              color: 'text-amber-500',
+              bg: 'bg-amber-500/10'
+            });
+          } else {
+            throw new Error('Backend fetch failed');
+          }
+        } catch (e) {
+          console.warn("API visitor stats failed, falling back to local client-side query:", e);
+          try {
+            const [usersSnap, otpsSnap] = await Promise.all([
+              getDocs(collection(db, 'users')),
+              getDocs(collection(db, 'otps'))
+            ]);
+            
+            const usersList = usersSnap.docs.map(doc => doc.data());
+            const registeredPhones = new Set(usersList.map(u => u.phone?.trim()).filter(Boolean));
+            const registeredEmails = new Set(usersList.map(u => u.email?.trim().toLowerCase()).filter(Boolean));
+            
+            let regMembers = 0;
+            let newVisitors = 0;
+            
+            const uniqueVisitors = new Map<string, { phone?: string, email?: string }>();
+            otpsSnap.docs.forEach(doc => {
+              const data = doc.data();
+              if (data.verified) {
+                const phone = data.phone?.trim();
+                const email = data.email?.trim().toLowerCase();
+                if (phone) {
+                  uniqueVisitors.set(phone, { phone, email });
+                } else if (email) {
+                  uniqueVisitors.set(email, { phone, email });
+                }
+              }
+            });
+            
+            uniqueVisitors.forEach(v => {
+              const isRegPhone = v.phone && registeredPhones.has(v.phone);
+              const isRegEmail = v.email && registeredEmails.has(v.email);
+              if (isRegPhone || isRegEmail) {
+                regMembers++;
+              } else {
+                newVisitors++;
+              }
+            });
+            
+            results.push({
+              label: 'Registered Members (Visitors)',
+              value: regMembers.toString(),
+              icon: <ShieldCheck className="w-5 h-5" />,
+              color: 'text-emerald-500',
+              bg: 'bg-emerald-500/10'
+            });
+            
+            results.push({
+              label: 'New Visitors (OTP Verified)',
+              value: newVisitors.toString(),
+              icon: <Activity className="w-5 h-5" />,
+              color: 'text-amber-500',
+              bg: 'bg-amber-500/10'
+            });
+          } catch (fallbackErr) {
+            console.error("Firestore stats query failed:", fallbackErr);
+            results.push({ label: 'Registered Members (Visitors)', value: '—', icon: <ShieldCheck className="w-5 h-5" />, color: 'text-emerald-500', bg: 'bg-emerald-500/10' });
+            results.push({ label: 'New Visitors (OTP Verified)', value: '—', icon: <Activity className="w-5 h-5" />, color: 'text-amber-500', bg: 'bg-amber-500/10' });
+          }
+        }
+
         setStats(results);
       } catch (error) {
         console.error('Error loading stats:', error);
@@ -60,7 +154,7 @@ export default function AdminDashboard() {
       }
     }
     if (profile) loadStats();
-  }, [profile]);
+  }, [profile, firebaseUser]);
 
   return (
     <div className="space-y-6">

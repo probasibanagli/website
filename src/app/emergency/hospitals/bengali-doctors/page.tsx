@@ -182,7 +182,7 @@ export default function BengaliDoctorsPage() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filtered.map((doctor) => {
-              const hospital = hospitals[doctor.hospital_id];
+              const hospital = doctor.hospital_id ? hospitals[doctor.hospital_id] : undefined;
               return (
                 <Card key={doctor.id} className="group hover:shadow-lg transition-all duration-300 relative overflow-hidden">
                   <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full -z-10 transition-transform group-hover:scale-110 duration-500" />
