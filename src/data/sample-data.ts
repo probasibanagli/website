@@ -1395,39 +1395,45 @@ export const sampleBloodBanks: BloodBank[] = [
 ];
 
 export const sampleCommunityGroups: CommunityGroup[] = [
-  // ── WhatsApp Groups ──
-  { id: '1', name: 'Bengalis in Chennai', platform: 'whatsapp', city: 'Chennai', region: 'tamil_nadu', description: 'Main WhatsApp group for all Bengalis in Chennai. Share tips, find help, and connect!', member_count: 450, join_url: 'https://chat.whatsapp.com/example1', category: 'general' },
-  { id: '2', name: 'Bengali Students TN', platform: 'telegram', city: 'Chennai', region: 'tamil_nadu', description: 'Students from Bengal studying in Tamil Nadu colleges. Exam tips, notes, and fun!', member_count: 320, join_url: 'https://t.me/example2', category: 'students' },
-  { id: '3', name: 'Bengali Professionals Chennai', platform: 'whatsapp', city: 'Chennai', region: 'tamil_nadu', description: 'Working professionals group for networking, job referrals and meetups.', member_count: 180, join_url: 'https://chat.whatsapp.com/example3', category: 'professionals' },
-  { id: '4', name: 'Bangali Mohila Sangha', platform: 'whatsapp', city: 'Chennai', region: 'tamil_nadu', description: 'Women-only group for Bengali women in Chennai. Support, recipes, and community.', member_count: 200, join_url: 'https://chat.whatsapp.com/example4', category: 'women' },
-  { id: '5', name: 'VIT Bengali Students', platform: 'whatsapp', city: 'Vellore', region: 'tamil_nadu', description: 'Bengali students at VIT Vellore. Campus life, events, and help.', member_count: 280, join_url: 'https://chat.whatsapp.com/example5', category: 'students' },
-  { id: '6', name: 'Bangali Adda Coimbatore', platform: 'facebook', city: 'Coimbatore', region: 'tamil_nadu', description: 'Facebook group for Bengalis in Coimbatore. Events, food finds, and meetups.', member_count: 150, join_url: 'https://facebook.com/groups/example6', facebook_url: 'https://facebook.com/groups/example6', category: 'general' },
+  // ── Chennai – Cultural Associations ──
+  { id: '1', name: 'The Bengal Association', platform: 'website', city: 'Chennai', region: 'tamil_nadu', description: 'One of the oldest Bengali cultural associations in Chennai.', member_count: 5000, join_url: 'https://www.thebengalassociation.com/', website_url: 'https://www.thebengalassociation.com/', facebook_url: 'https://www.facebook.com/thebengalassociation', category: 'cultural' },
+  { id: '2', name: 'South Madras Cultural Association', platform: 'website', city: 'Chennai', region: 'tamil_nadu', description: 'SMCA – Bengali cultural body in South Chennai. Durga Puja, events, and community support.', member_count: 3200, join_url: 'https://smcachennai.in/', website_url: 'https://smcachennai.in/', facebook_url: 'https://www.facebook.com/groups/226071534104132/', instagram_url: 'https://www.instagram.com/smcachennai/', category: 'cultural' },
+  { id: '3', name: 'Dakshini Society', platform: 'website', city: 'Chennai', region: 'tamil_nadu', description: 'Dakshini Society – a Bengali community group in Chennai.', member_count: 2000, join_url: 'https://dakshinisociety.com/', website_url: 'https://dakshinisociety.com/', facebook_url: 'https://www.facebook.com/Dakshinifamily?mibextid=ZbWKwL', category: 'cultural' },
+  { id: '4', name: 'Dakshin Chennai Prabasi Cultural Association', platform: 'website', city: 'Chennai', region: 'tamil_nadu', description: 'DCPCA – Bengali cultural association serving the OMR/South Chennai community.', member_count: 2500, join_url: 'https://www.dcpca.in/', website_url: 'https://www.dcpca.in/', facebook_url: 'https://www.facebook.com/groups/245993940185955', instagram_url: 'https://www.instagram.com/dcpca_omr/', linkedin_url: 'https://www.linkedin.com/in/dcpca-association-023579289/', category: 'cultural' },
+  { id: '5', name: 'Chetla Agrani Club', platform: 'website', city: 'Chennai', region: 'tamil_nadu', description: 'Chetla Agrani Club – Bengali cultural and social club in Chennai.', member_count: 1800, join_url: 'https://chetlaagraniclub.com/', website_url: 'https://chetlaagraniclub.com/', facebook_url: 'https://www.facebook.com/ChetlaAgraniClub/', instagram_url: 'https://www.instagram.com/chetla_agrani/', category: 'cultural' },
+  { id: '6', name: 'Bengali Cultural Association', platform: 'website', city: 'Chennai', region: 'tamil_nadu', description: 'Bengali Cultural Association in Chennai.', member_count: 1500, join_url: 'https://www.dcpca.in/', website_url: 'https://www.dcpca.in/', facebook_url: 'https://www.facebook.com/profile.php?id=61558647747693', instagram_url: 'https://www.instagram.com/dcpca_omr/', category: 'cultural' },
 
-  // ── Bengali Association Instagram ──
-  { id: 'ig-1', name: 'Bengali Association Chennai', platform: 'instagram', city: 'Chennai', region: 'tamil_nadu', description: 'Official Instagram of Bengali Association Chennai. Cultural updates, Durga Puja photos, community news.', member_count: 2800, join_url: 'https://instagram.com/bengali_assoc_chennai', instagram_url: 'https://instagram.com/bengali_assoc_chennai', category: 'general' },
-  { id: 'ig-2', name: 'Probasi Bangali TN', platform: 'instagram', city: 'Chennai', region: 'tamil_nadu', description: 'Tamil Nadu-wide Bengali community on Instagram. Events, meetups, and cultural showcases.', member_count: 5200, join_url: 'https://instagram.com/probasibangali_tn', instagram_url: 'https://instagram.com/probasibangali_tn', category: 'general' },
-  { id: 'ig-3', name: 'Bengali Students Tamil Nadu', platform: 'instagram', city: 'Chennai', region: 'tamil_nadu', description: 'Student life in TN — campus stories, exam prep, and Bengali nostalgia.', member_count: 1500, join_url: 'https://instagram.com/bengali_students_tn', instagram_url: 'https://instagram.com/bengali_students_tn', category: 'students' },
-  { id: 'ig-4', name: 'Bengalis in Coimbatore', platform: 'instagram', city: 'Coimbatore', region: 'tamil_nadu', description: 'Coimbatore Bengali community Instagram. Food, culture, and networking.', member_count: 900, join_url: 'https://instagram.com/bengalis_coimbatore', instagram_url: 'https://instagram.com/bengalis_coimbatore', category: 'general' },
-  { id: 'ig-5', name: 'Bengali Association India', platform: 'instagram', region: 'india', description: 'Pan-India Bengali community page. Connecting Bengalis across all states.', member_count: 15000, join_url: 'https://instagram.com/bengali_assoc_india', instagram_url: 'https://instagram.com/bengali_assoc_india', category: 'general' },
-  { id: 'ig-6', name: 'NRI Bangali Network', platform: 'instagram', region: 'all', description: 'Global Bengali diaspora network. Connecting Bengalis worldwide through culture and heritage.', member_count: 25000, join_url: 'https://instagram.com/nri_bangali', instagram_url: 'https://instagram.com/nri_bangali', category: 'general' },
-  { id: 'ig-7', name: 'Probasi Bangali Worldwide', platform: 'instagram', region: 'all', description: 'International platform for Bengalis living outside Bengal. Events, culture, and connections.', member_count: 18000, join_url: 'https://instagram.com/probasibangali_world', instagram_url: 'https://instagram.com/probasibangali_world', category: 'general' },
+  // ── Chennai – Facebook Community Groups ──
+  { id: '7', name: 'Bengali Sangha Avadi', platform: 'facebook', city: 'Chennai', region: 'tamil_nadu', description: 'Bengali Sangha Avadi – Bengali community group in the Avadi area of Chennai.', member_count: 800, join_url: 'https://www.facebook.com/groups/356921118761909/', facebook_url: 'https://www.facebook.com/groups/356921118761909/', category: 'cultural' },
+  { id: '8', name: 'Bengali Milon Sangho', platform: 'facebook', city: 'Chennai', region: 'tamil_nadu', description: 'Bengali Milon Sangho – a Facebook community for Bengalis in Chennai.', member_count: 1200, join_url: 'https://www.facebook.com/groups/3268377266791010', facebook_url: 'https://www.facebook.com/groups/3268377266791010', category: 'cultural' },
+  { id: '9', name: 'South Chennai Bengalees', platform: 'facebook', city: 'Chennai', region: 'tamil_nadu', description: 'South Chennai Bengalees – Facebook group for Bengali residents of South Chennai.', member_count: 2200, join_url: 'https://www.facebook.com/groups/2283898985246706/', facebook_url: 'https://www.facebook.com/groups/2283898985246706/', category: 'general' },
+  { id: '10', name: 'Bengali in OMR', platform: 'website', city: 'Chennai', region: 'tamil_nadu', description: 'Bengali in OMR – community group for Bengalis living along the OMR corridor in Chennai.', member_count: 3000, join_url: 'https://obmschennai.in/', website_url: 'https://obmschennai.in/', facebook_url: 'https://www.facebook.com/groups/1656951674390382', instagram_url: 'https://www.instagram.com/obmschennai4/?g=5', category: 'general' },
 
-  // ── Bengali Association Facebook ──
-  { id: 'fb-1', name: 'Bengali Association Chennai', platform: 'facebook', city: 'Chennai', region: 'tamil_nadu', description: 'Official Facebook group of Bengali Association Chennai. Community events, discussions, and help.', member_count: 3500, join_url: 'https://facebook.com/groups/bengali_chennai', facebook_url: 'https://facebook.com/groups/bengali_chennai', category: 'general' },
-  { id: 'fb-2', name: 'Bangali Samaj Tamil Nadu', platform: 'facebook', region: 'tamil_nadu', description: 'Tamil Nadu-wide Bengali Samaj community. Puja committees, cultural events, and support network.', member_count: 4200, join_url: 'https://facebook.com/groups/bangali_samaj_tn', facebook_url: 'https://facebook.com/groups/bangali_samaj_tn', category: 'general' },
-  { id: 'fb-3', name: 'Bengalis in India', platform: 'facebook', region: 'india', description: 'Pan-India Facebook community for Bengalis. Job posts, cultural discussions, and networking.', member_count: 28000, join_url: 'https://facebook.com/groups/bengalis_india', facebook_url: 'https://facebook.com/groups/bengalis_india', category: 'general' },
-  { id: 'fb-4', name: 'Global Bengali Forum', platform: 'facebook', region: 'all', description: 'Worldwide forum for Bengali diaspora. Heritage, literature, and global meetups.', member_count: 45000, join_url: 'https://facebook.com/groups/global_bengali', facebook_url: 'https://facebook.com/groups/global_bengali', category: 'general' },
+  // ── Chennai – Religious / Puja ──
+  { id: '11', name: 'Durgapuja Ramakrishna Math Chennai', platform: 'website', city: 'Chennai', region: 'tamil_nadu', description: 'Ramakrishna Math Chennai – Durga Puja celebrations and spiritual activities.', member_count: 4000, join_url: 'https://chennaimath.org/', website_url: 'https://chennaimath.org/', facebook_url: 'https://www.facebook.com/ramakrishnamath', instagram_url: 'https://www.instagram.com/ramakrishnamath', category: 'religious' },
+  { id: '12', name: 'Madras Kali Bari', platform: 'website', city: 'Chennai', region: 'tamil_nadu', description: 'Madras Kali Bari – one of the oldest Bengali temples in Chennai.', member_count: 3500, join_url: 'https://www.madraskalibari.com/', website_url: 'https://www.madraskalibari.com/', facebook_url: 'https://www.facebook.com/madraskalibari.chennai/', instagram_url: 'https://www.instagram.com/explore/locations/74865356/madras-kali-bari/', category: 'religious' },
+  { id: '13', name: 'Korattur Pooja Association', platform: 'facebook', city: 'Chennai', region: 'tamil_nadu', description: 'Korattur Pooja Association – organises Durga Puja and cultural events in Korattur, Chennai.', member_count: 600, join_url: 'https://www.facebook.com/groups/6869883776369306/', facebook_url: 'https://www.facebook.com/groups/6869883776369306/', instagram_url: 'https://www.instagram.com/koratturpujaassociation/', category: 'religious' },
+  { id: '14', name: 'Madambakkam Kali Bari', platform: 'facebook', city: 'Chennai', region: 'tamil_nadu', description: 'Madambakkam Kali Bari – Kali temple and Bengali community in Madambakkam, Chennai.', member_count: 500, join_url: 'https://www.facebook.com/madambakkamkalitemple/', facebook_url: 'https://www.facebook.com/madambakkamkalitemple/', category: 'religious' },
+  { id: '15', name: 'Nandavanam Durgotsav Committee', platform: 'facebook', city: 'Chennai', region: 'tamil_nadu', description: 'Nandavanam Durgotsav Committee – organises Durga Puja in Nandavanam, Chennai.', member_count: 700, join_url: 'https://www.facebook.com/groups/228305683303138/', facebook_url: 'https://www.facebook.com/groups/228305683303138/', category: 'religious' },
+  { id: '16', name: 'Anya Mukh Durgotsov', platform: 'website', city: 'Chennai', region: 'tamil_nadu', description: 'Anya Mukh Durgotsov – Durga Puja celebrations and Bengali cultural events in Chennai.', member_count: 900, join_url: 'https://www.anyamukh.com/', website_url: 'https://www.anyamukh.com/', facebook_url: 'https://www.facebook.com/people/%E0%A6%85%E0%A6%A8%E0%A7%8D%E0%A6%AF-%E0%A6%AE%E0%A7%81%E0%A6%96/100083421592158/', instagram_url: 'https://www.instagram.com/anyamukh?igsh=MW1tbDJ1Z21iY2EwdQ%3D%3D', category: 'religious' },
+  { id: '17', name: 'The Assam Spiritual Society Durgotsav', platform: 'facebook', city: 'Chennai', region: 'tamil_nadu', description: 'Assam Spiritual Society Durgotsav celebration at Odisha Bhawan, Chennai.', member_count: 400, join_url: 'https://www.facebook.com/events/odisha-bhawan-chennai/assam-spiritual-society-durga-puja-2025/1992510888183625/', facebook_url: 'https://www.facebook.com/events/odisha-bhawan-chennai/assam-spiritual-society-durga-puja-2025/1992510888183625/', category: 'religious' },
 
-  // ── Bengali Association LinkedIn ──
-  { id: 'li-1', name: 'Bengali Professionals TN', platform: 'linkedin', city: 'Chennai', region: 'tamil_nadu', description: 'Professional networking for Bengalis in Tamil Nadu. Job opportunities, career advice, and industry connections.', member_count: 1200, join_url: 'https://linkedin.com/groups/bengali-professionals-tn', linkedin_url: 'https://linkedin.com/groups/bengali-professionals-tn', category: 'professionals' },
-  { id: 'li-2', name: 'Bengali Entrepreneurs India', platform: 'linkedin', region: 'india', description: 'Network of Bengali entrepreneurs and business professionals across India. Startups, investments, and mentorship.', member_count: 5600, join_url: 'https://linkedin.com/groups/bengali-entrepreneurs', linkedin_url: 'https://linkedin.com/groups/bengali-entrepreneurs', category: 'professionals' },
-  { id: 'li-3', name: 'Bengali Tech Network', platform: 'linkedin', region: 'all', description: 'Global community of Bengali tech professionals. Hiring, projects, and knowledge sharing.', member_count: 8900, join_url: 'https://linkedin.com/groups/bengali-tech', linkedin_url: 'https://linkedin.com/groups/bengali-tech', category: 'professionals' },
+  // ── Coimbatore ──
+  { id: '18', name: 'The Bengali Association Coimbatore', platform: 'website', city: 'Coimbatore', region: 'tamil_nadu', description: 'The Bengali Association Coimbatore – cultural body for Bengalis in Coimbatore.', member_count: 1500, join_url: 'https://www.bengaliassociationcoimbatore.com/', website_url: 'https://www.bengaliassociationcoimbatore.com/', facebook_url: 'https://www.facebook.com/tbacbe', category: 'cultural' },
+  { id: '19', name: 'Durgapuja Ramakrishna Math Coimbatore', platform: 'website', city: 'Coimbatore', region: 'tamil_nadu', description: 'Ramakrishna Math Coimbatore – Durga Puja and spiritual activities.', member_count: 2000, join_url: 'https://chennaimath.org/', website_url: 'https://chennaimath.org/', facebook_url: 'https://www.facebook.com/srkmv/', instagram_url: 'https://www.instagram.com/ramakrishnamath', category: 'religious' },
+  { id: '20', name: 'SNV Kalyana Mandapam', platform: 'website', city: 'Coimbatore', region: 'tamil_nadu', description: 'Sri SNV Kalyana Mandapam – Bengali community venue in Coimbatore.', member_count: 800, join_url: 'https://srisnvkalyanamandapam.in/', website_url: 'https://srisnvkalyanamandapam.in/', category: 'cultural' },
 
-  // ── Bengali Association Websites ──
-  { id: 'web-1', name: 'ProbasiBangali.in', platform: 'website', region: 'tamil_nadu', description: 'Official website for Bengalis in Tamil Nadu. PG listings, food guides, emergency services, and community resources.', member_count: 10000, join_url: 'https://probasibangali.in', website_url: 'https://probasibangali.in', category: 'general' },
-  { id: 'web-2', name: 'Chennai Bengali Association', platform: 'website', city: 'Chennai', region: 'tamil_nadu', description: 'Official website of Chennai Bengali Association. Durga Puja schedules, membership, and cultural events.', member_count: 5000, join_url: 'https://chennaibengali.org', website_url: 'https://chennaibengali.org', category: 'general' },
-  { id: 'web-3', name: 'Bengal Foundation India', platform: 'website', region: 'india', description: 'Pan-India Bengali foundation website. Scholarships, cultural programs, and community support.', member_count: 20000, join_url: 'https://bengalfoundation.in', website_url: 'https://bengalfoundation.in', category: 'general' },
-  { id: 'web-4', name: 'Global Bangali Portal', platform: 'website', region: 'all', description: 'International web portal connecting the Bengali diaspora. News, events, and community directory.', member_count: 50000, join_url: 'https://globalbangali.com', website_url: 'https://globalbangali.com', category: 'general' },
+  // ── Trichy ──
+  { id: '21', name: 'The Bengali Association Trichy', platform: 'website', city: 'Tiruchirappalli', region: 'tamil_nadu', description: 'The Bengali Association Trichy – cultural association for Bengalis in Tiruchirappalli.', member_count: 1000, join_url: 'https://www.thebengalassociation.com/', website_url: 'https://www.thebengalassociation.com/', facebook_url: 'https://www.facebook.com/profile.php?id=61558647747693', instagram_url: 'https://www.instagram.com/bengaliassociationtrichy/', category: 'cultural' },
+
+  // ── Puducherry ──
+  { id: '22', name: 'Bangabharathi Puducherry', platform: 'website', city: 'Puducherry', region: 'tamil_nadu', description: 'Bangabharathi – Bengali cultural organisation in Puducherry.', member_count: 600, join_url: 'https://bangabharati.weebly.com/', website_url: 'https://bangabharati.weebly.com/', facebook_url: 'https://www.facebook.com/BangabharathiPuducherry', category: 'cultural' },
+
+  // ── Madurai ──
+  { id: '23', name: 'Durgapuja Ramakrishna Math Madurai', platform: 'website', city: 'Madurai', region: 'tamil_nadu', description: 'Ramakrishna Math Madurai – Durga Puja and spiritual activities.', member_count: 1200, join_url: 'https://chennaimath.org/', website_url: 'https://chennaimath.org/', category: 'religious' },
+
+  // ── ProbasiBangali ──
+  { id: '24', name: 'ProbasiBangali.in', platform: 'website', region: 'tamil_nadu', description: 'Official website for Bengalis in Tamil Nadu. PG listings, food guides, emergency services, and community resources.', member_count: 10000, join_url: 'https://probasibangali.in', website_url: 'https://probasibangali.in', category: 'general' },
 ];
 
 export const sampleMatrimonialProfiles: MatrimonialProfile[] = [
@@ -1697,12 +1703,203 @@ export const sampleMatrimonialProfiles: MatrimonialProfile[] = [
 ];
 
 export const sampleColleges: College[] = [
-  { id: '1', name: 'IIT Madras', type: 'engineering', city: 'Chennai', area: 'Guindy', address: 'IIT P.O., Chennai - 600036', phone: '044-22578100', website: 'https://www.iitm.ac.in', google_maps_url: 'https://maps.google.com/?q=IIT+Madras' },
-  { id: '2', name: 'VIT University', type: 'engineering', city: 'Vellore', area: 'Katpadi', address: 'VIT Campus, Katpadi, Vellore - 632014', phone: '0416-2202300', website: 'https://vit.ac.in', google_maps_url: 'https://maps.google.com/?q=VIT+Vellore' },
-  { id: '3', name: 'Anna University', type: 'engineering', city: 'Chennai', area: 'Guindy', address: 'Sardar Patel Road, Guindy, Chennai - 600025', phone: '044-22358190', website: 'https://www.annauniv.edu', google_maps_url: 'https://maps.google.com/?q=Anna+University+Chennai' },
-  { id: '4', name: 'CMC Vellore', type: 'medical', city: 'Vellore', area: 'CMC Campus', address: 'Ida Scudder Road, Vellore - 632004', phone: '0416-2281000', website: 'https://www.cmch-vellore.edu', google_maps_url: 'https://maps.google.com/?q=CMC+Vellore' },
-  { id: '5', name: 'SRM Institute', type: 'engineering', city: 'Chennai', area: 'Potheri', address: 'SRM Nagar, Kattankulathur - 603203', phone: '044-27417000', website: 'https://www.srmist.edu.in', google_maps_url: 'https://maps.google.com/?q=SRM+University+Chennai' },
-  { id: '6', name: 'Madras Medical College', type: 'medical', city: 'Chennai', area: 'Park Town', address: 'Park Town, Chennai - 600003', phone: '044-25305000', website: 'https://mmc.tn.gov.in', google_maps_url: 'https://maps.google.com/?q=Madras+Medical+College' },
+  {
+    id: 'col-1',
+    name: 'Anna University',
+    type: 'engineering',
+    city: 'Chennai',
+    area: 'Guindy',
+    address: 'Sardar Patel Road, Guindy, Chennai - 600025',
+    phone: '044-22358190',
+    website: 'https://www.annauniv.edu',
+    google_maps_url: 'https://maps.google.com/?q=Anna+University+Chennai',
+    ranking: 1,
+    bengali_forums: [],
+    staff_contacts: [
+      { name: 'Prof. Parthasarathi Mitra', role: 'lecturer', department: 'Computer Science', phone: '9876500125', email: 'p.mitra@annauniv.edu' },
+      { name: 'Dr. Swagata Sen', role: 'lecturer', department: 'Biotechnology', phone: '9876500126', email: 'swagata.sen@annauniv.edu' }
+    ]
+  },
+  {
+    id: 'col-2',
+    name: 'VIT University',
+    type: 'engineering',
+    city: 'Vellore',
+    area: 'Katpadi',
+    address: 'VIT Campus, Katpadi, Vellore - 632014',
+    phone: '0416-2202300',
+    website: 'https://vit.ac.in',
+    google_maps_url: 'https://maps.google.com/?q=VIT+Vellore',
+    ranking: 2,
+    bengali_forums: [],
+    staff_contacts: [
+      { name: 'Dr. Amitava Bhattacharya', role: 'lecturer', department: 'Physics', phone: '9876543210', email: 'amitava.b@vit.ac.in' },
+      { name: 'Dr. Barnali Sengupta', role: 'lecturer', department: 'Chemistry', phone: '9876543211', email: 'barnali.s@vit.ac.in' }
+    ]
+  },
+  {
+    id: 'col-3',
+    name: 'Madras Medical College',
+    type: 'medical',
+    city: 'Chennai',
+    area: 'Park Town',
+    address: 'Park Town, Chennai - 600003',
+    phone: '044-25305000',
+    website: 'https://mmc.tn.gov.in',
+    google_maps_url: 'https://maps.google.com/?q=Madras+Medical+College',
+    ranking: 1,
+    bengali_forums: [],
+    staff_contacts: [
+      { name: 'Dr. Subir K. Dey', role: 'lecturer', department: 'Cardiology', phone: '9876500123', email: 'subir.dey@mmc.tn.gov.in' },
+      { name: 'Dr. Rimpa Banerjee', role: 'lecturer', department: 'Pediatrics', phone: '9876500124', email: 'rimpa.b@mmc.tn.gov.in' }
+    ]
+  },
+  {
+    id: 'col-4',
+    name: 'CMC Vellore',
+    type: 'medical',
+    city: 'Vellore',
+    area: 'CMC Campus',
+    address: 'Ida Scudder Road, Vellore - 632004',
+    phone: '0416-2281000',
+    website: 'https://www.cmch-vellore.edu',
+    google_maps_url: 'https://maps.google.com/?q=CMC+Vellore',
+    ranking: 2,
+    bengali_forums: [],
+    staff_contacts: [
+      { name: 'Dr. Aniruddha Das', role: 'lecturer', department: 'Neurology', phone: '9876500127', email: 'aniruddha.das@cmch-vellore.edu' },
+      { name: 'Dr. Sucharita Sen', role: 'lecturer', department: 'Anesthesia', phone: '9876500128', email: 'sucharita.sen@cmch-vellore.edu' }
+    ]
+  },
+  {
+    id: 'col-5',
+    name: 'Presidency College',
+    type: 'arts_science',
+    city: 'Chennai',
+    area: 'Triplicane',
+    address: 'Kamarajar Salai, Triplicane, Chennai - 600005',
+    phone: '044-28544899',
+    website: 'https://www.presidencycollegechennai.ac.in',
+    google_maps_url: 'https://maps.google.com/?q=Presidency+College+Chennai',
+    ranking: 1,
+    bengali_forums: [],
+    staff_contacts: [
+      { name: 'Prof. Somnath Mukherjee', role: 'lecturer', department: 'Bengali Literature', phone: '9876500121', email: 's.mukherjee@presidency.edu.in' },
+      { name: 'Dr. Tanmay Roy', role: 'lecturer', department: 'History', phone: '9876500122', email: 'tanmay.roy@presidency.edu.in' }
+    ]
+  },
+  {
+    id: 'col-6',
+    name: 'PSG College of Technology',
+    type: 'engineering',
+    city: 'Coimbatore',
+    area: 'Peelamedu',
+    address: 'Avinashi Road, Peelamedu, Coimbatore - 641004',
+    phone: '0422-2572177',
+    website: 'https://www.psgtech.edu',
+    google_maps_url: 'https://maps.google.com/?q=PSG+College+of+Technology',
+    ranking: 3,
+    bengali_forums: [],
+    staff_contacts: [
+      { name: 'Dr. Abhijit Sen', role: 'lecturer', department: 'Mechanical Engineering', phone: '9876500130', email: 'abhijit.sen@psgtech.edu' }
+    ]
+  },
+  {
+    id: 'col-7',
+    name: 'PSG College of Arts and Science',
+    type: 'arts_science',
+    city: 'Coimbatore',
+    area: 'Peelamedu',
+    address: 'Avinashi Road, Peelamedu, Coimbatore - 641014',
+    phone: '0422-4303300',
+    website: 'https://www.psgcas.ac.in',
+    google_maps_url: 'https://maps.google.com/?q=PSG+College+of+Arts+and+Science',
+    ranking: 3,
+    bengali_forums: [],
+    staff_contacts: [
+      { name: 'Dr. Dipankar Banerjee', role: 'lecturer', department: 'Mathematics', phone: '9876500129', email: 'dipankar.b@psgcas.ac.in' }
+    ]
+  },
+  {
+    id: 'col-8',
+    name: 'The American College',
+    type: 'arts_science',
+    city: 'Madurai',
+    area: 'Tallakulam',
+    address: 'Alagar Kovil Road, Tallakulam, Madurai - 625002',
+    phone: '0452-2530070',
+    website: 'https://americancollege.edu.in',
+    google_maps_url: 'https://maps.google.com/?q=The+American+College+Madurai',
+    ranking: 4,
+    bengali_forums: [],
+    staff_contacts: [
+      { name: 'Dr. Sudipto Roy', role: 'lecturer', department: 'English Literature', phone: '9876500131', email: 'sudipto.roy@americancollege.edu' }
+    ]
+  },
+  {
+    id: 'col-9',
+    name: 'Madurai Medical College',
+    type: 'medical',
+    city: 'Madurai',
+    area: 'Panagal Road',
+    address: 'Panagal Road, Madurai - 625020',
+    phone: '0452-2532535',
+    website: 'https://www.mdumc.edu.in',
+    google_maps_url: 'https://maps.google.com/?q=Madurai+Medical+College',
+    ranking: 3,
+    bengali_forums: [],
+    staff_contacts: [
+      { name: 'Dr. Tapas K. Bose', role: 'lecturer', department: 'General Surgery', phone: '9876500132', email: 'tapas.bose@mdumc.edu' }
+    ]
+  },
+  {
+    id: 'col-10',
+    name: 'KAP Viswanathan Government Medical College',
+    type: 'medical',
+    city: 'Tiruchirappalli',
+    area: 'Trichy',
+    address: 'Collectorate Road, Trichy - 620001',
+    phone: '0431-2415666',
+    website: 'http://www.kapvgmc.ac.in',
+    google_maps_url: 'https://maps.google.com/?q=KAP+Viswanathan+Government+Medical+College',
+    ranking: 4,
+    bengali_forums: [],
+    staff_contacts: [
+      { name: 'Dr. Nandini Dasgupta', role: 'lecturer', department: 'Pathology', phone: '9876500133', email: 'nandini.dg@kapvgmc.ac.in' }
+    ]
+  },
+  {
+    id: 'col-11',
+    name: 'Government College of Engineering, Salem',
+    type: 'engineering',
+    city: 'Salem',
+    area: 'Karuppur',
+    address: 'NH 44, Karuppur, Salem - 636011',
+    phone: '0427-2346102',
+    website: 'https://gcesalem.edu.in',
+    google_maps_url: 'https://maps.google.com/?q=Government+College+of+Engineering+Salem',
+    ranking: 4,
+    bengali_forums: [],
+    staff_contacts: [
+      { name: 'Prof. Biswajit Ghosh', role: 'lecturer', department: 'Electrical Engineering', phone: '9876500134', email: 'biswajit.ghosh@gcesalem.edu.in' }
+    ]
+  },
+  {
+    id: 'col-12',
+    name: 'Voorhees College',
+    type: 'arts_science',
+    city: 'Vellore',
+    area: 'Officers Line',
+    address: '1, Officers Line, Vellore - 632001',
+    phone: '0416-2220317',
+    website: 'https://voorheescollege.edu.in',
+    google_maps_url: 'https://maps.google.com/?q=Voorhees+College+Vellore',
+    ranking: 5,
+    bengali_forums: [],
+    staff_contacts: [
+      { name: 'Dr. Subhabrata Ray', role: 'lecturer', department: 'Commerce', phone: '9876500135', email: 'subhabrata.ray@voorheescollege.edu.in' }
+    ]
+  }
 ];
 
 export const sampleEvents: Event[] = [

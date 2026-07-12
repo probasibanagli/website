@@ -122,8 +122,15 @@ async function seed() {
   console.log(`✅ ${sampleCommunityGroups.length} community groups seeded`);
 
   // 7. Seed colleges
+  const collegesRef = db.collection('colleges');
+  const collegesSnap = await collegesRef.get();
+  for (const doc of collegesSnap.docs) {
+    await doc.ref.delete();
+  }
+  console.log('🧹 Cleared existing colleges in Firestore');
+
   for (const item of sampleColleges) {
-    await db.collection('colleges').doc(item.id).set(item);
+    await collegesRef.doc(item.id).set(item);
   }
   console.log(`✅ ${sampleColleges.length} colleges seeded`);
 

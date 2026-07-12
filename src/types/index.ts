@@ -302,10 +302,23 @@ export interface MatrimonialProfile {
   updated_at?: string;
 }
 
+export interface BengaliForum {
+  name: string;
+  link: string;
+}
+
+export interface CollegeStaffContact {
+  name: string;
+  role: 'lecturer' | 'staff';
+  department: string;
+  phone: string;
+  email: string;
+}
+
 export interface College {
   id: string;
   name: string;
-  type?: string;
+  type?: 'engineering' | 'medical' | 'arts_science';
   city?: string;
   area?: string;
   address?: string;
@@ -314,6 +327,9 @@ export interface College {
   google_maps_url?: string;
   lat?: number;
   lng?: number;
+  ranking?: number;
+  bengali_forums?: BengaliForum[];
+  staff_contacts?: CollegeStaffContact[];
 }
 
 export interface Event {

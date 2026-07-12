@@ -141,34 +141,39 @@ export const CITY_AREAS: Record<string, string[]> = {
 /* ──── City → Nearby Colleges ──── */
 export const CITY_COLLEGES: Record<string, { name: string; area: string }[]> = {
   Chennai: [
-    { name: 'IIT Madras', area: 'Guindy' },
     { name: 'Anna University', area: 'Guindy' },
-    { name: 'SRM Institute', area: 'Potheri' },
     { name: 'Madras Medical College', area: 'Park Town' },
     { name: 'Loyola College', area: 'Nungambakkam' },
-    { name: 'Stella Maris College', area: 'Cathedral Road' },
-    { name: 'Sathyabama University', area: 'Sholinganallur' },
+    { name: 'Presidency College', area: 'Triplicane' },
+    { name: 'SSN College of Engineering', area: 'Kalavakkam' },
+    { name: 'Madras Christian College (MCC)', area: 'East Tambaram' },
+    { name: 'Stanley Medical College', area: 'Royapuram' },
   ],
   Vellore: [
     { name: 'VIT University', area: 'Katpadi' },
     { name: 'CMC Vellore', area: 'CMC Campus' },
+    { name: 'Voorhees College', area: 'Officers Line' },
   ],
   Coimbatore: [
     { name: 'PSG College of Technology', area: 'Peelamedu' },
-    { name: 'Amrita Vishwa Vidyapeetham', area: 'Ettimadai' },
+    { name: 'Coimbatore Institute of Technology (CIT)', area: 'Peelamedu' },
     { name: 'Coimbatore Medical College', area: 'Avinashi Road' },
+    { name: 'PSG College of Arts and Science', area: 'Peelamedu' },
   ],
   Madurai: [
-    { name: 'Madurai Kamaraj University', area: 'Palkalai Nagar' },
     { name: 'Thiagarajar College of Engg', area: 'Thiruparankundram' },
+    { name: 'Madurai Medical College', area: 'Madurai' },
+    { name: 'The American College', area: 'Madurai' },
   ],
   Tiruchirappalli: [
-    { name: 'NIT Trichy', area: 'Thuvakudi' },
-    { name: 'Bharathidasan University', area: 'Palkalaiperur' },
+    { name: 'KAP Viswanathan Government Medical College', area: 'Trichy' },
+    { name: 'St. Joseph\'s College', area: 'Trichy' },
+    { name: 'National College', area: 'Trichy' },
   ],
   Salem: [
-    { name: 'Periyar University', area: 'Periyar Nagar' },
-    { name: 'Vinayaka Missions University', area: 'Ariyanoor' },
+    { name: 'Government College of Engineering, Salem', area: 'Karuppur' },
+    { name: 'Mohan Kumaramangalam Medical College', area: 'Salem' },
+    { name: 'Government Arts College', area: 'Salem' },
   ],
 };
 
@@ -217,7 +222,7 @@ export const GENDERS = ['male', 'female', 'mixed'] as const;
 export const COMMUNITY_PLATFORMS = ['whatsapp', 'telegram', 'facebook', 'instagram'] as const;
 export const COMMUNITY_CATEGORIES = ['general', 'students', 'professionals', 'women', 'seniors'] as const;
 
-export const COLLEGE_TYPES = ['engineering', 'medical', 'arts', 'management', 'polytechnic'] as const;
+export const COLLEGE_TYPES = ['engineering', 'medical', 'arts_science'] as const;
 
 export const EVENT_CATEGORIES = ['festival', 'cultural', 'social', 'religious'] as const;
 
