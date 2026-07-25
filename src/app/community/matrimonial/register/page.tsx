@@ -15,6 +15,7 @@ import {
   CITIES, HEIGHTS, MARITAL_STATUSES, COMPLEXIONS, FAMILY_TYPES, FAMILY_VALUES, FAMILY_STATUS,
   DIET_TYPES, EDUCATION_LEVELS, INCOME_RANGES, CASTE_MAPPING, WEST_BENGAL_DISTRICTS,
   SMOKING_HABITS, DRINKING_HABITS, MANGLIK_OPTIONS, HOBBIES_LIST, RELIGIONS, BLOOD_GROUPS, NAKSHATRAS, SUBCASTE_MAPPING, RAASIS, RAASI_NAKSHATRAS_MAPPING,
+  FIELDS_OF_STUDY, INSTITUTIONS, PROFESSIONS, COMPANIES, WORK_CITIES,
 } from '@/lib/constants';
 import { saveMyProfile, generateProfileId, getMyProfile, storeMedia, getMedia } from '@/lib/matrimony-service';
 import type { MatrimonialProfile } from '@/types';
@@ -69,24 +70,56 @@ interface FormSelectProps extends FormFieldProps {
   options: readonly string[] | string[];
 }
 
-const FormSelect = ({ label, field, options, required, formData, errors, updateField }: FormSelectProps) => (
-  <div className="space-y-1.5">
-    <label className="block text-sm font-medium text-text-primary">
-      {label}{required && <span className="text-red-500 ml-0.5">*</span>}
-    </label>
-    <select
-      value={(formData[field] as string) || ''}
-      onChange={(e) => updateField(field, e.target.value)}
-      className={`w-full px-4 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all cursor-pointer ${
-        errors[field] ? 'border-red-400' : 'border-border'
-      }`}
-    >
-      <option value="">Select {label}</option>
-      {options.map(o => <option key={o} value={o}>{o}</option>)}
-    </select>
-    {errors[field] && <p className="text-xs text-red-500">{errors[field]}</p>}
-  </div>
-);
+const FormSelect = ({ label, field, options, required, formData, errors, updateField }: FormSelectProps) => {
+  const hasOther = options.includes('Other') || options.includes('Others');
+  const selectOptions = hasOther ? options : [...options, 'Other'];
+  const otherValue = options.includes('Others') ? 'Others' : 'Other';
+
+  const isCustom = !!(
+    formData[field] === 'Other' ||
+    formData[field] === 'Others' ||
+    (formData[field] && !options.includes(formData[field] as string))
+  );
+  const selectValue = isCustom ? otherValue : ((formData[field] as string) || '');
+
+  return (
+    <div className="space-y-1.5">
+      <label className="block text-sm font-medium text-text-primary">
+        {label}{required && <span className="text-red-500 ml-0.5">*</span>}
+      </label>
+      <select
+        value={selectValue}
+        onChange={(e) => {
+          const val = e.target.value;
+          updateField(field, val);
+        }}
+        className={`w-full px-4 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all cursor-pointer ${
+          errors[field] ? 'border-red-400' : 'border-border'
+        }`}
+      >
+        <option value="">Select {label}</option>
+        {selectOptions.map(o => <option key={o} value={o}>{o}</option>)}
+      </select>
+
+      {isCustom && (
+        <input
+          type="text"
+          value={formData[field] === otherValue ? '' : (formData[field] as string || '')}
+          onChange={(e) => {
+            const val = e.target.value;
+            updateField(field, val === '' ? otherValue : val);
+          }}
+          placeholder={`Specify other ${label.toLowerCase()}`}
+          className={`w-full px-4 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all mt-1.5 ${
+            errors[field] ? 'border-red-400' : 'border-border'
+          }`}
+        />
+      )}
+
+      {errors[field] && <p className="text-xs text-red-500">{errors[field]}</p>}
+    </div>
+  );
+};
 
 interface FormInputProps extends FormFieldProps {
   type?: string;
@@ -872,16 +905,16 @@ export default function MatrimonialRegisterPage() {
                 </div>
                 <FormSelect formData={formData} errors={errors} updateField={updateField} label="Highest Education" field="education" options={EDUCATION_LEVELS} required />
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <FormInput formData={formData} errors={errors} updateField={updateField} label="Field of Study" field="field_of_study" placeholder="e.g. Computer Science" />
-                  <FormInput formData={formData} errors={errors} updateField={updateField} label="Institution" field="institution" placeholder="e.g. IIT Madras" />
+                  <FormSelect formData={formData} errors={errors} updateField={updateField} label="Field of Study" field="field_of_study" options={FIELDS_OF_STUDY} />
+                  <FormSelect formData={formData} errors={errors} updateField={updateField} label="Institution" field="institution" options={INSTITUTIONS} />
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <FormInput formData={formData} errors={errors} updateField={updateField} label="Profession" field="profession" placeholder="e.g. Software Engineer" required />
-                  <FormInput formData={formData} errors={errors} updateField={updateField} label="Company / Employer" field="company" placeholder="e.g. TCS" />
+                  <FormSelect formData={formData} errors={errors} updateField={updateField} label="Profession" field="profession" options={PROFESSIONS} required />
+                  <FormSelect formData={formData} errors={errors} updateField={updateField} label="Company / Employer" field="company" options={COMPANIES} />
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <FormSelect formData={formData} errors={errors} updateField={updateField} label="Annual Income" field="annual_income" options={INCOME_RANGES} />
-                  <FormInput formData={formData} errors={errors} updateField={updateField} label="Work City" field="work_city" placeholder="e.g. Chennai" />
+                  <FormSelect formData={formData} errors={errors} updateField={updateField} label="Work City" field="work_city" options={WORK_CITIES} />
                 </div>
               </div>
             )}

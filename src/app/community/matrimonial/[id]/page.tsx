@@ -6,7 +6,8 @@ import { useParams } from 'next/navigation';
 import {
   ArrowLeft, MapPin, GraduationCap, Briefcase, CheckCircle2, Lock, Heart,
   MessageCircle, Star, Share2, Flag, User, Users, BookOpen, Utensils,
-  Ruler, Droplets, Phone, Mail, Sparkles, ChevronRight, Eye, Video, UserPlus, ArrowRight, AlertCircle, Globe
+  Ruler, Droplets, Phone, Mail, Sparkles, ChevronRight, Eye, Video, UserPlus, ArrowRight, AlertCircle, Globe,
+  Loader2, CheckCircle
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/Badge';
@@ -17,6 +18,7 @@ import {
 } from '@/lib/matrimony-service';
 import type { MatrimonialProfile } from '@/types';
 import { useAuth } from '@/lib/auth/AuthContext';
+import { calculateMatchPercentage, type MatchResult } from '@/lib/match-utils';
 
 function InfoRow({ icon: Icon, label, value }: { icon: React.ElementType; label: string; value?: string }) {
   if (!value) return null;
@@ -54,6 +56,8 @@ export default function MatrimonialDetailPage() {
   const [viewCount, setViewCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [hasProfile, setHasProfile] = useState<boolean | null>(null);
+  const [sendingInterest, setSendingInterest] = useState(false);
+  const [interestMessage, setInterestMessage] = useState('');
 
   // Media states
   const [photoPreviews, setPhotoPreviews] = useState<(string | null)[]>([null, null, null, null, null]);
@@ -115,6 +119,13 @@ export default function MatrimonialDetailPage() {
     return getAllProfiles()
       .filter(p => p.id !== profile.id && p.published && (p.city === profile.city || Math.abs((p.age || 0) - (profile.age || 0)) <= 5))
       .slice(0, 3);
+  }, [profile]);
+
+  // Match percentage
+  const matchResult: MatchResult | null = useMemo(() => {
+    const myProfile = getMyProfile();
+    if (!myProfile || !profile || myProfile.id === profile.id) return null;
+    return calculateMatchPercentage(myProfile, profile);
   }, [profile]);
 
   if (loading || hasProfile === null || authLoading) {
@@ -313,14 +324,50 @@ export default function MatrimonialDetailPage() {
     setShortlisted(result);
   };
 
-  const handleSendInterest = () => {
+  const handleSendInterest = async () => {
     const myProfile = getMyProfile();
     if (!myProfile) {
       alert('Please register your profile first to send interest.');
       return;
     }
+
+    // Save locally first
     sendInterest(myProfile.id, profile.id);
     setInterestSent(true);
+    setSendingInterest(true);
+    setInterestMessage('');
+
+    // Send email notification
+    try {
+      const res = await fetch('/api/matrimony/send-interest', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          recipientEmail: profile.email,
+          senderName: myProfile.full_name,
+          senderProfileId: myProfile.profile_id,
+          senderPhone: myProfile.phone,
+          senderEmail: myProfile.email,
+          senderSocialHandle: myProfile.social_handle,
+          senderProfession: myProfile.profession,
+          senderAge: myProfile.age,
+          senderCity: myProfile.city,
+          senderProfilePageId: myProfile.id,
+        }),
+      });
+      const data = await res.json();
+      if (data.success && data.emailSent) {
+        setInterestMessage('Interest sent! Your contact details have been emailed to this person.');
+      } else if (data.success) {
+        setInterestMessage('Interest sent! Email notification could not be delivered.');
+      } else {
+        setInterestMessage('Interest saved, but email could not be sent.');
+      }
+    } catch {
+      setInterestMessage('Interest saved locally. Email notification failed.');
+    } finally {
+      setSendingInterest(false);
+    }
   };
 
   return (
@@ -598,6 +645,58 @@ export default function MatrimonialDetailPage() {
 
           {/* Sidebar */}
           <div className="space-y-4">
+            {/* Match Percentage Card */}
+            {matchResult && matchResult.percentage > 0 && (
+              <Card hover={false} className="relative overflow-hidden border border-primary/10">
+                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-green-400 via-amber-400 to-red-400" />
+                <div className="flex items-center gap-4 pt-1">
+                  {/* Circular Progress */}
+                  <div className="relative w-20 h-20 shrink-0">
+                    <svg viewBox="0 0 36 36" className="w-full h-full -rotate-90">
+                      <path
+                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                        fill="none"
+                        stroke="#e5e7eb"
+                        strokeWidth="3"
+                      />
+                      <path
+                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                        fill="none"
+                        stroke={matchResult.percentage >= 75 ? '#22c55e' : matchResult.percentage >= 50 ? '#f59e0b' : '#9ca3af'}
+                        strokeWidth="3"
+                        strokeDasharray={`${matchResult.percentage}, 100`}
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <span className={`text-lg font-bold ${
+                        matchResult.percentage >= 75 ? 'text-green-600' : matchResult.percentage >= 50 ? 'text-amber-600' : 'text-gray-500'
+                      }`}>
+                        {matchResult.percentage}%
+                      </span>
+                    </div>
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-bold text-text-primary">Profile Match</h3>
+                    <p className="text-xs text-text-muted mt-0.5">
+                      {matchResult.percentage >= 75 ? 'Great match!' : matchResult.percentage >= 50 ? 'Good match' : 'Partial match'}
+                    </p>
+                  </div>
+                </div>
+                {/* Criteria Breakdown */}
+                <div className="mt-4 space-y-1.5">
+                  {matchResult.criteria.map(c => (
+                    <div key={c.key} className="flex items-center justify-between text-xs">
+                      <span className="text-text-muted">{c.label}</span>
+                      <span className={`font-semibold ${c.matched ? 'text-green-600' : 'text-red-400'}`}>
+                        {c.matched ? '✓ Match' : '✗ No match'}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </Card>
+            )}
+
             {/* Contact Card */}
             <Card hover={false} className="bg-gradient-to-br from-pink-50 to-white sticky top-4">
               <h3 className="text-lg font-bold mb-4">Contact Information</h3>
@@ -623,11 +722,23 @@ export default function MatrimonialDetailPage() {
                 variant="primary"
                 className="w-full"
                 onClick={handleSendInterest}
-                disabled={interestSent}
+                disabled={interestSent || sendingInterest}
               >
-                <Heart className={`w-4 h-4 ${interestSent ? 'fill-current' : ''}`} />
-                {interestSent ? 'Interest Sent ✓' : 'Send Interest'}
+                {sendingInterest ? (
+                  <><Loader2 className="w-4 h-4 animate-spin" /> Sending...</>
+                ) : interestSent ? (
+                  <><CheckCircle className="w-4 h-4" /> Interest Sent ✓</>
+                ) : (
+                  <><Heart className="w-4 h-4" /> Send Interest</>
+                )}
               </Button>
+              {interestMessage && (
+                <p className={`text-xs text-center px-2 py-1.5 rounded-lg ${
+                  interestMessage.includes('emailed') ? 'bg-green-50 text-green-700' : 'bg-amber-50 text-amber-700'
+                }`}>
+                  {interestMessage}
+                </p>
+              )}
               <Button
                 variant={shortlisted ? 'secondary' : 'outline'}
                 className="w-full"

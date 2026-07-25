@@ -236,12 +236,12 @@ export const GOVT_SERVICES = [
   { id: 'aadhaar', title: 'Aadhaar Update / Enrolment', description: 'Update your Aadhaar address or biometrics at nearest centre.', category: 'Aadhaar', url: 'https://uidai.gov.in/', icon: 'User01' },
   { id: 'biometrics', title: 'Aadhaar Biometric Services', description: 'Lock or unlock your Aadhaar biometrics online for enhanced security.', category: 'Aadhaar', url: 'https://myaadhaar.uidai.gov.in/', icon: 'Shield01' },
   { id: 'driving-licence', title: 'Driving Licence (TN)', description: 'Apply or renew your driving licence in Tamil Nadu.', category: 'Transport', url: 'https://parivahan.gov.in/', icon: 'Car01' },
-  { id: 'ayushman-bharat', title: 'Ayushman Bharat', description: 'Government health insurance covering ₹5 lakh per year per family.', category: 'Health schemes', url: 'https://pmjay.gov.in/', icon: 'MedicalCross' },
+  { id: 'ayushman-bharat', title: 'Ayushman Bharat', description: 'Government health insurance covering ₹5 lakh per year per family.', category: 'Health schemes', url: '/services/government/ayushman-bharat', icon: 'MedicalCross' },
   { id: 'mgnregs', title: 'MGNREGS Job Card', description: 'Register for 100 days guaranteed employment scheme.', category: 'Employment', url: 'https://nrega.nic.in/', icon: 'Users01' },
   { id: 'tn-e-seva', title: 'TN e-Seva Portal', description: 'One-stop portal for various Tamil Nadu government services.', category: 'Government', url: 'https://www.tnesevai.tn.gov.in/', icon: 'Building01' },
-  { id: 'passport', title: 'Passport Seva', description: 'Apply for a new passport or renew existing one.', category: 'Travel', url: 'https://passportindia.gov.in/', icon: 'Map01' },
+  { id: 'passport', title: 'Passport Seva', description: 'Apply for a new passport or renew existing one.', category: 'Travel', url: '/services/government/passport', icon: 'Map01' },
   { id: 'visa', title: 'Visa Services', description: 'Apply for an Indian Visa, e-Visa, or check application status online.', category: 'Travel', url: 'https://indianvisaonline.gov.in/', icon: 'Globe01' },
-  { id: 'voter-id', title: 'Voter ID (EPIC)', description: 'Register as a voter or update your electoral details.', category: 'Election', url: 'https://voters.eci.gov.in/', icon: 'UserCheck01' },
+  { id: 'voter-id', title: 'Voter ID (EPIC)', description: 'Register as a voter or update your electoral details.', category: 'Election', url: '/services/government/voter-id', icon: 'UserCheck01' },
   { id: 'police-verification', title: 'Police Verification (Cyber Crime)', description: 'Direct link to the Cyber Crime Portal for police verification, reporting cyber fraud and safety checks.', category: 'Safety', url: 'https://cybercrime.gov.in/', icon: 'Shield01' },
   { id: 'labour-registration', title: 'TN Labour Registration', description: 'Register as a migrant worker with the Tamil Nadu Labour Department.', category: 'Employment', url: 'https://labour.tn.gov.in/', icon: 'Users01' },
   { id: 'scholarships', title: 'Scholarship Schemes', description: 'Central and state scholarship schemes for students from economically weaker sections.', category: 'Education', url: 'https://scholarships.gov.in/', icon: 'GraduationHat01' },
@@ -659,3 +659,107 @@ export const RAASI_NAKSHATRAS_MAPPING: Record<string, readonly string[]> = {
   'Meena (Pisces)': ['Purva Bhadrapada', 'Uttara Bhadrapada', 'Revati']
 } as const;
 
+export const FIELDS_OF_STUDY = [
+  'Computer Science',
+  'Information Technology',
+  'Electronics & Communication',
+  'Mechanical Engineering',
+  'Electrical Engineering',
+  'Civil Engineering',
+  'Business Administration (BBA/MBA)',
+  'Commerce (B.Com/M.Com)',
+  'Science (B.Sc/M.Sc)',
+  'Arts & Humanities (B.A/M.A)',
+  'Medicine / Dental (MBBS/BDS)',
+  'Pharmacy (B.Pharm/M.Pharm)',
+  'Law (LLB/LLM)',
+  'Chartered Accountancy (CA)',
+  'Other'
+] as const;
+
+export const INSTITUTIONS = [
+  'IIT Madras',
+  'IIT Kharagpur',
+  'Jadavpur University',
+  'Calcutta University',
+  'Anna University',
+  'SRM University',
+  'VIT University',
+  'NIT Trichy',
+  'BITS Pilani',
+  'St. Xavier\'s College',
+  'Presidency University',
+  'Other'
+] as const;
+
+export const PROFESSIONS = [
+  'Software Engineer / Developer',
+  'IT Professional',
+  'Project Manager',
+  'Business Analyst',
+  'Doctor / Surgeon',
+  'Dentist',
+  'Nurse / Healthcare Professional',
+  'Teacher / Professor',
+  'Chartered Accountant (CA)',
+  'Banker / Financial Analyst',
+  'Civil Servant / IAS / IPS',
+  'Lawyer / Legal Consultant',
+  'Architect',
+  'HR Professional',
+  'Marketing / Sales Executive',
+  'Business Owner / Entrepreneur',
+  'Homemaker',
+  'Other'
+] as const;
+
+export const COMPANIES = [
+  'TCS (Tata Consultancy Services)',
+  'Infosys',
+  'Wipro',
+  'Cognizant (CTS)',
+  'Accenture',
+  'IBM',
+  'Capgemini',
+  'HCLTech',
+  'Microsoft',
+  'Google',
+  'Amazon',
+  'Government Sector',
+  'Banking Sector',
+  'Other'
+] as const;
+
+export const WORK_CITIES = [
+  'Chennai',
+  'Kolkata',
+  'Bengaluru',
+  'Hyderabad',
+  'Mumbai',
+  'Pune',
+  'Delhi NCR',
+  'Noida',
+  'Gurugram',
+  'Coimbatore',
+  'Madurai',
+  'Trichy',
+  'Salem',
+  'Other'
+] as const;
+
+export const CHENNAI_ZONES = [
+  'North Chennai (Tondiarpet, Royapuram, Thiru. Vi. Ka Nagar)',
+  'Central Chennai (Anna Nagar, Teynampet, Kodambakkam)',
+  'South Chennai (Adyar, Velachery, Sholinganallur)',
+  'West Chennai (Ambattur, Valasaravakkam, Alandur)',
+  'Suburbs (Tambaram, Avadi, Pallavaram)',
+];
+
+export const ESEVA_CENTRES_CHENNAI = [
+  { id: 1, name: 'e-Seva Centre, Ripon Building', address: 'Ripon Building Campus, Chennai Corporation, Park Town, Chennai', type: 'Arasu e-Seva', zone: 'Central Chennai', phone: '1100 (Toll Free)' },
+  { id: 2, name: 'e-Seva Centre, Tondiarpet Zonal Office', address: 'No. 266, Tiruvottiyur High Road, Tondiarpet, Chennai', type: 'Arasu e-Seva', zone: 'North Chennai', phone: '1100 (Toll Free)' },
+  { id: 3, name: 'e-Seva Centre, Adyar Zonal Office', address: 'No. 115, Dr. Muthulakshmi Salai, Adyar, Chennai', type: 'Arasu e-Seva', zone: 'South Chennai', phone: '1100 (Toll Free)' },
+  { id: 4, name: 'e-Seva Centre, Ambattur Zonal Office', address: 'No. 536, CTH Road, Ambattur, Chennai', type: 'Arasu e-Seva', zone: 'West Chennai', phone: '1100 (Toll Free)' },
+  { id: 5, name: 'e-Seva Centre, Tambaram Taluk Office', address: 'Taluk Office Campus, GST Road, Tambaram', type: 'Arasu e-Seva', zone: 'Suburbs', phone: '1100 (Toll Free)' },
+  { id: 6, name: 'e-Seva Centre, Anna Nagar Zonal Office', address: '2nd Avenue, Anna Nagar East, Chennai', type: 'Arasu e-Seva', zone: 'Central Chennai', phone: '1100 (Toll Free)' },
+];

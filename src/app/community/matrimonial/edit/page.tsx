@@ -13,6 +13,7 @@ import {
   CITIES, HEIGHTS, MARITAL_STATUSES, COMPLEXIONS, FAMILY_TYPES, FAMILY_VALUES, FAMILY_STATUS,
   DIET_TYPES, EDUCATION_LEVELS, INCOME_RANGES, CASTE_MAPPING, WEST_BENGAL_DISTRICTS,
   SMOKING_HABITS, DRINKING_HABITS, MANGLIK_OPTIONS, HOBBIES_LIST, RELIGIONS, BLOOD_GROUPS, NAKSHATRAS, SUBCASTE_MAPPING, RAASIS, RAASI_NAKSHATRAS_MAPPING,
+  FIELDS_OF_STUDY, INSTITUTIONS, PROFESSIONS, COMPANIES, WORK_CITIES,
 } from '@/lib/constants';
 import { getMyProfile, saveMyProfile, storeMedia, getMedia } from '@/lib/matrimony-service';
 import type { MatrimonialProfile } from '@/types';
@@ -271,15 +272,48 @@ export default function EditMatrimonialProfile() {
     return <div className="min-h-screen flex items-center justify-center"><div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full" /></div>;
   }
 
-  const FormSelect = ({ label, field, options }: { label: string; field: string; options: readonly string[] }) => (
-    <div className="space-y-1.5">
-      <label className="block text-sm font-medium text-text-primary">{label}</label>
-      <select value={(formData[field] as string) || ''} onChange={(e) => updateField(field, e.target.value)} className="w-full px-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 cursor-pointer">
-        <option value="">Select</option>
-        {options.map(o => <option key={o} value={o}>{o}</option>)}
-      </select>
-    </div>
-  );
+  const FormSelect = ({ label, field, options }: { label: string; field: string; options: readonly string[] }) => {
+    const hasOther = options.includes('Other') || options.includes('Others');
+    const selectOptions = hasOther ? options : [...options, 'Other'];
+    const otherValue = options.includes('Others') ? 'Others' : 'Other';
+
+    const isCustom = !!(
+      formData[field] === 'Other' ||
+      formData[field] === 'Others' ||
+      (formData[field] && !options.includes(formData[field] as string))
+    );
+    const selectValue = isCustom ? otherValue : ((formData[field] as string) || '');
+
+    return (
+      <div className="space-y-1.5">
+        <label className="block text-sm font-medium text-text-primary">{label}</label>
+        <select
+          value={selectValue}
+          onChange={(e) => {
+            const val = e.target.value;
+            updateField(field, val);
+          }}
+          className="w-full px-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 cursor-pointer"
+        >
+          <option value="">Select</option>
+          {selectOptions.map(o => <option key={o} value={o}>{o}</option>)}
+        </select>
+
+        {isCustom && (
+          <input
+            type="text"
+            value={formData[field] === otherValue ? '' : (formData[field] as string || '')}
+            onChange={(e) => {
+              const val = e.target.value;
+              updateField(field, val === '' ? otherValue : val);
+            }}
+            placeholder={`Specify other ${label.toLowerCase()}`}
+            className="w-full px-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 mt-1.5"
+          />
+        )}
+      </div>
+    );
+  };
 
   const FormInput = ({ label, field, type = 'text', placeholder }: { label: string; field: string; type?: string; placeholder?: string }) => (
     <div className="space-y-1.5">
@@ -391,16 +425,16 @@ export default function EditMatrimonialProfile() {
               <h2 className="text-lg font-bold mb-4">Education & Career</h2>
               <FormSelect label="Highest Education" field="education" options={EDUCATION_LEVELS} />
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <FormInput label="Field of Study" field="field_of_study" />
-                <FormInput label="Institution" field="institution" />
+                <FormSelect label="Field of Study" field="field_of_study" options={FIELDS_OF_STUDY} />
+                <FormSelect label="Institution" field="institution" options={INSTITUTIONS} />
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <FormInput label="Profession" field="profession" />
-                <FormInput label="Company" field="company" />
+                <FormSelect label="Profession" field="profession" options={PROFESSIONS} />
+                <FormSelect label="Company" field="company" options={COMPANIES} />
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <FormSelect label="Annual Income" field="annual_income" options={INCOME_RANGES} />
-                <FormInput label="Work City" field="work_city" />
+                <FormSelect label="Work City" field="work_city" options={WORK_CITIES} />
               </div>
             </div>
           )}

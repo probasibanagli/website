@@ -14,6 +14,8 @@ import { sampleMatrimonialProfiles } from '@/data/sample-data';
 import { CITIES, MARITAL_STATUSES, DIET_TYPES, EDUCATION_LEVELS, RELIGIONS } from '@/lib/constants';
 import { getMyProfile, searchProfiles, sortProfiles, type MatrimonyFilters, type SortOption, getMedia } from '@/lib/matrimony-service';
 import { useAuth } from '@/lib/auth/AuthContext';
+import { calculateMatchPercentage } from '@/lib/match-utils';
+import type { MatrimonialProfile } from '@/types';
 
 function ProfileCardAvatar({ profile, className = "w-16 h-16" }: { profile: any; className?: string }) {
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
@@ -55,9 +57,12 @@ function ProfileCardAvatar({ profile, className = "w-16 h-16" }: { profile: any;
 export default function MatrimonialPage() {
   const { firebaseUser, profile: userProfile, loading: authLoading } = useAuth();
   const [hasProfile, setHasProfile] = useState<boolean | null>(null);
+  const [myProfile, setMyProfile] = useState<MatrimonialProfile | null>(null);
 
   useEffect(() => {
-    setHasProfile(!!getMyProfile());
+    const mp = getMyProfile();
+    setHasProfile(!!mp);
+    setMyProfile(mp);
   }, []);
 
   const [filters, setFilters] = useState<MatrimonyFilters>({});
@@ -497,7 +502,13 @@ export default function MatrimonialPage() {
 
             {/* Profile Cards Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {visibleProfiles.map((profile) => (
+              {visibleProfiles.map((profile) => {
+                const matchResult = myProfile && profile.id !== myProfile.id
+                  ? calculateMatchPercentage(myProfile, profile)
+                  : null;
+                const matchPct = matchResult?.percentage ?? null;
+
+                return (
                 <Card key={profile.id} className="group relative overflow-hidden">
                   {/* Top accent bar */}
                   <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary to-accent" />
@@ -514,7 +525,20 @@ export default function MatrimonialPage() {
                         <p className="text-sm text-text-muted">
                           {profile.age} yrs{profile.height ? ` • ${profile.height}` : ''} • {profile.city}
                         </p>
-                        <p className="text-xs text-primary font-medium mt-0.5">{profile.profile_id}</p>
+                        <div className="flex items-center gap-2 mt-0.5">
+                          <p className="text-xs text-primary font-medium">{profile.profile_id}</p>
+                          {matchPct !== null && matchPct > 0 && (
+                            <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wide ${
+                              matchPct >= 75
+                                ? 'bg-green-100 text-green-700 border border-green-200'
+                                : matchPct >= 50
+                                  ? 'bg-amber-100 text-amber-700 border border-amber-200'
+                                  : 'bg-gray-100 text-gray-600 border border-gray-200'
+                            }`}>
+                              {matchPct}% Match
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </div>
 
@@ -591,7 +615,8 @@ export default function MatrimonialPage() {
                     </div>
                   </div>
                 </Card>
-              ))}
+                );
+              })}
             </div>
 
             {/* Load More */}

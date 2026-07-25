@@ -223,14 +223,6 @@ function AadhaarServiceCard({ service, IconComponent }: { service: typeof GOVT_S
    2. PASSPORT SERVICE CARD
    ═══════════════════════════════════════════════════════════════════ */
 function PassportServiceCard() {
-  const [mode, setMode] = useState<'online' | 'offline'>('online');
-  const [district, setDistrict] = useState('All Districts');
-
-  const filteredKendras = useMemo(() => {
-    if (district === 'All Districts') return PASSPORT_SEVA_KENDRAS;
-    return PASSPORT_SEVA_KENDRAS.filter(k => k.district === district);
-  }, [district]);
-
   return (
     <Card padding="none" className="group flex flex-col border-amber-200/60 bg-gradient-to-br from-amber-50/30 to-white hover:border-amber-400 hover:shadow-lg transition-all duration-300">
       <div className="flex items-start gap-4 p-5 pb-0">
@@ -247,71 +239,15 @@ function PassportServiceCard() {
       </div>
 
       <p className="text-sm text-text-muted mt-4 px-5 leading-relaxed flex-1">
-        Apply for a new passport, renew, or re-issue your passport. Find nearby Passport Seva Kendras (PSK) in Tamil Nadu.
+        Apply for a new passport, renew, or re-issue your passport. Find nearby Passport Seva Kendras (PSK) and process details.
       </p>
 
-      <div className="mt-5 border-t border-border">
-        <TabToggle mode={mode} setMode={setMode} />
-
-        <div className="p-5">
-          {mode === 'online' ? (
-            <div className="space-y-3">
-              <a href="https://passportindia.gov.in/" target="_blank" rel="noopener noreferrer" className="block">
-                <Button variant="primary" size="sm" className="w-full bg-amber-600 hover:bg-amber-700 text-white border-none shadow-sm cursor-pointer">
-                  Apply / Renew Passport Online <ExternalLink className="w-3.5 h-3.5 ml-1.5" />
-                </Button>
-              </a>
-              <a href="https://passportindia.gov.in/AppointmentAvailability/checkSlotAvailability" target="_blank" rel="noopener noreferrer" className="block">
-                <Button variant="outline" size="sm" className="w-full cursor-pointer">
-                  Check Appointment Availability <ExternalLink className="w-3.5 h-3.5 ml-1.5" />
-                </Button>
-              </a>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {/* State + District Filter */}
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-bold text-text-muted mb-1 uppercase tracking-wider">State</label>
-                  <select disabled className="w-full px-3 py-2.5 border border-border rounded-xl text-sm bg-gray-50 text-text-muted cursor-not-allowed">
-                    <option>Tamil Nadu</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-text-muted mb-1 uppercase tracking-wider">District</label>
-                  <select
-                    value={district}
-                    onChange={e => setDistrict(e.target.value)}
-                    className="w-full px-3 py-2.5 border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary cursor-pointer"
-                  >
-                    {TN_DISTRICTS.map(d => <option key={d} value={d}>{d}</option>)}
-                  </select>
-                </div>
-              </div>
-
-              {/* Results */}
-              <div className="space-y-3">
-                <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider">
-                  {filteredKendras.length > 0 ? `Passport Seva Kendras${district !== 'All Districts' ? ` in ${district}` : ''}` : 'No PSKs found'}
-                </h4>
-                {filteredKendras.length > 0 ? (
-                  <div className="space-y-2.5 max-h-[320px] overflow-y-auto pr-1">
-                    {filteredKendras.map(k => <CentreCard key={k.id} centre={k} />)}
-                  </div>
-                ) : (
-                  <div className="text-center py-4">
-                    <p className="text-sm text-text-muted italic mb-3">No Passport Seva Kendras found in {district}.</p>
-                    <a href="https://passportindia.gov.in/AppointmentAvailability/checkSlotAvailability" target="_blank" rel="noopener noreferrer">
-                      <Button variant="outline" size="sm" className="cursor-pointer">
-                        Find PSK on Official Website <ExternalLink className="w-3.5 h-3.5 ml-1.5" />
-                      </Button>
-                    </a>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-        </div>
+      <div className="mt-5 p-5 border-t border-border">
+        <Link href="/services/government/passport" className="block">
+          <Button variant="primary" size="sm" className="w-full bg-amber-600 hover:bg-amber-700 text-white border-none shadow-sm cursor-pointer">
+            Open Passport Services <ExternalLink className="w-3.5 h-3.5 ml-1.5" />
+          </Button>
+        </Link>
       </div>
     </Card>
   );
@@ -548,26 +484,6 @@ function PoliceVerificationCard() {
    5. VOTER ID SERVICE CARD
    ═══════════════════════════════════════════════════════════════════ */
 function VoterIdServiceCard() {
-  const [mode, setMode] = useState<'online' | 'offline'>('online');
-  const [city, setCity] = useState('');
-  const [searchCity, setSearchCity] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [searched, setSearched] = useState(false);
-
-  const filteredOffices = useMemo(() => {
-    if (!searchCity) return ELECTION_OFFICES;
-    return ELECTION_OFFICES.filter(o => o.city.toLowerCase().includes(searchCity.toLowerCase()) || o.address.toLowerCase().includes(searchCity.toLowerCase()));
-  }, [searchCity]);
-
-  const handleSearch = () => {
-    setLoading(true);
-    setTimeout(() => {
-      setSearchCity(city);
-      setSearched(true);
-      setLoading(false);
-    }, 400);
-  };
-
   return (
     <Card padding="none" className="group flex flex-col border-amber-200/60 bg-gradient-to-br from-amber-50/30 to-white hover:border-amber-400 hover:shadow-lg transition-all duration-300">
       <div className="flex items-start gap-4 p-5 pb-0">
@@ -584,51 +500,15 @@ function VoterIdServiceCard() {
       </div>
 
       <p className="text-sm text-text-muted mt-4 px-5 leading-relaxed flex-1">
-        Register as a voter, update your address, correct details, or download your e-EPIC. Find nearby Election Offices and Voter Service Centres.
+        Register as a voter, update your address, correct details, or download your e-EPIC. Dedicated portal for Chennai Region.
       </p>
 
-      <div className="mt-5 border-t border-border">
-        <TabToggle mode={mode} setMode={setMode} />
-
-        <div className="p-5">
-          {mode === 'online' ? (
-            <div className="space-y-3">
-              <a href="https://voters.eci.gov.in/" target="_blank" rel="noopener noreferrer" className="block">
-                <Button variant="primary" size="sm" className="w-full bg-amber-600 hover:bg-amber-700 text-white border-none shadow-sm cursor-pointer">
-                  Voter Portal (Register / Update) <ExternalLink className="w-3.5 h-3.5 ml-1.5" />
-                </Button>
-              </a>
-              <a href="https://voterportal.eci.gov.in/" target="_blank" rel="noopener noreferrer" className="block">
-                <Button variant="outline" size="sm" className="w-full cursor-pointer">
-                  Download e-EPIC Card <ExternalLink className="w-3.5 h-3.5 ml-1.5" />
-                </Button>
-              </a>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              <CitySearch city={city} setCity={setCity} onSearch={handleSearch} loading={loading} />
-
-              {searched && (
-                <div className="space-y-3 animate-fade-in">
-                  <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider">
-                    {filteredOffices.length > 0 ? `Election Offices${searchCity ? ` in ${searchCity}` : ''}` : 'No offices found'}
-                  </h4>
-                  {filteredOffices.length > 0 ? (
-                    <div className="space-y-2.5 max-h-[320px] overflow-y-auto pr-1">
-                      {filteredOffices.map(o => <CentreCard key={o.id} centre={o} />)}
-                    </div>
-                  ) : (
-                    <p className="text-sm text-text-muted italic">No election offices found for &quot;{searchCity}&quot;. Try a different city.</p>
-                  )}
-                </div>
-              )}
-
-              {!searched && (
-                <p className="text-xs text-text-muted text-center">Search a city to find nearby election offices</p>
-              )}
-            </div>
-          )}
-        </div>
+      <div className="mt-5 p-5 border-t border-border">
+        <Link href="/services/government/voter-id" className="block">
+          <Button variant="primary" size="sm" className="w-full bg-amber-600 hover:bg-amber-700 text-white border-none shadow-sm cursor-pointer">
+            Open Voter Services <ExternalLink className="w-3.5 h-3.5 ml-1.5" />
+          </Button>
+        </Link>
       </div>
     </Card>
   );
@@ -732,11 +612,19 @@ export default function GovernmentPage() {
                   </p>
 
                   <div className="mt-5 pt-4 border-t border-border">
-                    <a href={service.url} target="_blank" rel="noopener noreferrer" className="block">
-                      <Button variant="outline" size="sm" className="w-full cursor-pointer">
-                        Go to Official Portal <ExternalLink className="w-3.5 h-3.5 ml-1.5" />
-                      </Button>
-                    </a>
+                    {service.url.startsWith('/') ? (
+                      <Link href={service.url} className="block">
+                        <Button variant="outline" size="sm" className="w-full cursor-pointer">
+                          Open Service Page <ExternalLink className="w-3.5 h-3.5 ml-1.5" />
+                        </Button>
+                      </Link>
+                    ) : (
+                      <a href={service.url} target="_blank" rel="noopener noreferrer" className="block">
+                        <Button variant="outline" size="sm" className="w-full cursor-pointer">
+                          Go to Official Portal <ExternalLink className="w-3.5 h-3.5 ml-1.5" />
+                        </Button>
+                      </a>
+                    )}
                   </div>
                 </Card>
               );
