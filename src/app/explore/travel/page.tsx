@@ -776,7 +776,7 @@ export default function TravelPage() {
             <span className="text-text-primary font-medium">Travel & Transport</span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-bold font-display text-text-primary">
-            Travel and Transport
+            Travel & Transport
           </h1>
           <p className="mt-2 text-text-muted">
             Your ultimate Chennai transit companion. Plan your daily commute via Metro, Suburban Trains, and MTC buses, or book rides and outstation travel flows.
@@ -793,18 +793,18 @@ export default function TravelPage() {
             {/* 6. TIMETABLE MODULE (NEW) */}
             
               <div className="space-y-6">
-                <Card padding="lg" className="border-purple-200 overflow-visible">
+                <Card padding="lg" className="border-primary/20 overflow-visible">
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 border-b border-slate-100 pb-3">
                     <div>
                       <h2 className="text-2xl font-bold flex items-center gap-2 text-text-primary">
-                        <Clock className="w-6 h-6 text-purple-500" /> Plan Your Journey
+                        <Clock className="w-6 h-6 text-primary" /> Plan Your Journey
                       </h2>
                       <span className="block text-[11px] font-semibold text-text-muted mt-0.5 font-bengali">আপনার যাত্রা পরিকল্পনা করুন</span>
                     </div>
                     <div className="relative flex bg-slate-100 p-1 rounded-2xl border border-slate-200 shadow-inner w-full sm:w-80 shrink-0 justify-center overflow-hidden">
                       {/* Sliding Active Background */}
                       <div 
-                        className={`absolute top-1 bottom-1 left-1 w-[calc(50%-4px)] bg-purple-600 rounded-xl shadow-md transition-transform duration-300 ease-out ${
+                        className={`absolute top-1 bottom-1 left-1 w-[calc(50%-4px)] bg-primary rounded-xl shadow-md transition-transform duration-300 ease-out ${
                           timetableCategory === 'city' ? 'translate-x-0' : 'translate-x-[calc(100%+4px)]'
                         }`} 
                       />
@@ -853,7 +853,7 @@ export default function TravelPage() {
                         <div className="relative flex bg-slate-100 p-1 rounded-2xl border border-slate-200 shadow-inner w-full overflow-hidden">
                           {/* Sliding Active Background */}
                           <div 
-                            className={`absolute top-1 bottom-1 left-1 w-[calc(50%-4px)] bg-purple-600 rounded-xl shadow-md transition-transform duration-300 ease-out ${
+                            className={`absolute top-1 bottom-1 left-1 w-[calc(50%-4px)] bg-primary rounded-xl shadow-md transition-transform duration-300 ease-out ${
                               cityTransportType === 'public' ? 'translate-x-0' : 'translate-x-[calc(100%+4px)]'
                             }`} 
                           />
@@ -982,7 +982,7 @@ export default function TravelPage() {
                                         setCityFrom(cityTo);
                                         setCityTo(temp);
                                       }}
-                                      className="w-8 h-8 rounded-full bg-white border border-slate-200 shadow-sm flex items-center justify-center hover:bg-slate-50 active:scale-95 transition-all text-purple-600 hover:text-purple-700 cursor-pointer"
+                                      className="w-8 h-8 rounded-full bg-white border border-slate-200 shadow-sm flex items-center justify-center hover:bg-slate-50 active:scale-95 transition-all text-primary hover:text-primary-dark cursor-pointer"
                                       title="Swap Stations"
                                     >
                                       <ArrowUpDown className="w-4 h-4" />
@@ -994,7 +994,7 @@ export default function TravelPage() {
                                     <select
                                       value={cityFrom}
                                       onChange={(e) => setCityFrom(e.target.value)}
-                                      className="w-full px-4 py-3 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/20 bg-white font-medium"
+                                      className="w-full px-4 py-3 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 bg-white font-medium"
                                     >
                                       <option value="">-- Select Origin Station --</option>
                                       <optgroup label="Blue Line (Wimco Nagar Depot ↔ Airport)">
@@ -1014,7 +1014,7 @@ export default function TravelPage() {
                                     <select
                                       value={cityTo}
                                       onChange={(e) => setCityTo(e.target.value)}
-                                      className="w-full px-4 py-3 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/20 bg-white font-medium"
+                                      className="w-full px-4 py-3 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 bg-white font-medium"
                                     >
                                       <option value="">-- Select Destination Station --</option>
                                       <optgroup label="Blue Line (Wimco Nagar Depot ↔ Airport)">
@@ -1072,7 +1072,7 @@ export default function TravelPage() {
                                         setTrainFrom(trainTo);
                                         setTrainTo(tmp);
                                       }}
-                                      className="w-8 h-8 rounded-full bg-white border border-slate-200 shadow-sm flex items-center justify-center hover:bg-slate-50 active:scale-95 transition-all text-purple-600 hover:text-purple-700 cursor-pointer"
+                                      className="w-8 h-8 rounded-full bg-white border border-slate-200 shadow-sm flex items-center justify-center hover:bg-slate-50 active:scale-95 transition-all text-primary hover:text-primary-dark cursor-pointer"
                                       title="Swap Stations"
                                     >
                                       <ArrowUpDown className="w-4 h-4" />
@@ -1084,7 +1084,7 @@ export default function TravelPage() {
                                     <select
                                       value={trainFrom}
                                       onChange={(e) => setTrainFrom(e.target.value)}
-                                      className="w-full px-4 py-3 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/20 bg-white font-semibold text-text-primary"
+                                      className="w-full px-4 py-3 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 bg-white font-semibold text-text-primary"
                                     >
                                       <option value="">Any Station</option>
                                       {SUBURBAN_STATIONS.map(stn => (
@@ -1097,7 +1097,7 @@ export default function TravelPage() {
                                     <select
                                       value={trainTo}
                                       onChange={(e) => setTrainTo(e.target.value)}
-                                      className="w-full px-4 py-3 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/20 bg-white font-semibold text-text-primary"
+                                      className="w-full px-4 py-3 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 bg-white font-semibold text-text-primary"
                                     >
                                       <option value="">Any Station</option>
                                       {SUBURBAN_STATIONS.map(stn => (
@@ -1116,7 +1116,7 @@ export default function TravelPage() {
                                     placeholder="Search Train Number (e.g. 43501)..."
                                     value={trainSearchQuery}
                                     onChange={(e) => setTrainSearchQuery(e.target.value)}
-                                    className="w-full pl-9 pr-4 py-2 border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/20 bg-white"
+                                    className="w-full pl-9 pr-4 py-2 border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 bg-white"
                                   />
                                 </div>
                                 <button
@@ -1179,7 +1179,7 @@ export default function TravelPage() {
                                       setCityFrom(cityTo);
                                       setCityTo(temp);
                                     }}
-                                    className="w-8 h-8 rounded-full bg-white border border-slate-200 shadow-sm flex items-center justify-center hover:bg-slate-50 active:scale-95 transition-all text-purple-600 hover:text-purple-700 cursor-pointer"
+                                    className="w-8 h-8 rounded-full bg-white border border-slate-200 shadow-sm flex items-center justify-center hover:bg-slate-50 active:scale-95 transition-all text-primary hover:text-primary-dark cursor-pointer"
                                     title="Swap Stations"
                                   >
                                     <ArrowUpDown className="w-4 h-4" />
@@ -1199,7 +1199,7 @@ export default function TravelPage() {
                                       }
                                     }}
                                     placeholder={cityTransportType === 'private' ? 'Enter pickup point...' : 'Enter starting point...'}
-                                    className="w-full px-4 py-3 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/20 bg-white"
+                                    className="w-full px-4 py-3 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 bg-white"
                                   />
                                   {cityPublicMode === 'bus' && showSuggestionsFrom && busSuggestionsFrom.length > 0 && (
                                     <div className="absolute left-0 right-0 z-50 mt-1 max-h-60 overflow-y-auto bg-white border border-border rounded-xl shadow-lg text-sm">
@@ -1231,7 +1231,7 @@ export default function TravelPage() {
                                       }
                                     }}
                                     placeholder={cityTransportType === 'private' ? 'Enter dropoff point...' : 'Enter destination...'}
-                                    className="w-full px-4 py-3 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/20 bg-white"
+                                    className="w-full px-4 py-3 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 bg-white"
                                   />
                                   {cityPublicMode === 'bus' && showSuggestionsTo && busSuggestionsTo.length > 0 && (
                                     <div className="absolute left-0 right-0 z-50 mt-1 max-h-60 overflow-y-auto bg-white border border-border rounded-xl shadow-lg text-sm">
@@ -1257,7 +1257,7 @@ export default function TravelPage() {
 
                           {/* Display relevant timetable / route results */}
                           {cityFrom && cityTo && (
-                            <div className="mt-4 p-5 bg-purple-50/30 rounded-2xl border border-purple-100/50 space-y-4">
+                            <div className="mt-4 p-5 bg-primary-light/30 rounded-2xl border border-primary/10 space-y-4">
                               {cityTransportType === 'public' ? (
                                 <div className="space-y-4">
                                   {cityPublicMode === 'metro' && (() => {
@@ -1484,7 +1484,7 @@ export default function TravelPage() {
                                 <div className="space-y-3">
                                   {isCityRouteLoading ? (
                                     <div className="flex items-center justify-center p-6 bg-slate-50 rounded-xl border border-border">
-                                      <Loader2 className="w-5 h-5 animate-spin text-purple-600" />
+                                      <Loader2 className="w-5 h-5 animate-spin text-primary" />
                                       <span className="text-xs text-text-muted ml-2 font-semibold">Calculating estimated ride details...</span>
                                     </div>
                                   ) : cityRouteResult?.isValid ? (
@@ -1719,7 +1719,7 @@ export default function TravelPage() {
                         <div className="relative flex bg-slate-100 p-1 rounded-2xl border border-slate-200 shadow-inner w-full overflow-hidden">
                           {/* Sliding Active Background */}
                           <div 
-                            className={`absolute top-1 bottom-1 left-1 w-[calc(50%-4px)] bg-purple-600 rounded-xl shadow-md transition-transform duration-300 ease-out ${
+                            className={`absolute top-1 bottom-1 left-1 w-[calc(50%-4px)] bg-primary rounded-xl shadow-md transition-transform duration-300 ease-out ${
                               stateTransportType === 'public' ? 'translate-x-0' : 'translate-x-[calc(100%+4px)]'
                             }`} 
                           />
@@ -1769,7 +1769,7 @@ export default function TravelPage() {
                                 setStateFrom('');
                                 setStateTo('');
                               }}
-                              className={`px-4 py-2 rounded-xl border text-sm font-bold transition-all ${statePublicMode === 'bus' ? 'bg-purple-50 border-purple-500 text-purple-700 ring-2 ring-purple-500/10' : 'bg-white border-border text-text-muted hover:border-gray-300'}`}
+                              className={`px-4 py-2 rounded-xl border text-sm font-bold transition-all ${statePublicMode === 'bus' ? 'bg-primary-light border-primary text-primary-dark ring-2 ring-primary/10' : 'bg-white border-border text-text-muted hover:border-gray-300'}`}
                             >
                               State Buses (TNSTC & SETC)
                             </button>
@@ -1779,7 +1779,7 @@ export default function TravelPage() {
                                 setStateFrom('');
                                 setStateTo('');
                               }}
-                              className={`px-4 py-2 rounded-xl border text-sm font-bold transition-all ${statePublicMode === 'train' ? 'bg-purple-50 border-purple-500 text-purple-700 ring-2 ring-purple-500/10' : 'bg-white border-border text-text-muted hover:border-gray-300'}`}
+                              className={`px-4 py-2 rounded-xl border text-sm font-bold transition-all ${statePublicMode === 'train' ? 'bg-primary-light border-primary text-primary-dark ring-2 ring-primary/10' : 'bg-white border-border text-text-muted hover:border-gray-300'}`}
                             >
                               Indian Railways
                             </button>
@@ -1806,7 +1806,7 @@ export default function TravelPage() {
                                   setStateFrom('');
                                   setStateTo('');
                                 }}
-                                className={`px-4 py-2 rounded-xl border text-sm font-bold transition-all ${statePrivateMode === opt.id ? 'bg-purple-50 border-purple-500 text-purple-700 ring-2 ring-purple-500/10' : 'bg-white border-border text-text-muted hover:border-gray-300'}`}
+                                className={`px-4 py-2 rounded-xl border text-sm font-bold transition-all ${statePrivateMode === opt.id ? 'bg-primary-light border-primary text-primary-dark ring-2 ring-primary/10' : 'bg-white border-border text-text-muted hover:border-gray-300'}`}
                               >
                                 {opt.name}
                               </button>
@@ -1825,13 +1825,13 @@ export default function TravelPage() {
                           <div className="space-y-4">
                             {statePublicMode === 'bus' && (
                               <div className="p-4 bg-white rounded-xl border border-border shadow-sm">
-                                <h4 className="font-bold text-sm text-purple-800 mb-2">State Buses (TNSTC & SETC)</h4>
+                                <h4 className="font-bold text-sm text-primary-dark mb-2">State Buses (TNSTC & SETC)</h4>
                                 <p className="text-xs text-text-muted mb-3 font-medium">Book express and deluxe coaches across Tamil Nadu directly via the official portal.</p>
                                 <div className="flex flex-wrap gap-2">
-                                  <a href="https://www.tnstc.in/OTRSOnline/" target="_blank" rel="noopener noreferrer" className="inline-flex px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-xs font-bold transition-colors">
+                                  <a href="https://www.tnstc.in/OTRSOnline/" target="_blank" rel="noopener noreferrer" className="inline-flex px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded-xl text-xs font-bold transition-colors">
                                     Book on TNSTC Portal
                                   </a>
-                                  <a href="https://www.redbus.in/online-booking/tnstc" target="_blank" rel="noopener noreferrer" className="inline-flex px-4 py-2 border border-purple-200 bg-purple-50 text-purple-700 hover:bg-purple-100 rounded-xl text-xs font-bold transition-colors">
+                                  <a href="https://www.redbus.in/online-booking/tnstc" target="_blank" rel="noopener noreferrer" className="inline-flex px-4 py-2 border border-primary/20 bg-primary-light text-primary-dark hover:bg-primary/15 rounded-xl text-xs font-bold transition-colors">
                                     Book on redbus
                                   </a>
                                 </div>
@@ -2126,10 +2126,10 @@ export default function TravelPage() {
 
             {/* Tamil & Bengali Word Helper Carousel - Shown only when Chennai Metro is NOT selected */}
             {!(timetableCategory === 'city' && cityTransportType === 'public' && cityPublicMode === 'metro') && (
-              <Card className="relative overflow-hidden border-purple-100 shadow-xs">
-                <div className="absolute top-0 right-0 w-24 h-24 bg-purple-500/5 rounded-full -mr-8 -mt-8 pointer-events-none" />
+              <Card className="relative overflow-hidden border-primary/20 shadow-xs">
+                <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full -mr-8 -mt-8 pointer-events-none" />
                 <h3 className="text-lg font-bold mb-2 inline-flex items-center gap-2 text-text-primary">
-                  <Megaphone className="w-5 h-5 text-purple-600" /> Tamil & Bengali Word Helper
+                  <Megaphone className="w-5 h-5 text-primary" /> Tamil & Bengali Word Helper
                 </h3>
                 <p className="text-xs text-text-muted mb-4 font-medium">Flashcards for daily commute phrases. Click the speaker to hear pronunciation.</p>
                 
@@ -2144,7 +2144,7 @@ export default function TravelPage() {
                         <button
                           type="button"
                           onClick={() => speakWord(currentWord.script)}
-                          className="p-1.5 rounded-lg bg-purple-50 hover:bg-purple-100 text-purple-600 border border-purple-100/50 active:scale-95 transition-all cursor-pointer flex items-center justify-center"
+                          className="p-1.5 rounded-lg bg-primary-light hover:bg-primary/15 text-primary border border-primary/10 active:scale-95 transition-all cursor-pointer flex items-center justify-center"
                           title="Listen Tamil Pronunciation"
                         >
                           <Volume2 className="w-4 h-4" />
@@ -2155,7 +2155,7 @@ export default function TravelPage() {
                         <div className="text-xl font-extrabold text-slate-800">
                           {currentWord.tamil}
                         </div>
-                        <div className="text-xs font-bold text-purple-600 font-tamil tracking-wider">
+                        <div className="text-xs font-bold text-primary font-tamil tracking-wider">
                           {currentWord.script}
                         </div>
                         
@@ -2165,7 +2165,7 @@ export default function TravelPage() {
                             উচ্চারণ: <span className="text-slate-800 font-bold font-bengali">{currentWord.benPron || ''}</span>
                           </div>
                           <div className="text-xs text-slate-500 font-semibold">
-                            অর্থ: <span className="text-purple-700 font-bold font-bengali">{currentWord.benMean || ''}</span>
+                            অর্থ: <span className="text-primary-dark font-bold font-bengali">{currentWord.benMean || ''}</span>
                           </div>
                         </div>
                       </div>
