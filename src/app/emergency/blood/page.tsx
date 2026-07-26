@@ -61,6 +61,7 @@ export default function BloodPage() {
                 <div>
                   <h3 className="text-lg font-bold text-text-primary group-hover:text-primary transition-colors">{bank.name}</h3>
                   <div className="flex items-center gap-1.5 mt-1 text-sm text-text-muted"><MapPin className="w-3.5 h-3.5" />{bank.city}</div>
+                  {bank.phone && <div className="flex items-center gap-1.5 mt-1 text-sm text-text-muted"><Phone className="w-3.5 h-3.5" />{bank.phone}</div>}
                 </div>
               </div>
               {bank.address && <p className="text-sm text-text-muted mt-3">{bank.address}</p>}

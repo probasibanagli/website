@@ -11,7 +11,6 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { useLanguage } from '@/lib/contexts/LanguageContext';
-import { PageSkeleton } from '@/components/ui/Skeleton';
 
 const navLinks = [
   {
@@ -53,7 +52,6 @@ export function Navbar() {
   const { language, setLanguage, isMounted } = useLanguage();
   const [langMenuOpen, setLangMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
   const { firebaseUser, profile, loading, logOut } = useAuth();
@@ -64,13 +62,6 @@ export function Navbar() {
     });
     return () => cancelAnimationFrame(handle);
   }, []);
-
-  React.useEffect(() => {
-    const handle = requestAnimationFrame(() => {
-      setIsLoading(false);
-    });
-    return () => cancelAnimationFrame(handle);
-  }, [pathname]);
 
   const isLoggedIn = !!firebaseUser && !!profile;
   const isAdmin = profile?.role === 'admin' || profile?.role === 'superadmin';
@@ -84,7 +75,6 @@ export function Navbar() {
   const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
     if (pathname !== href) {
-      setIsLoading(true);
       router.push(href);
     }
   };
@@ -94,7 +84,6 @@ export function Navbar() {
 
   return (
     <>
-      {isLoading && <PageSkeleton />}
       <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
