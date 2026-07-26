@@ -798,7 +798,13 @@ export default function TravelPage() {
                       </h2>
                       <span className="block text-[11px] font-semibold text-text-muted mt-0.5 font-bengali">আপনার যাত্রা পরিকল্পনা করুন</span>
                     </div>
-                    <div className="relative flex bg-slate-100 p-1 rounded-2xl border border-slate-200 shadow-inner w-full sm:w-auto shrink-0 justify-center">
+                    <div className="relative flex bg-slate-100 p-1 rounded-2xl border border-slate-200 shadow-inner w-full sm:w-80 shrink-0 justify-center overflow-hidden">
+                      {/* Sliding Active Background */}
+                      <div 
+                        className={`absolute top-1 bottom-1 left-1 w-[calc(50%-4px)] bg-purple-600 rounded-xl shadow-md transition-transform duration-300 ease-out ${
+                          timetableCategory === 'city' ? 'translate-x-0' : 'translate-x-[calc(100%+4px)]'
+                        }`} 
+                      />
                       <button
                         onClick={() => {
                           setTimetableCategory('city');
@@ -807,7 +813,9 @@ export default function TravelPage() {
                           setCityPublicMode(null);
                           setCityPrivateMode(null);
                         }}
-                        className={`flex-1 sm:flex-initial px-4 py-2 rounded-xl text-xs font-black tracking-wide transition-all z-10 cursor-pointer text-center ${timetableCategory === 'city' ? 'bg-purple-600 text-white shadow-md' : 'text-slate-500 hover:text-slate-800'}`}
+                        className={`relative flex-1 px-4 py-2 rounded-xl text-xs font-black tracking-wide transition-colors duration-300 z-10 cursor-pointer text-center ${
+                          timetableCategory === 'city' ? 'text-white' : 'text-slate-500 hover:text-slate-800'
+                        }`}
                       >
                         <div>Within the City</div>
                         <div className="text-[9px] opacity-80 font-bengali font-semibold mt-0.5">শহরের মধ্যে</div>
@@ -820,7 +828,9 @@ export default function TravelPage() {
                           setStatePublicMode(null);
                           setStatePrivateMode(null);
                         }}
-                        className={`flex-1 sm:flex-initial px-4 py-2 rounded-xl text-xs font-black tracking-wide transition-all z-10 cursor-pointer text-center ${timetableCategory === 'state' ? 'bg-purple-600 text-white shadow-md' : 'text-slate-500 hover:text-slate-800'}`}
+                        className={`relative flex-1 px-4 py-2 rounded-xl text-xs font-black tracking-wide transition-colors duration-300 z-10 cursor-pointer text-center ${
+                          timetableCategory === 'state' ? 'text-white' : 'text-slate-500 hover:text-slate-800'
+                        }`}
                       >
                         <div>Within the State</div>
                         <div className="text-[9px] opacity-80 font-bengali font-semibold mt-0.5">রাজ্যের মধ্যে</div>
@@ -837,7 +847,13 @@ export default function TravelPage() {
                           <label className="block text-sm font-semibold text-text-primary">1. Select Transport Category</label>
                           <span className="block text-[11px] text-text-muted font-medium font-bengali mb-3">পরিবহন বিভাগ নির্বাচন করুন</span>
                         </div>
-                        <div className="flex bg-slate-100 p-1 rounded-2xl border border-slate-200 shadow-inner w-full">
+                        <div className="relative flex bg-slate-100 p-1 rounded-2xl border border-slate-200 shadow-inner w-full overflow-hidden">
+                          {/* Sliding Active Background */}
+                          <div 
+                            className={`absolute top-1 bottom-1 left-1 w-[calc(50%-4px)] bg-purple-600 rounded-xl shadow-md transition-transform duration-300 ease-out ${
+                              cityTransportType === 'public' ? 'translate-x-0' : 'translate-x-[calc(100%+4px)]'
+                            }`} 
+                          />
                           <button
                             onClick={() => {
                               setCityTransportType('public');
@@ -845,7 +861,9 @@ export default function TravelPage() {
                               setCityFrom('');
                               setCityTo('');
                             }}
-                            className={`flex-1 flex flex-col items-center justify-center p-2.5 rounded-xl font-black text-xs transition-all cursor-pointer ${cityTransportType === 'public' ? 'bg-purple-600 text-white shadow-md' : 'text-slate-500 hover:text-slate-800'}`}
+                            className={`relative flex-1 flex flex-col items-center justify-center p-2.5 rounded-xl font-black text-xs transition-colors duration-300 z-10 cursor-pointer ${
+                              cityTransportType === 'public' ? 'text-white' : 'text-slate-500 hover:text-slate-800'
+                            }`}
                           >
                             <div className="flex items-center gap-1.5">
                               <Bus className="w-4 h-4" /> Public Transit
@@ -859,7 +877,9 @@ export default function TravelPage() {
                               setCityFrom('');
                               setCityTo('');
                             }}
-                            className={`flex-1 flex flex-col items-center justify-center p-2.5 rounded-xl font-black text-xs transition-all cursor-pointer ${cityTransportType === 'private' ? 'bg-purple-600 text-white shadow-md' : 'text-slate-500 hover:text-slate-800'}`}
+                            className={`relative flex-1 flex flex-col items-center justify-center p-2.5 rounded-xl font-black text-xs transition-colors duration-300 z-10 cursor-pointer ${
+                              cityTransportType === 'private' ? 'text-white' : 'text-slate-500 hover:text-slate-800'
+                            }`}
                           >
                             <div className="flex items-center gap-1.5">
                               <Car className="w-4 h-4" /> Private & Outstation
@@ -1693,7 +1713,13 @@ export default function TravelPage() {
                           <label className="block text-sm font-semibold text-text-primary">1. Select Transport Category</label>
                           <span className="block text-[11px] text-text-muted font-medium font-bengali mb-3">পরিবহন বিভাগ নির্বাচন করুন</span>
                         </div>
-                        <div className="flex bg-slate-100 p-1 rounded-2xl border border-slate-200 shadow-inner w-full">
+                        <div className="relative flex bg-slate-100 p-1 rounded-2xl border border-slate-200 shadow-inner w-full overflow-hidden">
+                          {/* Sliding Active Background */}
+                          <div 
+                            className={`absolute top-1 bottom-1 left-1 w-[calc(50%-4px)] bg-purple-600 rounded-xl shadow-md transition-transform duration-300 ease-out ${
+                              stateTransportType === 'public' ? 'translate-x-0' : 'translate-x-[calc(100%+4px)]'
+                            }`} 
+                          />
                           <button
                             onClick={() => {
                               setStateTransportType('public');
@@ -1701,7 +1727,9 @@ export default function TravelPage() {
                               setStateFrom('');
                               setStateTo('');
                             }}
-                            className={`flex-1 flex flex-col items-center justify-center p-2.5 rounded-xl font-black text-xs transition-all cursor-pointer ${stateTransportType === 'public' ? 'bg-purple-600 text-white shadow-md' : 'text-slate-500 hover:text-slate-800'}`}
+                            className={`relative flex-1 flex flex-col items-center justify-center p-2.5 rounded-xl font-black text-xs transition-colors duration-300 z-10 cursor-pointer ${
+                              stateTransportType === 'public' ? 'text-white' : 'text-slate-500 hover:text-slate-800'
+                            }`}
                           >
                             <div className="flex items-center gap-1.5">
                               <Bus className="w-4 h-4" /> Public Transit
@@ -1715,7 +1743,9 @@ export default function TravelPage() {
                               setStateFrom('');
                               setStateTo('');
                             }}
-                            className={`flex-1 flex flex-col items-center justify-center p-2.5 rounded-xl font-black text-xs transition-all cursor-pointer ${stateTransportType === 'private' ? 'bg-purple-600 text-white shadow-md' : 'text-slate-500 hover:text-slate-800'}`}
+                            className={`relative flex-1 flex flex-col items-center justify-center p-2.5 rounded-xl font-black text-xs transition-colors duration-300 z-10 cursor-pointer ${
+                              stateTransportType === 'private' ? 'text-white' : 'text-slate-500 hover:text-slate-800'
+                            }`}
                           >
                             <div className="flex items-center gap-1.5">
                               <Car className="w-4 h-4" /> Private & Outstation
