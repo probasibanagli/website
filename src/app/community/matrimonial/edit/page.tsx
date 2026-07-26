@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { CustomSelect } from '@/components/ui/CustomSelect';
 import {
   CITIES, HEIGHTS, MARITAL_STATUSES, COMPLEXIONS, FAMILY_TYPES, FAMILY_VALUES, FAMILY_STATUS,
   DIET_TYPES, EDUCATION_LEVELS, INCOME_RANGES, CASTE_MAPPING, WEST_BENGAL_DISTRICTS,
@@ -285,31 +286,30 @@ export default function EditMatrimonialProfile() {
     const selectValue = isCustom ? otherValue : ((formData[field] as string) || '');
 
     return (
-      <div className="space-y-1.5">
-        <label className="block text-sm font-medium text-text-primary">{label}</label>
-        <select
+      <div className="space-y-1.5 w-full">
+        <CustomSelect
+          label={label}
           value={selectValue}
-          onChange={(e) => {
-            const val = e.target.value;
-            updateField(field, val);
-          }}
-          className="w-full px-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 cursor-pointer"
-        >
-          <option value="">Select</option>
-          {selectOptions.map(o => <option key={o} value={o}>{o}</option>)}
-        </select>
+          onChange={(val) => updateField(field, val)}
+          options={selectOptions}
+          placeholder={`Select ${label}`}
+        />
 
         {isCustom && (
-          <input
-            type="text"
-            value={formData[field] === otherValue ? '' : (formData[field] as string || '')}
-            onChange={(e) => {
-              const val = e.target.value;
-              updateField(field, val === '' ? otherValue : val);
-            }}
-            placeholder={`Specify other ${label.toLowerCase()}`}
-            className="w-full px-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 mt-1.5"
-          />
+          <div className="relative animate-fade-in">
+            <input
+              type="text"
+              autoFocus
+              value={formData[field] === otherValue ? '' : (formData[field] as string || '')}
+              onChange={(e) => {
+                const val = e.target.value;
+                updateField(field, val === '' ? otherValue : val);
+              }}
+              placeholder={`Type your ${label.toLowerCase()}...`}
+              className="w-full pl-4 pr-10 py-2.5 rounded-xl border border-amber-200 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 mt-1.5 bg-amber-50/40"
+            />
+            <span className="absolute right-3 top-1/2 -translate-y-1/2 mt-0.5 text-[10px] font-medium text-amber-600/70 bg-amber-100 px-1.5 py-0.5 rounded-md">Custom</span>
+          </div>
         )}
       </div>
     );
@@ -321,6 +321,75 @@ export default function EditMatrimonialProfile() {
       <input type={type} value={(formData[field] as string) || ''} onChange={(e) => updateField(field, e.target.value)} placeholder={placeholder} className="w-full px-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
     </div>
   );
+
+  const DateOfBirthInput = ({ label, field }: { label: string; field: string }) => {
+    const value = (formData[field] as string) || '';
+    const parts = value.split('-');
+    let year = '';
+    let month = '';
+    let day = '';
+    if (parts.length === 3) {
+      [year, month, day] = parts;
+    }
+
+    const days = Array.from({ length: 31 }, (_, i) => String(i + 1).padStart(2, '0'));
+    const months = [
+      { value: '01', label: 'Jan' },
+      { value: '02', label: 'Feb' },
+      { value: '03', label: 'Mar' },
+      { value: '04', label: 'Apr' },
+      { value: '05', label: 'May' },
+      { value: '06', label: 'Jun' },
+      { value: '07', label: 'Jul' },
+      { value: '08', label: 'Aug' },
+      { value: '09', label: 'Sep' },
+      { value: '10', label: 'Oct' },
+      { value: '11', label: 'Nov' },
+      { value: '12', label: 'Dec' },
+    ];
+    const currentYear = new Date().getFullYear();
+    const years = Array.from({ length: 80 }, (_, i) => String(currentYear - 18 - i));
+
+    const handleDateChange = (d: string, m: string, y: string) => {
+      if (d && m && y) {
+        updateField(field, `${y}-${m}-${d}`);
+      } else {
+        updateField(field, '');
+      }
+    };
+
+    return (
+      <div className="space-y-1.5 w-full">
+        <label className="block text-sm font-medium text-text-primary">{label}</label>
+        <div className="grid grid-cols-3 gap-2">
+          <select
+            value={day || ''}
+            onChange={(e) => handleDateChange(e.target.value, month || '', year || '')}
+            className="w-full px-3 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 cursor-pointer bg-white"
+          >
+            <option value="">Day</option>
+            {days.map(d => <option key={d} value={d}>{d}</option>)}
+          </select>
+          <select
+            value={month || ''}
+            onChange={(e) => handleDateChange(day || '', e.target.value, year || '')}
+            className="w-full px-3 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 cursor-pointer bg-white"
+          >
+            <option value="">Month</option>
+            {months.map(m => <option key={m.value} value={m.value}>{m.label}</option>)}
+          </select>
+          <select
+            value={year || ''}
+            onChange={(e) => handleDateChange(day || '', month || '', e.target.value)}
+            className="w-full px-3 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 cursor-pointer bg-white"
+          >
+            <option value="">Year</option>
+            {years.map(y => <option key={y} value={y}>{y}</option>)}
+          </select>
+        </div>
+      </div>
+    );
+  };
 
   const sections = [
     { key: 'personal', label: 'Personal', icon: User },
@@ -374,7 +443,7 @@ export default function EditMatrimonialProfile() {
               <h2 className="text-lg font-bold mb-4">Personal Details</h2>
               <FormInput label="Full Name" field="full_name" placeholder="Your full name" />
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <FormInput label="Date of Birth" field="date_of_birth" type="date" />
+                <DateOfBirthInput label="Date of Birth" field="date_of_birth" />
                 <FormSelect label="Gender" field="gender" options={['male', 'female']} />
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -510,9 +579,10 @@ export default function EditMatrimonialProfile() {
                 <FormSelect label="Pref. Diet" field="pref_diet" options={DIET_TYPES} />
                 <FormSelect label="Pref. Marital Status" field="pref_marital_status" options={MARITAL_STATUSES} />
               </div>
-              <div>
-                <label className="block text-sm font-medium text-text-primary mb-1.5">About Ideal Partner</label>
-                <textarea value={(formData.partner_preference as string) || ''} onChange={(e) => updateField('partner_preference', e.target.value)} rows={4} className="w-full px-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none" placeholder="Describe your ideal partner..." />
+              <div className="space-y-1.5">
+                <label className="block text-sm font-medium text-text-primary">About Ideal Partner</label>
+                <textarea value={(formData.partner_preference as string) || ''} onChange={(e) => updateField('partner_preference', e.target.value.slice(0, 500))} rows={4} maxLength={500} className="w-full px-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none" placeholder="Describe your ideal partner — personality, values, lifestyle..." />
+                <p className={`text-[10px] font-medium text-right ${((formData.partner_preference as string) || '').length > 450 ? 'text-amber-500' : 'text-text-muted'}`}>{((formData.partner_preference as string) || '').length}/500</p>
               </div>
             </div>
           )}
@@ -521,9 +591,13 @@ export default function EditMatrimonialProfile() {
           {activeSection === 'about' && (
             <div className="space-y-4 animate-fade-in">
               <h2 className="text-lg font-bold mb-4">About Me</h2>
-              <div>
-                <label className="block text-sm font-medium text-text-primary mb-1.5">Tell potential matches about yourself</label>
-                <textarea value={(formData.about_me as string) || ''} onChange={(e) => updateField('about_me', e.target.value)} rows={6} className="w-full px-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none" placeholder="Your personality, values, interests, what makes you unique..." />
+              <div className="space-y-1.5">
+                <label className="block text-sm font-medium text-text-primary">Tell potential matches about yourself</label>
+                <textarea value={(formData.about_me as string) || ''} onChange={(e) => updateField('about_me', e.target.value.slice(0, 500))} rows={6} maxLength={500} className="w-full px-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none" placeholder="Share your personality, values, interests, what makes you unique..." />
+                <div className="flex justify-between items-center">
+                  <p className="text-[10px] text-text-muted">A good description helps get more matches</p>
+                  <p className={`text-[10px] font-medium ${((formData.about_me as string) || '').length > 450 ? 'text-amber-500' : 'text-text-muted'}`}>{((formData.about_me as string) || '').length}/500</p>
+                </div>
               </div>
             </div>
           )}

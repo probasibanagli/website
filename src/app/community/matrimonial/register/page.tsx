@@ -11,6 +11,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/Input';
+import { CustomSelect } from '@/components/ui/CustomSelect';
 import {
   CITIES, HEIGHTS, MARITAL_STATUSES, COMPLEXIONS, FAMILY_TYPES, FAMILY_VALUES, FAMILY_STATUS,
   DIET_TYPES, EDUCATION_LEVELS, INCOME_RANGES, CASTE_MAPPING, WEST_BENGAL_DISTRICTS,
@@ -83,40 +84,35 @@ const FormSelect = ({ label, field, options, required, formData, errors, updateF
   const selectValue = isCustom ? otherValue : ((formData[field] as string) || '');
 
   return (
-    <div className="space-y-1.5">
-      <label className="block text-sm font-medium text-text-primary">
-        {label}{required && <span className="text-red-500 ml-0.5">*</span>}
-      </label>
-      <select
+    <div className="space-y-1.5 w-full">
+      <CustomSelect
+        label={label}
         value={selectValue}
-        onChange={(e) => {
-          const val = e.target.value;
-          updateField(field, val);
-        }}
-        className={`w-full px-4 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all cursor-pointer ${
-          errors[field] ? 'border-red-400' : 'border-border'
-        }`}
-      >
-        <option value="">Select {label}</option>
-        {selectOptions.map(o => <option key={o} value={o}>{o}</option>)}
-      </select>
+        onChange={(val) => updateField(field, val)}
+        options={selectOptions}
+        placeholder={`Select ${label}`}
+        required={required}
+        error={errors[field]}
+      />
 
       {isCustom && (
-        <input
-          type="text"
-          value={formData[field] === otherValue ? '' : (formData[field] as string || '')}
-          onChange={(e) => {
-            const val = e.target.value;
-            updateField(field, val === '' ? otherValue : val);
-          }}
-          placeholder={`Specify other ${label.toLowerCase()}`}
-          className={`w-full px-4 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all mt-1.5 ${
-            errors[field] ? 'border-red-400' : 'border-border'
-          }`}
-        />
+        <div className="relative animate-fade-in">
+          <input
+            type="text"
+            autoFocus
+            value={formData[field] === otherValue ? '' : (formData[field] as string || '')}
+            onChange={(e) => {
+              const val = e.target.value;
+              updateField(field, val === '' ? otherValue : val);
+            }}
+            placeholder={`Type your ${label.toLowerCase()}...`}
+            className={`w-full pl-4 pr-10 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all mt-1.5 bg-amber-50/40 ${
+              errors[field] ? 'border-red-400' : 'border-amber-200'
+            }`}
+          />
+          <span className="absolute right-3 top-1/2 -translate-y-1/2 mt-0.5 text-[10px] font-medium text-amber-600/70 bg-amber-100 px-1.5 py-0.5 rounded-md">Custom</span>
+        </div>
       )}
-
-      {errors[field] && <p className="text-xs text-red-500">{errors[field]}</p>}
     </div>
   );
 };
@@ -145,6 +141,87 @@ const FormInput = ({ label, field, type = 'text', placeholder, required, formDat
     {errors[field] && <p className="text-xs text-red-500">{errors[field]}</p>}
   </div>
 );
+
+const DateOfBirthInput = ({ label, field, required, formData, errors, updateField, disabled }: FormFieldProps & { disabled?: boolean }) => {
+  const value = (formData[field] as string) || '';
+  const parts = value.split('-');
+  let year = '';
+  let month = '';
+  let day = '';
+  if (parts.length === 3) {
+    [year, month, day] = parts;
+  }
+
+  const days = Array.from({ length: 31 }, (_, i) => String(i + 1).padStart(2, '0'));
+  const months = [
+    { value: '01', label: 'Jan' },
+    { value: '02', label: 'Feb' },
+    { value: '03', label: 'Mar' },
+    { value: '04', label: 'Apr' },
+    { value: '05', label: 'May' },
+    { value: '06', label: 'Jun' },
+    { value: '07', label: 'Jul' },
+    { value: '08', label: 'Aug' },
+    { value: '09', label: 'Sep' },
+    { value: '10', label: 'Oct' },
+    { value: '11', label: 'Nov' },
+    { value: '12', label: 'Dec' },
+  ];
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: 80 }, (_, i) => String(currentYear - 18 - i));
+
+  const handleDateChange = (d: string, m: string, y: string) => {
+    if (d && m && y) {
+      updateField(field, `${y}-${m}-${d}`);
+    } else {
+      updateField(field, '');
+    }
+  };
+
+  return (
+    <div className="space-y-1.5 w-full">
+      <label className="block text-sm font-medium text-text-primary">
+        {label}{required && <span className="text-red-500 ml-0.5">*</span>}
+      </label>
+      <div className="grid grid-cols-3 gap-2">
+        <select
+          value={day || ''}
+          onChange={(e) => handleDateChange(e.target.value, month || '', year || '')}
+          disabled={disabled}
+          className={`w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all cursor-pointer bg-white ${
+            errors[field] ? 'border-red-400' : 'border-border'
+          } ${disabled ? 'bg-gray-100 text-text-muted cursor-not-allowed' : ''}`}
+        >
+          <option value="">Day</option>
+          {days.map(d => <option key={d} value={d}>{d}</option>)}
+        </select>
+        <select
+          value={month || ''}
+          onChange={(e) => handleDateChange(day || '', e.target.value, year || '')}
+          disabled={disabled}
+          className={`w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all cursor-pointer bg-white ${
+            errors[field] ? 'border-red-400' : 'border-border'
+          } ${disabled ? 'bg-gray-100 text-text-muted cursor-not-allowed' : ''}`}
+        >
+          <option value="">Month</option>
+          {months.map(m => <option key={m.value} value={m.value}>{m.label}</option>)}
+        </select>
+        <select
+          value={year || ''}
+          onChange={(e) => handleDateChange(day || '', month || '', e.target.value)}
+          disabled={disabled}
+          className={`w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all cursor-pointer bg-white ${
+            errors[field] ? 'border-red-400' : 'border-border'
+          } ${disabled ? 'bg-gray-100 text-text-muted cursor-not-allowed' : ''}`}
+        >
+          <option value="">Year</option>
+          {years.map(y => <option key={y} value={y}>{y}</option>)}
+        </select>
+      </div>
+      {errors[field] && <p className="text-xs text-red-500">{errors[field]}</p>}
+    </div>
+  );
+};
 export default function MatrimonialRegisterPage() {
   const router = useRouter();
   const { firebaseUser, profile: userProfile, loading: authLoading } = useAuth();
@@ -828,7 +905,7 @@ export default function MatrimonialRegisterPage() {
                 </div>
                 <FormInput formData={formData} errors={errors} updateField={updateField} label="Full Name" field="full_name" placeholder="Enter full name of profile owner" required />
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <FormInput formData={formData} errors={errors} updateField={updateField} label="Date of Birth" field="date_of_birth" type="date" required />
+                  <DateOfBirthInput formData={formData} errors={errors} updateField={updateField} label="Date of Birth" field="date_of_birth" required />
                   <FormInput formData={formData} errors={errors} updateField={updateField} label="Mother Tongue" field="mother_tongue" placeholder="Bengali" />
                 </div>
               </div>
@@ -882,16 +959,44 @@ export default function MatrimonialRegisterPage() {
               </div>
             )}
 
-            {/* Step 5: Location Details */}
+            {/* Step 5: Location & Family */}
             {step === 5 && (
               <div className="space-y-5 animate-fade-in">
                 <div className="text-center max-w-md mx-auto mb-2">
-                  <h2 className="text-2xl font-bold font-display text-text-primary">Location Details</h2>
-                  <p className="text-xs text-text-muted mt-1">Current stay in Tamil Nadu and origin roots</p>
+                  <h2 className="text-2xl font-bold font-display text-text-primary">Location & Family</h2>
+                  <p className="text-xs text-text-muted mt-1">Where you live and family background</p>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <FormSelect formData={formData} errors={errors} updateField={updateField} label="Current City (Tamil Nadu)" field="city" options={CITIES} required />
-                  <FormSelect formData={formData} errors={errors} updateField={updateField} label="Native District (West Bengal)" field="native_district" options={WEST_BENGAL_DISTRICTS} required />
+
+                {/* Location */}
+                <div className="space-y-3">
+                  <h3 className="text-sm font-semibold text-text-primary flex items-center gap-1.5">
+                    <MapPin className="w-3.5 h-3.5 text-primary" /> Location
+                  </h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <FormSelect formData={formData} errors={errors} updateField={updateField} label="Current City (Tamil Nadu)" field="city" options={CITIES} required />
+                    <FormSelect formData={formData} errors={errors} updateField={updateField} label="Native District (West Bengal)" field="native_district" options={WEST_BENGAL_DISTRICTS} required />
+                  </div>
+                </div>
+
+                {/* Family */}
+                <div className="space-y-3 pt-2 border-t border-border/40">
+                  <h3 className="text-sm font-semibold text-text-primary flex items-center gap-1.5">
+                    <Users className="w-3.5 h-3.5 text-primary" /> Family Background
+                  </h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <FormInput formData={formData} errors={errors} updateField={updateField} label="Father's Name" field="father_name" placeholder="Enter father's name" />
+                    <FormInput formData={formData} errors={errors} updateField={updateField} label="Father's Occupation" field="father_occupation" placeholder="e.g. Business, Retired" />
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <FormInput formData={formData} errors={errors} updateField={updateField} label="Mother's Name" field="mother_name" placeholder="Enter mother's name" />
+                    <FormInput formData={formData} errors={errors} updateField={updateField} label="Mother's Occupation" field="mother_occupation" placeholder="e.g. Homemaker, Teacher" />
+                  </div>
+                  <FormInput formData={formData} errors={errors} updateField={updateField} label="Siblings" field="siblings" placeholder="e.g. 1 Elder Brother (Married), 1 Younger Sister" />
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <FormSelect formData={formData} errors={errors} updateField={updateField} label="Family Type" field="family_type" options={FAMILY_TYPES} />
+                    <FormSelect formData={formData} errors={errors} updateField={updateField} label="Family Values" field="family_values" options={FAMILY_VALUES} />
+                    <FormSelect formData={formData} errors={errors} updateField={updateField} label="Family Status" field="family_status" options={FAMILY_STATUS} />
+                  </div>
                 </div>
               </div>
             )}
@@ -1060,11 +1165,18 @@ export default function MatrimonialRegisterPage() {
                   <label className="block text-sm font-medium text-text-primary">About Me / Description</label>
                   <textarea
                     value={(formData.about_me as string) || ''}
-                    onChange={(e) => updateField('about_me', e.target.value)}
+                    onChange={(e) => updateField('about_me', e.target.value.slice(0, 500))}
                     rows={4}
+                    maxLength={500}
                     className="w-full px-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none"
-                    placeholder="Tell potential matches about yourself — your personality, interests, values..."
+                    placeholder="Share about your personality, interests, values, family life, what makes you unique..."
                   />
+                  <div className="flex justify-between items-center">
+                    <p className="text-[10px] text-text-muted">A good description helps get more matches</p>
+                    <p className={`text-[10px] font-medium ${((formData.about_me as string) || '').length > 450 ? 'text-amber-500' : 'text-text-muted'}`}>
+                      {((formData.about_me as string) || '').length}/500
+                    </p>
+                  </div>
                 </div>
 
               </div>
@@ -1101,14 +1213,18 @@ export default function MatrimonialRegisterPage() {
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="block text-sm font-medium text-text-primary">Expectations Description (optional)</label>
+                  <label className="block text-sm font-medium text-text-primary">Expectations Description <span className="text-text-muted font-normal">(optional)</span></label>
                   <textarea
                     value={(formData.partner_preference as string) || ''}
-                    onChange={(e) => updateField('partner_preference', e.target.value)}
+                    onChange={(e) => updateField('partner_preference', e.target.value.slice(0, 500))}
                     rows={4}
+                    maxLength={500}
                     className="w-full px-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none"
-                    placeholder="Tell us about the kind of person you are looking for..."
+                    placeholder="Describe the kind of partner you envision — personality, values, lifestyle..."
                   />
+                  <p className={`text-[10px] font-medium text-right ${((formData.partner_preference as string) || '').length > 450 ? 'text-amber-500' : 'text-text-muted'}`}>
+                    {((formData.partner_preference as string) || '').length}/500
+                  </p>
                 </div>
 
                 {/* Profile Review Summary */}

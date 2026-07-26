@@ -10,9 +10,10 @@ import {
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { sampleMatrimonialProfiles } from '@/data/sample-data';
+import { CustomSelect } from '@/components/ui/CustomSelect';
+
 import { CITIES, MARITAL_STATUSES, DIET_TYPES, EDUCATION_LEVELS, RELIGIONS } from '@/lib/constants';
-import { getMyProfile, searchProfiles, sortProfiles, type MatrimonyFilters, type SortOption, getMedia } from '@/lib/matrimony-service';
+import { getMyProfile, searchProfiles, sortProfiles, getAllProfiles, type MatrimonyFilters, type SortOption, getMedia } from '@/lib/matrimony-service';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { calculateMatchPercentage } from '@/lib/match-utils';
 import type { MatrimonialProfile } from '@/types';
@@ -92,9 +93,10 @@ export default function MatrimonialPage() {
   const activeFilterCount = Object.values(filters).filter(v => v !== undefined && v !== '').length;
 
   // Stats
-  const totalProfiles = sampleMatrimonialProfiles.length;
-  const verifiedProfiles = sampleMatrimonialProfiles.filter(p => p.verified).length;
-  const citiesCount = new Set(sampleMatrimonialProfiles.map(p => p.city)).size;
+  const allProfs = useMemo(() => getAllProfiles(), []);
+  const totalProfiles = allProfs.length;
+  const verifiedProfiles = allProfs.filter(p => p.verified).length;
+  const citiesCount = new Set(allProfs.map(p => p.city)).size;
 
   return (
     <div className="min-h-screen bg-surface bg-alpana">
@@ -374,35 +376,47 @@ export default function MatrimonialPage() {
                 </div>
 
                 {/* Quick Filters */}
-                <select
-                  value={filters.gender || ''}
-                  onChange={(e) => updateFilter('gender', e.target.value)}
-                  className="hidden sm:block px-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 cursor-pointer"
-                >
-                  <option value="">All Genders</option>
-                  <option value="male">Groom (Male)</option>
-                  <option value="female">Bride (Female)</option>
-                </select>
+                <div className="hidden sm:block w-44">
+                  <CustomSelect
+                    value={filters.gender || ''}
+                    onChange={(val) => updateFilter('gender', val)}
+                    options={[
+                      { value: '', label: 'All Genders' },
+                      { value: 'male', label: 'Groom (Male)' },
+                      { value: 'female', label: 'Bride (Female)' }
+                    ]}
+                    placeholder="All Genders"
+                    searchable={false}
+                  />
+                </div>
 
-                <select
-                  value={filters.city || ''}
-                  onChange={(e) => updateFilter('city', e.target.value)}
-                  className="hidden sm:block px-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 cursor-pointer"
-                >
-                  <option value="">All Cities</option>
-                  {CITIES.map((c) => <option key={c} value={c}>{c}</option>)}
-                </select>
+                <div className="hidden sm:block w-48">
+                  <CustomSelect
+                    value={filters.city || ''}
+                    onChange={(val) => updateFilter('city', val)}
+                    options={[
+                      { value: '', label: 'All Cities' },
+                      ...CITIES.map(c => ({ value: c, label: c }))
+                    ]}
+                    placeholder="All Cities"
+                    searchable={true}
+                  />
+                </div>
 
                 {/* Sort */}
-                <select
-                  value={sort}
-                  onChange={(e) => setSort(e.target.value as SortOption)}
-                  className="hidden md:block px-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 cursor-pointer"
-                >
-                  <option value="newest">Newest First</option>
-                  <option value="age-low">Age: Low → High</option>
-                  <option value="age-high">Age: High → Low</option>
-                </select>
+                <div className="hidden md:block w-48">
+                  <CustomSelect
+                    value={sort}
+                    onChange={(val) => setSort(val as SortOption)}
+                    options={[
+                      { value: 'newest', label: 'Newest First' },
+                      { value: 'age-low', label: 'Age: Low → High' },
+                      { value: 'age-high', label: 'Age: High → Low' }
+                    ]}
+                    placeholder="Sort By"
+                    searchable={false}
+                  />
+                </div>
 
                 {/* Advanced Filters Toggle */}
                 <button
@@ -434,50 +448,80 @@ export default function MatrimonialPage() {
                     {/* Gender - mobile only */}
                     <div className="sm:hidden space-y-1">
                       <label className="text-xs font-medium text-text-muted">Gender</label>
-                      <select value={filters.gender || ''} onChange={(e) => updateFilter('gender', e.target.value)} className="w-full px-3 py-2 rounded-lg border border-border text-sm">
-                        <option value="">All</option>
-                        <option value="male">Groom</option>
-                        <option value="female">Bride</option>
-                      </select>
+                      <CustomSelect
+                        value={filters.gender || ''}
+                        onChange={(val) => updateFilter('gender', val)}
+                        options={[
+                          { value: '', label: 'All' },
+                          { value: 'male', label: 'Groom' },
+                          { value: 'female', label: 'Bride' }
+                        ]}
+                        placeholder="All"
+                        searchable={false}
+                      />
                     </div>
 
                     {/* City - mobile only */}
                     <div className="sm:hidden space-y-1">
                       <label className="text-xs font-medium text-text-muted">City</label>
-                      <select value={filters.city || ''} onChange={(e) => updateFilter('city', e.target.value)} className="w-full px-3 py-2 rounded-lg border border-border text-sm">
-                        <option value="">All Cities</option>
-                        {CITIES.map(c => <option key={c} value={c}>{c}</option>)}
-                      </select>
+                      <CustomSelect
+                        value={filters.city || ''}
+                        onChange={(val) => updateFilter('city', val)}
+                        options={[
+                          { value: '', label: 'All Cities' },
+                          ...CITIES.map(c => ({ value: c, label: c }))
+                        ]}
+                        placeholder="All Cities"
+                        searchable={true}
+                      />
                     </div>
 
                     <div className="space-y-1">
                       <label className="text-xs font-medium text-text-muted">Age Min</label>
-                      <input type="number" min={18} max={60} placeholder="18" value={filters.ageMin || ''} onChange={(e) => updateFilter('ageMin', e.target.value ? Number(e.target.value) : undefined)} className="w-full px-3 py-2 rounded-lg border border-border text-sm" />
+                      <input type="number" min={18} max={60} placeholder="18" value={filters.ageMin || ''} onChange={(e) => updateFilter('ageMin', e.target.value ? Number(e.target.value) : undefined)} className="w-full px-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all" />
                     </div>
                     <div className="space-y-1">
                       <label className="text-xs font-medium text-text-muted">Age Max</label>
-                      <input type="number" min={18} max={60} placeholder="40" value={filters.ageMax || ''} onChange={(e) => updateFilter('ageMax', e.target.value ? Number(e.target.value) : undefined)} className="w-full px-3 py-2 rounded-lg border border-border text-sm" />
+                      <input type="number" min={18} max={60} placeholder="40" value={filters.ageMax || ''} onChange={(e) => updateFilter('ageMax', e.target.value ? Number(e.target.value) : undefined)} className="w-full px-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all" />
                     </div>
                     <div className="space-y-1">
                       <label className="text-xs font-medium text-text-muted">Marital Status</label>
-                      <select value={filters.maritalStatus || ''} onChange={(e) => updateFilter('maritalStatus', e.target.value)} className="w-full px-3 py-2 rounded-lg border border-border text-sm">
-                        <option value="">Any</option>
-                        {MARITAL_STATUSES.map(s => <option key={s} value={s}>{s}</option>)}
-                      </select>
+                      <CustomSelect
+                        value={filters.maritalStatus || ''}
+                        onChange={(val) => updateFilter('maritalStatus', val)}
+                        options={[
+                          { value: '', label: 'Any' },
+                          ...MARITAL_STATUSES.map(s => ({ value: s, label: s }))
+                        ]}
+                        placeholder="Any"
+                        searchable={false}
+                      />
                     </div>
                     <div className="space-y-1">
                       <label className="text-xs font-medium text-text-muted">Religion</label>
-                      <select value={filters.religion || ''} onChange={(e) => updateFilter('religion', e.target.value)} className="w-full px-3 py-2 rounded-lg border border-border text-sm">
-                        <option value="">Any</option>
-                        {RELIGIONS.map(r => <option key={r} value={r}>{r}</option>)}
-                      </select>
+                      <CustomSelect
+                        value={filters.religion || ''}
+                        onChange={(val) => updateFilter('religion', val)}
+                        options={[
+                          { value: '', label: 'Any' },
+                          ...RELIGIONS.map(r => ({ value: r, label: r }))
+                        ]}
+                        placeholder="Any"
+                        searchable={false}
+                      />
                     </div>
                     <div className="space-y-1">
                       <label className="text-xs font-medium text-text-muted">Diet</label>
-                      <select value={filters.diet || ''} onChange={(e) => updateFilter('diet', e.target.value)} className="w-full px-3 py-2 rounded-lg border border-border text-sm">
-                        <option value="">Any</option>
-                        {DIET_TYPES.map(d => <option key={d} value={d}>{d}</option>)}
-                      </select>
+                      <CustomSelect
+                        value={filters.diet || ''}
+                        onChange={(val) => updateFilter('diet', val)}
+                        options={[
+                          { value: '', label: 'Any' },
+                          ...DIET_TYPES.map(d => ({ value: d, label: d }))
+                        ]}
+                        placeholder="Any"
+                        searchable={false}
+                      />
                     </div>
                   </div>
                 </div>

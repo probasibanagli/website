@@ -1,7 +1,6 @@
 'use client';
 
 import type { MatrimonialProfile } from '@/types';
-import { sampleMatrimonialProfiles } from '@/data/sample-data';
 
 const PROFILES_KEY = 'pb_matrimony_profiles';
 const MY_PROFILE_KEY = 'pb_matrimony_my_profile';
@@ -40,16 +39,7 @@ export function generateProfileId(): string {
 /* ── Profile CRUD ── */
 
 export function getAllProfiles(): MatrimonialProfile[] {
-  const userProfiles = getFromStorage<MatrimonialProfile[]>(PROFILES_KEY, []);
-  const deletedSampleIds = getFromStorage<string[]>('pb_matrimony_deleted_samples', []);
-  const ids = new Set(userProfiles.map(p => p.id));
-  const merged = [...userProfiles];
-  for (const sp of sampleMatrimonialProfiles) {
-    if (!ids.has(sp.id) && !deletedSampleIds.includes(sp.id)) {
-      merged.push(sp);
-    }
-  }
-  return merged;
+  return getFromStorage<MatrimonialProfile[]>(PROFILES_KEY, []);
 }
 
 export function getProfile(id: string): MatrimonialProfile | undefined {
@@ -279,33 +269,10 @@ export function adminUpdateProfileStatus(profileId: string, status: 'pending' | 
       updated_at: new Date().toISOString()
     };
     setToStorage(PROFILES_KEY, userProfiles);
-  } else {
-    // If it's a sample profile, clone it to user storage with the updated status
-    const sample = sampleMatrimonialProfiles.find(p => p.id === profileId);
-    if (sample) {
-      const cloned = {
-        ...sample,
-        status,
-        published: status === 'verified',
-        created_at: sample.created_at || new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      };
-      userProfiles.push(cloned);
-      setToStorage(PROFILES_KEY, userProfiles);
-    }
   }
 }
 
 export function adminDeleteProfile(profileId: string): void {
   const userProfiles = getFromStorage<MatrimonialProfile[]>(PROFILES_KEY, []);
   setToStorage(PROFILES_KEY, userProfiles.filter(p => p.id !== profileId));
-  
-  // Track deleted sample profiles separately to make sure they do not load
-  const deletedSampleIds = getFromStorage<string[]>('pb_matrimony_deleted_samples', []);
-  if (sampleMatrimonialProfiles.some(p => p.id === profileId)) {
-    if (!deletedSampleIds.includes(profileId)) {
-      deletedSampleIds.push(profileId);
-      setToStorage('pb_matrimony_deleted_samples', deletedSampleIds);
-    }
-  }
 }
