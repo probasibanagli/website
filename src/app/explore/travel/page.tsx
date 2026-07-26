@@ -766,16 +766,19 @@ export default function TravelPage() {
   return (
     <div className="min-h-screen bg-surface">
       {/* Banner */}
-      <div className="bg-gradient-to-r from-primary/10 via-white to-accent/5 border-b border-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <div className="bg-white border-b border-border">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex items-center gap-2 text-sm text-text-muted mb-4">
-            <Link href="/" className="hover:text-primary transition-colors">Home</Link><span>/</span>
+            <Link href="/" className="hover:text-primary">Home</Link>
+            <span>/</span>
+            <Link href="/explore/travel" className="hover:text-primary">Explore</Link>
+            <span>/</span>
             <span className="text-text-primary font-medium">Travel & Transport</span>
           </div>
-          <h1 className="text-4xl sm:text-5xl font-black font-display text-black tracking-tight">
+          <h1 className="text-3xl sm:text-4xl font-bold font-display text-text-primary">
             Travel and Transport
           </h1>
-          <p className="mt-3 text-lg text-text-muted max-w-2xl">
+          <p className="mt-2 text-text-muted">
             Your ultimate Chennai transit companion. Plan your daily commute via Metro, Suburban Trains, and MTC buses, or book rides and outstation travel flows.
           </p>
         </div>
