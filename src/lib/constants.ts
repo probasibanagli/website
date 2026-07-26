@@ -242,22 +242,22 @@ export const GOVT_SERVICES = [
 ];
 
 export const TAMIL_WORDS = [
-  { tamil: 'Vanakkam', meaning: 'Hello / Welcome', script: 'வணக்கம்' },
-  { tamil: 'Nandri', meaning: 'Thank you', script: 'நன்றி' },
-  { tamil: 'Evvalavu', meaning: 'How much?', script: 'எவ்வளவு?' },
-  { tamil: 'Eppo varum?', meaning: 'When will it come?', script: 'எப்போ வரும்?' },
-  { tamil: 'Enge irukku?', meaning: 'Where is it?', script: 'எங்கே இருக்கு?' },
-  { tamil: 'Kaasu', meaning: 'Money', script: 'காசு' },
-  { tamil: 'Auto varumo?', meaning: 'Will auto come?', script: 'ஆட்டோ வருமா?' },
-  { tamil: 'Thanni venum', meaning: 'I need water', script: 'தண்ணி வேணும்' },
-  { tamil: 'Saapadu', meaning: 'Food / Meal', script: 'சாப்பாடு' },
-  { tamil: 'Bus nilayam', meaning: 'Bus station', script: 'பஸ் நிலையம்' },
-  { tamil: 'Maruthuvamani', meaning: 'Hospital', script: 'மருத்துவமனை' },
-  { tamil: 'Udavi', meaning: 'Help!', script: 'உதவி!' },
-  { tamil: 'Veetuku poganum', meaning: 'I need to go home', script: 'வீட்டுக்கு போகணும்' },
-  { tamil: 'Romba nalla irukku', meaning: 'Very good!', script: 'ரொம்ப நல்லா இருக்கு' },
-  { tamil: 'Puriyala', meaning: 'I don\'t understand', script: 'புரியல' },
-  { tamil: 'Oru nimisham', meaning: 'One moment', script: 'ஒரு நிமிஷம்' },
+  { tamil: 'Vanakkam', meaning: 'Hello / Welcome', script: 'வணக்கம்', benPron: 'বনক্কম', benMean: 'স্বাগতম / নমস্কার' },
+  { tamil: 'Nandri', meaning: 'Thank you', script: 'நன்றி', benPron: 'নন্দ্রি', benMean: 'ধন্যবাদ' },
+  { tamil: 'Evvalavu', meaning: 'How much?', script: 'எவ்வளவு?', benPron: 'এভভলবু', benMean: 'কত দাম?' },
+  { tamil: 'Eppo varum?', meaning: 'When will it come?', script: 'எப்போ வரும்?', benPron: 'এপ্পো ভরুম', benMean: 'কখন আসবে?' },
+  { tamil: 'Enge irukku?', meaning: 'Where is it?', script: 'எங்கே இருக்கு?', benPron: 'এঙ্গে ইরুক্কু', benMean: 'কোথায় আছে?' },
+  { tamil: 'Kaasu', meaning: 'Money', script: 'காசு', benPron: 'কাসু', benMean: 'টাকা / পয়সা' },
+  { tamil: 'Auto varumo?', meaning: 'Will auto come?', script: 'ஆட்டோ வருமா?', benPron: 'আটো ভরুমা', benMean: 'অটো কি আসবে?' },
+  { tamil: 'Thanni venum', meaning: 'I need water', script: 'தண்ணி வேணும்', benPron: 'তন্নি ভেনুম', benMean: 'আমার জল লাগবে' },
+  { tamil: 'Saapadu', meaning: 'Food / Meal', script: 'சாப்பாடு', benPron: 'সাপ্পাড়ু', benMean: 'খাবার / ভাত' },
+  { tamil: 'Bus nilayam', meaning: 'Bus station', script: 'பஸ் நிலையம்', benPron: 'বাস নিলায়ম', benMean: 'বাস স্টেশন' },
+  { tamil: 'Maruthuvamani', meaning: 'Hospital', script: 'மருத்துவமனை', benPron: 'মরুথুবামনাই', benMean: 'হাসপাতাল' },
+  { tamil: 'Udavi', meaning: 'Help!', script: 'உதவி!', benPron: 'উদভি', benMean: 'সাহায্য!' },
+  { tamil: 'Veetuku poganum', meaning: 'I need to go home', script: 'வீட்டுக்கு போகணும்', benPron: 'ভীটুকু পোগানুম', benMean: 'আমি বাড়ি যেতে চাই' },
+  { tamil: 'Romba nalla irukku', meaning: 'Very good!', script: 'ரொம்ப நல்லா இருக்கு', benPron: 'রোম্বা নাল্লা ইরুক্কু', benMean: 'খুব ভালো!' },
+  { tamil: 'Puriyala', meaning: 'I don\'t understand', script: 'புரியல', benPron: 'পুরিয়ালা', benMean: 'বুঝতে পারছি না' },
+  { tamil: 'Oru nimisham', meaning: 'One moment', script: 'ஒரு நிமிஷம்', benPron: 'ওরু নিমিশম', benMean: 'এক মিনিট' },
 ];
 
 /* ──────────────── Matrimony Constants ──────────────── */
