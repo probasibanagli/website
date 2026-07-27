@@ -160,6 +160,11 @@ export default function CollegePage() {
                             <Badge className={`${theme.bg} ${theme.text} hover:${theme.bg} border-transparent font-semibold capitalize text-xs`}>
                               {CATEGORY_LABELS[college.type || ''] || college.type}
                             </Badge>
+                            {college.ranking !== undefined && college.ranking !== null && (
+                              <Badge className="bg-amber-50 text-amber-700 hover:bg-amber-50 border-amber-200/40 font-bold text-[10px] flex items-center gap-0.5 shadow-sm shrink-0">
+                                🏆 Rank #{college.ranking}
+                              </Badge>
+                            )}
                             <span className="text-xs text-text-muted flex items-center gap-1">
                               <MapPin className="w-3.5 h-3.5 shrink-0" />
                               {college.area}, {college.city}

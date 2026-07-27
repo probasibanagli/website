@@ -232,17 +232,17 @@ export const TREATMENT_TYPES = [
 ] as const;
 
 export const GOVT_SERVICES = [
-  { id: 'ration-card', title: 'Ration Card (PDS)', description: 'Apply for or update your ration card for subsidized food grains.', category: 'Ration card', url: 'https://www.tnpds.gov.in/', icon: 'Home01' },
-  { id: 'aadhaar', title: 'Aadhaar Update / Enrolment', description: 'Update your Aadhaar address or biometrics at nearest centre.', category: 'Aadhaar', url: 'https://uidai.gov.in/', icon: 'User01' },
-  { id: 'biometrics', title: 'Aadhaar Biometric Services', description: 'Lock or unlock your Aadhaar biometrics online for enhanced security.', category: 'Aadhaar', url: 'https://myaadhaar.uidai.gov.in/', icon: 'Shield01' },
-  { id: 'driving-licence', title: 'Driving Licence (TN)', description: 'Apply or renew your driving licence in Tamil Nadu.', category: 'Transport', url: 'https://parivahan.gov.in/', icon: 'Car01' },
+  { id: 'ration-card', title: 'Ration Card (PDS)', description: 'Apply for or update your ration card for subsidized food grains.', category: 'Ration card', url: 'https://www.tnpds.gov.in/pages/registercard/register-card.xhtml', icon: 'Home01' },
+  { id: 'aadhaar', title: 'Aadhaar Update / Enrolment', description: 'Update your Aadhaar address or biometrics at nearest centre.', category: 'Aadhaar', url: 'https://myaadhaar.uidai.gov.in/address-update', icon: 'User01' },
+  { id: 'biometrics', title: 'Aadhaar Biometric Services', description: 'Lock or unlock your Aadhaar biometrics online for enhanced security.', category: 'Aadhaar', url: 'https://myaadhaar.uidai.gov.in/lock-unlock-aadhaar', icon: 'Shield01' },
+  { id: 'driving-licence', title: 'Driving Licence (TN)', description: 'Apply or renew your driving licence in Tamil Nadu.', category: 'Transport', url: 'https://sarathi.parivahan.gov.in/sarathiservice/stateSelection.do', icon: 'Car01' },
   { id: 'ayushman-bharat', title: 'Ayushman Bharat', description: 'Government health insurance covering ₹5 lakh per year per family.', category: 'Health schemes', url: '/services/government/ayushman-bharat', icon: 'MedicalCross' },
-  { id: 'mgnregs', title: 'MGNREGS Job Card', description: 'Register for 100 days guaranteed employment scheme.', category: 'Employment', url: 'https://nrega.nic.in/', icon: 'Users01' },
-  { id: 'tn-e-seva', title: 'TN e-Seva Portal', description: 'One-stop portal for various Tamil Nadu government services.', category: 'Government', url: 'https://www.tnesevai.tn.gov.in/', icon: 'Building01' },
+  { id: 'mgnregs', title: 'MGNREGS Job Card', description: 'Register for 100 days guaranteed employment scheme.', category: 'Employment', url: 'https://nrega.nic.in/netnrega/statepage.aspx?Page=C&Action=A', icon: 'Users01' },
+  { id: 'tn-e-seva', title: 'TN e-Seva Portal', description: 'One-stop portal for various Tamil Nadu government services.', category: 'Government', url: 'https://www.tnesevai.tn.gov.in/Citizen/Registration.aspx', icon: 'Building01' },
   { id: 'passport', title: 'Passport Seva', description: 'Apply for a new passport or renew existing one.', category: 'Travel', url: '/services/government/passport', icon: 'Map01' },
-  { id: 'visa', title: 'Visa Services', description: 'Apply for an Indian Visa, e-Visa, or check application status online.', category: 'Travel', url: 'https://indianvisaonline.gov.in/', icon: 'Globe01' },
+  { id: 'visa', title: 'Visa Services', description: 'Apply for an Indian Visa, e-Visa, or check application status online.', category: 'Travel', url: 'https://indianvisaonline.gov.in/evisa/tvoa.html', icon: 'Globe01' },
   { id: 'voter-id', title: 'Voter ID (EPIC)', description: 'Register as a voter or update your electoral details.', category: 'Election', url: '/services/government/voter-id', icon: 'UserCheck01' },
-  { id: 'police-verification', title: 'Police Verification (Cyber Crime)', description: 'Direct link to the Cyber Crime Portal for police verification, reporting cyber fraud and safety checks.', category: 'Safety', url: 'https://cybercrime.gov.in/', icon: 'Shield01' },
+  { id: 'police-verification', title: 'Police Verification (Cyber Crime)', description: 'Direct link to the Cyber Crime Portal for police verification, reporting cyber fraud and safety checks.', category: 'Safety', url: 'https://eservices.tnpolice.gov.in/', icon: 'Shield01' },
   { id: 'labour-registration', title: 'TN Labour Registration', description: 'Register as a migrant worker with the Tamil Nadu Labour Department.', category: 'Employment', url: 'https://labour.tn.gov.in/', icon: 'Users01' },
   { id: 'scholarships', title: 'Scholarship Schemes', description: 'Central and state scholarship schemes for students from economically weaker sections.', category: 'Education', url: 'https://scholarships.gov.in/', icon: 'GraduationHat01' },
 ];
