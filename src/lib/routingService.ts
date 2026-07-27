@@ -1,5 +1,5 @@
 export type TransportCategory = 'public' | 'private';
-export type PrivateMode = 'ola' | 'uber' | 'rapido';
+export type PrivateMode = 'ola' | 'uber' | 'rapido' | 'nammayatri' | 'redtaxi' | 'fasttrack';
 
 export interface RouteResponse {
   isValid: boolean;
@@ -137,6 +137,15 @@ export const checkRouteAvailability = async (
           bookingUrl = `https://www.rapido.bike/`;
         }
         modeName = 'Rapido';
+      } else if (privateMode === 'nammayatri') {
+        bookingUrl = `https://nammayatri.in/`;
+        modeName = 'Namma Yatri';
+      } else if (privateMode === 'redtaxi') {
+        bookingUrl = `https://redtaxi.co.in/`;
+        modeName = 'Red Taxi';
+      } else if (privateMode === 'fasttrack') {
+        bookingUrl = `https://fasttrackcalltaxi.in/`;
+        modeName = 'Fasttrack';
       } else {
         bookingUrl = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(from)}&destination=${encodeURIComponent(to)}&travelmode=driving`;
         modeName = 'Private Transport';

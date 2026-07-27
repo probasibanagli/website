@@ -10,6 +10,8 @@ type BadgeVariant =
   | 'teal'
   | 'amber'
   | 'red'
+  | 'outline'
+  | 'secondary'
   | 'default';
 
 interface BadgeProps {
@@ -27,6 +29,8 @@ const variantStyles: Record<BadgeVariant, string> = {
   teal: 'bg-teal-100 text-teal-800 border-teal-200',
   amber: 'bg-amber-50 text-amber-700 border-amber-200',
   red: 'bg-red-100 text-red-700 border-red-200',
+  outline: 'bg-transparent text-primary border-primary/30',
+  secondary: 'bg-slate-100 text-slate-700 border-slate-200', // wait, let's see if we have accent-light, or just slate as fallback
   default: 'bg-gray-100 text-gray-700 border-gray-200',
 };
 

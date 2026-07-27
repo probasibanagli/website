@@ -7,6 +7,7 @@ export type PermissionLevel = 'none' | 'view' | 'edit' | 'manage';
 export type ModuleKey =
   | 'stay'
   | 'food'
+  | 'travel'
   | 'emergency'
   | 'community'
   | 'services'
@@ -39,6 +40,7 @@ export interface UserProfile {
 export const MODULE_LABELS: Record<ModuleKey, string> = {
   stay: 'Stay & Accommodation',
   food: 'Bengali Food & Sweets',
+  travel: 'Travel & Transport',
   emergency: 'Hospital Management',
   community: 'Community',
   services: 'Campus & Government',

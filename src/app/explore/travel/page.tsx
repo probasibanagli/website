@@ -21,7 +21,8 @@ import {
   ArrowUpDown,
   CheckCircle2,
   Compass,
-  Filter
+  Filter,
+  Volume2
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -291,9 +292,21 @@ export default function TravelPage() {
   const [cityTo, setCityTo] = useState('');
   const [cityTransportType, setCityTransportType] = useState<'public' | 'private'>('public');
   const [cityPublicMode, setCityPublicMode] = useState<'metro' | 'train' | 'bus' | null>(null);
-  const [cityPrivateMode, setCityPrivateMode] = useState<'ola' | 'uber' | 'rapido' | 'nammayatri' | null>(null);
+  const [cityPrivateMode, setCityPrivateMode] = useState<'ola' | 'uber' | 'rapido' | 'nammayatri' | 'redtaxi' | 'fasttrack' | null>(null);
   const [cityRouteResult, setCityRouteResult] = useState<RouteResponse | null>(null);
   const [isCityRouteLoading, setIsCityRouteLoading] = useState(false);
+
+  const [currentTamilIdx, setCurrentTamilIdx] = useState(0);
+  const [isNcmcFlipped, setIsNcmcFlipped] = useState(false);
+
+  const speakWord = (text: string) => {
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'ta-IN';
+      window.speechSynthesis.speak(utterance);
+    }
+  };
 
   // Leaflet map refs & loading state
   const [leafletLoaded, setLeafletLoaded] = useState(false);
@@ -753,17 +766,20 @@ export default function TravelPage() {
   return (
     <div className="min-h-screen bg-surface">
       {/* Banner */}
-      <div className="bg-gradient-to-r from-primary/10 via-white to-accent/5 border-b border-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <div className="bg-white border-b border-border">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex items-center gap-2 text-sm text-text-muted mb-4">
-            <Link href="/" className="hover:text-primary transition-colors">Home</Link><span>/</span>
+            <Link href="/" className="hover:text-primary">Home</Link>
+            <span>/</span>
+            <Link href="/explore/travel" className="hover:text-primary">Explore</Link>
+            <span>/</span>
             <span className="text-text-primary font-medium">Travel & Transport</span>
           </div>
-          <h1 className="text-4xl sm:text-5xl font-black font-display text-text-primary tracking-tight">
-            Travel and <span className="text-primary">Transport</span>
+          <h1 className="text-3xl sm:text-4xl font-bold font-display text-text-primary">
+            Travel & Transport
           </h1>
-          <p className="mt-3 text-lg text-text-muted max-w-2xl">
-            Check metro timings, local train time charts, MTC bus timetables, private ride booking, and outstation travel flows.
+          <p className="mt-2 text-text-muted">
+            Your ultimate Chennai transit companion. Plan your daily commute via Metro, Suburban Trains, and MTC buses, or book rides and outstation travel flows.
           </p>
         </div>
       </div>
@@ -777,12 +793,21 @@ export default function TravelPage() {
             {/* 6. TIMETABLE MODULE (NEW) */}
             
               <div className="space-y-6">
-                <Card padding="lg" className="border-purple-200">
-                  <div className="flex items-center justify-between mb-6 border-b border-slate-100 pb-3">
-                    <h2 className="text-2xl font-bold flex items-center gap-2 text-text-primary">
-                      <Clock className="w-6 h-6 text-purple-500" /> Planner
-                    </h2>
-                    <div className="flex bg-slate-100 p-1 rounded-xl">
+                <Card padding="lg" className="border-primary/20 overflow-visible">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 border-b border-slate-100 pb-3">
+                    <div>
+                      <h2 className="text-2xl font-bold flex items-center gap-2 text-text-primary">
+                        <Clock className="w-6 h-6 text-primary" /> Plan Your Journey
+                      </h2>
+                      <span className="block text-[11px] font-semibold text-text-muted mt-0.5 font-bengali">আপনার যাত্রা পরিকল্পনা করুন</span>
+                    </div>
+                    <div className="relative flex bg-slate-100 p-1 rounded-2xl border border-slate-200 shadow-inner w-full sm:w-80 shrink-0 justify-center overflow-hidden">
+                      {/* Sliding Active Background */}
+                      <div 
+                        className={`absolute top-1 bottom-1 left-1 w-[calc(50%-4px)] bg-primary rounded-xl shadow-md transition-transform duration-300 ease-out ${
+                          timetableCategory === 'city' ? 'translate-x-0' : 'translate-x-[calc(100%+4px)]'
+                        }`} 
+                      />
                       <button
                         onClick={() => {
                           setTimetableCategory('city');
@@ -791,10 +816,12 @@ export default function TravelPage() {
                           setCityPublicMode(null);
                           setCityPrivateMode(null);
                         }}
-                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${timetableCategory === 'city' ? 'bg-white text-purple-700 shadow-sm' : 'text-text-muted'
-                          }`}
+                        className={`relative flex-1 px-4 py-2 rounded-xl text-xs font-black tracking-wide transition-colors duration-300 z-10 cursor-pointer text-center ${
+                          timetableCategory === 'city' ? 'text-white' : 'text-slate-500 hover:text-slate-800'
+                        }`}
                       >
-                        Within the City
+                        <div>Within the City</div>
+                        <div className="text-[9px] opacity-80 font-bengali font-semibold mt-0.5">শহরের মধ্যে</div>
                       </button>
                       <button
                         onClick={() => {
@@ -804,10 +831,12 @@ export default function TravelPage() {
                           setStatePublicMode(null);
                           setStatePrivateMode(null);
                         }}
-                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${timetableCategory === 'state' ? 'bg-white text-purple-700 shadow-sm' : 'text-text-muted'
-                          }`}
+                        className={`relative flex-1 px-4 py-2 rounded-xl text-xs font-black tracking-wide transition-colors duration-300 z-10 cursor-pointer text-center ${
+                          timetableCategory === 'state' ? 'text-white' : 'text-slate-500 hover:text-slate-800'
+                        }`}
                       >
-                        Within the State
+                        <div>Within the State</div>
+                        <div className="text-[9px] opacity-80 font-bengali font-semibold mt-0.5">রাজ্যের মধ্যে</div>
                       </button>
                     </div>
                   </div>
@@ -817,8 +846,17 @@ export default function TravelPage() {
                     <div className="space-y-5">
                       {/* Step A: Select Transport Category */}
                       <div>
-                        <label className="block text-sm font-semibold text-text-primary mb-3">1. Select Transport Category</label>
-                        <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-sm font-semibold text-text-primary">1. Select Transport Category</label>
+                          <span className="block text-[11px] text-text-muted font-medium font-bengali mb-3">পরিবহন বিভাগ নির্বাচন করুন</span>
+                        </div>
+                        <div className="relative flex bg-slate-100 p-1 rounded-2xl border border-slate-200 shadow-inner w-full overflow-hidden">
+                          {/* Sliding Active Background */}
+                          <div 
+                            className={`absolute top-1 bottom-1 left-1 w-[calc(50%-4px)] bg-primary rounded-xl shadow-md transition-transform duration-300 ease-out ${
+                              cityTransportType === 'public' ? 'translate-x-0' : 'translate-x-[calc(100%+4px)]'
+                            }`} 
+                          />
                           <button
                             onClick={() => {
                               setCityTransportType('public');
@@ -826,12 +864,14 @@ export default function TravelPage() {
                               setCityFrom('');
                               setCityTo('');
                             }}
-                            className={`flex items-center justify-center gap-2 p-3.5 rounded-xl border font-bold transition-all cursor-pointer ${cityTransportType === 'public'
-                                ? 'border-purple-600 bg-purple-50 text-purple-700 ring-2 ring-purple-500/10'
-                                : 'border-border bg-white text-text-muted hover:border-gray-300'
-                              }`}
+                            className={`relative flex-1 flex flex-col items-center justify-center p-2.5 rounded-xl font-black text-xs transition-colors duration-300 z-10 cursor-pointer ${
+                              cityTransportType === 'public' ? 'text-white' : 'text-slate-500 hover:text-slate-800'
+                            }`}
                           >
-                            <Bus className="w-4 h-4" /> Public (Metro / Train / Bus)
+                            <div className="flex items-center gap-1.5">
+                              <Bus className="w-4 h-4" /> Public Transit
+                            </div>
+                            <div className="text-[9px] opacity-85 font-bengali font-semibold mt-0.5">গণপরিবহন</div>
                           </button>
                           <button
                             onClick={() => {
@@ -840,12 +880,14 @@ export default function TravelPage() {
                               setCityFrom('');
                               setCityTo('');
                             }}
-                            className={`flex items-center justify-center gap-2 p-3.5 rounded-xl border font-bold transition-all cursor-pointer ${cityTransportType === 'private'
-                                ? 'border-purple-600 bg-purple-50 text-purple-700 ring-2 ring-purple-500/10'
-                                : 'border-border bg-white text-text-muted hover:border-gray-300'
-                              }`}
+                            className={`relative flex-1 flex flex-col items-center justify-center p-2.5 rounded-xl font-black text-xs transition-colors duration-300 z-10 cursor-pointer ${
+                              cityTransportType === 'private' ? 'text-white' : 'text-slate-500 hover:text-slate-800'
+                            }`}
                           >
-                            <Car className="w-4 h-4" /> Private (Ola / Uber / Autos)
+                            <div className="flex items-center gap-1.5">
+                              <Car className="w-4 h-4" /> Private & Outstation
+                            </div>
+                            <div className="text-[9px] opacity-85 font-bengali font-semibold mt-0.5">ব্যক্তিগত ও আউটস্টেশন</div>
                           </button>
                         </div>
                       </div>
@@ -897,7 +939,9 @@ export default function TravelPage() {
                               { id: 'ola', name: 'Ola Cabs' },
                               { id: 'uber', name: 'Uber' },
                               { id: 'rapido', name: 'Rapido' },
-                              { id: 'nammayatri', name: 'Namma Yatri' }
+                              { id: 'nammayatri', name: 'Namma Yatri' },
+                              { id: 'redtaxi', name: 'Red Taxi' },
+                              { id: 'fasttrack', name: 'Fasttrack' }
                             ].map(app => (
                               <button
                                 key={app.id}
@@ -920,46 +964,71 @@ export default function TravelPage() {
                         <div className="space-y-4">
                           {cityPublicMode === 'metro' ? (
                             <div className="space-y-4">
-                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div>
-                                  <label className="block text-sm font-semibold text-text-primary mb-1.5">From Station</label>
-                                  <select
-                                    value={cityFrom}
-                                    onChange={(e) => setCityFrom(e.target.value)}
-                                    className="w-full px-4 py-3 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/20 bg-white"
-                                  >
-                                    <option value="">-- Select Origin Station --</option>
-                                    <optgroup label="Blue Line (Wimco Nagar Depot ↔ Airport)">
-                                      {METRO_BLUE_LINE.map(station => (
-                                        <option key={`from-blue-${station}`} value={station}>{station}</option>
-                                      ))}
-                                    </optgroup>
-                                    <optgroup label="Green Line (Central ↔ St. Thomas Mount)">
-                                      {METRO_GREEN_LINE.map(station => (
-                                        <option key={`from-green-${station}`} value={station}>{station}</option>
-                                      ))}
-                                    </optgroup>
-                                  </select>
+                              <div className="relative flex flex-col md:flex-row gap-4 items-center bg-slate-50/50 p-4 rounded-2xl border border-slate-100/60">
+                                {/* Left side route line decoration */}
+                                <div className="hidden md:flex flex-col items-center justify-between h-[84px] py-3.5 w-6">
+                                  <span className="w-2.5 h-2.5 rounded-full border-2 border-emerald-500 bg-white" />
+                                  <div className="w-0.5 flex-1 border-l-2 border-dashed border-slate-300 my-1" />
+                                  <span className="w-2.5 h-2.5 rounded-full border-2 border-rose-500 bg-white" />
                                 </div>
-                                <div>
-                                  <label className="block text-sm font-semibold text-text-primary mb-1.5">To Station</label>
-                                  <select
-                                    value={cityTo}
-                                    onChange={(e) => setCityTo(e.target.value)}
-                                    className="w-full px-4 py-3 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/20 bg-white"
-                                  >
-                                    <option value="">-- Select Destination Station --</option>
-                                    <optgroup label="Blue Line (Wimco Nagar Depot ↔ Airport)">
-                                      {METRO_BLUE_LINE.map(station => (
-                                        <option key={`to-blue-${station}`} value={station}>{station}</option>
-                                      ))}
-                                    </optgroup>
-                                    <optgroup label="Green Line (Central ↔ St. Thomas Mount)">
-                                      {METRO_GREEN_LINE.map(station => (
-                                        <option key={`to-green-${station}`} value={station}>{station}</option>
-                                      ))}
-                                    </optgroup>
-                                  </select>
+
+                                <div className="flex-1 w-full grid grid-cols-1 md:grid-cols-2 gap-4 relative">
+                                  {/* Swap Button */}
+                                  <div className="absolute right-4 md:right-auto md:left-1/2 top-1/2 -translate-y-1/2 md:-translate-x-1/2 z-20">
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        const temp = cityFrom;
+                                        setCityFrom(cityTo);
+                                        setCityTo(temp);
+                                      }}
+                                      className="w-8 h-8 rounded-full bg-white border border-slate-200 shadow-sm flex items-center justify-center hover:bg-slate-50 active:scale-95 transition-all text-primary hover:text-primary-dark cursor-pointer"
+                                      title="Swap Stations"
+                                    >
+                                      <ArrowUpDown className="w-4 h-4" />
+                                    </button>
+                                  </div>
+
+                                  <div>
+                                    <label className="block text-xs font-bold uppercase tracking-wider text-text-muted mb-1.5">From Station</label>
+                                    <select
+                                      value={cityFrom}
+                                      onChange={(e) => setCityFrom(e.target.value)}
+                                      className="w-full px-4 py-3 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 bg-white font-medium"
+                                    >
+                                      <option value="">-- Select Origin Station --</option>
+                                      <optgroup label="Blue Line (Wimco Nagar Depot ↔ Airport)">
+                                        {METRO_BLUE_LINE.map(station => (
+                                          <option key={`from-blue-${station}`} value={station}>🔵 {station}</option>
+                                        ))}
+                                      </optgroup>
+                                      <optgroup label="Green Line (Central ↔ St. Thomas Mount)">
+                                        {METRO_GREEN_LINE.map(station => (
+                                          <option key={`from-green-${station}`} value={station}>🟢 {station}</option>
+                                        ))}
+                                      </optgroup>
+                                    </select>
+                                  </div>
+                                  <div>
+                                    <label className="block text-xs font-bold uppercase tracking-wider text-text-muted mb-1.5">To Station</label>
+                                    <select
+                                      value={cityTo}
+                                      onChange={(e) => setCityTo(e.target.value)}
+                                      className="w-full px-4 py-3 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 bg-white font-medium"
+                                    >
+                                      <option value="">-- Select Destination Station --</option>
+                                      <optgroup label="Blue Line (Wimco Nagar Depot ↔ Airport)">
+                                        {METRO_BLUE_LINE.map(station => (
+                                          <option key={`to-blue-${station}`} value={station}>🔵 {station}</option>
+                                        ))}
+                                      </optgroup>
+                                      <optgroup label="Green Line (Central ↔ St. Thomas Mount)">
+                                        {METRO_GREEN_LINE.map(station => (
+                                          <option key={`to-green-${station}`} value={station}>🟢 {station}</option>
+                                        ))}
+                                      </optgroup>
+                                    </select>
+                                  </div>
                                 </div>
                               </div>
 
@@ -984,48 +1053,62 @@ export default function TravelPage() {
                               </div>
                             </div>
                           ) : cityPublicMode === 'train' ? (
-                            <div className="space-y-4 bg-slate-50/50 p-4 rounded-xl border border-border">
-                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div>
-                                  <label className="block text-sm font-semibold text-text-primary mb-1.5 font-sans">From Station</label>
-                                  <select
-                                    value={trainFrom}
-                                    onChange={(e) => setTrainFrom(e.target.value)}
-                                    className="w-full px-4 py-3 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/20 bg-white font-semibold text-text-primary"
-                                  >
-                                    <option value="">Any Station</option>
-                                    {SUBURBAN_STATIONS.map(stn => (
-                                      <option key={`train-from-${stn.code}`} value={stn.code}>{stn.name}</option>
-                                    ))}
-                                  </select>
+                            <div className="space-y-4 bg-slate-50/50 p-4 rounded-2xl border border-border">
+                              <div className="relative flex flex-col md:flex-row gap-4 items-center bg-white p-4 rounded-xl border border-slate-100">
+                                {/* Left side route line decoration */}
+                                <div className="hidden md:flex flex-col items-center justify-between h-[84px] py-3.5 w-6">
+                                  <span className="w-2.5 h-2.5 rounded-full border-2 border-emerald-500 bg-white" />
+                                  <div className="w-0.5 flex-1 border-l-2 border-dashed border-slate-300 my-1" />
+                                  <span className="w-2.5 h-2.5 rounded-full border-2 border-rose-500 bg-white" />
                                 </div>
-                                <div>
-                                  <label className="block text-sm font-semibold text-text-primary mb-1.5 font-sans">To Station</label>
-                                  <select
-                                    value={trainTo}
-                                    onChange={(e) => setTrainTo(e.target.value)}
-                                    className="w-full px-4 py-3 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/20 bg-white font-semibold text-text-primary"
-                                  >
-                                    <option value="">Any Station</option>
-                                    {SUBURBAN_STATIONS.map(stn => (
-                                      <option key={`train-to-${stn.code}`} value={stn.code}>{stn.name}</option>
-                                    ))}
-                                  </select>
+
+                                <div className="flex-1 w-full grid grid-cols-1 md:grid-cols-2 gap-4 relative">
+                                  {/* Swap Button */}
+                                  <div className="absolute right-4 md:right-auto md:left-1/2 top-1/2 -translate-y-1/2 md:-translate-x-1/2 z-20">
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        const tmp = trainFrom;
+                                        setTrainFrom(trainTo);
+                                        setTrainTo(tmp);
+                                      }}
+                                      className="w-8 h-8 rounded-full bg-white border border-slate-200 shadow-sm flex items-center justify-center hover:bg-slate-50 active:scale-95 transition-all text-primary hover:text-primary-dark cursor-pointer"
+                                      title="Swap Stations"
+                                    >
+                                      <ArrowUpDown className="w-4 h-4" />
+                                    </button>
+                                  </div>
+
+                                  <div>
+                                    <label className="block text-xs font-bold uppercase tracking-wider text-text-muted mb-1.5 font-sans">From Station</label>
+                                    <select
+                                      value={trainFrom}
+                                      onChange={(e) => setTrainFrom(e.target.value)}
+                                      className="w-full px-4 py-3 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 bg-white font-semibold text-text-primary"
+                                    >
+                                      <option value="">Any Station</option>
+                                      {SUBURBAN_STATIONS.map(stn => (
+                                        <option key={`train-from-${stn.code}`} value={stn.code}>{stn.name}</option>
+                                      ))}
+                                    </select>
+                                  </div>
+                                  <div>
+                                    <label className="block text-xs font-bold uppercase tracking-wider text-text-muted mb-1.5 font-sans">To Station</label>
+                                    <select
+                                      value={trainTo}
+                                      onChange={(e) => setTrainTo(e.target.value)}
+                                      className="w-full px-4 py-3 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 bg-white font-semibold text-text-primary"
+                                    >
+                                      <option value="">Any Station</option>
+                                      {SUBURBAN_STATIONS.map(stn => (
+                                        <option key={`train-to-${stn.code}`} value={stn.code}>{stn.name}</option>
+                                      ))}
+                                    </select>
+                                  </div>
                                 </div>
                               </div>
 
                               <div className="flex flex-wrap items-center gap-3">
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    const tmp = trainFrom;
-                                    setTrainFrom(trainTo);
-                                    setTrainTo(tmp);
-                                  }}
-                                  className="px-3 py-1.5 border border-border hover:bg-slate-100 rounded-lg text-xs font-bold flex items-center gap-1 cursor-pointer transition-colors"
-                                >
-                                  Swap Stations ⇄
-                                </button>
                                 <div className="flex-1 min-w-[200px] relative">
                                   <Search className="absolute left-3 top-2.5 w-4 h-4 text-text-muted" />
                                   <input
@@ -1033,7 +1116,7 @@ export default function TravelPage() {
                                     placeholder="Search Train Number (e.g. 43501)..."
                                     value={trainSearchQuery}
                                     onChange={(e) => setTrainSearchQuery(e.target.value)}
-                                    className="w-full pl-9 pr-4 py-2 border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/20 bg-white"
+                                    className="w-full pl-9 pr-4 py-2 border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 bg-white"
                                   />
                                 </div>
                                 <button
@@ -1078,70 +1161,95 @@ export default function TravelPage() {
                               </div>
                             </div>
                           ) : (
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                              <div className="relative">
-                                <label className="block text-sm font-semibold text-text-primary mb-1.5">From Station / Area</label>
-                                <input
-                                  type="text"
-                                  value={cityFrom}
-                                  onChange={(e) => setCityFrom(e.target.value)}
-                                  onFocus={() => { if (cityPublicMode === 'bus') setShowSuggestionsFrom(true); }}
-                                  onBlur={() => {
-                                    if (cityPublicMode === 'bus') {
-                                      setTimeout(() => setShowSuggestionsFrom(false), 200);
-                                    }
-                                  }}
-                                  placeholder={cityTransportType === 'private' ? 'Enter pickup point...' : 'Enter starting point...'}
-                                  className="w-full px-4 py-3 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/20 bg-white"
-                                />
-                                {cityPublicMode === 'bus' && showSuggestionsFrom && busSuggestionsFrom.length > 0 && (
-                                  <div className="absolute left-0 right-0 z-50 mt-1 max-h-60 overflow-y-auto bg-white border border-border rounded-xl shadow-lg text-sm">
-                                    {busSuggestionsFrom.map((stop, idx) => (
-                                      <div
-                                        key={`sugg-from-${idx}`}
-                                        onMouseDown={() => {
-                                          setCityFrom(stop);
-                                          setShowSuggestionsFrom(false);
-                                        }}
-                                        className="px-4 py-2 hover:bg-slate-50 cursor-pointer text-text-primary border-b border-slate-100 last:border-0 font-medium"
-                                      >
-                                        {stop}
-                                      </div>
-                                    ))}
-                                  </div>
-                                )}
+                            <div className="relative flex flex-col md:flex-row gap-4 items-center bg-slate-50/50 p-4 rounded-2xl border border-slate-100/60">
+                              {/* Left side route line decoration */}
+                              <div className="hidden md:flex flex-col items-center justify-between h-[84px] py-3.5 w-6">
+                                <span className="w-2.5 h-2.5 rounded-full border-2 border-emerald-500 bg-white" />
+                                <div className="w-0.5 flex-1 border-l-2 border-dashed border-slate-300 my-1" />
+                                <span className="w-2.5 h-2.5 rounded-full border-2 border-rose-500 bg-white" />
                               </div>
-                              <div className="relative">
-                                <label className="block text-sm font-semibold text-text-primary mb-1.5">To Station / Area</label>
-                                <input
-                                  type="text"
-                                  value={cityTo}
-                                  onChange={(e) => setCityTo(e.target.value)}
-                                  onFocus={() => { if (cityPublicMode === 'bus') setShowSuggestionsTo(true); }}
-                                  onBlur={() => {
-                                    if (cityPublicMode === 'bus') {
-                                      setTimeout(() => setShowSuggestionsTo(false), 200);
-                                    }
-                                  }}
-                                  placeholder={cityTransportType === 'private' ? 'Enter dropoff point...' : 'Enter destination...'}
-                                  className="w-full px-4 py-3 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/20 bg-white"
-                                />
-                                {cityPublicMode === 'bus' && showSuggestionsTo && busSuggestionsTo.length > 0 && (
-                                  <div className="absolute left-0 right-0 z-50 mt-1 max-h-60 overflow-y-auto bg-white border border-border rounded-xl shadow-lg text-sm">
-                                    {busSuggestionsTo.map((stop, idx) => (
-                                      <div
-                                        key={`sugg-to-${idx}`}
-                                        onMouseDown={() => {
-                                          setCityTo(stop);
-                                          setShowSuggestionsTo(false);
-                                        }}
-                                        className="px-4 py-2 hover:bg-slate-50 cursor-pointer text-text-primary border-b border-slate-100 last:border-0 font-medium"
-                                      >
-                                        {stop}
-                                      </div>
-                                    ))}
-                                  </div>
-                                )}
+
+                              <div className="flex-1 w-full grid grid-cols-1 md:grid-cols-2 gap-4 relative">
+                                {/* Swap Button */}
+                                <div className="absolute right-4 md:right-auto md:left-1/2 top-1/2 -translate-y-1/2 md:-translate-x-1/2 z-20">
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      const temp = cityFrom;
+                                      setCityFrom(cityTo);
+                                      setCityTo(temp);
+                                    }}
+                                    className="w-8 h-8 rounded-full bg-white border border-slate-200 shadow-sm flex items-center justify-center hover:bg-slate-50 active:scale-95 transition-all text-primary hover:text-primary-dark cursor-pointer"
+                                    title="Swap Stations"
+                                  >
+                                    <ArrowUpDown className="w-4 h-4" />
+                                  </button>
+                                </div>
+
+                                <div className="relative">
+                                  <label className="block text-xs font-bold uppercase tracking-wider text-text-muted mb-1.5">From Station / Area</label>
+                                  <input
+                                    type="text"
+                                    value={cityFrom}
+                                    onChange={(e) => setCityFrom(e.target.value)}
+                                    onFocus={() => { if (cityPublicMode === 'bus') setShowSuggestionsFrom(true); }}
+                                    onBlur={() => {
+                                      if (cityPublicMode === 'bus') {
+                                        setTimeout(() => setShowSuggestionsFrom(false), 200);
+                                      }
+                                    }}
+                                    placeholder={cityTransportType === 'private' ? 'Enter pickup point...' : 'Enter starting point...'}
+                                    className="w-full px-4 py-3 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 bg-white"
+                                  />
+                                  {cityPublicMode === 'bus' && showSuggestionsFrom && busSuggestionsFrom.length > 0 && (
+                                    <div className="absolute left-0 right-0 z-50 mt-1 max-h-60 overflow-y-auto bg-white border border-border rounded-xl shadow-lg text-sm">
+                                      {busSuggestionsFrom.map((stop, idx) => (
+                                        <div
+                                          key={`sugg-from-${idx}`}
+                                          onMouseDown={() => {
+                                            setCityFrom(stop);
+                                            setShowSuggestionsFrom(false);
+                                          }}
+                                          className="px-4 py-2 hover:bg-slate-50 cursor-pointer text-text-primary border-b border-slate-100 last:border-0 font-medium"
+                                        >
+                                          {stop}
+                                        </div>
+                                      ))}
+                                    </div>
+                                  )}
+                                </div>
+                                <div className="relative">
+                                  <label className="block text-xs font-bold uppercase tracking-wider text-text-muted mb-1.5">To Station / Area</label>
+                                  <input
+                                    type="text"
+                                    value={cityTo}
+                                    onChange={(e) => setCityTo(e.target.value)}
+                                    onFocus={() => { if (cityPublicMode === 'bus') setShowSuggestionsTo(true); }}
+                                    onBlur={() => {
+                                      if (cityPublicMode === 'bus') {
+                                        setTimeout(() => setShowSuggestionsTo(false), 200);
+                                      }
+                                    }}
+                                    placeholder={cityTransportType === 'private' ? 'Enter dropoff point...' : 'Enter destination...'}
+                                    className="w-full px-4 py-3 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 bg-white"
+                                  />
+                                  {cityPublicMode === 'bus' && showSuggestionsTo && busSuggestionsTo.length > 0 && (
+                                    <div className="absolute left-0 right-0 z-50 mt-1 max-h-60 overflow-y-auto bg-white border border-border rounded-xl shadow-lg text-sm">
+                                      {busSuggestionsTo.map((stop, idx) => (
+                                        <div
+                                          key={`sugg-to-${idx}`}
+                                          onMouseDown={() => {
+                                            setCityTo(stop);
+                                            setShowSuggestionsTo(false);
+                                          }}
+                                          className="px-4 py-2 hover:bg-slate-50 cursor-pointer text-text-primary border-b border-slate-100 last:border-0 font-medium"
+                                        >
+                                          {stop}
+                                        </div>
+                                      ))}
+                                    </div>
+                                  )}
+                                </div>
                               </div>
                             </div>
                           )}
@@ -1149,7 +1257,7 @@ export default function TravelPage() {
 
                           {/* Display relevant timetable / route results */}
                           {cityFrom && cityTo && (
-                            <div className="mt-4 p-5 bg-purple-50/30 rounded-2xl border border-purple-100/50 space-y-4">
+                            <div className="mt-4 p-5 bg-primary-light/30 rounded-2xl border border-primary/10 space-y-4">
                               {cityTransportType === 'public' ? (
                                 <div className="space-y-4">
                                   {cityPublicMode === 'metro' && (() => {
@@ -1376,7 +1484,7 @@ export default function TravelPage() {
                                 <div className="space-y-3">
                                   {isCityRouteLoading ? (
                                     <div className="flex items-center justify-center p-6 bg-slate-50 rounded-xl border border-border">
-                                      <Loader2 className="w-5 h-5 animate-spin text-purple-600" />
+                                      <Loader2 className="w-5 h-5 animate-spin text-primary" />
                                       <span className="text-xs text-text-muted ml-2 font-semibold">Calculating estimated ride details...</span>
                                     </div>
                                   ) : cityRouteResult?.isValid ? (
@@ -1523,7 +1631,7 @@ export default function TravelPage() {
                                                 }`}>
                                                   {row.train.direction}
                                                 </span>
-                                                <Badge variant="default" className="text-[10px] font-bold border-amber-200 bg-amber-50/50 text-amber-800">
+                                                <Badge variant="outline" className="text-[10px] font-bold border-amber-200 bg-amber-50/50 text-amber-800">
                                                   {sectionLabel}
                                                 </Badge>
                                               </div>
@@ -1604,8 +1712,17 @@ export default function TravelPage() {
                     <div className="space-y-5">
                       {/* Step A: Select Transport Category */}
                       <div>
-                        <label className="block text-sm font-semibold text-text-primary mb-3">1. Select Transport Category</label>
-                        <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <label className="block text-sm font-semibold text-text-primary">1. Select Transport Category</label>
+                          <span className="block text-[11px] text-text-muted font-medium font-bengali mb-3">পরিবহন বিভাগ নির্বাচন করুন</span>
+                        </div>
+                        <div className="relative flex bg-slate-100 p-1 rounded-2xl border border-slate-200 shadow-inner w-full overflow-hidden">
+                          {/* Sliding Active Background */}
+                          <div 
+                            className={`absolute top-1 bottom-1 left-1 w-[calc(50%-4px)] bg-primary rounded-xl shadow-md transition-transform duration-300 ease-out ${
+                              stateTransportType === 'public' ? 'translate-x-0' : 'translate-x-[calc(100%+4px)]'
+                            }`} 
+                          />
                           <button
                             onClick={() => {
                               setStateTransportType('public');
@@ -1613,12 +1730,14 @@ export default function TravelPage() {
                               setStateFrom('');
                               setStateTo('');
                             }}
-                            className={`flex items-center justify-center gap-2 p-3.5 rounded-xl border font-bold transition-all cursor-pointer ${stateTransportType === 'public'
-                                ? 'border-purple-600 bg-purple-50 text-purple-700 ring-2 ring-purple-500/10'
-                                : 'border-border bg-white text-text-muted hover:border-gray-300'
-                              }`}
+                            className={`relative flex-1 flex flex-col items-center justify-center p-2.5 rounded-xl font-black text-xs transition-colors duration-300 z-10 cursor-pointer ${
+                              stateTransportType === 'public' ? 'text-white' : 'text-slate-500 hover:text-slate-800'
+                            }`}
                           >
-                            Public Transit
+                            <div className="flex items-center gap-1.5">
+                              <Bus className="w-4 h-4" /> Public Transit
+                            </div>
+                            <div className="text-[9px] opacity-85 font-bengali font-semibold mt-0.5">গণপরিবহন</div>
                           </button>
                           <button
                             onClick={() => {
@@ -1627,12 +1746,14 @@ export default function TravelPage() {
                               setStateFrom('');
                               setStateTo('');
                             }}
-                            className={`flex items-center justify-center gap-2 p-3.5 rounded-xl border font-bold transition-all cursor-pointer ${stateTransportType === 'private'
-                                ? 'border-purple-600 bg-purple-50 text-purple-700 ring-2 ring-purple-500/10'
-                                : 'border-border bg-white text-text-muted hover:border-gray-300'
-                              }`}
+                            className={`relative flex-1 flex flex-col items-center justify-center p-2.5 rounded-xl font-black text-xs transition-colors duration-300 z-10 cursor-pointer ${
+                              stateTransportType === 'private' ? 'text-white' : 'text-slate-500 hover:text-slate-800'
+                            }`}
                           >
-                            Private & Outstation
+                            <div className="flex items-center gap-1.5">
+                              <Car className="w-4 h-4" /> Private & Outstation
+                            </div>
+                            <div className="text-[9px] opacity-85 font-bengali font-semibold mt-0.5">ব্যক্তিগত ও আউটস্টেশন</div>
                           </button>
                         </div>
                       </div>
@@ -1648,7 +1769,7 @@ export default function TravelPage() {
                                 setStateFrom('');
                                 setStateTo('');
                               }}
-                              className={`px-4 py-2 rounded-xl border text-sm font-bold transition-all ${statePublicMode === 'bus' ? 'bg-purple-50 border-purple-500 text-purple-700 ring-2 ring-purple-500/10' : 'bg-white border-border text-text-muted hover:border-gray-300'}`}
+                              className={`px-4 py-2 rounded-xl border text-sm font-bold transition-all ${statePublicMode === 'bus' ? 'bg-primary-light border-primary text-primary-dark ring-2 ring-primary/10' : 'bg-white border-border text-text-muted hover:border-gray-300'}`}
                             >
                               State Buses (TNSTC & SETC)
                             </button>
@@ -1658,7 +1779,7 @@ export default function TravelPage() {
                                 setStateFrom('');
                                 setStateTo('');
                               }}
-                              className={`px-4 py-2 rounded-xl border text-sm font-bold transition-all ${statePublicMode === 'train' ? 'bg-purple-50 border-purple-500 text-purple-700 ring-2 ring-purple-500/10' : 'bg-white border-border text-text-muted hover:border-gray-300'}`}
+                              className={`px-4 py-2 rounded-xl border text-sm font-bold transition-all ${statePublicMode === 'train' ? 'bg-primary-light border-primary text-primary-dark ring-2 ring-primary/10' : 'bg-white border-border text-text-muted hover:border-gray-300'}`}
                             >
                               Indian Railways
                             </button>
@@ -1668,7 +1789,10 @@ export default function TravelPage() {
 
                       {stateTransportType === 'private' && (
                         <div>
-                          <label className="block text-sm font-semibold text-text-primary mb-3">2. Select Private Option</label>
+                          <div>
+                            <label className="block text-sm font-semibold text-text-primary">2. Select Private Option</label>
+                            <span className="block text-[11px] text-text-muted font-medium font-bengali mb-3">ব্যক্তিগত বিকল্প নির্বাচন করুন</span>
+                          </div>
                           <div className="flex flex-wrap gap-2">
                             {[
                               { id: 'flight', name: 'Flights' },
@@ -1682,7 +1806,7 @@ export default function TravelPage() {
                                   setStateFrom('');
                                   setStateTo('');
                                 }}
-                                className={`px-4 py-2 rounded-xl border text-sm font-bold transition-all ${statePrivateMode === opt.id ? 'bg-purple-50 border-purple-500 text-purple-700 ring-2 ring-purple-500/10' : 'bg-white border-border text-text-muted hover:border-gray-300'}`}
+                                className={`px-4 py-2 rounded-xl border text-sm font-bold transition-all ${statePrivateMode === opt.id ? 'bg-primary-light border-primary text-primary-dark ring-2 ring-primary/10' : 'bg-white border-border text-text-muted hover:border-gray-300'}`}
                               >
                                 {opt.name}
                               </button>
@@ -1697,27 +1821,40 @@ export default function TravelPage() {
                             <h3 className="text-sm font-bold text-text-primary">
                               Public Intercity Booking Redirections
                             </h3>
-                            <Badge className="bg-purple-600 text-white font-bold text-xs uppercase px-2 py-0.5 rounded">
-                              Public
-                            </Badge>
                           </div>
                           <div className="space-y-4">
                             {statePublicMode === 'bus' && (
                               <div className="p-4 bg-white rounded-xl border border-border shadow-sm">
-                                <h4 className="font-bold text-sm text-purple-800 mb-2">State Buses (TNSTC & SETC)</h4>
+                                <h4 className="font-bold text-sm text-primary-dark mb-2">State Buses (TNSTC & SETC)</h4>
                                 <p className="text-xs text-text-muted mb-3 font-medium">Book express and deluxe coaches across Tamil Nadu directly via the official portal.</p>
-                                <a href="https://www.tnstc.in/OTRSOnline/" target="_blank" rel="noopener noreferrer" className="inline-flex px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-xs font-bold transition-colors">
-                                  Book on TNSTC Portal
-                                </a>
+                                <div className="flex flex-wrap gap-2">
+                                  <a href="https://www.tnstc.in/OTRSOnline/" target="_blank" rel="noopener noreferrer" className="inline-flex px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded-xl text-xs font-bold transition-colors">
+                                    Book on TNSTC Portal
+                                  </a>
+                                  <a href="https://www.redbus.in/online-booking/tnstc" target="_blank" rel="noopener noreferrer" className="inline-flex px-4 py-2 border border-primary/20 bg-primary-light text-primary-dark hover:bg-primary/15 rounded-xl text-xs font-bold transition-colors">
+                                    Book on redbus
+                                  </a>
+                                </div>
                               </div>
                             )}
                             {statePublicMode === 'train' && (
                               <div className="p-4 bg-white rounded-xl border border-border shadow-sm">
                                 <h4 className="font-bold text-sm text-amber-700 mb-2">Indian Railways</h4>
                                 <p className="text-xs text-text-muted mb-3 font-medium">Search trains and book reserve tickets on IRCTC website.</p>
-                                <a href="https://www.irctc.co.in/nget/train-search" target="_blank" rel="noopener noreferrer" className="inline-block px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold transition-colors">
-                                  book ticket on irctc
-                                </a>
+                                <div className="flex flex-wrap gap-2">
+                                  <a href="https://www.irctc.co.in/nget/train-search" target="_blank" rel="noopener noreferrer" className="inline-block px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold transition-colors">
+                                    Book on IRCTC
+                                  </a>
+                                  <a href="https://trains.abhibus.com/?channel=abhibus-web" target="_blank" rel="noopener noreferrer" className="inline-block px-4 py-2 border border-amber-200 bg-amber-50 text-amber-700 hover:bg-amber-100 rounded-xl text-xs font-bold transition-colors">
+                                    Book on abhibus
+                                  </a>
+                                  <a href="https://www.redbus.in/railways" target="_blank" rel="noopener noreferrer" className="inline-block px-4 py-2 border border-amber-200 bg-amber-50 text-amber-700 hover:bg-amber-100 rounded-xl text-xs font-bold transition-colors">
+                                    Book on Redbus
+                                  </a>
+                                  <a href="https://www.ixigo.com/trains" target="_blank" rel="noopener noreferrer" className="inline-block px-4 py-2 border border-amber-200 bg-amber-50 text-amber-700 hover:bg-amber-100 rounded-xl text-xs font-bold transition-colors">
+                                    Book on Ixigo
+                                  </a>
+                                </div>
                               </div>
                             )}
                           </div>
@@ -1730,9 +1867,6 @@ export default function TravelPage() {
                             <h3 className="text-sm font-bold text-text-primary">
                               Private Outstation Booking Redirections
                             </h3>
-                            <Badge className="bg-purple-600 text-white font-bold text-xs uppercase px-2 py-0.5 rounded">
-                              Private
-                            </Badge>
                           </div>
                           <div className="space-y-4">
                             {statePrivateMode === 'flight' && (
@@ -1768,6 +1902,7 @@ export default function TravelPage() {
                                   <a href="https://www.makemytrip.com/cabs/" target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 border border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 rounded-lg font-bold">MakeMyTrip Cabs</a>
                                   <a href="https://www.olacabs.com/outstation" target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 border border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 rounded-lg font-bold">Ola Intercity</a>
                                   <a href="https://www.olacabs.com/rentals" target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 border border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 rounded-lg font-bold">Ola Rentals</a>
+                                  <a href="https://fasttrackcalltaxi.in/" target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 border border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 rounded-lg font-bold">Fasttrack</a>
                                 </div>
                               </div>
                             )}
@@ -1798,7 +1933,7 @@ export default function TravelPage() {
                       >
                         <div className="flex items-center justify-between mb-2">
                           <h3 className="text-lg font-black">{dest.name}</h3>
-                          <Badge variant="default" className="bg-white/70 font-semibold text-xs border-transparent">
+                          <Badge variant="secondary" className="bg-white/70 font-semibold text-xs border-transparent">
                             {dest.distance} • {dest.duration}
                           </Badge>
                         </div>
@@ -1826,23 +1961,23 @@ export default function TravelPage() {
 
                         <div className="flex flex-wrap gap-1.5 border-t border-black/5 pt-3 mt-auto">
                           <a href={dest.trainLink} target="_blank" rel="noopener noreferrer">
-                            <Badge variant="default" className="bg-white/40 border-black/10 text-black text-[10px] hover:bg-white flex items-center gap-0.5">
+                            <Badge variant="outline" className="bg-white/40 border-black/10 text-black text-[10px] hover:bg-white flex items-center gap-0.5">
                               IRCTC <ExternalLink className="w-2.5 h-2.5 opacity-60" />
                             </Badge>
                           </a>
                           <a href={dest.busLink} target="_blank" rel="noopener noreferrer">
-                            <Badge variant="default" className="bg-white/40 border-black/10 text-black text-[10px] hover:bg-white flex items-center gap-0.5">
+                            <Badge variant="outline" className="bg-white/40 border-black/10 text-black text-[10px] hover:bg-white flex items-center gap-0.5">
                               RedBus <ExternalLink className="w-2.5 h-2.5 opacity-60" />
                             </Badge>
                           </a>
                           <a href={dest.taxiLink} target="_blank" rel="noopener noreferrer">
-                            <Badge variant="default" className="bg-white/40 border-black/10 text-black text-[10px] hover:bg-white flex items-center gap-0.5">
+                            <Badge variant="outline" className="bg-white/40 border-black/10 text-black text-[10px] hover:bg-white flex items-center gap-0.5">
                               DropTaxi <ExternalLink className="w-2.5 h-2.5 opacity-60" />
                             </Badge>
                           </a>
                           {dest.flightLink && (
                             <a href={dest.flightLink} target="_blank" rel="noopener noreferrer">
-                              <Badge variant="default" className="bg-white/40 border-black/10 text-black text-[10px] hover:bg-white flex items-center gap-0.5">
+                              <Badge variant="outline" className="bg-white/40 border-black/10 text-black text-[10px] hover:bg-white flex items-center gap-0.5">
                                 Flights <ExternalLink className="w-2.5 h-2.5 opacity-60" />
                               </Badge>
                             </a>
@@ -1856,28 +1991,103 @@ export default function TravelPage() {
             )}
 
 
-            {/* Cab Apps Shortcut */}
-            <Card>
-              <h3 className="text-lg font-bold mb-4">Quick Cab Booking Redirection</h3>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                {[
-                  { name: 'Ola Cab', url: 'https://book.olacabs.com', color: 'bg-green-100 text-green-800' },
-                  { name: 'Uber Passenger', url: 'https://m.uber.com', color: 'bg-gray-900 text-white' },
-                  { name: 'Rapido Bike', url: 'https://www.rapido.bike', color: 'bg-yellow-100 text-yellow-800' },
-                  { name: 'Namma Yatri', url: 'https://nammayatri.in', color: 'bg-orange-100 text-orange-800' },
-                ].map((app) => (
-                  <a key={app.name} href={app.url} target="_blank" rel="noopener noreferrer"
-                    className={`flex flex-col items-center justify-center gap-1 p-4 rounded-xl ${app.color} hover:scale-105 transition-transform`}>
-                    <span className="text-sm font-bold">{app.name}</span>
-                    <ExternalLink className="w-3.5 h-3.5 opacity-70" />
-                  </a>
-                ))}
-              </div>
-            </Card>
+            {/* Glassmorphic SBI NCMC Card & Tamil Helper */}
           </div>
 
-          {/* Right Column: Timings, Route Map and Tamil Word Helper */}
+          {/* Right Column: Timings, Route Map, NCMC and Tamil Word Helper */}
           <div className="space-y-6 lg:sticky lg:top-8 h-fit">
+            {/* SBI NCMC Smart Card - Only shown when Chennai Metro is selected */}
+            {timetableCategory === 'city' && cityTransportType === 'public' && cityPublicMode === 'metro' && (
+              <Card className="relative overflow-hidden border-indigo-150/40 shadow-xs">
+                <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-500/5 rounded-full -mr-8 -mt-8 pointer-events-none" />
+                <h3 className="text-lg font-bold mb-2 flex items-center gap-2 text-text-primary">
+                  <CreditCard className="w-5 h-5 text-indigo-600 animate-pulse" /> SBI NCMC Card
+                </h3>
+                <p className="text-xs text-text-muted mb-4 font-medium">National Common Mobility Card (NCMC) for unified transit. Click card to flip.</p>
+                
+                <div className="flip-card-container h-[200px]" onClick={() => setIsNcmcFlipped(!isNcmcFlipped)}>
+                  <div className={`flip-card-inner h-full ${isNcmcFlipped ? 'flipped' : ''}`}>
+                    {/* Front Side */}
+                    <div className="flip-card-front absolute inset-0 w-full h-full backface-hidden rounded-3xl p-5 text-white flex flex-col justify-between shadow-xl select-none bg-gradient-to-br from-blue-900/60 to-indigo-950/60 backdrop-blur-xl border border-white/20">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <span className="text-[10px] font-black tracking-widest text-indigo-200 block uppercase">State Bank of India</span>
+                          <span className="text-[8px] font-semibold text-slate-300 block">Chennai Metro Transit</span>
+                        </div>
+                        <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center border border-white/20">
+                          <CreditCard className="w-4 h-4 text-white" />
+                        </div>
+                      </div>
+                      
+                      <div className="my-2">
+                        <div className="text-lg font-mono font-bold tracking-widest text-slate-100">
+                          4321 9876 5432 1098
+                        </div>
+                        <div className="flex gap-4 mt-1 text-[9px] font-semibold text-indigo-200">
+                          <div>
+                            VAL THRU <span className="text-white ml-1">12/31</span>
+                          </div>
+                          <div>
+                            CVV <span className="text-white ml-1">•••</span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="flex justify-between items-end border-t border-white/10 pt-2.5">
+                        <div>
+                          <span className="text-[10px] font-black tracking-wide text-indigo-100 uppercase block">Chennai Commuter</span>
+                          <span className="text-[8px] font-normal text-slate-300 block">NCMC Wallet Enabled</span>
+                        </div>
+                        <div className="text-right">
+                          <span className="text-[9px] font-extrabold tracking-wide text-white bg-indigo-600 px-2 py-0.5 rounded-md border border-indigo-400/30">
+                            RuPay
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Back Side */}
+                    <div className="flip-card-back absolute inset-0 w-full h-full backface-hidden rounded-3xl p-5 text-white flex flex-col justify-between shadow-xl select-none bg-gradient-to-br from-slate-900/60 to-slate-950/60 backdrop-blur-xl border border-white/20">
+                      <div className="h-4 bg-slate-900 -mx-5 -mt-1 mb-2" />
+                      
+                      <div className="flex gap-4 items-center flex-1">
+                        {/* QR Ticket */}
+                        <div className="w-16 h-16 bg-white p-1 rounded-lg border border-white/25 shrink-0 flex items-center justify-center">
+                          <span className="text-[10px] font-bold text-slate-800 font-mono">QR CODE</span>
+                        </div>
+                        <div className="text-[10px] text-slate-300 font-medium space-y-1">
+                          <div className="text-white font-bold">NCMC Digital Pass</div>
+                          <div>Scan at any Metro gate or Suburban MRTS validation terminal.</div>
+                          <div className="text-[8px] text-slate-400 font-normal">Powered by RuPay Contactless</div>
+                        </div>
+                      </div>
+                      
+                      <div className="flex gap-2 border-t border-white/10 pt-3">
+                        <a 
+                          href="https://metro.sbi/online-recharge" 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          onClick={(e) => e.stopPropagation()} 
+                          className="flex-1 py-1.5 bg-white text-indigo-950 font-bold text-center text-xs rounded-xl hover:bg-slate-100 transition-colors shadow-sm"
+                        >
+                          Quick Recharge
+                        </a>
+                        <a 
+                          href="https://chennaimetrorail.org" 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          onClick={(e) => e.stopPropagation()} 
+                          className="py-1.5 px-3 bg-white/10 hover:bg-white/20 text-white font-bold text-center text-xs rounded-xl transition-all border border-white/20"
+                        >
+                          Portal
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </Card>
+            )}
+
             {/* Metro Service Timings & Network Map - Only shown when Chennai Metro is selected */}
             {timetableCategory === 'city' && cityTransportType === 'public' && cityPublicMode === 'metro' && (
               <>
@@ -1914,24 +2124,96 @@ export default function TravelPage() {
               </>
             )}
 
-            {/* Tamil Word Helper */}
-            <Card>
-              <h3 className="text-lg font-bold mb-4 inline-flex items-center gap-2 text-text-primary">
-                <Megaphone className="w-5 h-5 text-primary animate-bounce" /> Tamil Word Helper
-              </h3>
-              <p className="text-sm text-text-muted mb-4 font-medium">Common Tamil words you&apos;ll need while traveling:</p>
-              <div className="space-y-3">
-                {TAMIL_WORDS.map((word) => (
-                  <div key={word.tamil} className="flex items-start gap-3 p-3 bg-surface rounded-xl hover:bg-primary/5 transition-all">
-                    <div className="flex-1">
-                      <p className="text-sm font-bold text-primary">{word.tamil}</p>
-                      <p className="text-xs text-text-muted">{word.meaning}</p>
+            {/* Tamil & Bengali Word Helper Carousel - Shown only when Chennai Metro is NOT selected */}
+            {!(timetableCategory === 'city' && cityTransportType === 'public' && cityPublicMode === 'metro') && (
+              <Card className="relative overflow-hidden border-primary/20 shadow-xs">
+                <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full -mr-8 -mt-8 pointer-events-none" />
+                <h3 className="text-lg font-bold mb-2 inline-flex items-center gap-2 text-text-primary">
+                  <Megaphone className="w-5 h-5 text-primary" /> Tamil & Bengali Word Helper
+                </h3>
+                <p className="text-xs text-text-muted mb-4 font-medium">Flashcards for daily commute phrases. Click the speaker to hear pronunciation.</p>
+                
+                {TAMIL_WORDS.length > 0 && (() => {
+                  const BENGALI_MEANINGS: Record<string, string> = {
+                    'Hello / Welcome': 'স্বাগতম / নমস্কার',
+                    'Thank you': 'ধন্যবাদ',
+                    'How much?': 'কত দাম?',
+                    'When will it come?': 'কখন আসবে?',
+                    'Where is it?': 'কোথায় আছে?',
+                    'Money': 'টাকা / পয়সা',
+                    'Will auto come?': 'অটো কি আসবে?',
+                    'I need water': 'আমার জল লাগবে',
+                    'Food / Meal': 'খাবার / ভাত',
+                    'Bus station': 'বাস স্টেশন',
+                    'Hospital': 'হাসপাতাল',
+                    'Help!': 'সাহায্য!',
+                    'I need to go home': 'আমি বাড়ি যেতে চাই',
+                    'Very good!': 'খুব ভালো!',
+                    "I don't understand": 'বুঝতে পারছি না',
+                    'One moment': 'এক মিনিট',
+                  };
+                  const currentWord = TAMIL_WORDS[currentTamilIdx] || TAMIL_WORDS[0];
+                  return (
+                    <div className="relative bg-slate-50 border border-slate-150 rounded-2xl p-5 text-center min-h-[170px] flex flex-col justify-between shadow-inner">
+                      <div className="flex justify-between items-start">
+                        <span className="text-[10px] font-black tracking-widest text-slate-400 uppercase">
+                          {currentTamilIdx + 1} of {TAMIL_WORDS.length}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => speakWord(currentWord.tamil)}
+                          className="p-1.5 rounded-lg bg-primary-light hover:bg-primary/15 text-primary border border-primary/10 active:scale-95 transition-all cursor-pointer flex items-center justify-center"
+                          title="Listen Tamil Pronunciation"
+                        >
+                          <Volume2 className="w-4 h-4" />
+                        </button>
+                      </div>
+
+                      <div className="my-2 space-y-1">
+                        <div className="text-xl font-extrabold text-slate-800">
+                          {currentWord.pronunciation}
+                        </div>
+                        <div className="text-xs font-bold text-primary font-tamil tracking-wider">
+                          {currentWord.tamil}
+                        </div>
+                        
+                        {/* Bengali equivalent */}
+                        <div className="pt-2 border-t border-dashed border-slate-200/60 mt-2 space-y-1 bg-white/50 p-2 rounded-xl border border-slate-100">
+                          <div className="text-xs text-slate-500 font-semibold">
+                            উচ্চারণ: <span className="text-slate-800 font-bold font-bengali">{currentWord.bengali || ''}</span>
+                          </div>
+                          <div className="text-xs text-slate-500 font-semibold">
+                            অর্থ: <span className="text-primary-dark font-bold font-bengali">{BENGALI_MEANINGS[currentWord.meaning] || currentWord.meaning}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="border-t border-slate-200/50 pt-2 text-xs font-semibold text-text-muted">
+                        English Meaning: <span className="text-slate-700 font-bold">{currentWord.meaning}</span>
+                      </div>
                     </div>
-                    <span className="text-xs text-text-muted font-bold font-tamil">{word.pronunciation}</span>
-                  </div>
-                ))}
-              </div>
-            </Card>
+                  );
+                })()}
+
+                {/* Navigation controls */}
+                <div className="flex justify-between items-center mt-3 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setCurrentTamilIdx((prev) => (prev - 1 + TAMIL_WORDS.length) % TAMIL_WORDS.length)}
+                    className="px-3 py-1.5 border border-border bg-white text-xs font-bold rounded-lg hover:bg-slate-50 cursor-pointer transition-colors shadow-2xs"
+                  >
+                    ← Prev
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setCurrentTamilIdx((prev) => (prev + 1) % TAMIL_WORDS.length)}
+                    className="px-3 py-1.5 border border-border bg-white text-xs font-bold rounded-lg hover:bg-slate-50 cursor-pointer transition-colors shadow-2xs"
+                  >
+                    Next →
+                  </button>
+                </div>
+              </Card>
+            )}
           </div>
         </div>
       </div>
