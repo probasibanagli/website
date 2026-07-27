@@ -16,6 +16,7 @@ import { MODULE_LABELS } from '@/types';
 const moduleIcons: Record<ModuleKey, React.ReactNode> = {
   stay: <Home className="w-4 h-4" />,
   food: <UtensilsCrossed className="w-4 h-4" />,
+  travel: <Bus className="w-4 h-4" />,
   emergency: <AlertTriangle className="w-4 h-4" />,
   community: <Users className="w-4 h-4" />,
   services: <GraduationCap className="w-4 h-4" />,
