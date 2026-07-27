@@ -6,7 +6,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import {
   LayoutDashboard, Home, UtensilsCrossed, Bus, AlertTriangle,
   Users, GraduationCap, FileText, UserCog, LogOut, Menu, X,
-  ChevronRight, Crown, Shield, Heart, Activity
+  ChevronRight, Crown, Shield, Heart, Activity, Droplets, Truck
 } from 'lucide-react';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { getAccessibleModules } from '@/lib/permissions';
@@ -22,7 +22,7 @@ const moduleIcons: Record<ModuleKey, React.ReactNode> = {
   services: <GraduationCap className="w-4 h-4" />,
   blog: <FileText className="w-4 h-4" />,
   users: <UserCog className="w-4 h-4" />,
-  matrimony: <Heart className="w-4 h-4 text-pink-500 animate-pulse" />,
+  matrimony: <Heart className="w-4 h-4" />,
 };
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -80,12 +80,21 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { key: 'activity-log', label: 'Activity Tracking', href: '/admin/users?tab=activities', icon: <Activity className="w-4 h-4" /> },
   ] : [
     { key: 'dashboard', label: 'Dashboard', href: '/admin', icon: <LayoutDashboard className="w-4 h-4" /> },
-    ...accessibleModules.map((mod) => ({
-      key: mod,
-      label: MODULE_LABELS[mod],
-      href: `/admin/${mod}`,
-      icon: moduleIcons[mod],
-    })),
+    ...accessibleModules.flatMap((mod) => {
+      if (mod === 'emergency') {
+        return [
+          { key: 'emergency', label: 'Hospital Management', href: '/admin/emergency', icon: moduleIcons[mod] },
+          { key: 'blood-banks', label: 'Blood Banks', href: '/admin/blood-bank', icon: <Droplets className="w-4 h-4" /> },
+          { key: 'ambulance', label: 'Ambulance Directory', href: '/admin/ambulance', icon: <Truck className="w-4 h-4" /> }
+        ];
+      }
+      return [{
+        key: mod,
+        label: MODULE_LABELS[mod],
+        href: `/admin/${mod}`,
+        icon: moduleIcons[mod],
+      }];
+    }),
   ];
 
   const handleLogout = async () => {

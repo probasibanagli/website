@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import { collection, getDocs, doc, setDoc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
+import { useSearchParams } from 'next/navigation';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { canAccess } from '@/lib/permissions';
 import { COLLECTIONS } from '@/lib/firestore/collections';
@@ -28,9 +29,17 @@ const SAMPLE_DOCTORS = [
   { doctor_name: 'Dr. Priyanka Ghosh', specialization: 'Gynecologist', experience: '10 years', languages: ['Bengali', 'English'] }
 ];
 
-export default function AdminEmergencyPage() {
+function AdminEmergencyPageContent() {
   const { profile } = useAuth();
-  const [activeTab, setActiveTab] = useState<'hospitals' | 'doctors' | 'staff' | 'contacts'>('hospitals');
+  const searchParams = useSearchParams();
+  const tabParam = searchParams.get('tab');
+  const [activeTab, setActiveTab] = useState<'hospitals' | 'doctors' | 'staff'>('hospitals');
+
+  useEffect(() => {
+    if (tabParam && ['hospitals', 'doctors', 'staff'].includes(tabParam)) {
+      setActiveTab(tabParam as any);
+    }
+  }, [tabParam]);
   
   const [hospitals, setHospitals] = useState<Hospital[]>([]);
   const [doctors, setDoctors] = useState<BengaliDoctor[]>([]);
@@ -87,10 +96,9 @@ export default function AdminEmergencyPage() {
         hospitalDocs.push(payload);
       }
       
-      for (let i=0; i<SAMPLE_DOCTORS.length; i++) {
+      for (let i = 0; i < SAMPLE_DOCTORS.length; i++) {
         const d = SAMPLE_DOCTORS[i];
         const id = `doc-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
-        // Assign to a random hospital we just created, or cycle through
         const hId = hospitalDocs[i % hospitalDocs.length].id;
         const payload = { ...d, id, hospital_id: hId, created_at: now };
         await setDoc(doc(db, COLLECTIONS.bengali_doctors, id), payload);
@@ -108,11 +116,11 @@ export default function AdminEmergencyPage() {
 
   function openAdd() {
     setEditId(null);
-    setFormData(
-      activeTab === 'hospitals' 
-        ? { specializations: '', main_branch: false, is_24_7: false, has_bengali_doctor: false } 
-        : { languages: [] }
-    );
+    if (activeTab === 'hospitals') {
+      setFormData({ specializations: '', main_branch: false, is_24_7: false, has_bengali_doctor: false });
+    } else {
+      setFormData({ languages: [] });
+    }
     setShowForm(true);
   }
 
@@ -145,11 +153,10 @@ export default function AdminEmergencyPage() {
           ? payload.specializations.split('\n').map((s: string) => s.trim()).filter(Boolean) : [];
       } else {
         if (!Array.isArray(payload.languages)) {
-           payload.languages = [];
+          payload.languages = [];
         }
       }
 
-      // OPTIMISTIC UI UPDATE
       if (editId) {
         if (activeTab === 'hospitals') {
           setHospitals(prev => prev.map(i => i.id === editId ? { ...i, ...payload } as Hospital : i));
@@ -159,7 +166,7 @@ export default function AdminEmergencyPage() {
           setStaff(prev => prev.map(i => i.id === editId ? { ...i, ...payload } as BengaliStaff : i));
         }
       } else {
-        const id = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+        const id = `${activeTab === 'hospitals' ? 'hosp' : 'item'}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
         payload.id = id;
         payload.created_at = now;
         
@@ -172,11 +179,9 @@ export default function AdminEmergencyPage() {
         }
       }
       
-      // Close form immediately for fast UX
       setShowForm(false);
       setSaving(false);
 
-      // BACKGROUND SYNC TO FIRESTORE
       if (editId) {
         await updateDoc(doc(db, collectionName, editId), { ...payload, updated_at: now });
       } else {
@@ -185,9 +190,6 @@ export default function AdminEmergencyPage() {
     } catch (e) {
       console.error(e);
       alert('Error saving item to database.');
-    } finally {
-      // setSaving(false) already called for optimistic UI
-
     }
   }
 
@@ -230,7 +232,7 @@ export default function AdminEmergencyPage() {
               {seeding ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle className="w-4 h-4 text-emerald-500" />} Load Sample Data
             </button>
           )}
-          {canEdit && activeTab !== 'contacts' && (
+          {canEdit && (
             <button onClick={openAdd} className="inline-flex items-center gap-2 px-4 py-2.5 bg-primary hover:bg-primary-dark text-white rounded-xl text-sm font-medium transition-colors shadow-md active:scale-95 cursor-pointer">
               <Plus className="w-4 h-4" /> Add New {activeTab === 'hospitals' ? 'Hospital' : activeTab === 'doctors' ? 'Doctor' : 'Staff'}
             </button>
@@ -297,58 +299,70 @@ export default function AdminEmergencyPage() {
                 ) : (
                   <>
                     <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Staff Name</th>
-                    <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Role</th>
-                    <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Department</th>
+                    <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Designation</th>
                     <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Hospital</th>
                   </>
                 )}
-                {(canEdit || canManage) && <th className="text-right px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Actions</th>}
+                {canEdit && <th className="text-right px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Actions</th>}
               </tr>
             </thead>
-            <tbody className="divide-y divide-border">
-              {(activeTab === 'hospitals' 
-                 ? hospitals 
-                 : activeTab === 'doctors' 
-                   ? doctors.filter(d => selectedHospitalFilter === 'all' || d.hospital_id === selectedHospitalFilter) 
-                   : staff.filter(s => selectedHospitalFilter === 'all' || s.hospital_id === selectedHospitalFilter)
-              ).map((item: any) => (
-                <tr key={item.id} className="hover:bg-surface transition-colors">
-                  {activeTab === 'hospitals' ? (
-                    <>
-                      <td className="px-5 py-4 text-sm text-text-primary font-medium">{item.name}</td>
-                      <td className="px-5 py-4 text-sm text-text-muted">{item.city}</td>
-                      <td className="px-5 py-4 text-sm text-text-muted">{item.phone}</td>
-                      <td className="px-5 py-4 text-sm font-bold text-red-600">{item.emergency_phone || '-'}</td>
-                      <td className="px-5 py-4 text-sm text-text-muted">{item.main_branch ? <span className="text-emerald-600 font-semibold text-xs bg-emerald-50 px-2 py-1 rounded">Main</span> : <span className="text-text-muted text-xs">Branch</span>}</td>
-                    </>
-                  ) : activeTab === 'doctors' ? (
-                    <>
-                      <td className="px-5 py-4 text-sm text-text-primary font-medium">{item.doctor_name}</td>
-                      <td className="px-5 py-4 text-sm text-text-muted">{item.specialization}</td>
-                      <td className="px-5 py-4 text-sm text-text-muted">
-                        {hospitals.find(h => h.id === item.hospital_id)?.name || 'Unknown'}
-                      </td>
-                    </>
-                  ) : (
-                    <>
-                      <td className="px-5 py-4 text-sm text-text-primary font-medium">{item.name}</td>
-                      <td className="px-5 py-4 text-sm text-text-muted">{item.role}</td>
-                      <td className="px-5 py-4 text-sm text-text-muted">{item.department}</td>
-                      <td className="px-5 py-4 text-sm text-text-muted">
-                        {hospitals.find(h => h.id === item.hospital_id)?.name || 'Unknown'}
-                      </td>
-                    </>
-                  )}
-                  {(canEdit || canManage) && (
-                    <td className="px-5 py-4 text-right">
-                      <div className="flex items-center justify-end gap-1">
-                        {canEdit && <button onClick={() => openEdit(item)} className="p-2 rounded-lg hover:bg-primary/10 text-text-muted hover:text-primary transition-colors cursor-pointer"><Pencil className="w-3.5 h-3.5" /></button>}
-                        {canManage && <button onClick={() => handleDelete(item.id)} className="p-2 rounded-lg hover:bg-red-50 text-text-muted hover:text-red-500 transition-colors cursor-pointer"><Trash2 className="w-3.5 h-3.5" /></button>}
+            <tbody className="divide-y divide-border text-sm text-text-primary">
+              {activeTab === 'hospitals' && hospitals.map(item => (
+                <tr key={item.id} className="hover:bg-surface/30 transition-colors">
+                  <td className="px-5 py-4 font-bold">{item.name}</td>
+                  <td className="px-5 py-4">{item.city}</td>
+                  <td className="px-5 py-4">{item.phone || '-'}</td>
+                  <td className="px-5 py-4 font-semibold text-red-600">{item.emergency_phone || '-'}</td>
+                  <td className="px-5 py-4">{item.main_branch ? 'Main' : 'Sub'}</td>
+                  {canEdit && (
+                    <td className="text-right px-5 py-4">
+                      <div className="flex items-center justify-end gap-1.5">
+                        <button onClick={() => openEdit(item)} className="p-2 text-text-muted hover:text-primary hover:bg-primary/5 rounded-lg transition-colors cursor-pointer"><Pencil className="w-4 h-4" /></button>
+                        <button onClick={() => handleDelete(item.id)} className="p-2 text-text-muted hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"><Trash2 className="w-4 h-4" /></button>
                       </div>
                     </td>
                   )}
                 </tr>
               ))}
+
+              {activeTab === 'doctors' && doctors.filter(d => selectedHospitalFilter === 'all' || d.hospital_id === selectedHospitalFilter).map(item => {
+                const hosp = hospitals.find(h => h.id === item.hospital_id);
+                return (
+                  <tr key={item.id} className="hover:bg-surface/30 transition-colors">
+                    <td className="px-5 py-4 font-bold">{item.doctor_name}</td>
+                    <td className="px-5 py-4">{item.specialization}</td>
+                    <td className="px-5 py-4">{hosp ? `${hosp.name} (${hosp.city})` : '-'}</td>
+                    {canEdit && (
+                      <td className="text-right px-5 py-4">
+                        <div className="flex items-center justify-end gap-1.5">
+                          <button onClick={() => openEdit(item)} className="p-2 text-text-muted hover:text-primary hover:bg-primary/5 rounded-lg transition-colors cursor-pointer"><Pencil className="w-4 h-4" /></button>
+                          <button onClick={() => handleDelete(item.id)} className="p-2 text-text-muted hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"><Trash2 className="w-4 h-4" /></button>
+                        </div>
+                      </td>
+                    )}
+                  </tr>
+                );
+              })}
+
+              {activeTab === 'staff' && staff.filter(s => selectedHospitalFilter === 'all' || s.hospital_id === selectedHospitalFilter).map(item => {
+                const hosp = hospitals.find(h => h.id === item.hospital_id);
+                return (
+                  <tr key={item.id} className="hover:bg-surface/30 transition-colors">
+                    <td className="px-5 py-4 font-bold">{item.name}</td>
+                    <td className="px-5 py-4">{item.role}</td>
+                    <td className="px-5 py-4">{hosp ? `${hosp.name} (${hosp.city})` : '-'}</td>
+                    {canEdit && (
+                      <td className="text-right px-5 py-4">
+                        <div className="flex items-center justify-end gap-1.5">
+                          <button onClick={() => openEdit(item)} className="p-2 text-text-muted hover:text-primary hover:bg-primary/5 rounded-lg transition-colors cursor-pointer"><Pencil className="w-4 h-4" /></button>
+                          <button onClick={() => handleDelete(item.id)} className="p-2 text-text-muted hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"><Trash2 className="w-4 h-4" /></button>
+                        </div>
+                      </td>
+                    )}
+                  </tr>
+                );
+              })}
+
               {(activeTab === 'hospitals' ? hospitals : activeTab === 'doctors' ? doctors : staff).length === 0 && (
                 <tr><td colSpan={5} className="px-5 py-12 text-center text-text-muted text-sm italic">No data yet</td></tr>
               )}
@@ -418,30 +432,26 @@ export default function AdminEmergencyPage() {
                       <label className="block text-sm font-semibold text-text-primary mb-1.5">Google Maps Link</label>
                       <input type="text" value={formData.google_maps_url || ''} onChange={e => setFormData({...formData, google_maps_url: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
                     </div>
-                    <div className="md:col-span-2 flex flex-col gap-3">
-                      <div className="flex items-center gap-3">
-                        <input type="checkbox" id="is_24_7" checked={!!formData.is_24_7} onChange={e => setFormData({...formData, is_24_7: e.target.checked})} className="w-5 h-5 rounded border-border" />
-                        <label htmlFor="is_24_7" className="text-sm font-semibold text-text-primary cursor-pointer">24/7 Service</label>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <input type="checkbox" id="has_bengali_doctor" checked={!!formData.has_bengali_doctor} onChange={e => setFormData({...formData, has_bengali_doctor: e.target.checked})} className="w-5 h-5 rounded border-border" />
-                        <label htmlFor="has_bengali_doctor" className="text-sm font-semibold text-text-primary cursor-pointer">Has Bengali Doctor</label>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <input type="checkbox" id="has_bengali_staff" checked={!!formData.has_bengali_staff} onChange={e => setFormData({...formData, has_bengali_staff: e.target.checked})} className="w-5 h-5 rounded border-border" />
-                        <label htmlFor="has_bengali_staff" className="text-sm font-semibold text-text-primary cursor-pointer">Has Bengali Staff</label>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <input type="checkbox" id="main_branch" checked={!!formData.main_branch} onChange={e => setFormData({...formData, main_branch: e.target.checked})} className="w-5 h-5 rounded border-border" />
-                        <label htmlFor="main_branch" className="text-sm font-semibold text-text-primary cursor-pointer">Main Branch</label>
-                      </div>
+                    <div className="flex items-center gap-6 mt-6">
+                      <label className="flex items-center gap-2 cursor-pointer select-none">
+                        <input type="checkbox" checked={!!formData.main_branch} onChange={e => setFormData({...formData, main_branch: e.target.checked})} className="w-4 h-4 rounded border-border" />
+                        <span className="text-sm text-text-primary font-semibold">Main Branch</span>
+                      </label>
+                      <label className="flex items-center gap-2 cursor-pointer select-none">
+                        <input type="checkbox" checked={!!formData.is_24_7} onChange={e => setFormData({...formData, is_24_7: e.target.checked})} className="w-4 h-4 rounded border-border" />
+                        <span className="text-sm text-text-primary font-semibold">Open 24/7</span>
+                      </label>
+                      <label className="flex items-center gap-2 cursor-pointer select-none">
+                        <input type="checkbox" checked={!!formData.has_bengali_doctor} onChange={e => setFormData({...formData, has_bengali_doctor: e.target.checked})} className="w-4 h-4 rounded border-border" />
+                        <span className="text-sm text-text-primary font-semibold">Has Bengali Doctor</span>
+                      </label>
                     </div>
                     <div className="md:col-span-2">
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Specializations (One per line)</label>
-                      <textarea rows={3} value={formData.specializations || ''} onChange={e => setFormData({...formData, specializations: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm resize-none" placeholder="Cardiology&#10;Neurology" />
+                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Specializations (one per line)</label>
+                      <textarea rows={3} value={formData.specializations || ''} onChange={e => setFormData({...formData, specializations: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm resize-none" />
                     </div>
                     <div className="md:col-span-2">
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Description / Services Offered</label>
+                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Description</label>
                       <textarea rows={3} value={formData.description || ''} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm resize-none" />
                     </div>
                   </div>
@@ -457,8 +467,8 @@ export default function AdminEmergencyPage() {
                       <label className="block text-sm font-semibold text-text-primary mb-1.5">Specialization *</label>
                       <input type="text" value={formData.specialization || ''} onChange={e => setFormData({...formData, specialization: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
                     </div>
-                    <div className="md:col-span-2">
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Assign to Hospital *</label>
+                    <div>
+                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Hospital Association *</label>
                       <select value={formData.hospital_id || ''} onChange={e => setFormData({...formData, hospital_id: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm cursor-pointer">
                         <option value="">Select Hospital...</option>
                         {hospitals.map(h => <option key={h.id} value={h.id}>{h.name} ({h.city})</option>)}
@@ -468,20 +478,8 @@ export default function AdminEmergencyPage() {
                       <label className="block text-sm font-semibold text-text-primary mb-1.5">Experience (e.g. 10 years)</label>
                       <input type="text" value={formData.experience || ''} onChange={e => setFormData({...formData, experience: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
                     </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Photo URL</label>
-                      <input type="text" value={formData.photo || ''} onChange={e => setFormData({...formData, photo: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Phone</label>
-                      <input type="text" value={formData.phone || ''} onChange={e => setFormData({...formData, phone: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Email</label>
-                      <input type="email" value={formData.email || ''} onChange={e => setFormData({...formData, email: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
-                    </div>
                     <div className="md:col-span-2">
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Languages</label>
+                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Languages Spoken</label>
                       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-2">
                         {LANGUAGES.map(lang => (
                           <label key={lang} className="flex items-center gap-2 cursor-pointer">
@@ -503,24 +501,9 @@ export default function AdminEmergencyPage() {
                         ))}
                       </div>
                     </div>
-                    <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4 mt-2 p-4 bg-surface/50 rounded-xl border border-border">
-                      <h4 className="md:col-span-2 text-sm font-bold text-text-primary">Social Media Profiles</h4>
-                      <div>
-                        <label className="block text-xs font-semibold text-text-primary mb-1.5">LinkedIn URL</label>
-                        <input type="url" value={formData.social_links?.linkedin || ''} onChange={e => setFormData({...formData, social_links: {...formData.social_links, linkedin: e.target.value}})} className="w-full px-4 py-2 bg-white border border-border rounded-lg text-sm" />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-semibold text-text-primary mb-1.5">Facebook URL</label>
-                        <input type="url" value={formData.social_links?.facebook || ''} onChange={e => setFormData({...formData, social_links: {...formData.social_links, facebook: e.target.value}})} className="w-full px-4 py-2 bg-white border border-border rounded-lg text-sm" />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-semibold text-text-primary mb-1.5">Instagram URL</label>
-                        <input type="url" value={formData.social_links?.instagram || ''} onChange={e => setFormData({...formData, social_links: {...formData.social_links, instagram: e.target.value}})} className="w-full px-4 py-2 bg-white border border-border rounded-lg text-sm" />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-semibold text-text-primary mb-1.5">X (Twitter) URL</label>
-                        <input type="url" value={formData.social_links?.x || ''} onChange={e => setFormData({...formData, social_links: {...formData.social_links, x: e.target.value}})} className="w-full px-4 py-2 bg-white border border-border rounded-lg text-sm" />
-                      </div>
+                    <div className="md:col-span-2">
+                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Description</label>
+                      <textarea rows={3} value={formData.description || ''} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm resize-none" />
                     </div>
                   </div>
                 </>
@@ -532,42 +515,22 @@ export default function AdminEmergencyPage() {
                       <input type="text" value={formData.name || ''} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
                     </div>
                     <div>
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Role * (e.g. Receptionist)</label>
+                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Designation *</label>
                       <input type="text" value={formData.role || ''} onChange={e => setFormData({...formData, role: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
                     </div>
                     <div>
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Department</label>
-                      <input type="text" value={formData.department || ''} onChange={e => setFormData({...formData, department: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Assign to Hospital *</label>
+                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Hospital Association *</label>
                       <select value={formData.hospital_id || ''} onChange={e => setFormData({...formData, hospital_id: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm cursor-pointer">
                         <option value="">Select Hospital...</option>
                         {hospitals.map(h => <option key={h.id} value={h.id}>{h.name} ({h.city})</option>)}
                       </select>
                     </div>
                     <div>
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Experience (e.g. 5 years)</label>
-                      <input type="text" value={formData.experience || ''} onChange={e => setFormData({...formData, experience: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Availability (e.g. Mon-Fri 9AM-5PM)</label>
-                      <input type="text" value={formData.availability || ''} onChange={e => setFormData({...formData, availability: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Photo URL</label>
-                      <input type="text" value={formData.photo || ''} onChange={e => setFormData({...formData, photo: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
-                    </div>
-                    <div>
                       <label className="block text-sm font-semibold text-text-primary mb-1.5">Phone</label>
                       <input type="text" value={formData.phone || ''} onChange={e => setFormData({...formData, phone: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
                     </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Email</label>
-                      <input type="email" value={formData.email || ''} onChange={e => setFormData({...formData, email: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
-                    </div>
                     <div className="md:col-span-2">
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Languages</label>
+                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Languages Spoken</label>
                       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-2">
                         {LANGUAGES.map(lang => (
                           <label key={lang} className="flex items-center gap-2 cursor-pointer">
@@ -608,5 +571,18 @@ export default function AdminEmergencyPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function AdminEmergencyPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex flex-col items-center justify-center py-20 gap-4 bg-white rounded-2xl border border-border">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        <p className="text-text-muted text-sm font-medium">Loading emergency panel...</p>
+      </div>
+    }>
+      <AdminEmergencyPageContent />
+    </Suspense>
   );
 }

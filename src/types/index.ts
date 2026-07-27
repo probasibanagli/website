@@ -195,6 +195,18 @@ export interface BloodBank {
   lng?: number;
 }
 
+export interface Ambulance {
+  id: string;
+  name: string;
+  city: string;
+  phone?: string;
+  address?: string;
+  google_maps_url?: string;
+  website?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
 export interface CommunityGroup {
   id: string;
   name: string;

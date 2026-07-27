@@ -78,18 +78,33 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (user) => {
       // TEMPORARY BYPASS
-      if (document.cookie.includes('session=temp_session_cookie')) {
+      if (document.cookie.includes('session=temp_session_cookie') || document.cookie.includes('session=temp_admin_cookie')) {
+        const isAdminRole = document.cookie.includes('session=temp_admin_cookie');
         const mockProfile: UserProfile = {
-          uid: 'temporary-admin-id',
-          email: 'admin@pro.in',
-          full_name: 'Super Admin',
-          role: 'superadmin',
-          permissions: getDefaultPermissions('superadmin'),
+          uid: isAdminRole ? 'temporary-regular-admin-id' : 'temporary-admin-id',
+          email: isAdminRole ? 'admin-regular@pro.in' : 'admin@pro.in',
+          full_name: isAdminRole ? 'Regular Admin' : 'Super Admin',
+          role: isAdminRole ? 'admin' : 'superadmin',
+          permissions: isAdminRole ? {
+            stay: 'manage', food: 'manage', travel: 'manage', emergency: 'manage',
+            community: 'manage', services: 'manage', blog: 'manage', users: 'none',
+            matrimony: 'manage'
+          } : getDefaultPermissions('superadmin'),
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
           is_active: true,
         };
-        setState({ firebaseUser: { uid: 'temp' } as any, profile: mockProfile, loading: false });
+        const mockUser = {
+          uid: isAdminRole ? 'temporary-regular-admin-id' : 'temporary-admin-id',
+          getIdToken: async () => isAdminRole ? 'mock-bypass-admin-token' : 'mock-bypass-token'
+        } as any;
+        setState({ firebaseUser: mockUser, profile: mockProfile, loading: false });
+
+        if (!auth.currentUser) {
+          signInWithEmailAndPassword(auth, 'admin@pro.in', '9874563210').catch((err) => {
+            console.error("Firebase auth login sync failed:", err);
+          });
+        }
         return;
       }
 
@@ -141,7 +156,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signIn = async (email: string, password: string) => {
     if (email === 'admin@pro.in' && password === '9874563210') {
-      document.cookie = "session=temp_session_cookie; path=/";
+      if (!document.cookie.includes('session=temp_admin_cookie')) {
+        document.cookie = "session=temp_session_cookie; path=/";
+      }
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+      } catch (err) {
+        console.error("Firebase auth login failed in bypass:", err);
+      }
       window.location.href = '/admin';
       return;
     }

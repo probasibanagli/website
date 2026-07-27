@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { adminDb } from '@/lib/firebase-admin';
 
-const WHITELISTED_COLLECTIONS = new Set(['listings', 'food_listings', 'community_groups']);
+const WHITELISTED_COLLECTIONS = new Set(['listings', 'food_listings', 'community_groups', 'blood_banks', 'ambulances']);
 
 export async function GET(request: Request) {
   try {

@@ -20,6 +20,7 @@ export const COLLECTIONS = {
   bengali_doctors: 'bengali_doctors',
   bengali_staff: 'bengali_staff',
   otps: 'otps',
+  ambulances: 'ambulances',
 } as const;
 
 /**
