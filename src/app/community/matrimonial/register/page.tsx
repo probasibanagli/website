@@ -11,6 +11,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/Input';
+import { AutocompleteSelect } from '@/components/ui/AutocompleteSelect';
 import { CustomSelect } from '@/components/ui/CustomSelect';
 import {
   CITIES, HEIGHTS, MARITAL_STATUSES, COMPLEXIONS, FAMILY_TYPES, FAMILY_VALUES, FAMILY_STATUS,
@@ -78,21 +79,28 @@ const FormSelect = ({ label, field, options, required, formData, errors, updateF
 
   const isCustom = !!(
     formData[field] === 'Other' ||
-    formData[field] === 'Others' ||
-    (formData[field] && !options.includes(formData[field] as string))
+    formData[field] === 'Others'
   );
   const selectValue = isCustom ? otherValue : ((formData[field] as string) || '');
 
   return (
     <div className="space-y-1.5 w-full">
-      <CustomSelect
+      <AutocompleteSelect
         label={label}
         value={selectValue}
-        onChange={(val) => updateField(field, val)}
+        onChange={(val) => {
+          // If selecting otherValue, reset the custom input
+          if (val === otherValue) {
+            updateField(field, otherValue);
+          } else {
+            updateField(field, val);
+          }
+        }}
         options={selectOptions}
         placeholder={`Select ${label}`}
         required={required}
         error={errors[field]}
+        allowCustom={true}
       />
 
       {isCustom && (
@@ -145,12 +153,9 @@ const FormInput = ({ label, field, type = 'text', placeholder, required, formDat
 const DateOfBirthInput = ({ label, field, required, formData, errors, updateField, disabled }: FormFieldProps & { disabled?: boolean }) => {
   const value = (formData[field] as string) || '';
   const parts = value.split('-');
-  let year = '';
-  let month = '';
-  let day = '';
-  if (parts.length === 3) {
-    [year, month, day] = parts;
-  }
+  const year = parts[0] || '';
+  const month = parts[1] || '';
+  const day = parts[2] || '';
 
   const days = Array.from({ length: 31 }, (_, i) => String(i + 1).padStart(2, '0'));
   const months = [
@@ -171,11 +176,7 @@ const DateOfBirthInput = ({ label, field, required, formData, errors, updateFiel
   const years = Array.from({ length: 80 }, (_, i) => String(currentYear - 18 - i));
 
   const handleDateChange = (d: string, m: string, y: string) => {
-    if (d && m && y) {
-      updateField(field, `${y}-${m}-${d}`);
-    } else {
-      updateField(field, '');
-    }
+    updateField(field, `${y}-${m}-${d}`);
   };
 
   return (
@@ -184,39 +185,36 @@ const DateOfBirthInput = ({ label, field, required, formData, errors, updateFiel
         {label}{required && <span className="text-red-500 ml-0.5">*</span>}
       </label>
       <div className="grid grid-cols-3 gap-2">
-        <select
+        <CustomSelect
           value={day || ''}
-          onChange={(e) => handleDateChange(e.target.value, month || '', year || '')}
+          onChange={(val) => handleDateChange(val, month || '', year || '')}
           disabled={disabled}
-          className={`w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all cursor-pointer bg-white ${
-            errors[field] ? 'border-red-400' : 'border-border'
-          } ${disabled ? 'bg-gray-100 text-text-muted cursor-not-allowed' : ''}`}
-        >
-          <option value="">Day</option>
-          {days.map(d => <option key={d} value={d}>{d}</option>)}
-        </select>
-        <select
+          options={days}
+          placeholder="Day"
+          searchable={false}
+          position="bottom"
+          error={errors[field] ? ' ' : undefined}
+        />
+        <CustomSelect
           value={month || ''}
-          onChange={(e) => handleDateChange(day || '', e.target.value, year || '')}
+          onChange={(val) => handleDateChange(day || '', val, year || '')}
           disabled={disabled}
-          className={`w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all cursor-pointer bg-white ${
-            errors[field] ? 'border-red-400' : 'border-border'
-          } ${disabled ? 'bg-gray-100 text-text-muted cursor-not-allowed' : ''}`}
-        >
-          <option value="">Month</option>
-          {months.map(m => <option key={m.value} value={m.value}>{m.label}</option>)}
-        </select>
-        <select
+          options={months}
+          placeholder="Month"
+          searchable={false}
+          position="bottom"
+          error={errors[field] ? ' ' : undefined}
+        />
+        <CustomSelect
           value={year || ''}
-          onChange={(e) => handleDateChange(day || '', month || '', e.target.value)}
+          onChange={(val) => handleDateChange(day || '', month || '', val)}
           disabled={disabled}
-          className={`w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all cursor-pointer bg-white ${
-            errors[field] ? 'border-red-400' : 'border-border'
-          } ${disabled ? 'bg-gray-100 text-text-muted cursor-not-allowed' : ''}`}
-        >
-          <option value="">Year</option>
-          {years.map(y => <option key={y} value={y}>{y}</option>)}
-        </select>
+          options={years}
+          placeholder="Year"
+          searchable={true}
+          position="bottom"
+          error={errors[field] ? ' ' : undefined}
+        />
       </div>
       {errors[field] && <p className="text-xs text-red-500">{errors[field]}</p>}
     </div>
@@ -468,11 +466,17 @@ export default function MatrimonialRegisterPage() {
     }
     if (stepIndex === 3) {
       if (!formData.full_name) newErrors.full_name = 'Full name is required';
-      if (!formData.date_of_birth) newErrors.date_of_birth = 'Date of birth is required';
-      else {
-        const dob = new Date(formData.date_of_birth as string);
+      
+      const dobStr = formData.date_of_birth as string;
+      const dobParts = dobStr ? dobStr.split('-') : [];
+      const isDobComplete = dobParts.length === 3 && dobParts.every(p => p !== '');
+      
+      if (!dobStr || !isDobComplete) {
+        newErrors.date_of_birth = 'Please select a complete Day, Month, and Year';
+      } else {
+        const dob = new Date(dobStr);
         const age = Math.floor((Date.now() - dob.getTime()) / 31557600000);
-        if (age < 18) newErrors.date_of_birth = 'Must be at least 18 years old';
+        if (isNaN(age) || age < 18) newErrors.date_of_birth = 'Must be at least 18 years old';
         if (age > 60) newErrors.date_of_birth = 'Age must be between 18-60';
       }
     }
@@ -759,7 +763,7 @@ export default function MatrimonialRegisterPage() {
             </button>
           )}
 
-          <Card padding="lg" hover={false} className="relative pt-8 md:pt-10 overflow-hidden">
+          <Card padding="lg" hover={false} className="relative pt-8 md:pt-10 overflow-visible">
             {/* Header Avatar Icon */}
             <div className="flex justify-center mb-6">
               <div className="w-16 h-16 rounded-full bg-orange-50 text-orange-500 flex items-center justify-center shadow-inner">
@@ -920,40 +924,46 @@ export default function MatrimonialRegisterPage() {
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <FormSelect formData={formData} errors={errors} updateField={updateField} label="Religion" field="religion" options={RELIGIONS} required />
-                  <FormSelect 
-                    formData={formData} 
-                    errors={errors} 
-                    updateField={updateField} 
-                    label="Caste" 
-                    field="caste" 
-                    options={formData.religion ? (CASTE_MAPPING[formData.religion as string] || []) : []} 
-                    required 
-                  />
+                  {formData.religion && (
+                    <FormSelect 
+                      formData={formData} 
+                      errors={errors} 
+                      updateField={updateField} 
+                      label="Caste" 
+                      field="caste" 
+                      options={CASTE_MAPPING[formData.religion as string] || []} 
+                      required 
+                    />
+                  )}
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <FormSelect 
-                    formData={formData} 
-                    errors={errors} 
-                    updateField={updateField} 
-                    label="Sub-Caste" 
-                    field="sub_caste" 
-                    options={formData.caste ? (SUBCASTE_MAPPING[formData.caste as string] || []) : []} 
-                    required 
-                  />
+                  {formData.caste && (
+                    <FormSelect 
+                      formData={formData} 
+                      errors={errors} 
+                      updateField={updateField} 
+                      label="Sub-Caste" 
+                      field="sub_caste" 
+                      options={SUBCASTE_MAPPING[formData.caste as string] || []} 
+                      required 
+                    />
+                  )}
                   <FormSelect formData={formData} errors={errors} updateField={updateField} label="Manglik status" field="manglik" options={MANGLIK_OPTIONS} />
                 </div>
                 {formData.religion === 'Hindu' && (
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 rounded-xl bg-orange-50/30 border border-orange-100/50 animate-fade-in">
                     <FormInput formData={formData} errors={errors} updateField={updateField} label="Gotra" field="gotra" placeholder="e.g. Kashyap" />
                     <FormSelect formData={formData} errors={errors} updateField={updateField} label="Raasi (Zodiac Sign)" field="raasi" options={RAASIS} />
-                    <FormSelect 
-                      formData={formData} 
-                      errors={errors} 
-                      updateField={updateField} 
-                      label="Star (Nakshatra)" 
-                      field="star" 
-                      options={formData.raasi ? (RAASI_NAKSHATRAS_MAPPING[formData.raasi as string] || []) : []} 
-                    />
+                    {formData.raasi && (
+                      <FormSelect 
+                        formData={formData} 
+                        errors={errors} 
+                        updateField={updateField} 
+                        label="Star (Nakshatra)" 
+                        field="star" 
+                        options={RAASI_NAKSHATRAS_MAPPING[formData.raasi as string] || []} 
+                      />
+                    )}
                   </div>
                 )}
               </div>
@@ -1208,7 +1218,7 @@ export default function MatrimonialRegisterPage() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <FormSelect formData={formData} errors={errors} updateField={updateField} label="Partner Highest Education" field="pref_education" options={EDUCATION_LEVELS} />
-                  <FormInput formData={formData} errors={errors} updateField={updateField} label="Partner Expected Profession" field="pref_profession" placeholder="e.g. Software Engineer, Doctor" />
+                  <FormSelect formData={formData} errors={errors} updateField={updateField} label="Partner Expected Profession" field="pref_profession" options={PROFESSIONS} />
                   <FormSelect formData={formData} errors={errors} updateField={updateField} label="Partner Preferred City (TN)" field="pref_city" options={CITIES} />
                 </div>
 

@@ -20,6 +20,14 @@ import {
   Filter,
   ListOrdered,
   ArrowUpRight,
+  Sparkles,
+  Sprout,
+  Flame,
+  Coins,
+  Feather,
+  PartyPopper,
+  Palette,
+  Heart,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/card';
@@ -34,11 +42,20 @@ const categoryColors: Record<string, string> = {
   religious: 'bg-emerald-100 text-emerald-700' 
 };
 
-const categoryIcons: Record<string, string> = {
-  festival: '🎊',
-  cultural: '🎭',
-  social: '🤝',
-  religious: '🙏',
+const categoryIcons: Record<string, React.ComponentType<{ className?: string }>> = {
+  festival: PartyPopper,
+  cultural: Palette,
+  social: Users,
+  religious: Heart,
+};
+
+const festivalIcons: Record<string, React.ComponentType<{ className?: string }>> = {
+  'durga-puja': Sparkles,
+  'poila-boishakh': Sprout,
+  'saraswati-puja': BookOpen,
+  'kali-puja': Flame,
+  'lakshmi-puja': Coins,
+  'rabindra-jayanti': Feather,
 };
 
 /* ── Inline SVG Social Icons for Compatibility ── */
@@ -264,6 +281,7 @@ interface Festival {
   monthBn: string;
   icon: string;
   communityIds: string[];
+  image?: string;
 }
 
 const MAJOR_FESTIVALS: Festival[] = [
@@ -277,6 +295,7 @@ const MAJOR_FESTIVALS: Festival[] = [
     monthBn: 'আশ্বিন / কার্তিক',
     icon: '🥁',
     communityIds: ['1', 'web-2', 'fb-1', 'ig-1', 'fb-2', '6', 'ig-4', 'web-1'],
+    image: '/images/durga_puja_idol.png',
   },
   {
     id: 'poila-boishakh',
@@ -288,6 +307,7 @@ const MAJOR_FESTIVALS: Festival[] = [
     monthBn: 'বৈশাখ',
     icon: '🌾',
     communityIds: ['1', '5', '6', 'fb-1', 'fb-2', 'web-1'],
+    image: '/images/bengali_festive_sweets.png',
   },
   {
     id: 'saraswati-puja',
@@ -299,6 +319,7 @@ const MAJOR_FESTIVALS: Festival[] = [
     monthBn: 'মাঘ / ফাল্গুন',
     icon: '🌸',
     communityIds: ['2', '5', 'ig-3', 'fb-1', 'fb-2'],
+    image: '/images/bengali_festive_sweets.png',
   },
   {
     id: 'kali-puja',
@@ -310,6 +331,7 @@ const MAJOR_FESTIVALS: Festival[] = [
     monthBn: 'কার্তিক',
     icon: '🪔',
     communityIds: ['1', 'web-2', 'fb-1', 'fb-2', '6'],
+    image: '/images/dakshineswar_temple.png',
   },
   {
     id: 'lakshmi-puja',
@@ -321,6 +343,7 @@ const MAJOR_FESTIVALS: Festival[] = [
     monthBn: 'আশ্বিন / কার্তিক',
     icon: '💰',
     communityIds: ['1', 'fb-1', 'fb-2', '4'],
+    image: '/images/bengali_festive_sweets.png',
   },
   {
     id: 'rabindra-jayanti',
@@ -332,8 +355,26 @@ const MAJOR_FESTIVALS: Festival[] = [
     monthBn: '২৫শে বৈশাখ',
     icon: '✍️',
     communityIds: ['2', '5', 'ig-3', 'fb-1'],
+    image: '/images/bengali_culture_hero.png',
   },
 ];
+
+function getEventImage(title: string, category: string): string | null {
+  const t = title.toLowerCase();
+  if (t.includes('durga') || (t.includes('puja') && (t.includes('shasthi') || t.includes('saptami') || t.includes('ashtami') || t.includes('navami') || t.includes('dashami')))) {
+    return '/images/durga_puja_idol.png';
+  }
+  if (t.includes('saraswati') || t.includes('lakshmi') || t.includes('poila') || t.includes('noboborsho') || t.includes('new year') || t.includes('bhai phonta') || t.includes('cooking') || t.includes('food festival')) {
+    return '/images/bengali_festive_sweets.png';
+  }
+  if (t.includes('kali') || t.includes('diwali') || t.includes('rath yatra') || t.includes('janmashtami') || t.includes('heritage walk') || t.includes('temple')) {
+    return '/images/dakshineswar_temple.png';
+  }
+  if (t.includes('rabindra') || t.includes('jayanti') || t.includes('literature') || t.includes('film') || t.includes('drama') || t.includes('music night') || t.includes('adda') || t.includes('networking')) {
+    return '/images/bengali_culture_hero.png';
+  }
+  return null;
+}
 
 function getFestivalsForDate(date: Date) {
   const y = date.getFullYear();
@@ -561,8 +602,8 @@ export default function EventsPage() {
           {/* ── Today's Bengali Date Banner ── */}
           <div className="mt-5 p-4 bg-gradient-to-r from-amber-50 via-orange-50 to-red-50 rounded-2xl border border-amber-200/50 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-6">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center text-white text-xl shadow-md">
-                📅
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center text-white shadow-md">
+                <CalendarIcon className="w-5 h-5 text-white" />
               </div>
               <div>
                 <p className="text-[10px] font-semibold text-amber-700 uppercase tracking-wider">Today&apos;s Bengali Date</p>
@@ -579,23 +620,27 @@ export default function EventsPage() {
           {/* ── Tab Navigation ── */}
           <div className="mt-6 flex flex-wrap gap-2">
             {[
-              { key: 'events' as const, label: '🎉 Events & Festivals' },
-              { key: 'panjika' as const, label: '📅 Bengali Panjika' },
-              { key: 'annual' as const, label: '📆 Annual Calendar' },
-              { key: 'converter' as const, label: '🔄 Date Converter' },
-            ].map((tab) => (
-              <button
-                key={tab.key}
-                onClick={() => setActiveTab(tab.key)}
-                className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all cursor-pointer ${
-                  activeTab === tab.key
-                    ? 'bg-primary text-white shadow-md'
-                    : 'bg-white text-text-primary border border-border hover:border-primary'
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
+              { key: 'events' as const, label: 'Events & Festivals', icon: PartyPopper },
+              { key: 'panjika' as const, label: 'Bengali Panjika', icon: CalendarIcon },
+              { key: 'annual' as const, label: 'Annual Calendar', icon: ListOrdered },
+              { key: 'converter' as const, label: 'Date Converter', icon: Globe },
+            ].map((tab) => {
+              const TabIcon = tab.icon;
+              return (
+                <button
+                  key={tab.key}
+                  onClick={() => setActiveTab(tab.key)}
+                  className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all cursor-pointer flex items-center gap-2 ${
+                    activeTab === tab.key
+                      ? 'bg-primary text-white shadow-md'
+                      : 'bg-white text-text-primary border border-border hover:border-primary'
+                  }`}
+                >
+                  <TabIcon className="w-4 h-4" />
+                  <span>{tab.label}</span>
+                </button>
+              );
+            })}
           </div>
         </div>
       </div>
@@ -643,10 +688,13 @@ export default function EventsPage() {
                       }`}
                     >
                       <div className="flex items-start gap-4">
-                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-2xl shadow-sm ${
-                          isSelected ? 'bg-primary text-white' : 'bg-surface text-text-primary group-hover:scale-110 transition-transform'
+                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-sm ${
+                          isSelected ? 'bg-primary text-white' : 'bg-surface text-primary group-hover:scale-110 transition-transform'
                         }`}>
-                          {fest.icon}
+                          {(() => {
+                            const Icon = festivalIcons[fest.id] || Sparkles;
+                            return <Icon className="w-5 h-5" />;
+                          })()}
                         </div>
                         
                         <div className="flex-1">
@@ -680,15 +728,33 @@ export default function EventsPage() {
                   <div className="flex flex-col lg:flex-row gap-6 justify-between">
                     <div className="flex-1">
                       <div className="flex items-center gap-3">
-                        <span className="text-3xl">{selectedFestival.icon}</span>
+                        {(() => {
+                          const Icon = festivalIcons[selectedFestival.id] || Sparkles;
+                          return (
+                            <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                              <Icon className="w-6 h-6" />
+                            </div>
+                          );
+                        })()}
                         <div>
                           <h3 className="text-xl font-bold text-text-primary">{selectedFestival.name}</h3>
                           <p className="text-sm bengali-text text-primary font-medium">{selectedFestival.nameBn} • Month of {selectedFestival.monthBn}</p>
                         </div>
                       </div>
-                      <p className="mt-3 text-sm text-text-muted leading-relaxed">
-                        {selectedFestival.description}
-                      </p>
+                      <div className="mt-4 flex flex-col md:flex-row gap-5 items-start">
+                        {selectedFestival.image && (
+                          <div className="w-full md:w-60 shrink-0 aspect-[4/3] rounded-2xl overflow-hidden border border-border/80 shadow-sm bg-white">
+                            <img 
+                              src={selectedFestival.image} 
+                              alt={selectedFestival.name} 
+                              className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                            />
+                          </div>
+                        )}
+                        <p className="text-sm text-text-muted leading-relaxed flex-1">
+                          {selectedFestival.description}
+                        </p>
+                      </div>
                       
                       {/* REDIRECT LINKS */}
                       <div className="mt-5 flex flex-wrap gap-3">
@@ -704,7 +770,7 @@ export default function EventsPage() {
                           onClick={() => setActiveTab('annual')}
                           className="inline-flex items-center gap-2 bg-white text-primary border-2 border-primary px-5 py-2.5 rounded-xl text-sm font-semibold hover:bg-primary/5 shadow-sm transition-all cursor-pointer"
                         >
-                          📆 View Annual Calendar <ArrowRight className="w-4 h-4" />
+                          <CalendarIcon className="w-4 h-4" /> View Annual Calendar <ArrowRight className="w-4 h-4" />
                         </button>
                       </div>
                     </div>
@@ -758,7 +824,7 @@ export default function EventsPage() {
             {/* Upcoming Community Events Section */}
             <div>
               <h2 className="text-2xl font-bold font-display text-text-primary mb-2 flex items-center gap-2">
-                🎉 All Community Events & Celebrations
+                <PartyPopper className="w-6 h-6 text-primary shrink-0" /> All Community Events & Celebrations
               </h2>
               <p className="text-sm text-text-muted mb-6">Events from all community groups across Tamil Nadu. Click on any event to view its community group.</p>
 
@@ -782,8 +848,21 @@ export default function EventsPage() {
                   const communityGroup = event.community_group_id ? getGroupById(event.community_group_id) : null;
                   return (
                     <Card key={event.id} className="group overflow-hidden p-0 bg-white hover:shadow-lg transition-shadow">
-                      <div className="h-36 bg-gradient-to-br from-amber-50 to-orange-50 flex items-center justify-center relative">
-                        <span className="text-5xl opacity-30">{categoryIcons[event.category || 'festival'] || '🎉'}</span>
+                      <div className="h-36 overflow-hidden bg-gradient-to-br from-amber-50 to-orange-50 flex items-center justify-center relative">
+                        {(() => {
+                          const img = getEventImage(event.title, event.category || '');
+                          if (img) {
+                            return (
+                              <img 
+                                src={img} 
+                                alt={event.title} 
+                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                              />
+                            );
+                          }
+                          const Icon = categoryIcons[event.category || 'festival'] || PartyPopper;
+                          return <Icon className="w-14 h-14 text-primary/20" />;
+                        })()}
                         <div className="absolute top-3 left-3">
                           <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${categoryColors[event.category || 'festival']}`}>
                             {event.category}
@@ -866,8 +945,8 @@ export default function EventsPage() {
                     <div className={`h-2 bg-gradient-to-r ${panjika.color}`} />
                     <div className="p-6">
                       <div className="flex items-start gap-4">
-                        <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${panjika.color} flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform`}>
-                          {panjika.icon}
+                        <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${panjika.color} flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform`}>
+                          <CalendarIcon className="w-8 h-8 text-white" />
                         </div>
                         <div className="flex-1">
                           <h3 className="text-xl font-bold text-text-primary group-hover:text-primary transition-colors">{panjika.title}</h3>
@@ -1255,8 +1334,15 @@ export default function EventsPage() {
                                 <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
                                   <div className="flex-1">
                                     <div className="flex items-start gap-3">
-                                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-50 to-orange-50 flex items-center justify-center text-xl shrink-0 border border-amber-100">
-                                        {categoryIcons[event.category || 'festival'] || '🎉'}
+                                      <div className="w-12 h-12 rounded-xl overflow-hidden bg-gradient-to-br from-amber-50 to-orange-50 flex items-center justify-center shrink-0 border border-amber-100">
+                                        {(() => {
+                                          const img = getEventImage(event.title, event.category || '');
+                                          if (img) {
+                                            return <img src={img} alt={event.title} className="w-full h-full object-cover" />;
+                                          }
+                                          const Icon = categoryIcons[event.category || 'festival'] || PartyPopper;
+                                          return <Icon className="w-5 h-5 text-primary" />;
+                                        })()}
                                       </div>
                                       <div className="flex-1">
                                         <h4 className="font-bold text-text-primary group-hover:text-primary transition-colors">{event.title}</h4>

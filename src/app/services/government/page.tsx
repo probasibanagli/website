@@ -438,14 +438,14 @@ function PoliceVerificationCard() {
         <div className="p-5">
           {mode === 'online' ? (
             <div className="space-y-3">
-              <a href="https://cybercrime.gov.in/" target="_blank" rel="noopener noreferrer" className="block">
+              <a href="https://cybercrime.gov.in/Webform/Crime_CategoryRegister.aspx" target="_blank" rel="noopener noreferrer" className="block">
                 <Button variant="primary" size="sm" className="w-full bg-amber-600 hover:bg-amber-700 text-white border-none shadow-sm cursor-pointer">
-                  Cyber Crime Portal <ExternalLink className="w-3.5 h-3.5 ml-1.5" />
+                  Report Cyber Crime <ExternalLink className="w-3.5 h-3.5 ml-1.5" />
                 </Button>
               </a>
               <a href="https://eservices.tnpolice.gov.in/" target="_blank" rel="noopener noreferrer" className="block">
                 <Button variant="outline" size="sm" className="w-full cursor-pointer">
-                  TN Police e-Services <ExternalLink className="w-3.5 h-3.5 ml-1.5" />
+                  Request Verification Certificate <ExternalLink className="w-3.5 h-3.5 ml-1.5" />
                 </Button>
               </a>
             </div>

@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { AutocompleteSelect } from '@/components/ui/AutocompleteSelect';
 import { CustomSelect } from '@/components/ui/CustomSelect';
 import {
   CITIES, HEIGHTS, MARITAL_STATUSES, COMPLEXIONS, FAMILY_TYPES, FAMILY_VALUES, FAMILY_STATUS,
@@ -201,8 +202,11 @@ export default function EditMatrimonialProfile() {
 
   const handleSave = useCallback(() => {
     if (!profile) return;
-    const dob = formData.date_of_birth ? new Date(formData.date_of_birth as string) : null;
-    const age = dob ? Math.floor((Date.now() - dob.getTime()) / 31557600000) : profile.age;
+    const dobStr = formData.date_of_birth as string;
+    const dobParts = dobStr ? dobStr.split('-') : [];
+    const isDobComplete = dobParts.length === 3 && dobParts.every(p => p !== '');
+    const dob = isDobComplete ? new Date(dobStr) : null;
+    const age = dob && !isNaN(dob.getTime()) ? Math.floor((Date.now() - dob.getTime()) / 31557600000) : profile.age;
 
     const updatedProfile: MatrimonialProfile = {
       ...profile,
@@ -280,19 +284,25 @@ export default function EditMatrimonialProfile() {
 
     const isCustom = !!(
       formData[field] === 'Other' ||
-      formData[field] === 'Others' ||
-      (formData[field] && !options.includes(formData[field] as string))
+      formData[field] === 'Others'
     );
     const selectValue = isCustom ? otherValue : ((formData[field] as string) || '');
 
     return (
       <div className="space-y-1.5 w-full">
-        <CustomSelect
+        <AutocompleteSelect
           label={label}
           value={selectValue}
-          onChange={(val) => updateField(field, val)}
+          onChange={(val) => {
+            if (val === otherValue) {
+              updateField(field, otherValue);
+            } else {
+              updateField(field, val);
+            }
+          }}
           options={selectOptions}
           placeholder={`Select ${label}`}
+          allowCustom={true}
         />
 
         {isCustom && (
@@ -325,12 +335,9 @@ export default function EditMatrimonialProfile() {
   const DateOfBirthInput = ({ label, field }: { label: string; field: string }) => {
     const value = (formData[field] as string) || '';
     const parts = value.split('-');
-    let year = '';
-    let month = '';
-    let day = '';
-    if (parts.length === 3) {
-      [year, month, day] = parts;
-    }
+    const year = parts[0] || '';
+    const month = parts[1] || '';
+    const day = parts[2] || '';
 
     const days = Array.from({ length: 31 }, (_, i) => String(i + 1).padStart(2, '0'));
     const months = [
@@ -351,41 +358,37 @@ export default function EditMatrimonialProfile() {
     const years = Array.from({ length: 80 }, (_, i) => String(currentYear - 18 - i));
 
     const handleDateChange = (d: string, m: string, y: string) => {
-      if (d && m && y) {
-        updateField(field, `${y}-${m}-${d}`);
-      } else {
-        updateField(field, '');
-      }
+      updateField(field, `${y}-${m}-${d}`);
     };
 
     return (
       <div className="space-y-1.5 w-full">
         <label className="block text-sm font-medium text-text-primary">{label}</label>
         <div className="grid grid-cols-3 gap-2">
-          <select
+          <CustomSelect
             value={day || ''}
-            onChange={(e) => handleDateChange(e.target.value, month || '', year || '')}
-            className="w-full px-3 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 cursor-pointer bg-white"
-          >
-            <option value="">Day</option>
-            {days.map(d => <option key={d} value={d}>{d}</option>)}
-          </select>
-          <select
+            onChange={(val) => handleDateChange(val, month || '', year || '')}
+            options={days}
+            placeholder="Day"
+            searchable={false}
+            position="bottom"
+          />
+          <CustomSelect
             value={month || ''}
-            onChange={(e) => handleDateChange(day || '', e.target.value, year || '')}
-            className="w-full px-3 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 cursor-pointer bg-white"
-          >
-            <option value="">Month</option>
-            {months.map(m => <option key={m.value} value={m.value}>{m.label}</option>)}
-          </select>
-          <select
+            onChange={(val) => handleDateChange(day || '', val, year || '')}
+            options={months}
+            placeholder="Month"
+            searchable={false}
+            position="bottom"
+          />
+          <CustomSelect
             value={year || ''}
-            onChange={(e) => handleDateChange(day || '', month || '', e.target.value)}
-            className="w-full px-3 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 cursor-pointer bg-white"
-          >
-            <option value="">Year</option>
-            {years.map(y => <option key={y} value={y}>{y}</option>)}
-          </select>
+            onChange={(val) => handleDateChange(day || '', month || '', val)}
+            options={years}
+            placeholder="Year"
+            searchable={true}
+            position="bottom"
+          />
         </div>
       </div>
     );
@@ -514,29 +517,35 @@ export default function EditMatrimonialProfile() {
               <h2 className="text-lg font-bold mb-4">Religion & Lifestyle</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <FormSelect label="Religion" field="religion" options={RELIGIONS} />
-                <FormSelect 
-                  label="Caste" 
-                  field="caste" 
-                  options={formData.religion ? (CASTE_MAPPING[formData.religion as string] || []) : []} 
-                />
+                {formData.religion && (
+                  <FormSelect 
+                    label="Caste" 
+                    field="caste" 
+                    options={CASTE_MAPPING[formData.religion as string] || []} 
+                  />
+                )}
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <FormSelect 
-                  label="Sub-Caste" 
-                  field="sub_caste" 
-                  options={formData.caste ? (SUBCASTE_MAPPING[formData.caste as string] || []) : []} 
-                />
+                {formData.caste && (
+                  <FormSelect 
+                    label="Sub-Caste" 
+                    field="sub_caste" 
+                    options={SUBCASTE_MAPPING[formData.caste as string] || []} 
+                  />
+                )}
                 <FormSelect label="Manglik" field="manglik" options={MANGLIK_OPTIONS} />
               </div>
               {formData.religion === 'Hindu' && (
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 rounded-xl bg-orange-50/30 border border-orange-100/50 animate-fade-in">
                   <FormInput label="Gotra" field="gotra" placeholder="e.g. Kashyap" />
                   <FormSelect label="Raasi (Zodiac Sign)" field="raasi" options={RAASIS} />
-                  <FormSelect 
-                    label="Star (Nakshatra)" 
-                    field="star" 
-                    options={formData.raasi ? (RAASI_NAKSHATRAS_MAPPING[formData.raasi as string] || []) : []} 
-                  />
+                  {formData.raasi && (
+                    <FormSelect 
+                      label="Star (Nakshatra)" 
+                      field="star" 
+                      options={RAASI_NAKSHATRAS_MAPPING[formData.raasi as string] || []} 
+                    />
+                  )}
                 </div>
               )}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -572,7 +581,7 @@ export default function EditMatrimonialProfile() {
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <FormSelect label="Pref. Education" field="pref_education" options={EDUCATION_LEVELS} />
-                <FormInput label="Pref. Profession" field="pref_profession" placeholder="Any" />
+                <FormSelect label="Pref. Profession" field="pref_profession" options={PROFESSIONS} />
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <FormSelect label="Pref. City" field="pref_city" options={CITIES} />

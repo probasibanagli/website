@@ -1704,6 +1704,24 @@ export const sampleMatrimonialProfiles: MatrimonialProfile[] = [
 
 export const sampleColleges: College[] = [
   {
+    id: 'col-13',
+    name: 'IIT Madras',
+    type: 'engineering',
+    city: 'Chennai',
+    area: 'Adyar',
+    address: 'IIT Madras Campus, Adyar, Chennai - 600036',
+    phone: '044-22578100',
+    website: 'https://www.iitm.ac.in',
+    google_maps_url: 'https://maps.google.com/?q=IIT+Madras',
+    ranking: 1,
+    bengali_forums: [
+      { name: 'IITM Bengali Students Association', link: 'https://facebook.com' }
+    ],
+    staff_contacts: [
+      { name: 'Dr. Debabrata Roy', role: 'lecturer', department: 'Mechanical Engineering', phone: '9876500140', email: 'debabrata@iitm.ac.in' }
+    ]
+  },
+  {
     id: 'col-1',
     name: 'Anna University',
     type: 'engineering',
@@ -1713,7 +1731,7 @@ export const sampleColleges: College[] = [
     phone: '044-22358190',
     website: 'https://www.annauniv.edu',
     google_maps_url: 'https://maps.google.com/?q=Anna+University+Chennai',
-    ranking: 1,
+    ranking: 2,
     bengali_forums: [],
     staff_contacts: [
       { name: 'Prof. Parthasarathi Mitra', role: 'lecturer', department: 'Computer Science', phone: '9876500125', email: 'p.mitra@annauniv.edu' },
@@ -1730,7 +1748,7 @@ export const sampleColleges: College[] = [
     phone: '0416-2202300',
     website: 'https://vit.ac.in',
     google_maps_url: 'https://maps.google.com/?q=VIT+Vellore',
-    ranking: 2,
+    ranking: 3,
     bengali_forums: [],
     staff_contacts: [
       { name: 'Dr. Amitava Bhattacharya', role: 'lecturer', department: 'Physics', phone: '9876543210', email: 'amitava.b@vit.ac.in' },
@@ -1789,6 +1807,38 @@ export const sampleColleges: College[] = [
     ]
   },
   {
+    id: 'col-14',
+    name: 'Loyola College',
+    type: 'arts_science',
+    city: 'Chennai',
+    area: 'Nungambakkam',
+    address: 'Sterling Road, Nungambakkam, Chennai - 600034',
+    phone: '044-28178200',
+    website: 'https://www.loyolacollege.edu',
+    google_maps_url: 'https://maps.google.com/?q=Loyola+College+Chennai',
+    ranking: 2,
+    bengali_forums: [],
+    staff_contacts: [
+      { name: 'Dr. Subhabrata Sen', role: 'lecturer', department: 'Sociology', phone: '9876500141', email: 's.sen@loyolacollege.edu' }
+    ]
+  },
+  {
+    id: 'col-15',
+    name: 'Madras Christian College (MCC)',
+    type: 'arts_science',
+    city: 'Chennai',
+    area: 'Tambaram',
+    address: 'Velachery Road, East Tambaram, Chennai - 600059',
+    phone: '044-22390675',
+    website: 'https://mcc.edu.in',
+    google_maps_url: 'https://maps.google.com/?q=Madras+Christian+College',
+    ranking: 3,
+    bengali_forums: [],
+    staff_contacts: [
+      { name: 'Prof. Arijit Chaudhuri', role: 'lecturer', department: 'Economics', phone: '9876500142', email: 'a.chaudhuri@mcc.edu.in' }
+    ]
+  },
+  {
     id: 'col-6',
     name: 'PSG College of Technology',
     type: 'engineering',
@@ -1798,7 +1848,7 @@ export const sampleColleges: College[] = [
     phone: '0422-2572177',
     website: 'https://www.psgtech.edu',
     google_maps_url: 'https://maps.google.com/?q=PSG+College+of+Technology',
-    ranking: 3,
+    ranking: 4,
     bengali_forums: [],
     staff_contacts: [
       { name: 'Dr. Abhijit Sen', role: 'lecturer', department: 'Mechanical Engineering', phone: '9876500130', email: 'abhijit.sen@psgtech.edu' }
@@ -1814,10 +1864,58 @@ export const sampleColleges: College[] = [
     phone: '0422-4303300',
     website: 'https://www.psgcas.ac.in',
     google_maps_url: 'https://maps.google.com/?q=PSG+College+of+Arts+and+Science',
-    ranking: 3,
+    ranking: 4,
     bengali_forums: [],
     staff_contacts: [
       { name: 'Dr. Dipankar Banerjee', role: 'lecturer', department: 'Mathematics', phone: '9876500129', email: 'dipankar.b@psgcas.ac.in' }
+    ]
+  },
+  {
+    id: 'col-16',
+    name: 'Coimbatore Medical College',
+    type: 'medical',
+    city: 'Coimbatore',
+    area: 'Avinashi Road',
+    address: 'Avinashi Road, Civil Aerodrome Post, Coimbatore - 641014',
+    phone: '0422-2574375',
+    website: 'http://www.cmccbe.ac.in',
+    google_maps_url: 'https://maps.google.com/?q=Coimbatore+Medical+College',
+    ranking: 3,
+    bengali_forums: [],
+    staff_contacts: [
+      { name: 'Dr. Swapna Guha', role: 'lecturer', department: 'Gynaecology', phone: '9876500143', email: 'swapna.guha@cmccbe.ac.in' }
+    ]
+  },
+  {
+    id: 'col-17',
+    name: "St. Joseph's College",
+    type: 'arts_science',
+    city: 'Tiruchirappalli',
+    area: 'Trichy',
+    address: 'Chathiram Bus Stand, Tiruchirappalli - 620002',
+    phone: '0431-4226436',
+    website: 'https://www.sjctni.edu',
+    google_maps_url: 'https://maps.google.com/?q=St+Josephs+College+Trichy',
+    ranking: 5,
+    bengali_forums: [],
+    staff_contacts: [
+      { name: 'Dr. Probal Roy', role: 'lecturer', department: 'Physics', phone: '9876500144', email: 'p.roy@sjctni.edu' }
+    ]
+  },
+  {
+    id: 'col-18',
+    name: 'Government College of Technology (GCT) Coimbatore',
+    type: 'engineering',
+    city: 'Coimbatore',
+    area: 'Thadagam Road',
+    address: 'Thadagam Road, Coimbatore - 641013',
+    phone: '0422-2432221',
+    website: 'https://gct.ac.in',
+    google_maps_url: 'https://maps.google.com/?q=Government+College+of+Technology+Coimbatore',
+    ranking: 5,
+    bengali_forums: [],
+    staff_contacts: [
+      { name: 'Dr. Joydev Das', role: 'lecturer', department: 'Civil Engineering', phone: '9876500145', email: 'joydev@gct.ac.in' }
     ]
   },
   {
@@ -1830,7 +1928,7 @@ export const sampleColleges: College[] = [
     phone: '0452-2530070',
     website: 'https://americancollege.edu.in',
     google_maps_url: 'https://maps.google.com/?q=The+American+College+Madurai',
-    ranking: 4,
+    ranking: 6,
     bengali_forums: [],
     staff_contacts: [
       { name: 'Dr. Sudipto Roy', role: 'lecturer', department: 'English Literature', phone: '9876500131', email: 'sudipto.roy@americancollege.edu' }
@@ -1846,7 +1944,7 @@ export const sampleColleges: College[] = [
     phone: '0452-2532535',
     website: 'https://www.mdumc.edu.in',
     google_maps_url: 'https://maps.google.com/?q=Madurai+Medical+College',
-    ranking: 3,
+    ranking: 4,
     bengali_forums: [],
     staff_contacts: [
       { name: 'Dr. Tapas K. Bose', role: 'lecturer', department: 'General Surgery', phone: '9876500132', email: 'tapas.bose@mdumc.edu' }
@@ -1862,7 +1960,7 @@ export const sampleColleges: College[] = [
     phone: '0431-2415666',
     website: 'http://www.kapvgmc.ac.in',
     google_maps_url: 'https://maps.google.com/?q=KAP+Viswanathan+Government+Medical+College',
-    ranking: 4,
+    ranking: 5,
     bengali_forums: [],
     staff_contacts: [
       { name: 'Dr. Nandini Dasgupta', role: 'lecturer', department: 'Pathology', phone: '9876500133', email: 'nandini.dg@kapvgmc.ac.in' }
@@ -1878,7 +1976,7 @@ export const sampleColleges: College[] = [
     phone: '0427-2346102',
     website: 'https://gcesalem.edu.in',
     google_maps_url: 'https://maps.google.com/?q=Government+College+of+Engineering+Salem',
-    ranking: 4,
+    ranking: 6,
     bengali_forums: [],
     staff_contacts: [
       { name: 'Prof. Biswajit Ghosh', role: 'lecturer', department: 'Electrical Engineering', phone: '9876500134', email: 'biswajit.ghosh@gcesalem.edu.in' }
@@ -1894,7 +1992,7 @@ export const sampleColleges: College[] = [
     phone: '0416-2220317',
     website: 'https://voorheescollege.edu.in',
     google_maps_url: 'https://maps.google.com/?q=Voorhees+College+Vellore',
-    ranking: 5,
+    ranking: 7,
     bengali_forums: [],
     staff_contacts: [
       { name: 'Dr. Subhabrata Ray', role: 'lecturer', department: 'Commerce', phone: '9876500135', email: 'subhabrata.ray@voorheescollege.edu.in' }

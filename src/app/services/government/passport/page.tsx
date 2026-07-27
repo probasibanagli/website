@@ -68,7 +68,7 @@ export default function PassportPage() {
             </div>
             <h3 className="text-lg font-bold text-text-primary mb-2">New Application</h3>
             <p className="text-sm text-text-muted flex-1 mb-6">Apply for a fresh passport if you have never held one before.</p>
-            <a href="https://portal2.passportindia.gov.in/AppOnlineProject/user/RegistrationBaseAction?requestFor=O" target="_blank" rel="noopener noreferrer">
+            <a href="https://www.passportindia.gov.in/AppOnlineProject/user/RegistrationBaseAction?requestFor=O" target="_blank" rel="noopener noreferrer">
               <Button variant="primary" className="w-full">
                 Register & Apply <ExternalLink className="w-4 h-4 ml-2" />
               </Button>
@@ -82,7 +82,7 @@ export default function PassportPage() {
             </div>
             <h3 className="text-lg font-bold text-text-primary mb-2">Passport Renewal</h3>
             <p className="text-sm text-text-muted flex-1 mb-6">Re-issue of passport due to validity expiration within 3 years/1 year.</p>
-            <a href="https://portal2.passportindia.gov.in/AppOnlineProject/user/userLogin" target="_blank" rel="noopener noreferrer">
+            <a href="https://www.passportindia.gov.in/AppOnlineProject/user/userLogin" target="_blank" rel="noopener noreferrer">
               <Button variant="outline" className="w-full">
                 Login to Renew <ExternalLink className="w-4 h-4 ml-2" />
               </Button>
@@ -96,7 +96,7 @@ export default function PassportPage() {
             </div>
             <h3 className="text-lg font-bold text-text-primary mb-2">Passport Update</h3>
             <p className="text-sm text-text-muted flex-1 mb-6">Change personal particulars (name, address, spouse details) in passport.</p>
-            <a href="https://portal2.passportindia.gov.in/AppOnlineProject/user/userLogin" target="_blank" rel="noopener noreferrer">
+            <a href="https://www.passportindia.gov.in/AppOnlineProject/user/userLogin" target="_blank" rel="noopener noreferrer">
               <Button variant="outline" className="w-full">
                 Login to Update <ExternalLink className="w-4 h-4 ml-2" />
               </Button>

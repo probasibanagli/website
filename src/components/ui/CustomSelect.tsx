@@ -21,6 +21,7 @@ interface CustomSelectProps {
   searchable?: boolean;
   /** Optional icon to show in the trigger */
   icon?: React.ReactNode;
+  position?: 'auto' | 'bottom';
 }
 
 export function CustomSelect({
@@ -34,11 +35,11 @@ export function CustomSelect({
   disabled,
   searchable = true,
   icon,
+  position = 'auto',
 }: CustomSelectProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState('');
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
-  const [dropUp, setDropUp] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
@@ -68,16 +69,9 @@ export function CustomSelect({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Calculate dropdown direction & auto-focus search
+  // Calculate auto-focus search
   useEffect(() => {
     if (isOpen) {
-      // Calculate if dropdown should open upward
-      if (triggerRef.current) {
-        const rect = triggerRef.current.getBoundingClientRect();
-        const spaceBelow = window.innerHeight - rect.bottom;
-        const spaceAbove = rect.top;
-        setDropUp(spaceBelow < 280 && spaceAbove > spaceBelow);
-      }
       // Auto-focus search input
       requestAnimationFrame(() => {
         if (showSearch && searchInputRef.current) {
@@ -217,7 +211,7 @@ export function CustomSelect({
           className={cn(
             'absolute z-[60] w-full bg-white border border-border rounded-xl shadow-xl overflow-hidden flex flex-col',
             'animate-in fade-in-0 zoom-in-95 duration-150',
-            dropUp ? 'bottom-full mb-1.5' : 'top-full mt-1.5'
+            'top-full mt-1.5'
           )}
           style={{ maxHeight: '280px' }}
         >
