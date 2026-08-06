@@ -144,6 +144,8 @@ export interface Hospital {
   main_branch?: boolean;
   images?: string[];
   updated_at?: string;
+  category?: 'Government' | 'Private';
+  status?: 'Active' | 'Inactive';
 }
 
 export interface BengaliDoctor {
@@ -151,7 +153,8 @@ export interface BengaliDoctor {
   doctor_name: string;
   specialization: string;
   department?: string;
-  hospital_id: string;
+  hospital_id?: string; // Keep for compatibility but deprecating in favor of hospital_ids
+  hospital_ids?: string[];
   experience: string;
   qualifications?: string[];
   languages: string[];
@@ -167,6 +170,7 @@ export interface BengaliDoctor {
   };
   created_at?: string;
   updated_at?: string;
+  otp_required?: boolean;
 }
 
 export interface BengaliStaff {
@@ -184,6 +188,7 @@ export interface BengaliStaff {
   description: string;
   created_at?: string;
   updated_at?: string;
+  otp_required?: boolean;
 }
 
 export interface BloodBank {

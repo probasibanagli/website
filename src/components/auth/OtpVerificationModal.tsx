@@ -6,9 +6,10 @@ interface OtpVerificationModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
+  doctorId?: string;
 }
 
-export function OtpVerificationModal({ isOpen, onClose, onSuccess }: OtpVerificationModalProps) {
+export function OtpVerificationModal({ isOpen, onClose, onSuccess, doctorId }: OtpVerificationModalProps) {
   const [step, setStep] = useState<'phone' | 'phoneOtp' | 'email' | 'emailOtp'>('phone');
   const [phone, setPhone] = useState('');
   const [phoneOtp, setPhoneOtp] = useState('');
@@ -127,7 +128,7 @@ export function OtpVerificationModal({ isOpen, onClose, onSuccess }: OtpVerifica
       const res = await fetch('/api/auth/verify-otp', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type: 'email', phone, email, emailOtp }),
+        body: JSON.stringify({ type: 'email', phone, email, emailOtp, doctorId }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Invalid OTP');

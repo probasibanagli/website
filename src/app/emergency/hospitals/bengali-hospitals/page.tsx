@@ -29,13 +29,28 @@ export default function BengaliHospitalsPage() {
   useEffect(() => {
     async function loadHospitals() {
       try {
-        const snap = await getDocs(collection(db, COLLECTIONS.hospitals));
-        const data = snap.docs.map(doc => doc.data() as Hospital);
-        
+        let data: Hospital[] = [];
+        try {
+          const res = await fetch(`/api/public/firestore?collection=hospitals`);
+          if (res.ok) {
+            const json = await res.json();
+            if (!json.fallback && Array.isArray(json.items) && json.items.length > 0) {
+              data = json.items as Hospital[];
+            }
+          }
+        } catch (apiErr) {
+          console.warn('API fetch failed, querying client-side Firestore:', apiErr);
+        }
+
+        if (data.length === 0) {
+          const snap = await getDocs(collection(db, COLLECTIONS.hospitals));
+          data = snap.docs.map(d => ({ id: d.id, ...d.data() } as Hospital));
+        }
+
         // Only show hospitals that have a bengali doctor OR bengali staff OR are explicitly bengali hospitals
         const bengaliHospitals = data.filter(h => h.has_bengali_doctor || h.has_bengali_staff);
         
-        setHospitals(bengaliHospitals.length > 0 ? bengaliHospitals : SAMPLE_HOSPITALS);
+        setHospitals(bengaliHospitals.length > 0 ? bengaliHospitals : (data.length > 0 ? data : SAMPLE_HOSPITALS));
       } catch (err) {
         console.error(err);
         setHospitals(SAMPLE_HOSPITALS);

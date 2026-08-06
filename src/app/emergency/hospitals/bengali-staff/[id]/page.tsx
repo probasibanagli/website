@@ -26,45 +26,67 @@ export default function StaffDetailsPage({ params }: { params: Promise<{ id: str
   const router = useRouter();
 
   useEffect(() => {
-    const verified = localStorage.getItem('directory_verified') === 'true';
-    if (!verified) {
-      router.replace(`/emergency/hospitals/general/verify?redirect=/emergency/hospitals/bengali-staff/${id}`);
-      return;
+    async function loadStaffAndCheckOtp() {
+      try {
+        let d: BengaliStaff | null = null;
+        try {
+          const sRes = await fetch(`/api/public/firestore?collection=bengali_staff&docId=${id}`);
+          if (sRes.ok) {
+            const sJson = await sRes.json();
+            if (sJson && !sJson.fallback && sJson.id && sJson.name) {
+              d = sJson as BengaliStaff;
+            }
+          }
+        } catch (apiErr) {
+          console.warn("Staff API fetch failed, querying client-side Firestore:", apiErr);
+        }
+
+        if (!d) {
+          const docSnap = await getDoc(doc(db, COLLECTIONS.bengali_staff || 'bengali_staff', id));
+          if (docSnap.exists()) {
+            d = { id: docSnap.id, ...docSnap.data() } as BengaliStaff;
+          }
+        }
+
+        if (d) {
+          setStaff(d);
+          
+          setIsVerified(false);
+          
+          // Fetch hospital
+          if (d.hospital_id) {
+            let h: Hospital | null = null;
+            try {
+              const hRes = await fetch(`/api/public/firestore?collection=hospitals&docId=${d.hospital_id}`);
+              if (hRes.ok) {
+                const hJson = await hRes.json();
+                if (hJson && !hJson.fallback && hJson.id) {
+                  h = hJson as Hospital;
+                }
+              }
+            } catch (err) {}
+
+            if (!h) {
+              const hSnap = await getDoc(doc(db, COLLECTIONS.hospitals, d.hospital_id));
+              if (hSnap.exists()) {
+                h = { id: hSnap.id, ...hSnap.data() } as Hospital;
+              }
+            }
+            setHospital(h);
+          }
+        }
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setLoading(false);
+      }
     }
-    setIsVerified(true);
+    loadStaffAndCheckOtp();
   }, [id, router]);
 
   const canViewContact = isVerified;
 
-  useEffect(() => {
-    if (isVerified) {
-      loadData();
-    }
-  }, [id, isVerified]);
-
-  const loadData = async () => {
-    try {
-      const docSnap = await getDoc(doc(db, COLLECTIONS.bengali_staff || 'bengali_staff', id));
-      if (docSnap.exists()) {
-        const d = { id: docSnap.id, ...docSnap.data() } as BengaliStaff;
-        setStaff(d);
-        
-        // Fetch hospital
-        if (d.hospital_id) {
-          const hSnap = await getDoc(doc(db, COLLECTIONS.hospitals, d.hospital_id));
-          if (hSnap.exists()) {
-            setHospital({ id: hSnap.id, ...hSnap.data() } as Hospital);
-          }
-        }
-      }
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  if (loading || !isVerified) {
+  if (loading) {
     return (
       <div className="min-h-screen bg-surface flex items-center justify-center">
          <div className="w-10 h-10 border-3 border-primary border-t-transparent rounded-full animate-spin" />
@@ -81,6 +103,50 @@ export default function StaffDetailsPage({ params }: { params: Promise<{ id: str
          <Link href="/emergency/hospitals/bengali-staff">
            <Button variant="primary">Back to Directory</Button>
          </Link>
+      </div>
+    );
+  }
+
+  if (!isVerified) {
+    return (
+      <div className="min-h-screen bg-surface pb-20">
+        <div className="bg-white border-b border-border">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div className="flex items-center gap-2 text-sm text-text-muted overflow-x-auto whitespace-nowrap">
+              <Link href="/" className="hover:text-primary shrink-0">Home</Link><span>/</span>
+              <Link href="/emergency" className="hover:text-primary shrink-0">Emergency</Link><span>/</span>
+              <Link href="/emergency/hospitals/bengali-staff" className="hover:text-primary shrink-0">Bengali Staff</Link><span>/</span>
+              <span className="text-text-primary font-medium truncate">Verification Required</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="max-w-xl mx-auto px-4 py-16 text-center">
+          <Card className="p-8 rounded-3xl border-border shadow-md bg-white">
+            <div className="w-16 h-16 bg-amber-500/10 rounded-2xl flex items-center justify-center mx-auto mb-5 text-amber-600">
+              <ShieldAlert className="w-8 h-8" />
+            </div>
+            <h2 className="text-2xl font-bold text-text-primary mb-2">OTP Verification Required</h2>
+            <p className="text-sm text-text-muted mb-6">
+              Staff profile details and contact information are protected. Please complete a quick OTP verification to unlock full profile details.
+            </p>
+            <Button onClick={() => setShowOtpModal(true)} variant="primary" size="lg" className="w-full font-semibold">
+              Verify via OTP to View Profile
+            </Button>
+          </Card>
+        </div>
+
+        <OtpVerificationModal 
+          isOpen={showOtpModal}
+          onClose={() => setShowOtpModal(false)}
+          onSuccess={() => {
+            setIsVerified(true);
+            setShowOtpModal(false);
+            if (typeof window !== 'undefined') {
+              localStorage.setItem('directory_verified', 'true');
+            }
+          }}
+        />
       </div>
     );
   }

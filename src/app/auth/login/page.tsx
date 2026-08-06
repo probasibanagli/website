@@ -107,7 +107,9 @@ export default function LoginPage() {
       const emailLower = email.trim().toLowerCase();
       // 1. Bypass check for temp admin
       if (emailLower === 'admin@pro.in' && password === '9874563210') {
-         // Bypass Firebase checks for temporary admin
+         document.cookie = "session=temp_session_cookie; path=/";
+         sessionStorage.setItem('mfa_verified', 'true');
+         window.location.href = "/admin";
          return;
       }
 

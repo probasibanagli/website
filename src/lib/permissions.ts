@@ -24,8 +24,8 @@ export function canAccess(
   module: ModuleKey,
   requiredLevel: PermissionLevel = 'view'
 ): boolean {
-  // Super Admin only has access to user/admin management (users)
-  if (role === 'superadmin') return module === 'users';
+  // Super Admin has full manage access to everything
+  if (role === 'superadmin') return true;
 
   // Regular users have no admin access
   if (role === 'user') return false;
@@ -49,8 +49,8 @@ export function getAccessibleModules(
     'blood_bank', 'ambulance'
   ];
 
-  // Super Admin only sees User/Admin Management
-  if (role === 'superadmin') return ['users'];
+  // Super Admin has access to all modules
+  if (role === 'superadmin') return ALL_MODULES;
   if (role === 'user' || !permissions) return [];
 
   return ALL_MODULES.filter((mod) => hasPermission(permissions[mod] ?? 'none', 'view'));

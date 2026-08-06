@@ -48,8 +48,12 @@ export default function BlogPage() {
   useEffect(() => {
     async function loadBlogs() {
       try {
-        const snap = await getDocs(query(collection(db, 'blog_posts'), where('published', '==', true)));
-        const dbBlogs = snap.docs.map(d => ({ id: d.id, ...d.data() } as BlogPost));
+        const res = await fetch(`/api/public/firestore?collection=blog_posts&whereField=published&whereValue=true`);
+        if (!res.ok) {
+          throw new Error('Failed to fetch blog posts from API');
+        }
+        const json = await res.json();
+        const dbBlogs = (json.items || []) as BlogPost[];
         
         // Merge with sample posts (deduplicating by id/slug)
         const dbIds = new Set(dbBlogs.map(b => b.id));

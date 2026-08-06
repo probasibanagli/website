@@ -2,7 +2,19 @@ import { useState, useEffect } from 'react';
 import { collection, getDocs, query, type QueryConstraint } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 
-const PUBLIC_COLLECTIONS = new Set(['listings', 'food_listings', 'community_groups']);
+const PUBLIC_COLLECTIONS = new Set([
+  'listings',
+  'food_listings',
+  'community_groups',
+  'hospitals',
+  'bengali_doctors',
+  'bengali_staff',
+  'blog_posts',
+  'blood_banks',
+  'colleges',
+  'events',
+  'travel_info'
+]);
 
 export function useFirestore<T>(collectionName: string, constraints: QueryConstraint[] = []) {
   const [data, setData] = useState<T[]>([]);

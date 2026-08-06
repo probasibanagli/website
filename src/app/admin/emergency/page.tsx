@@ -10,23 +10,43 @@ import { COLLECTIONS } from '@/lib/firestore/collections';
 import type { Hospital, BengaliDoctor, BengaliStaff } from '@/types';
 import { Plus, Pencil, Trash2, X, Loader2, Shield, Building2, UserRound, PhoneCall, CheckCircle, Users } from 'lucide-react';
 
-const CHENNAI_AREAS = ['Adyar', 'Alandur', 'Ambattur', 'Anna Nagar', 'Ashok Nagar', 'Aminjikarai', 'Avadi', 'Besant Nagar', 'Broadway', 'Chromepet', 'Egmore', 'Guindy', 'Kilpauk', 'Kodambakkam', 'Kolathur', 'Madipakkam', 'Madhavaram', 'Mambalam', 'Manapakkam', 'Medavakkam', 'Mogappair', 'Nanganallur', 'OMR', 'Pallavaram', 'Perambur', 'Porur', 'Royapettah', 'Saidapet', 'Sholinganallur', 'Tambaram', 'T Nagar', 'Thiruvanmiyur', 'Triplicane', 'Vadapalani', 'Velachery', 'Villivakkam', 'Virugambakkam', 'West Mambalam', 'Greams Road', 'Gandhi Nagar', 'Koyambedu', 'Mylapore', 'Perungudi'].sort();
+const CHENNAI_AREAS = ['Adyar', 'Alandur', 'Ambattur', 'Anna Nagar', 'Ashok Nagar', 'Aminjikarai', 'Avadi', 'Besant Nagar', 'Broadway', 'Chromepet', 'Egmore', 'Guindy', 'Kilpauk', 'Kodambakkam', 'Kolathur', 'Madipakkam', 'Madhavaram', 'Mambalam', 'Manapakkam', 'Medavakkam', 'Mogappair', 'Nanganallur', 'OMR', 'Pallavaram', 'Perambur', 'Porur', 'Royapettah', 'Saidapet', 'Sholinganallur', 'Tambaram', 'T Nagar', 'Thiruvanmiyur', 'Triplicane', 'Vadapalani', 'Velachery', 'Villivakkam', 'Virugambakkam', 'West Mambalam', 'Greams Road', 'Gandhi Nagar', 'Koyembedu', 'Mylapore', 'Perungudi'].sort();
 const LANGUAGES = ['Bengali', 'Tamil', 'English', 'Hindi', 'Telugu', 'Malayalam', 'Kannada', 'Urdu'];
 
+const PREDEFINED_SPECIALIZATIONS = [
+  'Cardiology',
+  'Neurology',
+  'Orthopedics',
+  'Pediatrics',
+  'Oncology',
+  'Emergency Medicine'
+];
+
+const PREDEFINED_DEPARTMENTS = [
+  'Reception',
+  'Nursing',
+  'Pharmacy',
+  'Laboratory',
+  'Radiology',
+  'Administration',
+  'Billing',
+  'Emergency',
+  'ICU',
+  'Blood Bank',
+  'Maintenance',
+  'Security'
+];
+
 const SAMPLE_HOSPITALS = [
-  { name: 'Apollo Hospital Chennai', city: 'Chennai', area: 'Greams Road', emergency_phone: '1066', phone: '044-28293333', is_24_7: true, has_bengali_doctor: true, main_branch: true, specializations: ['Cardiology', 'Neurology', 'Oncology'], description: 'Leading multi-specialty hospital.' },
-  { name: 'MGM Healthcare Chennai', city: 'Chennai', area: 'Aminjikarai', emergency_phone: '044-45688888', phone: '044-45688888', is_24_7: true, has_bengali_doctor: true, main_branch: false, specializations: ['Heart Transplant', 'Orthopedics'], description: 'State of the art healthcare.' },
-  { name: 'MIOT International Chennai', city: 'Chennai', area: 'Manapakkam', emergency_phone: '105710', phone: '044-22492288', is_24_7: true, has_bengali_doctor: true, main_branch: true, specializations: ['Orthopedics', 'Trauma'], description: 'Pioneers in orthopedic care.' },
-  { name: 'Fortis Malar Hospital Chennai', city: 'Chennai', area: 'Adyar', emergency_phone: '044-42892222', phone: '044-42892222', is_24_7: true, has_bengali_doctor: true, main_branch: false, specializations: ['Cardiology', 'Gynecology'], description: 'Comprehensive medical care.' },
-  { name: 'SIMS Hospital Chennai', city: 'Chennai', area: 'Vadapalani', emergency_phone: '044-20002001', phone: '044-20002001', is_24_7: true, has_bengali_doctor: true, main_branch: false, specializations: ['Gastroenterology', 'Neurology'], description: 'Expert medical professionals.' }
+  { name: 'Apollo Hospital Chennai', city: 'Chennai', area: 'Greams Road', emergency_phone: '1066', phone: '044-28293333', is_24_7: true, has_bengali_doctor: true, main_branch: true, specializations: ['Cardiology', 'Neurology', 'Oncology'], description: 'Leading multi-specialty hospital.', category: 'Private', status: 'Active' },
+  { name: 'MGM Healthcare Chennai', city: 'Chennai', area: 'Aminjikarai', emergency_phone: '044-45688888', phone: '044-45688888', is_24_7: true, has_bengali_doctor: true, main_branch: false, specializations: ['Emergency Medicine', 'Orthopedics'], description: 'State of the art healthcare.', category: 'Private', status: 'Active' },
+  { name: 'MIOT International Chennai', city: 'Chennai', area: 'Manapakkam', emergency_phone: '105710', phone: '044-22492288', is_24_7: true, has_bengali_doctor: true, main_branch: true, specializations: ['Orthopedics', 'Pediatrics'], description: 'Pioneers in orthopedic care.', category: 'Private', status: 'Active' }
 ];
 
 const SAMPLE_DOCTORS = [
-  { doctor_name: 'Dr. Anirban Roy', specialization: 'Cardiologist', experience: '15 years', languages: ['Bengali', 'English', 'Tamil'] },
-  { doctor_name: 'Dr. Saptarshi Chatterjee', specialization: 'Neurologist', experience: '12 years', languages: ['Bengali', 'English'] },
-  { doctor_name: 'Dr. Debasish Banerjee', specialization: 'Orthopedic Surgeon', experience: '20 years', languages: ['Bengali', 'English', 'Hindi'] },
-  { doctor_name: 'Dr. Soumya Mukherjee', specialization: 'General Physician', experience: '8 years', languages: ['Bengali', 'English', 'Tamil'] },
-  { doctor_name: 'Dr. Priyanka Ghosh', specialization: 'Gynecologist', experience: '10 years', languages: ['Bengali', 'English'] }
+  { doctor_name: 'Dr. Anirban Roy', specialization: 'Cardiology', experience: '15 years', languages: ['Bengali', 'English', 'Tamil'], otp_required: true },
+  { doctor_name: 'Dr. Saptarshi Chatterjee', specialization: 'Neurology', experience: '12 years', languages: ['Bengali', 'English'], otp_required: true },
+  { doctor_name: 'Dr. Debasish Banerjee', specialization: 'Orthopedics', experience: '20 years', languages: ['Bengali', 'English', 'Hindi'], otp_required: true }
 ];
 
 function AdminEmergencyPageContent() {
@@ -100,7 +120,7 @@ function AdminEmergencyPageContent() {
         const d = SAMPLE_DOCTORS[i];
         const id = `doc-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
         const hId = hospitalDocs[i % hospitalDocs.length].id;
-        const payload = { ...d, id, hospital_id: hId, created_at: now };
+        const payload = { ...d, id, hospital_id: hId, hospital_ids: [hId], created_at: now };
         await setDoc(doc(db, COLLECTIONS.bengali_doctors, id), payload);
       }
       
@@ -116,11 +136,13 @@ function AdminEmergencyPageContent() {
 
   function openAdd() {
     setEditId(null);
-    if (activeTab === 'hospitals') {
-      setFormData({ specializations: '', main_branch: false, is_24_7: false, has_bengali_doctor: false });
-    } else {
-      setFormData({ languages: [] });
-    }
+    setFormData(
+      activeTab === 'hospitals' 
+        ? { specializations: [], category: 'Private', status: 'Active', main_branch: false, is_24_7: false, has_bengali_doctor: false } 
+        : activeTab === 'doctors'
+          ? { hospital_ids: [], languages: ['Bengali'], specialization: 'Cardiology', otp_required: true }
+          : { languages: ['Bengali'], department: 'Reception', otp_required: true }
+    );
     setShowForm(true);
   }
 
@@ -128,10 +150,20 @@ function AdminEmergencyPageContent() {
     setEditId(item.id);
     const data = { ...item };
     if (activeTab === 'hospitals') {
-      if (Array.isArray(data.specializations)) data.specializations = data.specializations.join('\n');
+      if (!Array.isArray(data.specializations)) data.specializations = [];
+      if (!data.category) data.category = 'Private';
+      if (!data.status) data.status = 'Active';
     }
-    if (activeTab === 'doctors' || activeTab === 'staff') {
+    if (activeTab === 'doctors') {
+      if (!Array.isArray(data.hospital_ids)) {
+        data.hospital_ids = data.hospital_id ? [data.hospital_id] : [];
+      }
       if (!Array.isArray(data.languages)) data.languages = [];
+      if (data.otp_required === undefined) data.otp_required = true;
+    }
+    if (activeTab === 'staff') {
+      if (!Array.isArray(data.languages)) data.languages = [];
+      if (data.otp_required === undefined) data.otp_required = true;
     }
     setFormData(data);
     setShowForm(true);
@@ -149,8 +181,17 @@ function AdminEmergencyPageContent() {
       const payload = { ...formData };
       
       if (activeTab === 'hospitals') {
-        payload.specializations = typeof payload.specializations === 'string' 
-          ? payload.specializations.split('\n').map((s: string) => s.trim()).filter(Boolean) : [];
+        if (!Array.isArray(payload.specializations)) {
+          payload.specializations = [];
+        }
+      } else if (activeTab === 'doctors') {
+        if (!Array.isArray(payload.hospital_ids)) {
+          payload.hospital_ids = [];
+        }
+        if (!Array.isArray(payload.languages)) {
+          payload.languages = [];
+        }
+        payload.hospital_id = payload.hospital_ids[0] || '';
       } else {
         if (!Array.isArray(payload.languages)) {
           payload.languages = [];
@@ -182,6 +223,7 @@ function AdminEmergencyPageContent() {
       setShowForm(false);
       setSaving(false);
 
+      // BACKGROUND SYNC
       if (editId) {
         await updateDoc(doc(db, collectionName, editId), { ...payload, updated_at: now });
       } else {
@@ -294,7 +336,7 @@ function AdminEmergencyPageContent() {
                   <>
                     <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Doctor Name</th>
                     <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Specialization</th>
-                    <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Hospital</th>
+                    <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Hospitals</th>
                   </>
                 ) : (
                   <>
@@ -306,19 +348,59 @@ function AdminEmergencyPageContent() {
                 {canEdit && <th className="text-right px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Actions</th>}
               </tr>
             </thead>
-            <tbody className="divide-y divide-border text-sm text-text-primary">
-              {activeTab === 'hospitals' && hospitals.map(item => (
-                <tr key={item.id} className="hover:bg-surface/30 transition-colors">
-                  <td className="px-5 py-4 font-bold">{item.name}</td>
-                  <td className="px-5 py-4">{item.city}</td>
-                  <td className="px-5 py-4">{item.phone || '-'}</td>
-                  <td className="px-5 py-4 font-semibold text-red-600">{item.emergency_phone || '-'}</td>
-                  <td className="px-5 py-4">{item.main_branch ? 'Main' : 'Sub'}</td>
-                  {canEdit && (
-                    <td className="text-right px-5 py-4">
-                      <div className="flex items-center justify-end gap-1.5">
-                        <button onClick={() => openEdit(item)} className="p-2 text-text-muted hover:text-primary hover:bg-primary/5 rounded-lg transition-colors cursor-pointer"><Pencil className="w-4 h-4" /></button>
-                        <button onClick={() => handleDelete(item.id)} className="p-2 text-text-muted hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"><Trash2 className="w-4 h-4" /></button>
+            <tbody className="divide-y divide-border">
+              {(activeTab === 'hospitals' 
+                 ? hospitals 
+                 : activeTab === 'doctors' 
+                   ? doctors.filter(d => selectedHospitalFilter === 'all' || d.hospital_ids?.includes(selectedHospitalFilter) || d.hospital_id === selectedHospitalFilter) 
+                   : staff.filter(s => selectedHospitalFilter === 'all' || s.hospital_id === selectedHospitalFilter)
+              ).map((item: any) => (
+                <tr key={item.id} className="hover:bg-surface transition-colors">
+                  {activeTab === 'hospitals' ? (
+                    <>
+                      <td className="px-5 py-4 text-sm text-text-primary font-medium">
+                        <div>{item.name}</div>
+                        <div className="flex gap-1.5 mt-1">
+                          {item.category && (
+                            <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${item.category === 'Government' ? 'bg-blue-100 text-blue-800' : 'bg-orange-100 text-orange-800'}`}>
+                              {item.category}
+                            </span>
+                          )}
+                          {item.status && (
+                            <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${item.status === 'Active' ? 'bg-emerald-100 text-emerald-800' : 'bg-gray-100 text-gray-800'}`}>
+                              {item.status}
+                            </span>
+                          )}
+                        </div>
+                      </td>
+                      <td className="px-5 py-4 text-sm text-text-muted">{item.city}</td>
+                      <td className="px-5 py-4 text-sm text-text-muted">{item.phone}</td>
+                      <td className="px-5 py-4 text-sm font-bold text-red-600">{item.emergency_phone || '-'}</td>
+                      <td className="px-5 py-4 text-sm text-text-muted">{item.main_branch ? <span className="text-emerald-600 font-semibold text-xs bg-emerald-50 px-2 py-1 rounded">Main</span> : <span className="text-text-muted text-xs">Branch</span>}</td>
+                    </>
+                  ) : activeTab === 'doctors' ? (
+                    <>
+                      <td className="px-5 py-4 text-sm text-text-primary font-medium">{item.doctor_name}</td>
+                      <td className="px-5 py-4 text-sm text-text-muted">{item.specialization}</td>
+                      <td className="px-5 py-4 text-sm text-text-muted max-w-xs truncate">
+                        {item.hospital_ids?.map((hid: string) => hospitals.find(h => h.id === hid)?.name).filter(Boolean).join(', ') || hospitals.find(h => h.id === item.hospital_id)?.name || 'Unknown'}
+                      </td>
+                    </>
+                  ) : (
+                    <>
+                      <td className="px-5 py-4 text-sm text-text-primary font-medium">{item.name}</td>
+                      <td className="px-5 py-4 text-sm text-text-muted">{item.role}</td>
+                      <td className="px-5 py-4 text-sm text-text-muted">{item.department}</td>
+                      <td className="px-5 py-4 text-sm text-text-muted">
+                        {hospitals.find(h => h.id === item.hospital_id)?.name || 'Unknown'}
+                      </td>
+                    </>
+                  )}
+                  {(canEdit || canManage) && (
+                    <td className="px-5 py-4 text-right">
+                      <div className="flex items-center justify-end gap-1">
+                        {canEdit && <button onClick={() => openEdit(item)} className="p-2 rounded-lg hover:bg-primary/10 text-text-muted hover:text-primary transition-colors cursor-pointer"><Pencil className="w-3.5 h-3.5" /></button>}
+                        {canManage && <button onClick={() => handleDelete(item.id)} className="p-2 rounded-lg hover:bg-red-50 text-text-muted hover:text-red-500 transition-colors cursor-pointer"><Trash2 className="w-3.5 h-3.5" /></button>}
                       </div>
                     </td>
                   )}
@@ -432,23 +514,60 @@ function AdminEmergencyPageContent() {
                       <label className="block text-sm font-semibold text-text-primary mb-1.5">Google Maps Link</label>
                       <input type="text" value={formData.google_maps_url || ''} onChange={e => setFormData({...formData, google_maps_url: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
                     </div>
-                    <div className="flex items-center gap-6 mt-6">
-                      <label className="flex items-center gap-2 cursor-pointer select-none">
-                        <input type="checkbox" checked={!!formData.main_branch} onChange={e => setFormData({...formData, main_branch: e.target.checked})} className="w-4 h-4 rounded border-border" />
-                        <span className="text-sm text-text-primary font-semibold">Main Branch</span>
-                      </label>
-                      <label className="flex items-center gap-2 cursor-pointer select-none">
-                        <input type="checkbox" checked={!!formData.is_24_7} onChange={e => setFormData({...formData, is_24_7: e.target.checked})} className="w-4 h-4 rounded border-border" />
-                        <span className="text-sm text-text-primary font-semibold">Open 24/7</span>
-                      </label>
-                      <label className="flex items-center gap-2 cursor-pointer select-none">
-                        <input type="checkbox" checked={!!formData.has_bengali_doctor} onChange={e => setFormData({...formData, has_bengali_doctor: e.target.checked})} className="w-4 h-4 rounded border-border" />
-                        <span className="text-sm text-text-primary font-semibold">Has Bengali Doctor</span>
-                      </label>
+                    <div>
+                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Hospital Category *</label>
+                      <select value={formData.category || 'Private'} onChange={e => setFormData({...formData, category: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm cursor-pointer">
+                        <option value="Private">Private Hospital</option>
+                        <option value="Government">Government Hospital</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Status *</label>
+                      <select value={formData.status || 'Active'} onChange={e => setFormData({...formData, status: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm cursor-pointer">
+                        <option value="Active">Active</option>
+                        <option value="Inactive">Inactive</option>
+                      </select>
+                    </div>
+                    <div className="md:col-span-2 flex flex-col gap-3">
+                      <div className="flex items-center gap-3">
+                        <input type="checkbox" id="is_24_7" checked={!!formData.is_24_7} onChange={e => setFormData({...formData, is_24_7: e.target.checked})} className="w-5 h-5 rounded border-border" />
+                        <label htmlFor="is_24_7" className="text-sm font-semibold text-text-primary cursor-pointer">24/7 Service</label>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <input type="checkbox" id="has_bengali_doctor" checked={!!formData.has_bengali_doctor} onChange={e => setFormData({...formData, has_bengali_doctor: e.target.checked})} className="w-5 h-5 rounded border-border" />
+                        <label htmlFor="has_bengali_doctor" className="text-sm font-semibold text-text-primary cursor-pointer">Has Bengali Doctor</label>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <input type="checkbox" id="has_bengali_staff" checked={!!formData.has_bengali_staff} onChange={e => setFormData({...formData, has_bengali_staff: e.target.checked})} className="w-5 h-5 rounded border-border" />
+                        <label htmlFor="has_bengali_staff" className="text-sm font-semibold text-text-primary cursor-pointer">Has Bengali Staff</label>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <input type="checkbox" id="main_branch" checked={!!formData.main_branch} onChange={e => setFormData({...formData, main_branch: e.target.checked})} className="w-5 h-5 rounded border-border" />
+                        <label htmlFor="main_branch" className="text-sm font-semibold text-text-primary cursor-pointer">Main Branch</label>
+                      </div>
                     </div>
                     <div className="md:col-span-2">
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Specializations (one per line)</label>
-                      <textarea rows={3} value={formData.specializations || ''} onChange={e => setFormData({...formData, specializations: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm resize-none" />
+                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Specializations</label>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-2">
+                        {PREDEFINED_SPECIALIZATIONS.map(spec => (
+                          <label key={spec} className="flex items-center gap-2 cursor-pointer">
+                            <input 
+                              type="checkbox" 
+                              checked={(formData.specializations || []).includes(spec)}
+                              onChange={(e) => {
+                                const current = formData.specializations || [];
+                                if (e.target.checked) {
+                                  setFormData({ ...formData, specializations: [...current, spec] });
+                                } else {
+                                  setFormData({ ...formData, specializations: current.filter((s: string) => s !== spec) });
+                                }
+                              }}
+                              className="w-4 h-4 rounded border-border"
+                            />
+                            <span className="text-sm text-text-primary">{spec}</span>
+                          </label>
+                        ))}
+                      </div>
                     </div>
                     <div className="md:col-span-2">
                       <label className="block text-sm font-semibold text-text-primary mb-1.5">Description</label>
@@ -465,14 +584,35 @@ function AdminEmergencyPageContent() {
                     </div>
                     <div>
                       <label className="block text-sm font-semibold text-text-primary mb-1.5">Specialization *</label>
-                      <input type="text" value={formData.specialization || ''} onChange={e => setFormData({...formData, specialization: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Hospital Association *</label>
-                      <select value={formData.hospital_id || ''} onChange={e => setFormData({...formData, hospital_id: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm cursor-pointer">
-                        <option value="">Select Hospital...</option>
-                        {hospitals.map(h => <option key={h.id} value={h.id}>{h.name} ({h.city})</option>)}
+                      <select value={formData.specialization || ''} onChange={e => setFormData({...formData, specialization: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm cursor-pointer">
+                        <option value="">Select Specialization...</option>
+                        {PREDEFINED_SPECIALIZATIONS.map(spec => (
+                          <option key={spec} value={spec}>{spec}</option>
+                        ))}
                       </select>
+                    </div>
+                    <div className="md:col-span-2">
+                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Assign to Hospitals *</label>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-2 max-h-48 overflow-y-auto p-3 bg-surface rounded-xl border border-border">
+                        {hospitals.map(h => (
+                          <label key={h.id} className="flex items-center gap-2 cursor-pointer">
+                            <input 
+                              type="checkbox" 
+                              checked={(formData.hospital_ids || []).includes(h.id)}
+                              onChange={(e) => {
+                                const current = formData.hospital_ids || [];
+                                if (e.target.checked) {
+                                  setFormData({ ...formData, hospital_ids: [...current, h.id] });
+                                } else {
+                                  setFormData({ ...formData, hospital_ids: current.filter((hid: string) => hid !== h.id) });
+                                }
+                              }}
+                              className="w-4 h-4 rounded border-border"
+                            />
+                            <span className="text-sm text-text-primary">{h.name} ({h.city})</span>
+                          </label>
+                        ))}
+                      </div>
                     </div>
                     <div>
                       <label className="block text-sm font-semibold text-text-primary mb-1.5">Experience (e.g. 10 years)</label>
@@ -501,9 +641,36 @@ function AdminEmergencyPageContent() {
                         ))}
                       </div>
                     </div>
-                    <div className="md:col-span-2">
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Description</label>
-                      <textarea rows={3} value={formData.description || ''} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm resize-none" />
+                    <div className="md:col-span-2 flex items-center gap-3 mt-2">
+                      <input 
+                        type="checkbox" 
+                        id="otp_required" 
+                        checked={formData.otp_required !== false} 
+                        onChange={e => setFormData({...formData, otp_required: e.target.checked})} 
+                        className="w-5 h-5 rounded border-border" 
+                      />
+                      <label htmlFor="otp_required" className="text-sm font-semibold text-text-primary cursor-pointer">
+                        Require OTP verification to view doctor profile details
+                      </label>
+                    </div>
+                    <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4 mt-2 p-4 bg-surface/50 rounded-xl border border-border">
+                      <h4 className="md:col-span-2 text-sm font-bold text-text-primary">Social Media Profiles</h4>
+                      <div>
+                        <label className="block text-xs font-semibold text-text-primary mb-1.5">LinkedIn URL</label>
+                        <input type="url" value={formData.social_links?.linkedin || ''} onChange={e => setFormData({...formData, social_links: {...formData.social_links, linkedin: e.target.value}})} className="w-full px-4 py-2 bg-white border border-border rounded-lg text-sm" />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-text-primary mb-1.5">Facebook URL</label>
+                        <input type="url" value={formData.social_links?.facebook || ''} onChange={e => setFormData({...formData, social_links: {...formData.social_links, facebook: e.target.value}})} className="w-full px-4 py-2 bg-white border border-border rounded-lg text-sm" />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-text-primary mb-1.5">Instagram URL</label>
+                        <input type="url" value={formData.social_links?.instagram || ''} onChange={e => setFormData({...formData, social_links: {...formData.social_links, instagram: e.target.value}})} className="w-full px-4 py-2 bg-white border border-border rounded-lg text-sm" />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-text-primary mb-1.5">X (Twitter) URL</label>
+                        <input type="url" value={formData.social_links?.x || ''} onChange={e => setFormData({...formData, social_links: {...formData.social_links, x: e.target.value}})} className="w-full px-4 py-2 bg-white border border-border rounded-lg text-sm" />
+                      </div>
                     </div>
                   </div>
                 </>
@@ -519,7 +686,16 @@ function AdminEmergencyPageContent() {
                       <input type="text" value={formData.role || ''} onChange={e => setFormData({...formData, role: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
                     </div>
                     <div>
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Hospital Association *</label>
+                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Department *</label>
+                      <select value={formData.department || ''} onChange={e => setFormData({...formData, department: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm cursor-pointer">
+                        <option value="">Select Department...</option>
+                        {PREDEFINED_DEPARTMENTS.map(dept => (
+                          <option key={dept} value={dept}>{dept}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Assign to Hospital *</label>
                       <select value={formData.hospital_id || ''} onChange={e => setFormData({...formData, hospital_id: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm cursor-pointer">
                         <option value="">Select Hospital...</option>
                         {hospitals.map(h => <option key={h.id} value={h.id}>{h.name} ({h.city})</option>)}
@@ -551,6 +727,18 @@ function AdminEmergencyPageContent() {
                           </label>
                         ))}
                       </div>
+                    </div>
+                    <div className="md:col-span-2 flex items-center gap-3 mt-2">
+                      <input 
+                        type="checkbox" 
+                        id="staff_otp_required" 
+                        checked={formData.otp_required !== false} 
+                        onChange={e => setFormData({...formData, otp_required: e.target.checked})} 
+                        className="w-5 h-5 rounded border-border" 
+                      />
+                      <label htmlFor="staff_otp_required" className="text-sm font-semibold text-text-primary cursor-pointer">
+                        Require OTP verification to view staff profile details
+                      </label>
                     </div>
                     <div className="md:col-span-2">
                       <label className="block text-sm font-semibold text-text-primary mb-1.5">Description</label>

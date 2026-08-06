@@ -30,27 +30,28 @@ export default function StaffListPage({ params }: { params: Promise<{ id: string
 
     const loadData = async () => {
       try {
-        const hRef = doc(db, COLLECTIONS.hospitals, id);
-        const hSnap = await getDoc(hRef);
+        const hRes = await fetch(`/api/public/firestore?collection=hospitals&docId=${id}`);
         let currentHospital: Hospital | null = null;
-        if (hSnap.exists()) {
-          currentHospital = { id: hSnap.id, ...hSnap.data() } as Hospital;
+        if (hRes.ok) {
+          currentHospital = await hRes.json() as Hospital;
           setHospital(currentHospital);
         }
 
-        const staffRef = collection(db, COLLECTIONS.bengali_staff);
-        const sSnap = await getDocs(staffRef);
-        const allStaff = sSnap.docs.map(doc => ({ id: doc.id, ...doc.data() } as any));
-        
-        // Filter by either hospital ID or hospital Name to handle inconsistencies in the database
-        const hospitalStaff = allStaff.filter(s => 
-          s.hospital_id === id || 
-          (currentHospital && s.hospital_id === currentHospital.name) ||
-          (currentHospital && s.hospital === currentHospital.name) ||
-          (currentHospital && s.hospital_name === currentHospital.name)
-        );
-        
-        setStaff(hospitalStaff as BengaliStaff[]);
+        const sRes = await fetch(`/api/public/firestore?collection=bengali_staff`);
+        if (sRes.ok) {
+          const sJson = await sRes.json();
+          const allStaff = (sJson.items || []) as any[];
+          
+          // Filter by either hospital ID or hospital Name to handle inconsistencies in the database
+          const hospitalStaff = allStaff.filter(s => 
+            s.hospital_id === id || 
+            (currentHospital && s.hospital_id === currentHospital.name) ||
+            (currentHospital && s.hospital === currentHospital.name) ||
+            (currentHospital && s.hospital_name === currentHospital.name)
+          );
+          
+          setStaff(hospitalStaff as BengaliStaff[]);
+        }
       } catch (e) {
         console.error(e);
       } finally {

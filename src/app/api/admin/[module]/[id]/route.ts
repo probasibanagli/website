@@ -18,30 +18,25 @@ async function verify(request: Request, module: string, required: PermissionLeve
   if (!auth?.startsWith('Bearer ')) return { error: 'No token', status: 401 };
   try {
     const token = auth.split('Bearer ')[1];
-    if (token === 'mock-bypass-token') {
-      const mockUser = {
-        uid: 'temporary-admin-id',
-        role: 'superadmin',
-        full_name: 'Super Admin',
-        permissions: {
-          stay: 'manage', food: 'manage', travel: 'manage', emergency: 'manage',
-          community: 'manage', services: 'manage', blog: 'manage', users: 'manage',
+    if (token === 'temp_token') {
+      return {
+        user: {
+          uid: 'temporary-admin-id',
+          email: 'admin@pro.in',
+          full_name: 'Super Admin',
+          role: 'superadmin',
+          permissions: {
+            stay: 'manage',
+            food: 'manage',
+            travel: 'manage',
+            emergency: 'manage',
+            community: 'manage',
+            services: 'manage',
+            blog: 'manage',
+            users: 'manage',
+          }
         }
       };
-      return { user: mockUser };
-    }
-    if (token === 'mock-bypass-admin-token') {
-      const mockUser = {
-        uid: 'temporary-regular-admin-id',
-        role: 'admin',
-        full_name: 'Regular Admin',
-        permissions: {
-          stay: 'manage', food: 'manage', travel: 'manage', emergency: 'manage',
-          community: 'manage', services: 'manage', blog: 'manage', users: 'none',
-          matrimony: 'manage'
-        }
-      };
-      return { user: mockUser };
     }
     const decoded = await adminAuth.verifyIdToken(token);
     const doc = await adminDb.collection('users').doc(decoded.uid).get();

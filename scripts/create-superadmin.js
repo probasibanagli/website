@@ -4,22 +4,37 @@ const { getAuth } = require('firebase-admin/auth');
 require('dotenv').config({ path: '.env.local' });
 
 if (getApps().length === 0) {
-  initializeApp({
-    credential: cert({
-      projectId: process.env.FIREBASE_ADMIN_PROJECT_ID,
-      clientEmail: process.env.FIREBASE_ADMIN_CLIENT_EMAIL,
-      privateKey: process.env.FIREBASE_ADMIN_PRIVATE_KEY?.replace(/\\n/g, '\n'),
-    }),
-  });
+  const hasAdminCreds = process.env.FIREBASE_ADMIN_CLIENT_EMAIL && process.env.FIREBASE_ADMIN_PRIVATE_KEY;
+  if (!hasAdminCreds) {
+    console.error('❌ Missing Firebase Admin Service Account credentials in .env.local');
+    console.error('Please ensure the following environment variables are set in .env.local:');
+    console.error('  - FIREBASE_ADMIN_PROJECT_ID');
+    console.error('  - FIREBASE_ADMIN_CLIENT_EMAIL');
+    console.error('  - FIREBASE_ADMIN_PRIVATE_KEY');
+    process.exit(1);
+  }
+
+  try {
+    initializeApp({
+      credential: cert({
+        projectId: process.env.FIREBASE_ADMIN_PROJECT_ID || process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+        clientEmail: process.env.FIREBASE_ADMIN_CLIENT_EMAIL,
+        privateKey: process.env.FIREBASE_ADMIN_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+      }),
+    });
+  } catch (error) {
+    console.error('❌ Failed to initialize Firebase Admin SDK:', error.message);
+    process.exit(1);
+  }
 }
 
 const db = getFirestore();
 const auth = getAuth();
 
 async function run() {
-  const email = 'admin@probasibangali.in';
+  const email = 'admin@pro.in';
   const password = 'SuperAdmin123!';
-  const phone = '+919626855406';
+  const phone = '+919874563210';
   let uid = '';
 
   console.log(`Setting up Super Admin: ${email}`);
