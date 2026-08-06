@@ -141,39 +141,34 @@ export const CITY_AREAS: Record<string, string[]> = {
 /* ──── City → Nearby Colleges ──── */
 export const CITY_COLLEGES: Record<string, { name: string; area: string }[]> = {
   Chennai: [
+    { name: 'IIT Madras', area: 'Guindy' },
     { name: 'Anna University', area: 'Guindy' },
+    { name: 'SRM Institute', area: 'Potheri' },
     { name: 'Madras Medical College', area: 'Park Town' },
     { name: 'Loyola College', area: 'Nungambakkam' },
-    { name: 'Presidency College', area: 'Triplicane' },
-    { name: 'SSN College of Engineering', area: 'Kalavakkam' },
-    { name: 'Madras Christian College (MCC)', area: 'East Tambaram' },
-    { name: 'Stanley Medical College', area: 'Royapuram' },
+    { name: 'Stella Maris College', area: 'Cathedral Road' },
+    { name: 'Sathyabama University', area: 'Sholinganallur' },
   ],
   Vellore: [
     { name: 'VIT University', area: 'Katpadi' },
     { name: 'CMC Vellore', area: 'CMC Campus' },
-    { name: 'Voorhees College', area: 'Officers Line' },
   ],
   Coimbatore: [
     { name: 'PSG College of Technology', area: 'Peelamedu' },
-    { name: 'Coimbatore Institute of Technology (CIT)', area: 'Peelamedu' },
+    { name: 'Amrita Vishwa Vidyapeetham', area: 'Ettimadai' },
     { name: 'Coimbatore Medical College', area: 'Avinashi Road' },
-    { name: 'PSG College of Arts and Science', area: 'Peelamedu' },
   ],
   Madurai: [
+    { name: 'Madurai Kamaraj University', area: 'Palkalai Nagar' },
     { name: 'Thiagarajar College of Engg', area: 'Thiruparankundram' },
-    { name: 'Madurai Medical College', area: 'Madurai' },
-    { name: 'The American College', area: 'Madurai' },
   ],
   Tiruchirappalli: [
-    { name: 'KAP Viswanathan Government Medical College', area: 'Trichy' },
-    { name: 'St. Joseph\'s College', area: 'Trichy' },
-    { name: 'National College', area: 'Trichy' },
+    { name: 'NIT Trichy', area: 'Thuvakudi' },
+    { name: 'Bharathidasan University', area: 'Palkalaiperur' },
   ],
   Salem: [
-    { name: 'Government College of Engineering, Salem', area: 'Karuppur' },
-    { name: 'Mohan Kumaramangalam Medical College', area: 'Salem' },
-    { name: 'Government Arts College', area: 'Salem' },
+    { name: 'Periyar University', area: 'Periyar Nagar' },
+    { name: 'Vinayaka Missions University', area: 'Ariyanoor' },
   ],
 };
 
@@ -222,7 +217,7 @@ export const GENDERS = ['male', 'female', 'mixed'] as const;
 export const COMMUNITY_PLATFORMS = ['whatsapp', 'telegram', 'facebook', 'instagram'] as const;
 export const COMMUNITY_CATEGORIES = ['general', 'students', 'professionals', 'women', 'seniors'] as const;
 
-export const COLLEGE_TYPES = ['engineering', 'medical', 'arts_science'] as const;
+export const COLLEGE_TYPES = ['engineering', 'medical', 'arts', 'management', 'polytechnic'] as const;
 
 export const EVENT_CATEGORIES = ['festival', 'cultural', 'social', 'religious'] as const;
 
@@ -232,228 +227,37 @@ export const TREATMENT_TYPES = [
 ] as const;
 
 export const GOVT_SERVICES = [
-  { id: 'ration-card', title: 'Ration Card (PDS)', description: 'Apply for or update your ration card for subsidized food grains.', category: 'Ration card', url: 'https://www.tnpds.gov.in/pages/registercard/register-card.xhtml', icon: 'Home01' },
-  { id: 'aadhaar', title: 'Aadhaar Update / Enrolment', description: 'Update your Aadhaar address or biometrics at nearest centre.', category: 'Aadhaar', url: 'https://myaadhaar.uidai.gov.in/address-update', icon: 'User01' },
-  { id: 'biometrics', title: 'Aadhaar Biometric Services', description: 'Lock or unlock your Aadhaar biometrics online for enhanced security.', category: 'Aadhaar', url: 'https://myaadhaar.uidai.gov.in/lock-unlock-aadhaar', icon: 'Shield01' },
-  { id: 'driving-licence', title: 'Driving Licence (TN)', description: 'Apply or renew your driving licence in Tamil Nadu.', category: 'Transport', url: 'https://sarathi.parivahan.gov.in/sarathiservice/stateSelection.do', icon: 'Car01' },
-  { id: 'ayushman-bharat', title: 'Ayushman Bharat', description: 'Government health insurance covering ₹5 lakh per year per family.', category: 'Health schemes', url: '/services/government/ayushman-bharat', icon: 'MedicalCross' },
-  { id: 'mgnregs', title: 'MGNREGS Job Card', description: 'Register for 100 days guaranteed employment scheme.', category: 'Employment', url: 'https://nrega.nic.in/netnrega/statepage.aspx?Page=C&Action=A', icon: 'Users01' },
-  { id: 'tn-e-seva', title: 'TN e-Seva Portal', description: 'One-stop portal for various Tamil Nadu government services.', category: 'Government', url: 'https://www.tnesevai.tn.gov.in/Citizen/Registration.aspx', icon: 'Building01' },
-  { id: 'passport', title: 'Passport Seva', description: 'Apply for a new passport or renew existing one.', category: 'Travel', url: '/services/government/passport', icon: 'Map01' },
-  { id: 'visa', title: 'Visa Services', description: 'Apply for an Indian Visa, e-Visa, or check application status online.', category: 'Travel', url: 'https://indianvisaonline.gov.in/evisa/tvoa.html', icon: 'Globe01' },
-  { id: 'voter-id', title: 'Voter ID (EPIC)', description: 'Register as a voter or update your electoral details.', category: 'Election', url: '/services/government/voter-id', icon: 'UserCheck01' },
-  { id: 'police-verification', title: 'Police Verification (Cyber Crime)', description: 'Direct link to the Cyber Crime Portal for police verification, reporting cyber fraud and safety checks.', category: 'Safety', url: 'https://eservices.tnpolice.gov.in/', icon: 'Shield01' },
+  { id: 'ration-card', title: 'Ration Card (PDS)', description: 'Apply for or update your ration card for subsidized food grains.', category: 'Ration card', url: 'https://www.tnpds.gov.in/', icon: 'Home01' },
+  { id: 'aadhaar', title: 'Aadhaar Update / Enrolment', description: 'Update your Aadhaar address or biometrics at nearest centre.', category: 'Aadhaar', url: 'https://uidai.gov.in/', icon: 'User01' },
+  { id: 'driving-licence', title: 'Driving Licence (TN)', description: 'Apply or renew your driving licence in Tamil Nadu.', category: 'Transport', url: 'https://parivahan.gov.in/', icon: 'Car01' },
+  { id: 'ayushman-bharat', title: 'Ayushman Bharat', description: 'Government health insurance covering ₹5 lakh per year per family.', category: 'Health schemes', url: 'https://pmjay.gov.in/', icon: 'MedicalCross' },
+  { id: 'mgnregs', title: 'MGNREGS Job Card', description: 'Register for 100 days guaranteed employment scheme.', category: 'Employment', url: 'https://nrega.nic.in/', icon: 'Users01' },
+  { id: 'tn-e-seva', title: 'TN e-Seva Portal', description: 'One-stop portal for various Tamil Nadu government services.', category: 'Government', url: 'https://www.tnesevai.tn.gov.in/', icon: 'Building01' },
+  { id: 'passport', title: 'Passport Seva', description: 'Apply for a new passport or renew existing one.', category: 'Travel', url: 'https://passportindia.gov.in/', icon: 'Map01' },
+  { id: 'voter-id', title: 'Voter ID (EPIC)', description: 'Register as a voter or update your electoral details.', category: 'Election', url: 'https://voters.eci.gov.in/', icon: 'UserCheck01' },
+  { id: 'police-verification', title: 'Police Verification (Tenants)', description: 'Mandatory police verification for tenants and migrants in Tamil Nadu.', category: 'Safety', url: 'https://eservices.tnpolice.gov.in/', icon: 'Shield01' },
   { id: 'labour-registration', title: 'TN Labour Registration', description: 'Register as a migrant worker with the Tamil Nadu Labour Department.', category: 'Employment', url: 'https://labour.tn.gov.in/', icon: 'Users01' },
+  { id: 'esic-pf', title: 'ESIC / PF Registration', description: 'Employee health insurance (ESIC) and provident fund (EPFO) portals.', category: 'Employment', url: 'https://www.esic.gov.in/', icon: 'Briefcase01' },
   { id: 'scholarships', title: 'Scholarship Schemes', description: 'Central and state scholarship schemes for students from economically weaker sections.', category: 'Education', url: 'https://scholarships.gov.in/', icon: 'GraduationHat01' },
 ];
 
-/* ──────────────── Government Service Centres Data ──────────────── */
-
-export const TN_DISTRICTS = [
-  'All Districts',
-  'Ariyalur', 'Chengalpattu', 'Chennai', 'Coimbatore', 'Cuddalore',
-  'Dharmapuri', 'Dindigul', 'Erode', 'Kallakurichi', 'Kanchipuram',
-  'Kanyakumari', 'Karur', 'Krishnagiri', 'Madurai', 'Mayiladuthurai',
-  'Nagapattinam', 'Namakkal', 'Nilgiris', 'Perambalur', 'Pudukkottai',
-  'Ramanathapuram', 'Ranipet', 'Salem', 'Sivaganga', 'Tenkasi',
-  'Thanjavur', 'Theni', 'Thoothukudi', 'Tiruchirappalli', 'Tirunelveli',
-  'Tirupathur', 'Tiruppur', 'Tiruvallur', 'Tiruvannamalai', 'Tiruvarur',
-  'Vellore', 'Viluppuram', 'Virudhunagar',
-] as const;
-
-export const AADHAAR_CENTRES = [
-  { id: 1, name: 'CSC Aadhaar Kendra - T Nagar', address: '12, North Usman Road, T Nagar, Chennai', type: 'CSC / Enrolment Centre', city: 'Chennai', phone: '044-24321000' },
-  { id: 2, name: 'UIDAI Authorized Update Centre', address: 'Post Office Building, Anna Nagar, Chennai', type: 'Update Centre', city: 'Chennai', phone: '044-26212345' },
-  { id: 3, name: 'CSC Aadhaar Kendra - Vadapalani', address: '23, Arcot Road, Vadapalani, Chennai', type: 'CSC / Enrolment Centre', city: 'Chennai', phone: '044-23456789' },
-  { id: 4, name: 'India Post Aadhaar Centre - Mylapore', address: 'Head Post Office, Mylapore, Chennai', type: 'Update Centre', city: 'Chennai', phone: '044-24981234' },
-  { id: 5, name: 'CSC Aadhaar Kendra - RS Puram', address: '45, DB Road, RS Puram, Coimbatore', type: 'CSC / Enrolment Centre', city: 'Coimbatore', phone: '0422-2541000' },
-  { id: 6, name: 'India Post Aadhaar Centre', address: 'Head Post Office, Town Hall Road, Coimbatore', type: 'Update Centre', city: 'Coimbatore', phone: '0422-2391234' },
-  { id: 7, name: 'UIDAI Authorized Update Centre', address: 'Head Post Office, KK Nagar, Madurai', type: 'Update Centre', city: 'Madurai', phone: '0452-2531000' },
-  { id: 8, name: 'CSC Aadhaar Kendra - Goripalayam', address: '78, Goripalayam Main Road, Madurai', type: 'CSC / Enrolment Centre', city: 'Madurai', phone: '0452-2345678' },
-  { id: 9, name: 'CSC Aadhaar Kendra - Cantonment', address: '15, Cantonment Road, Tiruchirappalli', type: 'CSC / Enrolment Centre', city: 'Tiruchirappalli', phone: '0431-2701000' },
-  { id: 10, name: 'India Post Aadhaar Centre', address: 'GPO Building, Thillainagar, Tiruchirappalli', type: 'Update Centre', city: 'Tiruchirappalli', phone: '0431-2414567' },
-  { id: 11, name: 'CSC Aadhaar Kendra - Palayamkottai', address: '22, South Car Street, Palayamkottai, Tirunelveli', type: 'CSC / Enrolment Centre', city: 'Tirunelveli', phone: '0462-2501000' },
-  { id: 12, name: 'CSC Aadhaar Kendra - Hasthampatti', address: '5, Junction Road, Hasthampatti, Salem', type: 'CSC / Enrolment Centre', city: 'Salem', phone: '0427-2316789' },
-  { id: 13, name: 'India Post Aadhaar Centre', address: 'GPO, Omalur Main Road, Salem', type: 'Update Centre', city: 'Salem', phone: '0427-2211234' },
-  { id: 14, name: 'CSC Aadhaar Kendra - Katpadi', address: '10, Katpadi Road, Vellore', type: 'CSC / Enrolment Centre', city: 'Vellore', phone: '0416-2241000' },
-  { id: 15, name: 'CSC Aadhaar Kendra - Tiruppur', address: '88, Avinashi Road, Tiruppur', type: 'CSC / Enrolment Centre', city: 'Tiruppur', phone: '0421-2201000' },
-];
-
-export const PASSPORT_SEVA_KENDRAS = [
-  { id: 1, name: 'Passport Seva Kendra, Chennai', address: 'Shastri Bhawan Annexe, 26 Haddows Road, Nungambakkam, Chennai - 600006', type: 'PSK', district: 'Chennai', phone: '1800-258-1800', timings: 'Mon-Fri, 9:30 AM - 5:30 PM' },
-  { id: 2, name: 'Post Office Passport Seva Kendra, Anna Nagar', address: 'Head Post Office, Anna Nagar, Chennai - 600040', type: 'POPSK', district: 'Chennai', phone: '1800-258-1800', timings: 'Mon-Fri, 9:30 AM - 5:30 PM' },
-  { id: 3, name: 'Post Office Passport Seva Kendra, Tambaram', address: 'Tambaram Head Post Office, GST Road, Tambaram, Chennai', type: 'POPSK', district: 'Chengalpattu', phone: '1800-258-1800', timings: 'Mon-Fri, 9:30 AM - 5:30 PM' },
-  { id: 4, name: 'Passport Seva Kendra, Coimbatore', address: 'Valankulam Main Road, Behind BSNL Office, Coimbatore - 641002', type: 'PSK', district: 'Coimbatore', phone: '1800-258-1800', timings: 'Mon-Fri, 9:30 AM - 5:30 PM' },
-  { id: 5, name: 'Passport Seva Kendra, Madurai', address: 'No.1, North Veli Street, Madurai - 625001', type: 'PSK', district: 'Madurai', phone: '1800-258-1800', timings: 'Mon-Fri, 9:30 AM - 5:30 PM' },
-  { id: 6, name: 'Passport Seva Kendra, Tiruchirappalli', address: 'Collector Office Complex, Tiruchirappalli - 620001', type: 'PSK', district: 'Tiruchirappalli', phone: '1800-258-1800', timings: 'Mon-Fri, 9:30 AM - 5:30 PM' },
-  { id: 7, name: 'Post Office Passport Seva Kendra, Salem', address: 'Head Post Office, Omalur Road, Salem - 636001', type: 'POPSK', district: 'Salem', phone: '1800-258-1800', timings: 'Mon-Fri, 9:30 AM - 5:30 PM' },
-  { id: 8, name: 'Post Office Passport Seva Kendra, Tirunelveli', address: 'Tirunelveli Head Post Office, South Car Street, Tirunelveli', type: 'POPSK', district: 'Tirunelveli', phone: '1800-258-1800', timings: 'Mon-Fri, 9:30 AM - 5:30 PM' },
-  { id: 9, name: 'Post Office Passport Seva Kendra, Vellore', address: 'Vellore Head Post Office, Officers Line, Vellore', type: 'POPSK', district: 'Vellore', phone: '1800-258-1800', timings: 'Mon-Fri, 9:30 AM - 5:30 PM' },
-  { id: 10, name: 'Post Office Passport Seva Kendra, Thanjavur', address: 'Head Post Office, South Main Street, Thanjavur', type: 'POPSK', district: 'Thanjavur', phone: '1800-258-1800', timings: 'Mon-Fri, 9:30 AM - 5:30 PM' },
-];
-
-export const VISA_COUNTRIES = [
-  {
-    name: 'United States', code: 'US',
-    visaPortalUrl: 'https://ceac.state.gov/genniv/',
-    vacAddress: 'VFS Global, No. 10, Haddows Road, Nungambakkam, Chennai - 600006',
-    vacPhone: '044-4253 5000',
-    applicationProcess: ['Fill DS-160 form online at ceac.state.gov', 'Pay visa fee ($185 for B1/B2) at designated bank', 'Schedule appointment at ustraveldocs.com', 'Attend visa interview at US Consulate, Chennai', 'Wait for passport to be returned with visa stamp'],
-    biometricProcess: ['Biometrics collected at US Consulate during interview', 'Fingerprint scan (10 fingers) and digital photo taken', 'No separate biometric appointment required'],
-  },
-  {
-    name: 'United Kingdom', code: 'GB',
-    visaPortalUrl: 'https://www.gov.uk/apply-to-come-to-the-uk',
-    vacAddress: 'VFS Global UK VAC, Shafee Mohammed Road, Nungambakkam, Chennai - 600034',
-    vacPhone: '044-6631 3334',
-    applicationProcess: ['Apply online at gov.uk/apply-to-come-to-the-uk', 'Pay visa fee (£100-£363 depending on type)', 'Upload supporting documents online', 'Book biometric appointment at VFS', 'Wait 15-20 working days for decision'],
-    biometricProcess: ['Book appointment at VFS Global Chennai', 'Visit VFS centre with appointment confirmation', 'Fingerprints and photograph captured', 'Submit passport at VFS centre'],
-  },
-  {
-    name: 'Canada', code: 'CA',
-    visaPortalUrl: 'https://www.canada.ca/en/immigration-refugees-citizenship/services/visit-canada.html',
-    vacAddress: 'VFS Global Canada VAC, No. 10, Haddows Road, Nungambakkam, Chennai - 600006',
-    vacPhone: '044-4253 5000',
-    applicationProcess: ['Create account on IRCC portal', 'Fill application form and pay fee (CAD $100)', 'Upload documents (passport, photo, financials, travel history)', 'Submit biometrics at VFS Global', 'Wait 30-60 days for processing'],
-    biometricProcess: ['Pay biometric fee (CAD $85) during application', 'Book biometric appointment at VFS Global Chennai', 'Visit centre with appointment letter and passport', 'Fingerprints and photo captured digitally'],
-  },
-  {
-    name: 'Australia', code: 'AU',
-    visaPortalUrl: 'https://immi.homeaffairs.gov.au/',
-    vacAddress: 'VFS Global Australia VAC, New No. 10, Haddows Road, Nungambakkam, Chennai - 600006',
-    vacPhone: '044-4253 5000',
-    applicationProcess: ['Apply online at immi.homeaffairs.gov.au', 'Pay visa fee (AUD $190 for visitor visa)', 'Upload all supporting documents', 'Attend biometric collection at VFS', 'Wait 20-30 days for decision (typically grant by email)'],
-    biometricProcess: ['Biometric instruction letter received after applying', 'Book appointment at VFS Global Chennai', 'Visit with appointment letter and passport', 'Fingerprints and photo captured'],
-  },
-  {
-    name: 'Germany / Schengen', code: 'DE',
-    visaPortalUrl: 'https://videx.diplo.de/',
-    vacAddress: 'VFS Global Germany VAC, Khader Nawaz Khan Road, Nungambakkam, Chennai - 600006',
-    vacPhone: '044-4253 5000',
-    applicationProcess: ['Fill Videx application form online', 'Book appointment at VFS Global website', 'Pay visa fee (€80 for short stay)', 'Submit application with documents at VFS', 'Attend interview if required at German Consulate'],
-    biometricProcess: ['Biometrics collected at VFS Global during submission', 'Fingerprints (10 fingers) and digital photo taken', 'Valid for 59 months — re-use for subsequent applications', 'No separate appointment needed'],
-  },
-  {
-    name: 'Singapore', code: 'SG',
-    visaPortalUrl: 'https://eservices.ica.gov.sg/esvclandingpage/save',
-    vacAddress: 'VFS Global Singapore VAC, No. 10, Haddows Road, Nungambakkam, Chennai - 600006',
-    vacPhone: '044-4253 5000',
-    applicationProcess: ['Obtain a local contact / authorised visa agent in Singapore', 'Submit application through ICA SAVE portal', 'Pay visa fee (SGD $30)', 'Upload documents (passport copy, photo, itinerary, financials)', 'E-visa approval emailed in 3-5 working days'],
-    biometricProcess: ['No biometric appointment required for Singapore visa', 'Visa is processed electronically', 'E-visa letter received by email upon approval'],
-  },
-  {
-    name: 'UAE (Dubai)', code: 'AE',
-    visaPortalUrl: 'https://smartservices.icp.gov.ae/echannels/web/client/default.html',
-    vacAddress: 'VFS Global UAE VAC, Khader Nawaz Khan Road, Nungambakkam, Chennai - 600006',
-    vacPhone: '044-4253 5000',
-    applicationProcess: ['Apply through UAE ICP Smart Services portal or sponsor in UAE', 'Upload passport copy, photo, and flight tickets', 'Pay visa fee (AED 100-300 depending on duration)', 'E-visa emailed within 3-5 working days', 'Print e-visa and carry during travel'],
-    biometricProcess: ['No biometric appointment required for UAE tourist visa', 'Biometrics captured at UAE airport upon arrival', 'Eye scan and fingerprints taken at immigration'],
-  },
-  {
-    name: 'France / Schengen', code: 'FR',
-    visaPortalUrl: 'https://france-visas.gouv.fr/',
-    vacAddress: 'VFS Global France VAC, Khader Nawaz Khan Road, Nungambakkam, Chennai - 600006',
-    vacPhone: '044-4253 5000',
-    applicationProcess: ['Create account on france-visas.gouv.fr', 'Fill application form and download it', 'Book appointment at VFS Global Chennai', 'Submit documents and pay fee (€80) at VFS', 'Wait 15 working days for decision'],
-    biometricProcess: ['Biometrics collected at VFS Global during submission', 'Fingerprints and digital photo captured', 'Valid for 59 months for Schengen area', 'First-time applicants must appear in person'],
-  },
-  {
-    name: 'Japan', code: 'JP',
-    visaPortalUrl: 'https://www.in.emb-japan.go.jp/itpr_en/visa.html',
-    vacAddress: 'Consulate-General of Japan, No. 12/1, Cenotaph Road, Teynampet, Chennai - 600018',
-    vacPhone: '044-2432 3860',
-    applicationProcess: ['Download visa application form from embassy website', 'Collect required documents (invitation letter, itinerary, financials)', 'Submit application at Japanese Consulate Chennai', 'Processing takes 5-7 working days', 'Collect passport with visa stamp from Consulate'],
-    biometricProcess: ['No biometric collection in India for Japan visa', 'Biometrics captured at Japanese airport upon arrival', 'Fingerprints and photo taken at immigration counter'],
-  },
-  {
-    name: 'South Korea', code: 'KR',
-    visaPortalUrl: 'https://www.visa.go.kr/openPage.do?MENU_ID=10101',
-    vacAddress: 'VFS Global Korea VAC, No. 10, Haddows Road, Nungambakkam, Chennai - 600006',
-    vacPhone: '044-4253 5000',
-    applicationProcess: ['Apply online at visa.go.kr or fill paper form', 'Book appointment at VFS Global Chennai', 'Submit documents and pay fee at VFS', 'Processing takes 7-10 working days', 'Collect passport with visa from VFS'],
-    biometricProcess: ['Biometrics collected at VFS Global Chennai', 'Fingerprints and photo captured during submission', 'No separate biometric appointment needed'],
-  },
-];
-
-export const POLICE_STATIONS = [
-  { id: 1, name: 'Commissioner Office - Cybercrime Cell', address: 'Vepery, Chennai - 600007', type: 'Cybercrime Cell', city: 'Chennai', phone: '044-2539 0978' },
-  { id: 2, name: 'T. Nagar Police Station', address: 'Usman Road, T. Nagar, Chennai - 600017', type: 'Police Station', city: 'Chennai', phone: '044-2434 5566' },
-  { id: 3, name: 'Anna Nagar Police Station', address: '2nd Avenue, Anna Nagar, Chennai - 600040', type: 'Police Station', city: 'Chennai', phone: '044-2621 3456' },
-  { id: 4, name: 'Adyar Police Station', address: 'LB Road, Adyar, Chennai - 600020', type: 'Police Station', city: 'Chennai', phone: '044-2441 2345' },
-  { id: 5, name: 'RS Puram Police Station', address: 'DB Road, RS Puram, Coimbatore - 641002', type: 'Police Station', city: 'Coimbatore', phone: '0422-254 1000' },
-  { id: 6, name: 'Town Hall Police Station', address: 'Big Bazaar Street, Coimbatore - 641001', type: 'Police Station', city: 'Coimbatore', phone: '0422-239 0100' },
-  { id: 7, name: 'Goripalayam Police Station', address: 'Goripalayam Main Road, Madurai - 625002', type: 'Police Station', city: 'Madurai', phone: '0452-253 1000' },
-  { id: 8, name: 'Tallakulam Police Station', address: 'Tallakulam, Madurai - 625002', type: 'Police Station', city: 'Madurai', phone: '0452-234 5678' },
-  { id: 9, name: 'Cantonment Police Station', address: 'Cantonment Road, Tiruchirappalli - 620001', type: 'Police Station', city: 'Tiruchirappalli', phone: '0431-270 1000' },
-  { id: 10, name: 'Town Police Station', address: 'Big Bazaar Street, Salem - 636001', type: 'Police Station', city: 'Salem', phone: '0427-231 6789' },
-  { id: 11, name: 'Palayamkottai Police Station', address: 'South Car Street, Palayamkottai, Tirunelveli', type: 'Police Station', city: 'Tirunelveli', phone: '0462-250 1000' },
-  { id: 12, name: 'Katpadi Police Station', address: 'Katpadi Road, Vellore - 632007', type: 'Police Station', city: 'Vellore', phone: '0416-224 1000' },
-];
-
-export const ELECTION_OFFICES = [
-  { id: 1, name: 'District Election Office, Chennai', address: 'Collectorate Complex, Rajaji Salai, Chennai - 600001', type: 'District Election Office', city: 'Chennai', phone: '044-2536 0211' },
-  { id: 2, name: 'Voter Service Centre - Anna Nagar', address: 'Taluk Office, Anna Nagar, Chennai - 600040', type: 'Voter Service Centre', city: 'Chennai', phone: '044-2621 7890' },
-  { id: 3, name: 'Voter Service Centre - Mylapore', address: 'Revenue Divisional Office, Mylapore, Chennai', type: 'Voter Service Centre', city: 'Chennai', phone: '044-2498 5678' },
-  { id: 4, name: 'District Election Office, Coimbatore', address: 'Collectorate Complex, Coimbatore - 641018', type: 'District Election Office', city: 'Coimbatore', phone: '0422-230 1111' },
-  { id: 5, name: 'District Election Office, Madurai', address: 'Collectorate Complex, Madurai - 625020', type: 'District Election Office', city: 'Madurai', phone: '0452-253 7890' },
-  { id: 6, name: 'District Election Office, Tiruchirappalli', address: 'Collectorate Complex, Tiruchirappalli - 620001', type: 'District Election Office', city: 'Tiruchirappalli', phone: '0431-270 5678' },
-  { id: 7, name: 'District Election Office, Salem', address: 'Collectorate Complex, Salem - 636001', type: 'District Election Office', city: 'Salem', phone: '0427-231 1234' },
-  { id: 8, name: 'District Election Office, Tirunelveli', address: 'Collectorate Complex, Tirunelveli - 627001', type: 'District Election Office', city: 'Tirunelveli', phone: '0462-250 2345' },
-  { id: 9, name: 'District Election Office, Vellore', address: 'Collectorate Complex, Vellore - 632004', type: 'District Election Office', city: 'Vellore', phone: '0416-224 5678' },
-  { id: 10, name: 'District Election Office, Thanjavur', address: 'Collectorate Complex, Thanjavur - 613001', type: 'District Election Office', city: 'Thanjavur', phone: '04362-230 123' },
-];
-
 export const TAMIL_WORDS = [
-  { meaning: 'Hello / Welcome', pronunciation: 'Vanakkam', tamil: 'வணக்கம்', bengali: 'ভানাক্কাম' },
-  { meaning: 'Thank you', pronunciation: 'Nandri', tamil: 'நன்றி', bengali: 'নানদ্রি' },
-  { meaning: 'How much?', pronunciation: 'Evvalavu?', tamil: 'எவ்வளவு?', bengali: 'এভভালাভু?' },
-  { meaning: 'When will it come?', pronunciation: 'Eppo varum?', tamil: 'எப்போ வரும்?', bengali: 'এপ্পো ভারুম?' },
-  { meaning: 'Where is it?', pronunciation: 'Enge irukku?', tamil: 'எங்கே இருக்கு?', bengali: 'এঙ্গে ইরুক্কু?' },
-  { meaning: 'Money', pronunciation: 'Kaasu', tamil: 'காசு', bengali: 'কাসু' },
-  { meaning: 'Will auto come?', pronunciation: 'Auto varuma?', tamil: 'ஆட்டோ வருமா?', bengali: 'অটো ভারুমা?' },
-  { meaning: 'I need water', pronunciation: 'Thanni venum', tamil: 'தண்ணি வேணும்', bengali: 'থান্নি ভেনুম' },
-  { meaning: 'Food / Meal', pronunciation: 'Saapadu', tamil: 'சாப்பாடு', bengali: 'সাপ্পাডু' },
-  { meaning: 'Bus station', pronunciation: 'Bus nilayam', tamil: 'பஸ் நிலையம்', bengali: 'বাস নিলাইয়াম' },
-  { meaning: 'Hospital', pronunciation: 'Maruthuvamanai', tamil: 'மருத்துவமனை', bengali: 'মারুথুভামানাই' },
-  { meaning: 'Help!', pronunciation: 'Udavi!', tamil: 'உদவி!', bengali: 'উদাবি!' },
-  { meaning: 'I need to go home', pronunciation: 'Veetuku poganum', tamil: 'வீட்டுக்கு போகணும்', bengali: 'ভেটুকু পোগানুমি' },
-  { meaning: 'Very good!', pronunciation: 'Romba nalla irukku', tamil: 'ரொம்ப நல்லা இருக்கு', bengali: 'রোম্বা নাল্লা ইরুক্কু' },
-  { meaning: "I don't understand", pronunciation: 'Puriyala', tamil: 'புரியல', bengali: 'পুরিয়ালা' },
-  { meaning: 'One moment', pronunciation: 'Oru nimisham', tamil: 'ஒரு நிমিஷம்', bengali: 'অরু নিমিশাম' },
-  { meaning: 'Right side', pronunciation: 'Valathu pakkam', tamil: 'வலது பக்கம்', bengali: 'ভালাথু পাক্কাম' },
-  { meaning: 'Left side', pronunciation: 'Idathu pakkam', tamil: 'இடது பக்கம்', bengali: 'ইডাথু পাক্কাম' },
-  { meaning: 'Stop here', pronunciation: 'Nillu / Niruthunga', tamil: 'நில்லு / நிறுத்துங்க', bengali: 'নিলু / নিরুথুঙ্গা' },
-  { meaning: 'Go straight', pronunciation: 'Nera ponga', tamil: 'நேரா போங்க', bengali: 'নেরা পোঙ্গা' },
-  { meaning: 'What happened?', pronunciation: 'Enna aachu?', tamil: 'என்ன ஆச்சு?', bengali: 'এন্না আচ্ছু?' },
-  { meaning: 'I know', pronunciation: 'Theriyum', tamil: 'தெரியும்', bengali: 'থেরিয়ুম' },
-  { meaning: "I don't know", pronunciation: 'Theriyaathu', tamil: 'தெரியாது', bengali: 'থেরিয়াদু' },
-  { meaning: 'Come here', pronunciation: 'Inga vaanga', tamil: 'இங்க வாங்க', bengali: 'ইঙ্গা ভাঙ্গা' },
-  { meaning: 'Go', pronunciation: 'Ponga', tamil: 'போங்க', bengali: 'পোঙ্গা' },
-  { meaning: 'Good', pronunciation: 'Nalla', tamil: 'நல்ல', bengali: 'নাল্লা' },
-  { meaning: 'Bad', pronunciation: 'Kettathu', tamil: 'கெட்டது', bengali: 'কেট্টাথু' },
-  { meaning: 'Please come', pronunciation: 'Vaanga', tamil: 'வாங்க', bengali: 'ভাঙ্গা' },
-  { meaning: 'Okay / Yes', pronunciation: 'Sari', tamil: 'சரி', bengali: 'সারি' },
-  { meaning: 'No', pronunciation: 'Illai', tamil: 'இல்லை', bengali: 'ইল্লাই' },
-  { meaning: 'Want / Need', pronunciation: 'Venum', tamil: 'வேண்டும்', bengali: 'ভেনুম' },
-  { meaning: "Don't want", pronunciation: 'Vendaam', tamil: 'வேண்டாம்', bengali: 'ভেন্ডাম' },
-  { meaning: 'Today', pronunciation: 'Inniku', tamil: 'இன்னைকে', bengali: 'ইন্নিক্কু' },
-  { meaning: 'Tomorrow', pronunciation: 'Nalaiku', tamil: 'நாளைக்கு', bengali: 'নালাইক্কু' },
-  { meaning: 'Yesterday', pronunciation: 'Nethu', tamil: 'நேற்று', bengali: 'নেথু' },
-  { meaning: 'Why?', pronunciation: 'Yen?', tamil: 'ஏன்?', bengali: 'য়েন?' },
-  { meaning: 'How?', pronunciation: 'Eppadi?', tamil: 'எப்படி?', bengali: 'এপ্পাডি?' },
-  { meaning: 'Who?', pronunciation: 'Yaaru?', tamil: 'யார்?', bengali: 'য়ারু?' },
-  { meaning: 'What?', pronunciation: 'Enna?', tamil: 'என்ன?', bengali: 'এন্না?' },
-  { meaning: 'When?', pronunciation: 'Eppo?', tamil: 'எப்போது?', bengali: 'এপ্পো?' },
-  { meaning: 'Where?', pronunciation: 'Enge?', tamil: 'எங்கே?', bengali: 'এঙ্গে?' },
-  { meaning: 'One', pronunciation: 'Onnu', tamil: 'ஒன்று', bengali: 'ওন্নু' },
-  { meaning: 'Two', pronunciation: 'Rendu', tamil: 'இரண்டு', bengali: 'রেন্ডু' },
-  { meaning: 'Very much / A lot', pronunciation: 'Romba', tamil: 'ரொம்ப', bengali: 'রোম্বা' },
-  { meaning: 'Shop / Store', pronunciation: 'Kada', tamil: 'கடை', bengali: 'কাডাই' },
-  { meaning: 'Way / Path', pronunciation: 'Vazhi', tamil: 'வழி', bengali: 'ভাজি' },
-  { meaning: 'What is the time?', pronunciation: 'Mani enna?', tamil: 'மணி என்ன?', bengali: 'মানি এন্না?' },
-  { meaning: 'First', pronunciation: 'Mudhala', tamil: 'முதலில்', bengali: 'মুদালিল' },
-  { meaning: 'Last', pronunciation: 'Kadaisi', tamil: 'கடைসি', bengali: 'কাডাইসি' },
-  { meaning: 'Friend', pronunciation: 'Nanban', tamil: 'நண்பன்', bengali: 'নানবান' },
+  { tamil: 'Vanakkam', meaning: 'Hello / Welcome', script: 'வணக்கம்', benPron: 'বনক্কম', benMean: 'স্বাগতম / নমস্কার' },
+  { tamil: 'Nandri', meaning: 'Thank you', script: 'நன்றி', benPron: 'নন্দ্রি', benMean: 'ধন্যবাদ' },
+  { tamil: 'Evvalavu', meaning: 'How much?', script: 'எவ்வளவு?', benPron: 'এভভলবু', benMean: 'কত দাম?' },
+  { tamil: 'Eppo varum?', meaning: 'When will it come?', script: 'எப்போ வரும்?', benPron: 'এপ্পো ভরুম', benMean: 'কখন আসবে?' },
+  { tamil: 'Enge irukku?', meaning: 'Where is it?', script: 'எங்கே இருக்கு?', benPron: 'এঙ্গে ইরুক্কু', benMean: 'কোথায় আছে?' },
+  { tamil: 'Kaasu', meaning: 'Money', script: 'காசு', benPron: 'কাসু', benMean: 'টাকা / পয়সা' },
+  { tamil: 'Auto varumo?', meaning: 'Will auto come?', script: 'ஆட்டோ வருமா?', benPron: 'আটো ভরুমা', benMean: 'অটো কি আসবে?' },
+  { tamil: 'Thanni venum', meaning: 'I need water', script: 'தண்ணி வேணும்', benPron: 'তন্নি ভেনুম', benMean: 'আমার জল লাগবে' },
+  { tamil: 'Saapadu', meaning: 'Food / Meal', script: 'சாப்பாடு', benPron: 'সাপ্পাড়ু', benMean: 'খাবার / ভাত' },
+  { tamil: 'Bus nilayam', meaning: 'Bus station', script: 'பஸ் நிலையம்', benPron: 'বাস নিলায়ম', benMean: 'বাস স্টেশন' },
+  { tamil: 'Maruthuvamani', meaning: 'Hospital', script: 'மருத்துவமனை', benPron: 'মরুথুবামনাই', benMean: 'হাসপাতাল' },
+  { tamil: 'Udavi', meaning: 'Help!', script: 'உதவி!', benPron: 'উদভি', benMean: 'সাহায্য!' },
+  { tamil: 'Veetuku poganum', meaning: 'I need to go home', script: 'வீட்டுக்கு போகணும்', benPron: 'ভীটুকু পোগানুম', benMean: 'আমি বাড়ি যেতে চাই' },
+  { tamil: 'Romba nalla irukku', meaning: 'Very good!', script: 'ரொம்ப நல்லா இருக்கு', benPron: 'রোম্বা নাল্লা ইরুক্কু', benMean: 'খুব ভালো!' },
+  { tamil: 'Puriyala', meaning: 'I don\'t understand', script: 'புரியல', benPron: 'পুরিয়ালা', benMean: 'বুঝতে পারছি না' },
+  { tamil: 'Oru nimisham', meaning: 'One moment', script: 'ஒரு நிமிஷம்', benPron: 'ওরু নিমিশম', benMean: 'এক মিনিট' },
 ];
 
 /* ──────────────── Matrimony Constants ──────────────── */
@@ -518,248 +322,3 @@ export const HOBBIES_LIST = [
 
 export const RELIGIONS = ['Hindu', 'Muslim', 'Christian', 'Buddhist', 'Jain', 'Sikh', 'Other'] as const;
 
-export const CASTE_MAPPING: Record<string, readonly string[]> = {
-  Hindu: [
-    'Aguri',
-    'Baidya',
-    'Baishya / Vaishya',
-    'Brahmin',
-    'Kansari',
-    'Kayastha',
-    'Mahishya',
-    'Namasudra',
-    'Rajput',
-    'Sadgop',
-    'Suri',
-    'Tambuli',
-    'Tili',
-    'Other'
-  ],
-  Muslim: [
-    'Hanafi',
-    'Pathan',
-    'Shafi',
-    'Sheikh',
-    'Syed',
-    'Other'
-  ],
-  Christian: [
-    'Baptist',
-    'Methodist',
-    'Orthodox',
-    'Protestant',
-    'Roman Catholic',
-    'Other'
-  ],
-  Buddhist: [
-    'Mahayana',
-    'Theravada',
-    'Vajrayana',
-    'Other'
-  ],
-  Jain: [
-    'Digambara',
-    'Shvetambara',
-    'Other'
-  ],
-  Sikh: [
-    'Arora',
-    'Jat',
-    'Khatri',
-    'Ramgarhia',
-    'Other'
-  ],
-  Other: ['Other']
-} as const;
-
-export const NAKSHATRAS = [
-  'Ashwini', 'Bharani', 'Krittika', 'Rohini', 'Mrigashirsha', 'Ardra',
-  'Punarvasu', 'Pushya', 'Ashlesha', 'Magha', 'Purva Phalguni', 'Uttara Phalguni',
-  'Hasta', 'Chitra', 'Swati', 'Vishakha', 'Anuradha', 'Jyeshtha', 'Mula',
-  'Purva Ashadha', 'Uttara Ashadha', 'Shravana', 'Dhanishta', 'Shatabhisha',
-  'Purva Bhadrapada', 'Uttara Bhadrapada', 'Revati'
-] as const;
-
-export const SUBCASTE_MAPPING: Record<string, readonly string[]> = {
-  // Hindu
-  Brahmin: ['Barendra', 'Bhumihar', 'Kanyakubja', 'Kulin', 'Other', 'Rarhi', 'Saraswat', 'Srotriya', 'Vaidik'],
-  Kayastha: ['Bangaja', 'Dakshin Rarh', 'Kulin', 'Maulik', 'Other', 'Uttar Rarh'],
-  Baidya: ['Das', 'Gupta', 'Kulin', 'Other', 'Sen'],
-  Namasudra: ['Namasudra', 'Other'],
-  Mahishya: ['Mahishya', 'Other'],
-  Sadgop: ['Sadgop', 'Other'],
-  Tili: ['Tili', 'Other'],
-  Tambuli: ['Tambuli', 'Other'],
-  Suri: ['Suri', 'Other'],
-  Kansari: ['Kansari', 'Other'],
-  Aguri: ['Ugra Kshatriya', 'Other'],
-  Rajput: ['Rajput', 'Other'],
-  'Baishya / Vaishya': ['Banik', 'Other', 'Saha'],
-
-  // Muslim
-  Sheikh: ['Sheikh', 'Other'],
-  Syed: ['Syed', 'Other'],
-  Pathan: ['Pathan', 'Other'],
-  Hanafi: ['Hanafi', 'Other'],
-  Shafi: ['Shafi', 'Other'],
-
-  // Christian
-  'Roman Catholic': ['Roman Catholic', 'Other'],
-  Protestant: ['Protestant', 'Other'],
-  Orthodox: ['Orthodox', 'Other'],
-  Baptist: ['Baptist', 'Other'],
-  Methodist: ['Methodist', 'Other'],
-
-  // Buddhist
-  Mahayana: ['Mahayana', 'Other'],
-  Theravada: ['Theravada', 'Other'],
-  Vajrayana: ['Vajrayana', 'Other'],
-
-  // Jain
-  Digambara: ['Digambara', 'Other'],
-  Shvetambara: ['Shvetambara', 'Other'],
-
-  // Sikh
-  Arora: ['Arora', 'Other'],
-  Jat: ['Jat', 'Other'],
-  Khatri: ['Khatri', 'Other'],
-  Ramgarhia: ['Ramgarhia', 'Other'],
-
-  // Fallbacks / Other
-  Other: ['Other']
-} as const;
-
-export const RAASIS = [
-  'Mesha (Aries)',
-  'Vrishabha (Taurus)',
-  'Mithuna (Gemini)',
-  'Karka (Cancer)',
-  'Simha (Leo)',
-  'Kanya (Virgo)',
-  'Tula (Libra)',
-  'Vrishchika (Scorpio)',
-  'Dhanu (Sagittarius)',
-  'Makara (Capricorn)',
-  'Kumbha (Aquarius)',
-  'Meena (Pisces)'
-] as const;
-
-export const RAASI_NAKSHATRAS_MAPPING: Record<string, readonly string[]> = {
-  'Mesha (Aries)': ['Ashwini', 'Bharani', 'Krittika'],
-  'Vrishabha (Taurus)': ['Krittika', 'Rohini', 'Mrigashirsha'],
-  'Mithuna (Gemini)': ['Mrigashirsha', 'Ardra', 'Punarvasu'],
-  'Karka (Cancer)': ['Punarvasu', 'Pushya', 'Ashlesha'],
-  'Simha (Leo)': ['Magha', 'Purva Phalguni', 'Uttara Phalguni'],
-  'Kanya (Virgo)': ['Uttara Phalguni', 'Hasta', 'Chitra'],
-  'Tula (Libra)': ['Chitra', 'Swati', 'Vishakha'],
-  'Vrishchika (Scorpio)': ['Vishakha', 'Anuradha', 'Jyeshtha'],
-  'Dhanu (Sagittarius)': ['Mula', 'Purva Ashadha', 'Uttara Ashadha'],
-  'Makara (Capricorn)': ['Uttara Ashadha', 'Shravana', 'Dhanishta'],
-  'Kumbha (Aquarius)': ['Dhanishta', 'Shatabhisha', 'Purva Bhadrapada'],
-  'Meena (Pisces)': ['Purva Bhadrapada', 'Uttara Bhadrapada', 'Revati']
-} as const;
-
-export const FIELDS_OF_STUDY = [
-  'Computer Science',
-  'Information Technology',
-  'Electronics & Communication',
-  'Mechanical Engineering',
-  'Electrical Engineering',
-  'Civil Engineering',
-  'Business Administration (BBA/MBA)',
-  'Commerce (B.Com/M.Com)',
-  'Science (B.Sc/M.Sc)',
-  'Arts & Humanities (B.A/M.A)',
-  'Medicine / Dental (MBBS/BDS)',
-  'Pharmacy (B.Pharm/M.Pharm)',
-  'Law (LLB/LLM)',
-  'Chartered Accountancy (CA)',
-  'Other'
-] as const;
-
-export const INSTITUTIONS = [
-  'IIT Madras',
-  'IIT Kharagpur',
-  'Jadavpur University',
-  'Calcutta University',
-  'Anna University',
-  'SRM University',
-  'VIT University',
-  'NIT Trichy',
-  'BITS Pilani',
-  'St. Xavier\'s College',
-  'Presidency University',
-  'Other'
-] as const;
-
-export const PROFESSIONS = [
-  'Software Engineer / Developer',
-  'IT Professional',
-  'Project Manager',
-  'Business Analyst',
-  'Doctor / Surgeon',
-  'Dentist',
-  'Nurse / Healthcare Professional',
-  'Teacher / Professor',
-  'Chartered Accountant (CA)',
-  'Banker / Financial Analyst',
-  'Civil Servant / IAS / IPS',
-  'Lawyer / Legal Consultant',
-  'Architect',
-  'HR Professional',
-  'Marketing / Sales Executive',
-  'Business Owner / Entrepreneur',
-  'Homemaker',
-  'Other'
-] as const;
-
-export const COMPANIES = [
-  'TCS (Tata Consultancy Services)',
-  'Infosys',
-  'Wipro',
-  'Cognizant (CTS)',
-  'Accenture',
-  'IBM',
-  'Capgemini',
-  'HCLTech',
-  'Microsoft',
-  'Google',
-  'Amazon',
-  'Government Sector',
-  'Banking Sector',
-  'Other'
-] as const;
-
-export const WORK_CITIES = [
-  'Chennai',
-  'Kolkata',
-  'Bengaluru',
-  'Hyderabad',
-  'Mumbai',
-  'Pune',
-  'Delhi NCR',
-  'Noida',
-  'Gurugram',
-  'Coimbatore',
-  'Madurai',
-  'Trichy',
-  'Salem',
-  'Other'
-] as const;
-
-export const CHENNAI_ZONES = [
-  'North Chennai (Tondiarpet, Royapuram, Thiru. Vi. Ka Nagar)',
-  'Central Chennai (Anna Nagar, Teynampet, Kodambakkam)',
-  'South Chennai (Adyar, Velachery, Sholinganallur)',
-  'West Chennai (Ambattur, Valasaravakkam, Alandur)',
-  'Suburbs (Tambaram, Avadi, Pallavaram)',
-];
-
-export const ESEVA_CENTRES_CHENNAI = [
-  { id: 1, name: 'e-Seva Centre, Ripon Building', address: 'Ripon Building Campus, Chennai Corporation, Park Town, Chennai', type: 'Arasu e-Seva', zone: 'Central Chennai', phone: '1100 (Toll Free)' },
-  { id: 2, name: 'e-Seva Centre, Tondiarpet Zonal Office', address: 'No. 266, Tiruvottiyur High Road, Tondiarpet, Chennai', type: 'Arasu e-Seva', zone: 'North Chennai', phone: '1100 (Toll Free)' },
-  { id: 3, name: 'e-Seva Centre, Adyar Zonal Office', address: 'No. 115, Dr. Muthulakshmi Salai, Adyar, Chennai', type: 'Arasu e-Seva', zone: 'South Chennai', phone: '1100 (Toll Free)' },
-  { id: 4, name: 'e-Seva Centre, Ambattur Zonal Office', address: 'No. 536, CTH Road, Ambattur, Chennai', type: 'Arasu e-Seva', zone: 'West Chennai', phone: '1100 (Toll Free)' },
-  { id: 5, name: 'e-Seva Centre, Tambaram Taluk Office', address: 'Taluk Office Campus, GST Road, Tambaram', type: 'Arasu e-Seva', zone: 'Suburbs', phone: '1100 (Toll Free)' },
-  { id: 6, name: 'e-Seva Centre, Anna Nagar Zonal Office', address: '2nd Avenue, Anna Nagar East, Chennai', type: 'Arasu e-Seva', zone: 'Central Chennai', phone: '1100 (Toll Free)' },
-];

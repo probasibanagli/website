@@ -24,8 +24,8 @@ export function canAccess(
   module: ModuleKey,
   requiredLevel: PermissionLevel = 'view'
 ): boolean {
-  // Super Admin only has access to user/admin management (users)
-  if (role === 'superadmin') return module === 'users';
+  // Super Admin has full access to everything
+  if (role === 'superadmin') return true;
 
   // Regular users have no admin access
   if (role === 'user') return false;
@@ -45,12 +45,10 @@ export function getAccessibleModules(
 ): ModuleKey[] {
   const ALL_MODULES: ModuleKey[] = [
     'stay', 'food', 'travel', 'emergency',
-    'community', 'services', 'blog', 'users', 'matrimony',
-    'blood_bank', 'ambulance'
+    'community', 'services', 'blog', 'users'
   ];
 
-  // Super Admin only sees User/Admin Management
-  if (role === 'superadmin') return ['users'];
+  if (role === 'superadmin') return ALL_MODULES;
   if (role === 'user' || !permissions) return [];
 
   return ALL_MODULES.filter((mod) => hasPermission(permissions[mod] ?? 'none', 'view'));
@@ -69,9 +67,6 @@ export function getDefaultPermissions(role: UserRole): ModulePermissions {
     services: 'none',
     blog: 'none',
     users: 'none',
-    matrimony: 'none',
-    blood_bank: 'none',
-    ambulance: 'none',
   };
 
   const full: ModulePermissions = {
@@ -83,9 +78,6 @@ export function getDefaultPermissions(role: UserRole): ModulePermissions {
     services: 'manage',
     blog: 'manage',
     users: 'manage',
-    matrimony: 'manage',
-    blood_bank: 'manage',
-    ambulance: 'manage',
   };
 
   switch (role) {
@@ -105,8 +97,7 @@ export function getDefaultPermissions(role: UserRole): ModulePermissions {
  */
 export const ALL_MODULES: ModuleKey[] = [
   'stay', 'food', 'travel', 'emergency',
-  'community', 'services', 'blog', 'users', 'matrimony',
-  'blood_bank', 'ambulance'
+  'community', 'services', 'blog', 'users'
 ];
 
 /**

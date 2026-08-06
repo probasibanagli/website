@@ -19,16 +19,14 @@ interface StatCard {
 }
 
 export default function AdminDashboard() {
-  const { profile, firebaseUser } = useAuth();
+  const { profile } = useAuth();
   const [stats, setStats] = useState<StatCard[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function loadStats() {
       try {
-        const collections = profile?.role === 'superadmin' ? [
-          { name: 'users', label: 'Total Users & Admins', icon: <Users className="w-5 h-5" />, color: 'text-blue-400', bg: 'bg-blue-500/10' }
-        ] : [
+        const collections = [
           { name: 'users', label: 'Total Users', icon: <Users className="w-5 h-5" />, color: 'text-blue-400', bg: 'bg-blue-500/10' },
           { name: 'listings', label: 'Stay Listings', icon: <Home className="w-5 h-5" />, color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
           { name: 'food_listings', label: 'Food Listings', icon: <UtensilsCrossed className="w-5 h-5" />, color: 'text-orange-400', bg: 'bg-orange-500/10' },
@@ -40,25 +38,10 @@ export default function AdminDashboard() {
         const results: StatCard[] = [];
         for (const col of collections) {
           try {
-            let count = 0;
-            if (col.name === 'users') {
-              const token = firebaseUser ? await firebaseUser.getIdToken() : 'mock-bypass-token';
-              const res = await fetch('/api/admin/users', {
-                headers: { 'Authorization': `Bearer ${token}` }
-              });
-              if (res.ok) {
-                const data = await res.json();
-                count = data.users?.length || 0;
-              } else {
-                throw new Error('Failed to fetch users');
-              }
-            } else {
-              const snap = await getDocs(query(collection(db, col.name), limit(1000)));
-              count = snap.size;
-            }
+            const snap = await getDocs(query(collection(db, col.name), limit(1000)));
             results.push({
               label: col.label,
-              value: count.toString(),
+              value: snap.size.toString(),
               icon: col.icon,
               color: col.color,
               bg: col.bg,
@@ -74,8 +57,8 @@ export default function AdminDashboard() {
         setLoading(false);
       }
     }
-    if (profile) loadStats();
-  }, [profile]);
+    loadStats();
+  }, []);
 
   return (
     <div className="space-y-6">
@@ -153,14 +136,12 @@ export default function AdminDashboard() {
             <h3 className="text-sm font-semibold text-text-primary">Quick Actions</h3>
           </div>
           <div className="grid grid-cols-2 gap-2">
-            {(profile?.role === 'superadmin' ? [
-              { label: 'Manage Users & Admins', href: '/admin/users', color: 'bg-accent/10 text-accent hover:bg-accent/20 col-span-2' }
-            ] : [
+            {[
               { label: 'Add Stay', href: '/admin/stay', color: 'bg-primary/5 text-primary hover:bg-primary/10' },
               { label: 'Add Food', href: '/admin/food', color: 'bg-orange-500/10 text-orange-600 hover:bg-orange-500/20' },
               { label: 'Write Blog', href: '/admin/blog', color: 'bg-purple-500/10 text-purple-600 hover:bg-purple-500/20' },
               { label: 'Manage Users', href: '/admin/users', color: 'bg-accent/10 text-accent hover:bg-accent/20' },
-            ]).map((action) => (
+            ].map((action) => (
               <a
                 key={action.label}
                 href={action.href}

@@ -63,33 +63,21 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // 2. Not cached or expired — fetch from Google Places API (New)
+    // 2. Not cached or expired — fetch from Google Places API
     const mapsQuery = extractQueryFromMapsUrl(mapsUrl);
-    const queryText = mapsQuery || (city ? `${name}, ${city}` : name);
+    const query = mapsQuery || (city ? `${name}, ${city}` : name);
     
-    const searchUrl = 'https://places.googleapis.com/v1/places:searchText';
-    const searchRes = await fetch(searchUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Goog-Api-Key': apiKey,
-        'X-Goog-FieldMask': 'places.id,places.displayName,places.photos'
-      },
-      body: JSON.stringify({
-        textQuery: queryText
-      })
-    });
+    const searchUrl = `https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${encodeURIComponent(query)}&inputtype=textquery&fields=photos,name,place_id&key=${apiKey}`;
 
-    if (!searchRes.ok) {
-      const errText = await searchRes.text();
-      console.warn(`Google Places API v1 returned HTTP ${searchRes.status}:`, errText);
-      return new NextResponse(null, { status: 204 });
-    }
-
+    const searchRes = await fetch(searchUrl);
     const searchData = await searchRes.json();
 
-    if (!searchData.places?.length || !searchData.places[0].photos?.length) {
-      // Clean query with no results or no photos - safe to cache
+    if (
+      searchData.status !== 'OK' ||
+      !searchData.candidates?.length ||
+      !searchData.candidates[0].photos?.length
+    ) {
+      // No photo found — cache the miss in Firestore
       await cacheRef.set({
         name,
         city: city || '',
@@ -101,18 +89,17 @@ export async function GET(request: NextRequest) {
       return new NextResponse(null, { status: 204 });
     }
 
-    const photoObj = searchData.places[0].photos[0];
-    const photoName = photoObj.name; // Format: "places/PLACE_ID/photos/PHOTO_REF"
+    const photoReference = searchData.candidates[0].photos[0].photo_reference;
 
-    // Build the photo URL (Google will redirect to the actual image media stream)
-    const photoUrl = `https://places.googleapis.com/v1/${photoName}/media?maxWidthPx=600&key=${apiKey}`;
+    // Build the photo URL (Google will redirect to the actual image)
+    const photoUrl = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=600&photo_reference=${photoReference}&key=${apiKey}`;
 
     // 3. Cache the success in Firestore
     await cacheRef.set({
       name,
       city: city || '',
       photoUrl,
-      placeId: searchData.places[0].id,
+      placeId: searchData.candidates[0].place_id,
       fetchedAt: Date.now(),
       updatedAt: new Date().toISOString()
     }, { merge: true });

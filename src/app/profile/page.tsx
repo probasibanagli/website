@@ -456,15 +456,13 @@ export default function ProfilePage() {
             </Link>
           )}
 
-          <Link href="/settings">
-            <Card className="flex items-center gap-4 hover:border-primary/30 transition-all cursor-pointer border-2 border-transparent">
-              <Settings className="w-6 h-6 text-primary" />
-              <div>
-                <h3 className="font-bold">Account Settings</h3>
-                <p className="text-sm text-text-muted">Update your profile information</p>
-              </div>
-            </Card>
-          </Link>
+          <Card className="flex items-center gap-4 opacity-60">
+            <Settings className="w-6 h-6 text-text-muted" />
+            <div>
+              <h3 className="font-bold">Account Settings</h3>
+              <p className="text-sm text-text-muted">Update your profile information</p>
+            </div>
+          </Card>
 
           <button onClick={handleLogout} className="w-full text-left cursor-pointer">
             <Card className="flex items-center gap-4 hover:border-red-300 transition-all border-2 border-transparent">

@@ -1,6 +1,7 @@
 'use client';
 
 import type { MatrimonialProfile } from '@/types';
+import { sampleMatrimonialProfiles } from '@/data/sample-data';
 
 const PROFILES_KEY = 'pb_matrimony_profiles';
 const MY_PROFILE_KEY = 'pb_matrimony_my_profile';
@@ -39,7 +40,14 @@ export function generateProfileId(): string {
 /* ── Profile CRUD ── */
 
 export function getAllProfiles(): MatrimonialProfile[] {
-  return getFromStorage<MatrimonialProfile[]>(PROFILES_KEY, []);
+  const userProfiles = getFromStorage<MatrimonialProfile[]>(PROFILES_KEY, []);
+  // Merge sample + user-created, dedup by id
+  const ids = new Set(userProfiles.map(p => p.id));
+  const merged = [...userProfiles];
+  for (const sp of sampleMatrimonialProfiles) {
+    if (!ids.has(sp.id)) merged.push(sp);
+  }
+  return merged;
 }
 
 export function getProfile(id: string): MatrimonialProfile | undefined {
@@ -167,7 +175,7 @@ export interface MatrimonyFilters {
 }
 
 export function searchProfiles(filters: MatrimonyFilters): MatrimonialProfile[] {
-  let profiles = getAllProfiles().filter(p => p.published && (p.status === 'approved' || p.status === 'verified'));
+  let profiles = getAllProfiles().filter(p => p.published && p.status !== 'draft' && p.status !== 'rejected');
 
   if (filters.gender) profiles = profiles.filter(p => p.gender === filters.gender);
   if (filters.ageMin) profiles = profiles.filter(p => (p.age || 0) >= filters.ageMin!);
@@ -204,75 +212,4 @@ export function sortProfiles(profiles: MatrimonialProfile[], sort: SortOption): 
     default:
       return sorted;
   }
-}
-
-/* ── IndexedDB Media Storage Helpers ── */
-
-export function storeMedia(key: string, file: Blob): Promise<string> {
-  if (typeof window === 'undefined') return Promise.resolve('');
-  return new Promise((resolve, reject) => {
-    const request = indexedDB.open('pb_matrimony_media', 1);
-    request.onupgradeneeded = () => {
-      if (!request.result.objectStoreNames.contains('media')) {
-        request.result.createObjectStore('media');
-      }
-    };
-    request.onsuccess = () => {
-      const db = request.result;
-      const tx = db.transaction('media', 'readwrite');
-      tx.objectStore('media').put(file, key);
-      tx.oncomplete = () => {
-        resolve(URL.createObjectURL(file));
-      };
-      tx.onerror = () => reject(tx.error);
-    };
-    request.onerror = () => reject(request.error);
-  });
-}
-
-export function getMedia(key: string): Promise<string | null> {
-  if (typeof window === 'undefined') return Promise.resolve(null);
-  return new Promise((resolve) => {
-    const request = indexedDB.open('pb_matrimony_media', 1);
-    request.onsuccess = () => {
-      const db = request.result;
-      if (!db.objectStoreNames.contains('media')) {
-        resolve(null);
-        return;
-      }
-      const tx = db.transaction('media', 'readonly');
-      const req = tx.objectStore('media').get(key);
-      req.onsuccess = () => {
-        if (req.result) {
-          resolve(URL.createObjectURL(req.result));
-        } else {
-          resolve(null);
-        }
-      };
-      req.onerror = () => resolve(null);
-    };
-    request.onerror = () => resolve(null);
-  });
-}
-
-/* ── Admin Management Functions ── */
-
-export function adminUpdateProfileStatus(profileId: string, status: 'pending' | 'verified' | 'rejected' | 'married'): void {
-  const userProfiles = getFromStorage<MatrimonialProfile[]>(PROFILES_KEY, []);
-  const idx = userProfiles.findIndex(p => p.id === profileId);
-  
-  if (idx >= 0) {
-    userProfiles[idx] = {
-      ...userProfiles[idx],
-      status,
-      published: status === 'verified',
-      updated_at: new Date().toISOString()
-    };
-    setToStorage(PROFILES_KEY, userProfiles);
-  }
-}
-
-export function adminDeleteProfile(profileId: string): void {
-  const userProfiles = getFromStorage<MatrimonialProfile[]>(PROFILES_KEY, []);
-  setToStorage(PROFILES_KEY, userProfiles.filter(p => p.id !== profileId));
 }

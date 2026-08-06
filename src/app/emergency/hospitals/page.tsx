@@ -8,75 +8,20 @@ import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/card';
 import { sampleHospitals } from '@/data/sample-data';
 import { CITIES, TREATMENT_TYPES } from '@/lib/constants';
-import { db } from '@/lib/firebase';
-import { collection, getDocs } from 'firebase/firestore';
-import { COLLECTIONS } from '@/lib/firestore/collections';
-import type { Hospital } from '@/types';
-
-function ListingCoverImage({ name, city, mapsUrl, fallbackIcon }: { 
-  name: string; 
-  city?: string; 
-  mapsUrl?: string; 
-  fallbackIcon: React.ReactNode;
-}) {
-  const [imgSrc, setImgSrc] = useState<string | null>(
-    `/api/public/place-photo?name=${encodeURIComponent(name)}&city=${encodeURIComponent(city || '')}&mapsUrl=${encodeURIComponent(mapsUrl || '')}`
-  );
-  const [error, setError] = useState(false);
-
-  if (error || !imgSrc) {
-    return (
-      <div className="absolute inset-0 bg-gradient-to-br from-red-50 to-orange-50 flex items-center justify-center">
-        <div className="text-red-500 opacity-40 scale-[2.5]">
-          {fallbackIcon}
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <img
-      src={imgSrc}
-      alt={name}
-      onError={() => setError(true)}
-      className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-      loading="lazy"
-    />
-  );
-}
 
 export default function EmergencyHospitalsPage() {
   const [city, setCity] = useState('');
   const [treatment, setTreatment] = useState('');
   const [search, setSearch] = useState('');
-  const [hospitals, setHospitals] = useState<Hospital[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  React.useEffect(() => {
-    const fetchHospitals = async () => {
-      try {
-        const snap = await getDocs(collection(db, COLLECTIONS.hospitals));
-        const data = snap.docs.map(doc => doc.data() as Hospital);
-        // If DB is empty, fallback to sample data for display
-        setHospitals(data.length > 0 ? data : sampleHospitals);
-      } catch (err) {
-        console.error("Error fetching hospitals", err);
-        setHospitals(sampleHospitals);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchHospitals();
-  }, []);
 
   const filtered = useMemo(() => {
-    return hospitals.filter((h) => {
+    return sampleHospitals.filter((h) => {
       if (city && h.city !== city) return false;
-      if (treatment && h.specializations && !h.specializations.includes(treatment)) return false;
-      if (search && h.name && !h.name.toLowerCase().includes(search.toLowerCase())) return false;
+      if (treatment && !h.specializations.includes(treatment)) return false;
+      if (search && !h.name.toLowerCase().includes(search.toLowerCase())) return false;
       return true;
     });
-  }, [city, treatment, search, hospitals]);
+  }, [city, treatment, search]);
 
   return (
     <div className="min-h-screen bg-surface">
@@ -118,37 +63,26 @@ export default function EmergencyHospitalsPage() {
             </div>
 
             {/* New Subsections Highlight */}
-            <div className="flex flex-col md:flex-row gap-4">
-              <Link href="/emergency/hospitals/bengali-hospitals" className="group flex-1">
-                <div className="bg-white p-5 rounded-2xl border border-red-100 shadow-sm hover:shadow-md transition-all h-full">
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Link href="/emergency/hospitals/bengali-hospitals" className="group">
+                <div className="bg-white p-5 rounded-2xl border border-red-100 shadow-sm hover:shadow-md transition-all h-full max-w-[250px]">
                    <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                      <Building2 className="w-6 h-6 text-primary" />
                    </div>
-                   <h3 className="font-bold text-text-primary mb-1">Hospital Directory</h3>
+                   <h3 className="font-bold text-text-primary mb-1">Bengali Hospitals</h3>
                    <p className="text-sm text-text-muted mb-4">Dedicated directory of Bengali friendly hospitals.</p>
                    <span className="text-primary text-sm font-semibold flex items-center">Explore <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" /></span>
                 </div>
               </Link>
               
-              <Link href="/emergency/hospitals/bengali-doctors" className="group flex-1">
-                <div className="bg-white p-5 rounded-2xl border border-red-100 shadow-sm hover:shadow-md transition-all h-full">
+              <Link href="/emergency/hospitals/bengali-doctors" className="group">
+                <div className="bg-white p-5 rounded-2xl border border-red-100 shadow-sm hover:shadow-md transition-all h-full max-w-[250px]">
                    <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                      <UserRound className="w-6 h-6 text-primary" />
                    </div>
                    <h3 className="font-bold text-text-primary mb-1">Bengali Doctors</h3>
                    <p className="text-sm text-text-muted mb-4">Connect with experienced Bengali-speaking doctors.</p>
                    <span className="text-primary text-sm font-semibold flex items-center">View Doctors <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" /></span>
-                </div>
-              </Link>
-              
-              <Link href="/emergency/hospitals/bengali-staff" className="group flex-1">
-                <div className="bg-white p-5 rounded-2xl border border-red-100 shadow-sm hover:shadow-md transition-all h-full">
-                   <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                     <UserRound className="w-6 h-6 text-primary" />
-                   </div>
-                   <h3 className="font-bold text-text-primary mb-1">Bengali Staff</h3>
-                   <p className="text-sm text-text-muted mb-4">Find Bengali-speaking support and administration.</p>
-                   <span className="text-primary text-sm font-semibold flex items-center">View Staff <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" /></span>
                 </div>
               </Link>
             </div>
@@ -186,64 +120,53 @@ export default function EmergencyHospitalsPage() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {loading ? (
-           <div className="text-center py-20 animate-pulse"><div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div><p className="text-text-muted">Loading hospitals...</p></div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filtered.map((hospital) => (
-            <Card key={hospital.id} padding="none" className="overflow-hidden group flex flex-col h-full">
-              {/* Header Image */}
-              <div className="relative h-40 bg-gradient-to-br from-red-50 to-orange-50 overflow-hidden">
-                <ListingCoverImage
-                  name={hospital.name}
-                  city={hospital.city}
-                  mapsUrl={hospital.google_maps_url}
-                  fallbackIcon={<Stethoscope className="w-8 h-8 text-red-500" />}
-                />
-                <div className="absolute top-3 left-3 flex gap-2">
-                  {hospital.is_24_7 && <Badge variant="red"><Clock className="w-3 h-3 mr-1" />24/7</Badge>}
-                  {hospital.has_bengali_doctor && <Badge variant="bengali">🗣️ Bengali Doctor</Badge>}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filtered.map((hospital) => (
+            <Card key={hospital.id} className="group">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-red-50 flex items-center justify-center shrink-0">
+                  <Stethoscope className="w-6 h-6 text-red-500" />
                 </div>
-              </div>
-
-              {/* Card Body */}
-              <div className="p-5 flex-1 flex flex-col justify-between">
-                <div>
+                <div className="flex-1">
                   <Link href={`/emergency/hospitals/${hospital.id}`}>
                     <h3 className="text-lg font-bold text-text-primary group-hover:text-primary transition-colors">{hospital.name}</h3>
                   </Link>
                   <div className="flex items-center gap-1.5 mt-1 text-sm text-text-muted">
                     <MapPin className="w-3.5 h-3.5" />{hospital.area}, {hospital.city}
                   </div>
-                  
-                  <div className="flex flex-wrap gap-1.5 mt-3">
-                    {hospital.specializations.slice(0, 4).map((s) => (
-                      <span key={s} className="px-2 py-0.5 bg-surface rounded-md text-xs text-text-muted">{s}</span>
-                    ))}
-                  </div>
                 </div>
+              </div>
 
-                <div className="flex items-center gap-2 mt-6 pt-4 border-t border-border">
-                  {hospital.emergency_phone && (
-                    <a href={`tel:${hospital.emergency_phone}`} className="flex-1">
-                      <Button variant="danger" size="sm" className="w-full"><Phone className="w-3.5 h-3.5 mr-1.5" /> Emergency</Button>
-                    </a>
-                  )}
-                  {hospital.google_maps_url && (
-                    <a href={hospital.google_maps_url} target="_blank" rel="noopener noreferrer">
-                      <Button variant="ghost" size="sm"><MapPin className="w-4 h-4" /></Button>
-                    </a>
-                  )}
-                  <Link href={`/emergency/hospitals/${hospital.id}`}>
-                    <Button variant="outline" size="sm">Details</Button>
-                  </Link>
-                </div>
+              <div className="flex flex-wrap gap-1.5 mt-3">
+                {hospital.is_24_7 && <Badge variant="red"><Clock className="w-3 h-3 mr-1" />24/7</Badge>}
+                {hospital.has_bengali_doctor && <Badge variant="bengali">🗣️ Bengali Doctor</Badge>}
+              </div>
+
+              <div className="flex flex-wrap gap-1.5 mt-2">
+                {hospital.specializations.slice(0, 4).map((s) => (
+                  <span key={s} className="px-2 py-0.5 bg-surface rounded-md text-xs text-text-muted">{s}</span>
+                ))}
+              </div>
+
+              <div className="flex items-center gap-2 mt-4 pt-4 border-t border-border">
+                {hospital.emergency_phone && (
+                  <a href={`tel:${hospital.emergency_phone}`} className="flex-1">
+                    <Button variant="danger" size="sm" className="w-full"><Phone className="w-3.5 h-3.5 mr-1.5" /> Emergency</Button>
+                  </a>
+                )}
+                {hospital.google_maps_url && (
+                  <a href={hospital.google_maps_url} target="_blank" rel="noopener noreferrer">
+                    <Button variant="ghost" size="sm"><MapPin className="w-4 h-4" /></Button>
+                  </a>
+                )}
+                <Link href={`/emergency/hospitals/${hospital.id}`}>
+                  <Button variant="outline" size="sm">Details</Button>
+                </Link>
               </div>
             </Card>
           ))}
         </div>
-        )}
-        {!loading && filtered.length === 0 && (<div className="text-center py-20"><p className="text-5xl mb-4">🏥</p><h3 className="text-xl font-bold mb-2">No hospitals found</h3><p className="text-text-muted">Try different filters.</p></div>)}
+        {filtered.length === 0 && (<div className="text-center py-20"><p className="text-5xl mb-4">🏥</p><h3 className="text-xl font-bold mb-2">No hospitals found</h3><p className="text-text-muted">Try different filters.</p></div>)}
       </div>
     </div>
   );

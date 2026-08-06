@@ -5,65 +5,20 @@ import Link from 'next/link';
 import {
   Search, MapPin, GraduationCap, Briefcase, CheckCircle2, Lock, Heart,
   SlidersHorizontal, X, ChevronDown, Users, Star, ArrowUpDown, Ruler,
-  Utensils, User, UserPlus, AlertCircle, Mail, Phone, ArrowRight,
+  Utensils, User,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { CustomSelect } from '@/components/ui/CustomSelect';
-
+import { sampleMatrimonialProfiles } from '@/data/sample-data';
 import { CITIES, MARITAL_STATUSES, DIET_TYPES, EDUCATION_LEVELS, RELIGIONS } from '@/lib/constants';
-import { getMyProfile, searchProfiles, sortProfiles, getAllProfiles, type MatrimonyFilters, type SortOption, getMedia } from '@/lib/matrimony-service';
-import { useAuth } from '@/lib/auth/AuthContext';
-import { calculateMatchPercentage } from '@/lib/match-utils';
-import type { MatrimonialProfile } from '@/types';
-
-function ProfileCardAvatar({ profile, className = "w-16 h-16" }: { profile: any; className?: string }) {
-  const [photoUrl, setPhotoUrl] = useState<string | null>(null);
-
-  useEffect(() => {
-    const loadAvatar = async () => {
-      if (profile.photos && Array.isArray(profile.photos)) {
-        const key = profile.photos.find((k: string) => k);
-        if (key) {
-          const url = await getMedia(key);
-          if (url) {
-            setPhotoUrl(url);
-          }
-        }
-      }
-    };
-    loadAvatar();
-  }, [profile.photos]);
-
-  if (photoUrl) {
-    return (
-      <div className={`${className} rounded-2xl overflow-hidden shrink-0 border border-border shadow-sm`}>
-        <img src={photoUrl} alt={profile.full_name} className="w-full h-full object-cover" />
-      </div>
-    );
-  }
-
-  return (
-    <div className={`${className} rounded-2xl flex items-center justify-center text-xl font-bold shrink-0 shadow-sm ${
-      profile.gender === 'male'
-        ? 'bg-gradient-to-br from-blue-100 to-blue-200 text-blue-600'
-        : 'bg-gradient-to-br from-pink-100 to-pink-200 text-pink-600'
-    }`}>
-      {profile.full_name?.split(' ').map((n: string) => n[0]).join('').slice(0, 2)}
-    </div>
-  );
-}
+import { getMyProfile, searchProfiles, sortProfiles, type MatrimonyFilters, type SortOption } from '@/lib/matrimony-service';
 
 export default function MatrimonialPage() {
-  const { firebaseUser, profile: userProfile, loading: authLoading } = useAuth();
   const [hasProfile, setHasProfile] = useState<boolean | null>(null);
-  const [myProfile, setMyProfile] = useState<MatrimonialProfile | null>(null);
 
   useEffect(() => {
-    const mp = getMyProfile();
-    setHasProfile(!!mp);
-    setMyProfile(mp);
+    setHasProfile(!!getMyProfile());
   }, []);
 
   const [filters, setFilters] = useState<MatrimonyFilters>({});
@@ -93,17 +48,15 @@ export default function MatrimonialPage() {
   const activeFilterCount = Object.values(filters).filter(v => v !== undefined && v !== '').length;
 
   // Stats
-  const allProfs = useMemo(() => getAllProfiles(), []);
-  const totalProfiles = allProfs.length;
-  const verifiedProfiles = allProfs.filter(p => p.verified).length;
-  const citiesCount = new Set(allProfs.map(p => p.city)).size;
+  const totalProfiles = sampleMatrimonialProfiles.length;
+  const verifiedProfiles = sampleMatrimonialProfiles.filter(p => p.verified).length;
+  const citiesCount = new Set(sampleMatrimonialProfiles.map(p => p.city)).size;
 
   return (
-    <div className="min-h-screen bg-surface bg-alpana">
+    <div className="min-h-screen bg-surface">
       {/* Hero Section */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-primary via-primary-dark to-[#7a2d14] border-b border-border/10">
-        <div className="absolute inset-0 bg-[url('/images/bengali_wedding_background.png')] bg-cover bg-center opacity-25 mix-blend-overlay" />
-        <div className="absolute inset-0 opacity-15">
+      <div className="relative overflow-hidden bg-gradient-to-br from-primary via-primary-dark to-[#7a2d14]">
+        <div className="absolute inset-0 opacity-10">
           <div className="absolute top-10 left-10 w-40 h-40 rounded-full bg-white/20 blur-3xl" />
           <div className="absolute bottom-10 right-10 w-60 h-60 rounded-full bg-accent/30 blur-3xl" />
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-white/5 blur-3xl" />
@@ -132,41 +85,16 @@ export default function MatrimonialPage() {
             </div>
 
             <div className="flex gap-3 animate-fade-in delay-200">
-              {authLoading ? (
-                <div className="h-11 w-40 bg-white/10 animate-pulse rounded-xl" />
-              ) : !firebaseUser ? (
-                <>
-                  <Link href="/auth/register">
-                    <Button variant="secondary" size="lg" className="shadow-lg flex items-center gap-2">
-                      <UserPlus className="w-5 h-5" /> Sign Up
-                    </Button>
-                  </Link>
-                  <Link href="/auth/login">
-                    <Button variant="outline" size="lg" className="border-white/30 text-white hover:bg-white/10 hover:text-white">
-                      Login
-                    </Button>
-                  </Link>
-                </>
-              ) : (!userProfile?.email_verified || !userProfile?.phone_verified) ? (
-                <Link href="/profile">
-                  <Button variant="secondary" size="lg" className="shadow-lg flex items-center gap-2">
-                    <AlertCircle className="w-5 h-5" /> Verify Account
-                  </Button>
-                </Link>
-              ) : (
-                <>
-                  <Link href="/community/matrimonial/register">
-                    <Button variant="secondary" size="lg" className="shadow-lg">
-                      <Heart className="w-5 h-5" /> Register Free
-                    </Button>
-                  </Link>
-                  <Link href="/community/matrimonial/dashboard">
-                    <Button variant="outline" size="lg" className="border-white/30 text-white hover:bg-white/10 hover:text-white">
-                      My Dashboard
-                    </Button>
-                  </Link>
-                </>
-              )}
+              <Link href="/community/matrimonial/register">
+                <Button variant="secondary" size="lg" className="shadow-lg">
+                  <Heart className="w-5 h-5" /> Register Free
+                </Button>
+              </Link>
+              <Link href="/community/matrimonial/dashboard">
+                <Button variant="outline" size="lg" className="border-white/30 text-white hover:bg-white/10 hover:text-white">
+                  My Dashboard
+                </Button>
+              </Link>
             </div>
           </div>
 
@@ -190,116 +118,10 @@ export default function MatrimonialPage() {
         </div>
       </div>
 
-      {hasProfile === null || authLoading ? (
+      {hasProfile === null ? (
         <div className="max-w-7xl mx-auto px-4 py-20 flex flex-col items-center justify-center gap-4">
           <div className="w-10 h-10 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
           <p className="text-sm text-text-muted">Loading profile status...</p>
-        </div>
-      ) : !firebaseUser ? (
-        <div className="max-w-4xl mx-auto px-4 py-16 animate-fade-in">
-          <Card className="relative overflow-hidden border border-primary/20 shadow-xl bg-white/80 backdrop-blur-md p-8 sm:p-12 text-center">
-            {/* Soft decorative background glow */}
-            <div className="absolute -top-20 -right-20 w-48 h-48 rounded-full bg-primary/10 blur-3xl" />
-            <div className="absolute -bottom-20 -left-20 w-48 h-48 rounded-full bg-accent/10 blur-3xl" />
-
-            <div className="relative z-10 flex flex-col items-center">
-              {/* Animated Lock Badge */}
-              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary-light to-accent-light flex items-center justify-center mb-6 shadow-md ring-4 ring-primary/10 animate-bounce">
-                <Lock className="w-8 h-8 text-primary" />
-              </div>
-
-              <h2 className="text-2xl sm:text-3xl font-bold font-display text-text-primary mb-3">
-                Unlock Matrimonial Profiles
-              </h2>
-              
-              <p className="text-text-muted max-w-xl mx-auto mb-8 text-sm sm:text-base leading-relaxed">
-                This matrimonial portal is exclusive to Bengali community members residing in Tamil Nadu. To protect the privacy of our brides and grooms, profile browsing is restricted to registered and verified members only.
-              </p>
-
-              {/* Feature Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-lg mx-auto mb-8 text-left">
-                {[
-                  { text: 'Browse 100+ verified profiles in Tamil Nadu', icon: '🔍' },
-                  { text: 'Filter by caste, profession, education, and city', icon: '🏛️' },
-                  { text: 'Send connection interests and chat directly', icon: '📩' },
-                  { text: 'Safe & secure environment with admin verification', icon: '🔒' },
-                ].map((item, idx) => (
-                  <div key={idx} className="flex items-start gap-2.5 p-3 rounded-xl bg-surface border border-border/50">
-                    <span className="text-lg shrink-0">{item.icon}</span>
-                    <span className="text-xs sm:text-sm text-text-muted leading-snug">{item.text}</span>
-                  </div>
-                ))}
-              </div>
-
-              {/* Call to Actions */}
-              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center w-full max-w-md">
-                <Link href="/auth/register" className="w-full sm:w-auto">
-                  <Button variant="primary" size="lg" className="w-full sm:px-8 shadow-lg shadow-primary/20 hover:scale-105 transition-all flex items-center justify-center gap-2">
-                    <UserPlus className="w-5 h-5" /> Sign Up Now
-                  </Button>
-                </Link>
-                <Link href="/auth/login" className="w-full sm:w-auto">
-                  <Button variant="outline" size="lg" className="w-full sm:px-8 border-border text-text-primary hover:bg-surface">
-                    Login to Account
-                  </Button>
-                </Link>
-              </div>
-
-              <p className="text-[11px] text-text-muted mt-6 max-w-xs">
-                By registering, you agree to our terms of service and consent to email & phone verification.
-              </p>
-            </div>
-          </Card>
-        </div>
-      ) : (!userProfile?.email_verified || !userProfile?.phone_verified) ? (
-        <div className="max-w-4xl mx-auto px-4 py-16 animate-fade-in">
-          <Card className="relative overflow-hidden border border-amber-200/60 shadow-xl bg-white/80 backdrop-blur-md p-8 sm:p-12 text-center animate-fade-in">
-            {/* Soft decorative background glow */}
-            <div className="absolute -top-20 -right-20 w-48 h-48 rounded-full bg-amber-100/30 blur-3xl" />
-            <div className="absolute -bottom-20 -left-20 w-48 h-48 rounded-full bg-orange-100/20 blur-3xl" />
-
-            <div className="relative z-10 flex flex-col items-center">
-              {/* Animated Warning Badge */}
-              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-amber-100 to-orange-100 flex items-center justify-center mb-6 shadow-md ring-4 ring-amber-500/10 animate-pulse">
-                <AlertCircle className="w-8 h-8 text-amber-600" />
-              </div>
-
-              <h2 className="text-2xl sm:text-3xl font-bold font-display text-text-primary mb-3">
-                Verification Required
-              </h2>
-              
-              <p className="text-text-muted max-w-xl mx-auto mb-8 text-sm sm:text-base leading-relaxed">
-                To protect the privacy of our brides and grooms, both your <strong>Email ID</strong> and <strong>Phone Number</strong> must be verified before you can access the matrimonial section.
-              </p>
-
-              {/* Status List */}
-              <div className="flex flex-col gap-3 max-w-md w-full mb-8 text-left mx-auto">
-                <div className={`p-4 rounded-xl border flex items-center justify-between ${userProfile?.email_verified ? 'bg-green-50 border-green-200 text-green-700' : 'bg-red-50 border-red-200 text-red-700'}`}>
-                  <span className="text-sm font-semibold flex items-center gap-2.5">
-                    <Mail className="w-4 h-4" /> Email Address {userProfile?.email && `(${userProfile.email})`}
-                  </span>
-                  <span className="text-xs font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-white/55 shadow-sm border border-black/5">
-                    {userProfile?.email_verified ? 'Verified' : 'Pending'}
-                  </span>
-                </div>
-                <div className={`p-4 rounded-xl border flex items-center justify-between ${userProfile?.phone_verified ? 'bg-green-50 border-green-200 text-green-700' : 'bg-red-50 border-red-200 text-red-700'}`}>
-                  <span className="text-sm font-semibold flex items-center gap-2.5">
-                    <Phone className="w-4 h-4" /> Phone Number {userProfile?.phone && `(${userProfile.phone})`}
-                  </span>
-                  <span className="text-xs font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-white/55 shadow-sm border border-black/5">
-                    {userProfile?.phone_verified ? 'Verified' : 'Pending'}
-                  </span>
-                </div>
-              </div>
-
-              {/* Action Button */}
-              <Link href="/profile" className="w-full sm:w-auto">
-                <Button variant="primary" size="lg" className="w-full sm:px-8 shadow-lg shadow-primary/20 hover:scale-105 transition-all flex items-center justify-center gap-2">
-                  <ArrowRight className="w-5 h-5" /> Go to Profile to Verify
-                </Button>
-              </Link>
-            </div>
-          </Card>
         </div>
       ) : !hasProfile ? (
         <div className="max-w-4xl mx-auto px-4 py-16 animate-fade-in">
@@ -376,47 +198,35 @@ export default function MatrimonialPage() {
                 </div>
 
                 {/* Quick Filters */}
-                <div className="hidden sm:block w-44">
-                  <CustomSelect
-                    value={filters.gender || ''}
-                    onChange={(val) => updateFilter('gender', val)}
-                    options={[
-                      { value: '', label: 'All Genders' },
-                      { value: 'male', label: 'Groom (Male)' },
-                      { value: 'female', label: 'Bride (Female)' }
-                    ]}
-                    placeholder="All Genders"
-                    searchable={false}
-                  />
-                </div>
+                <select
+                  value={filters.gender || ''}
+                  onChange={(e) => updateFilter('gender', e.target.value)}
+                  className="hidden sm:block px-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 cursor-pointer"
+                >
+                  <option value="">All Genders</option>
+                  <option value="male">Groom (Male)</option>
+                  <option value="female">Bride (Female)</option>
+                </select>
 
-                <div className="hidden sm:block w-48">
-                  <CustomSelect
-                    value={filters.city || ''}
-                    onChange={(val) => updateFilter('city', val)}
-                    options={[
-                      { value: '', label: 'All Cities' },
-                      ...CITIES.map(c => ({ value: c, label: c }))
-                    ]}
-                    placeholder="All Cities"
-                    searchable={true}
-                  />
-                </div>
+                <select
+                  value={filters.city || ''}
+                  onChange={(e) => updateFilter('city', e.target.value)}
+                  className="hidden sm:block px-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 cursor-pointer"
+                >
+                  <option value="">All Cities</option>
+                  {CITIES.map((c) => <option key={c} value={c}>{c}</option>)}
+                </select>
 
                 {/* Sort */}
-                <div className="hidden md:block w-48">
-                  <CustomSelect
-                    value={sort}
-                    onChange={(val) => setSort(val as SortOption)}
-                    options={[
-                      { value: 'newest', label: 'Newest First' },
-                      { value: 'age-low', label: 'Age: Low → High' },
-                      { value: 'age-high', label: 'Age: High → Low' }
-                    ]}
-                    placeholder="Sort By"
-                    searchable={false}
-                  />
-                </div>
+                <select
+                  value={sort}
+                  onChange={(e) => setSort(e.target.value as SortOption)}
+                  className="hidden md:block px-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 cursor-pointer"
+                >
+                  <option value="newest">Newest First</option>
+                  <option value="age-low">Age: Low → High</option>
+                  <option value="age-high">Age: High → Low</option>
+                </select>
 
                 {/* Advanced Filters Toggle */}
                 <button
@@ -448,80 +258,50 @@ export default function MatrimonialPage() {
                     {/* Gender - mobile only */}
                     <div className="sm:hidden space-y-1">
                       <label className="text-xs font-medium text-text-muted">Gender</label>
-                      <CustomSelect
-                        value={filters.gender || ''}
-                        onChange={(val) => updateFilter('gender', val)}
-                        options={[
-                          { value: '', label: 'All' },
-                          { value: 'male', label: 'Groom' },
-                          { value: 'female', label: 'Bride' }
-                        ]}
-                        placeholder="All"
-                        searchable={false}
-                      />
+                      <select value={filters.gender || ''} onChange={(e) => updateFilter('gender', e.target.value)} className="w-full px-3 py-2 rounded-lg border border-border text-sm">
+                        <option value="">All</option>
+                        <option value="male">Groom</option>
+                        <option value="female">Bride</option>
+                      </select>
                     </div>
 
                     {/* City - mobile only */}
                     <div className="sm:hidden space-y-1">
                       <label className="text-xs font-medium text-text-muted">City</label>
-                      <CustomSelect
-                        value={filters.city || ''}
-                        onChange={(val) => updateFilter('city', val)}
-                        options={[
-                          { value: '', label: 'All Cities' },
-                          ...CITIES.map(c => ({ value: c, label: c }))
-                        ]}
-                        placeholder="All Cities"
-                        searchable={true}
-                      />
+                      <select value={filters.city || ''} onChange={(e) => updateFilter('city', e.target.value)} className="w-full px-3 py-2 rounded-lg border border-border text-sm">
+                        <option value="">All Cities</option>
+                        {CITIES.map(c => <option key={c} value={c}>{c}</option>)}
+                      </select>
                     </div>
 
                     <div className="space-y-1">
                       <label className="text-xs font-medium text-text-muted">Age Min</label>
-                      <input type="number" min={18} max={60} placeholder="18" value={filters.ageMin || ''} onChange={(e) => updateFilter('ageMin', e.target.value ? Number(e.target.value) : undefined)} className="w-full px-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all" />
+                      <input type="number" min={18} max={60} placeholder="18" value={filters.ageMin || ''} onChange={(e) => updateFilter('ageMin', e.target.value ? Number(e.target.value) : undefined)} className="w-full px-3 py-2 rounded-lg border border-border text-sm" />
                     </div>
                     <div className="space-y-1">
                       <label className="text-xs font-medium text-text-muted">Age Max</label>
-                      <input type="number" min={18} max={60} placeholder="40" value={filters.ageMax || ''} onChange={(e) => updateFilter('ageMax', e.target.value ? Number(e.target.value) : undefined)} className="w-full px-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all" />
+                      <input type="number" min={18} max={60} placeholder="40" value={filters.ageMax || ''} onChange={(e) => updateFilter('ageMax', e.target.value ? Number(e.target.value) : undefined)} className="w-full px-3 py-2 rounded-lg border border-border text-sm" />
                     </div>
                     <div className="space-y-1">
                       <label className="text-xs font-medium text-text-muted">Marital Status</label>
-                      <CustomSelect
-                        value={filters.maritalStatus || ''}
-                        onChange={(val) => updateFilter('maritalStatus', val)}
-                        options={[
-                          { value: '', label: 'Any' },
-                          ...MARITAL_STATUSES.map(s => ({ value: s, label: s }))
-                        ]}
-                        placeholder="Any"
-                        searchable={false}
-                      />
+                      <select value={filters.maritalStatus || ''} onChange={(e) => updateFilter('maritalStatus', e.target.value)} className="w-full px-3 py-2 rounded-lg border border-border text-sm">
+                        <option value="">Any</option>
+                        {MARITAL_STATUSES.map(s => <option key={s} value={s}>{s}</option>)}
+                      </select>
                     </div>
                     <div className="space-y-1">
                       <label className="text-xs font-medium text-text-muted">Religion</label>
-                      <CustomSelect
-                        value={filters.religion || ''}
-                        onChange={(val) => updateFilter('religion', val)}
-                        options={[
-                          { value: '', label: 'Any' },
-                          ...RELIGIONS.map(r => ({ value: r, label: r }))
-                        ]}
-                        placeholder="Any"
-                        searchable={false}
-                      />
+                      <select value={filters.religion || ''} onChange={(e) => updateFilter('religion', e.target.value)} className="w-full px-3 py-2 rounded-lg border border-border text-sm">
+                        <option value="">Any</option>
+                        {RELIGIONS.map(r => <option key={r} value={r}>{r}</option>)}
+                      </select>
                     </div>
                     <div className="space-y-1">
                       <label className="text-xs font-medium text-text-muted">Diet</label>
-                      <CustomSelect
-                        value={filters.diet || ''}
-                        onChange={(val) => updateFilter('diet', val)}
-                        options={[
-                          { value: '', label: 'Any' },
-                          ...DIET_TYPES.map(d => ({ value: d, label: d }))
-                        ]}
-                        placeholder="Any"
-                        searchable={false}
-                      />
+                      <select value={filters.diet || ''} onChange={(e) => updateFilter('diet', e.target.value)} className="w-full px-3 py-2 rounded-lg border border-border text-sm">
+                        <option value="">Any</option>
+                        {DIET_TYPES.map(d => <option key={d} value={d}>{d}</option>)}
+                      </select>
                     </div>
                   </div>
                 </div>
@@ -546,13 +326,7 @@ export default function MatrimonialPage() {
 
             {/* Profile Cards Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {visibleProfiles.map((profile) => {
-                const matchResult = myProfile && profile.id !== myProfile.id
-                  ? calculateMatchPercentage(myProfile, profile)
-                  : null;
-                const matchPct = matchResult?.percentage ?? null;
-
-                return (
+              {visibleProfiles.map((profile) => (
                 <Card key={profile.id} className="group relative overflow-hidden">
                   {/* Top accent bar */}
                   <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary to-accent" />
@@ -560,7 +334,13 @@ export default function MatrimonialPage() {
                   <div className="pt-2">
                     {/* Header */}
                     <div className="flex items-start gap-4">
-                      <ProfileCardAvatar profile={profile} />
+                      <div className={`w-16 h-16 rounded-2xl flex items-center justify-center text-xl font-bold shrink-0 ${
+                        profile.gender === 'male'
+                          ? 'bg-gradient-to-br from-blue-100 to-blue-200 text-blue-600'
+                          : 'bg-gradient-to-br from-pink-100 to-pink-200 text-pink-600'
+                      }`}>
+                        {profile.full_name?.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                      </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-1.5">
                           <h3 className="text-lg font-bold text-text-primary truncate">{profile.full_name}</h3>
@@ -569,20 +349,7 @@ export default function MatrimonialPage() {
                         <p className="text-sm text-text-muted">
                           {profile.age} yrs{profile.height ? ` • ${profile.height}` : ''} • {profile.city}
                         </p>
-                        <div className="flex items-center gap-2 mt-0.5">
-                          <p className="text-xs text-primary font-medium">{profile.profile_id}</p>
-                          {matchPct !== null && matchPct > 0 && (
-                            <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wide ${
-                              matchPct >= 75
-                                ? 'bg-green-100 text-green-700 border border-green-200'
-                                : matchPct >= 50
-                                  ? 'bg-amber-100 text-amber-700 border border-amber-200'
-                                  : 'bg-gray-100 text-gray-600 border border-gray-200'
-                            }`}>
-                              {matchPct}% Match
-                            </span>
-                          )}
-                        </div>
+                        <p className="text-xs text-primary font-medium mt-0.5">{profile.profile_id}</p>
                       </div>
                     </div>
 
@@ -659,8 +426,7 @@ export default function MatrimonialPage() {
                     </div>
                   </div>
                 </Card>
-                );
-              })}
+              ))}
             </div>
 
             {/* Load More */}
