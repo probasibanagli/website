@@ -13,7 +13,9 @@ export type ModuleKey =
   | 'services'
   | 'blog'
   | 'users'
-  | 'matrimony';
+  | 'matrimony'
+  | 'blood_bank'
+  | 'ambulance';
 
 export type ModulePermissions = Record<ModuleKey, PermissionLevel>;
 
@@ -47,6 +49,8 @@ export const MODULE_LABELS: Record<ModuleKey, string> = {
   blog: 'Blog Posts',
   users: 'User Management',
   matrimony: 'Matrimonial',
+  blood_bank: 'Blood Banks',
+  ambulance: 'Ambulance Directory',
 };
 
 /* ──────────────── Data Models ──────────────── */

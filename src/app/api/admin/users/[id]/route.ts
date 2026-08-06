@@ -58,6 +58,8 @@ export async function PATCH(request: Request, ctx: any) {
   if (body.full_name) updates.full_name = body.full_name;
   if (body.phone) updates.phone = body.phone;
   if (body.email) updates.email = body.email.toLowerCase();
+  if (typeof body.email_verified === 'boolean') updates.email_verified = body.email_verified;
+  if (typeof body.phone_verified === 'boolean') updates.phone_verified = body.phone_verified;
 
   try {
     // Synchronize changes to Firebase Authentication
@@ -65,6 +67,7 @@ export async function PATCH(request: Request, ctx: any) {
     if (body.full_name) authUpdates.displayName = body.full_name;
     if (body.phone) authUpdates.phoneNumber = body.phone;
     if (body.email) authUpdates.email = body.email.toLowerCase();
+    if (typeof body.email_verified === 'boolean') authUpdates.emailVerified = body.email_verified;
 
     if (Object.keys(authUpdates).length > 0) {
       await adminAuth.updateUser(id, authUpdates);

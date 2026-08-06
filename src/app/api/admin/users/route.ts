@@ -42,13 +42,19 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
   }
   const body = await request.json();
-  const { email, password, full_name, role, permissions } = body;
+  const { email, password, full_name, role, permissions, phone } = body;
 
   try {
-    const newUser = await adminAuth.createUser({ email, password, displayName: full_name });
+    const newUser = await adminAuth.createUser({ 
+      email, 
+      password, 
+      displayName: full_name,
+      ...(phone && { phoneNumber: phone })
+    });
     const now = new Date().toISOString();
     await adminDb.collection('users').doc(newUser.uid).set({
       uid: newUser.uid, email: email.toLowerCase(), full_name, role: role || 'admin',
+      phone: phone || null,
       permissions: permissions || {},
       created_at: now, updated_at: now, created_by: user.uid, is_active: true,
       is_first_login: false,

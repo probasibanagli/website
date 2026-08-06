@@ -46,7 +46,7 @@ export default function RegisterPage() {
 
   // Debug OTP display for testing convenience
   const [debugPhoneOtp, setDebugPhoneOtp] = useState('');
-  const [debugEmailOtp, setDebugEmailOtp] = useState('');
+
 
   const phoneOtpRefs = useRef<(HTMLInputElement | null)[]>([]);
   const emailOtpRefs = useRef<(HTMLInputElement | null)[]>([]);
@@ -104,7 +104,7 @@ export default function RegisterPage() {
 
       // Store debug OTPs if returned
       if (emailData.debugOtp) {
-        setDebugEmailOtp(emailData.debugOtp);
+
       }
 
       // Fetch simulated phone OTP from DB for testing ease

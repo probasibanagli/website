@@ -21,7 +21,10 @@ const ADMIN_DEFAULT_PERMISSIONS = {
   services: 'edit',
   blog: 'edit',
   users: 'none',
-  matrimony: 'edit'
+  matrimony: 'edit',
+  travel: 'edit',
+  blood_bank: 'edit',
+  ambulance: 'edit'
 };
 
 const USER_DEFAULT_PERMISSIONS = {
@@ -32,7 +35,10 @@ const USER_DEFAULT_PERMISSIONS = {
   services: 'none',
   blog: 'none',
   users: 'none',
-  matrimony: 'none'
+  matrimony: 'none',
+  travel: 'none',
+  blood_bank: 'none',
+  ambulance: 'none'
 };
 
 const AVAILABLE_MODULES = [
@@ -44,6 +50,9 @@ const AVAILABLE_MODULES = [
   { key: 'blog', label: 'Blog' },
   { key: 'users', label: 'User Management (Manage User)' },
   { key: 'matrimony', label: 'Matrimonial' },
+  { key: 'travel', label: 'Travel & Transport' },
+  { key: 'blood_bank', label: 'Blood Banks' },
+  { key: 'ambulance', label: 'Ambulance Directory' },
 ];
 
 export default function AdminUsersPage() {

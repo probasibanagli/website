@@ -14,7 +14,7 @@ import { useAuth } from '@/lib/auth/AuthContext';
 import type { ConfirmationResult } from 'firebase/auth';
 
 type LoginMode = 'email' | 'phone';
-type PhoneStep = 'input' | 'otp';
+type PhoneStep = 'input' | 'otp' | 'email-verify';
 type AdminFirstLoginStep = 'double-otp' | 'create-password';
 
 const SUPER_ADMIN_EMAIL = 'admin@probasibangali.in';
@@ -39,11 +39,18 @@ export default function LoginPage() {
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
   const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
+  
+  // Phone Login Email Verification state (for Admins)
+  const [phoneLoginEmailOtp, setPhoneLoginEmailOtp] = useState(['', '', '', '', '', '']);
+  const phoneLoginEmailOtpRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const [phoneLoginAdminEmail, setPhoneLoginAdminEmail] = useState('');
 
   // Super Admin verification state
   const [superAdminVerify, setSuperAdminVerify] = useState(false);
   const [superAdminOtp, setSuperAdminOtp] = useState(['', '', '', '', '', '']);
+  const [superAdminEmailOtp, setSuperAdminEmailOtp] = useState(['', '', '', '', '', '']);
   const superAdminOtpRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const superAdminEmailOtpRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   // Admin first-login state
   const [adminFirstLogin, setAdminFirstLogin] = useState(false);
@@ -58,7 +65,7 @@ export default function LoginPage() {
   const adminEmailOtpRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   // Debug OTP display for simulation
-  const [debugEmailOtp, setDebugEmailOtp] = useState('');
+
 
   // Resend cooldown timer
   const [resendTimer, setResendTimer] = useState(0);
@@ -88,6 +95,11 @@ export default function LoginPage() {
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    
+    // Clear any stale MFA verification state
+    sessionStorage.removeItem('mfa_verified');
+
+    if (!email || !password) return setError('Email and password are required');
     setSuccess('');
     setLoading(true);
 
@@ -124,7 +136,7 @@ export default function LoginPage() {
         });
         const emailOtpData = await emailOtpRes.json();
         if (emailOtpData.debugOtp) {
-          setDebugEmailOtp(emailOtpData.debugOtp);
+
         }
 
         setAdminFirstLogin(true);
@@ -157,29 +169,32 @@ export default function LoginPage() {
         return;
       }
 
-      // Check if Super Admin
-      if (emailLower === SUPER_ADMIN_EMAIL || userProfile?.role === 'superadmin') {
-        // Must perform second-factor Phone verification
-        setAdminPhoneDisplay(PRECONFIGURED_SUPER_ADMIN_PHONE);
-        setSuperAdminVerify(true);
-        const superAdminResult = await sendPhoneOtp(PRECONFIGURED_SUPER_ADMIN_PHONE, 'recaptcha-container', 'login');
-        setConfirmationResult(superAdminResult);
-        setSuccess('Super Admin credentials verified. Please enter the OTP sent to your pre-configured phone.');
-        setLoading(false);
-        return;
-      }
-
-      // Check if regular Admin
-      if (userProfile?.role === 'admin') {
-        const adminPhone = userProfile?.phone;
+      // Check if Admin or Super Admin
+      if (emailLower === SUPER_ADMIN_EMAIL || userProfile?.role === 'superadmin' || userProfile?.role === 'admin') {
+        const isSuper = emailLower === SUPER_ADMIN_EMAIL || userProfile?.role === 'superadmin';
+        const adminPhone = isSuper ? PRECONFIGURED_SUPER_ADMIN_PHONE : userProfile?.phone;
+        
         if (!adminPhone) {
           throw new Error('No registered phone number found for this Admin account. Please contact Super Admin.');
         }
+
         setAdminPhoneDisplay(adminPhone);
         setSuperAdminVerify(true);
-        const adminResult = await sendPhoneOtp(adminPhone, 'recaptcha-container', 'login');
-        setConfirmationResult(adminResult);
-        setSuccess('Admin credentials verified. Please enter the OTP sent to your registered phone.');
+
+        // Send Phone OTP
+        const phoneResult = await sendPhoneOtp(adminPhone, 'recaptcha-container', 'login');
+        setConfirmationResult(phoneResult);
+
+        // Send Email OTP
+        const emailOtpRes = await fetch('/api/auth/email-otp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'send', email: emailLower }),
+        });
+        const emailOtpData = await emailOtpRes.json();
+
+
+        setSuccess('Admin credentials verified. Please enter the OTPs sent to your email and phone.');
         setLoading(false);
         return;
       }
@@ -204,16 +219,30 @@ export default function LoginPage() {
     }
   };
 
-  /* ── Super Admin Phone OTP Verification ── */
-  const handleSuperAdminOtpVerify = async () => {
+  /* ── Super Admin Phone & Email OTP Verification ── */
+  const handleSuperAdminOtpVerify = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     setError('');
-    const code = superAdminOtp.join('');
-    if (code.length !== 6) return setError('Please enter the complete 6-digit OTP.');
+    const phoneCode = superAdminOtp.join('');
+    const emailCode = superAdminEmailOtp.join('');
+    
+    if (phoneCode.length !== 6) return setError('Please enter the complete 6-digit Phone OTP.');
+    if (emailCode.length !== 6) return setError('Please enter the complete 6-digit Email OTP.');
     if (!confirmationResult) return setError('Session expired. Please try again.');
 
     setLoading(true);
     try {
-      await verifyPhoneOtp(confirmationResult, code);
+      // 1. Verify Email OTP
+      const emailVerifyRes = await fetch('/api/auth/email-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'verify', email: email.trim().toLowerCase(), otp: emailCode }),
+      });
+      const emailVerifyData = await emailVerifyRes.json();
+      if (!emailVerifyRes.ok) throw new Error(emailVerifyData.error || 'Invalid Email OTP.');
+
+      // 2. Verify Phone OTP
+      await verifyPhoneOtp(confirmationResult, phoneCode);
       setSuccess('Verification successful! Redirecting...');
       
       const isActualSuperAdmin = email.trim().toLowerCase() === SUPER_ADMIN_EMAIL || profile?.role === 'superadmin';
@@ -238,6 +267,7 @@ export default function LoginPage() {
     } catch (err: any) {
       setError(err.message || 'Verification failed.');
       setSuperAdminOtp(['', '', '', '', '', '']);
+      setSuperAdminEmailOtp(['', '', '', '', '', '']);
       superAdminOtpRefs.current[0]?.focus();
     } finally {
       setLoading(false);
@@ -339,6 +369,9 @@ export default function LoginPage() {
   const handleSendOtp = async () => {
     setError('');
     setSuccess('');
+    
+    // Clear any stale MFA verification state
+    sessionStorage.removeItem('mfa_verified');
 
     let rawPhone = phone.trim();
     if (!rawPhone) {
@@ -412,10 +445,30 @@ export default function LoginPage() {
           return;
         }
 
-        // If the logged-in user is an admin or superadmin, mark MFA as verified since they verified their phone number
+        // If the logged-in user is an admin or superadmin, require Email verification
         if (userProfile?.role === 'admin' || userProfile?.role === 'superadmin') {
-          sessionStorage.setItem('mfa_verified', 'true');
-          await triggerMfaSuccess();
+          const adminEmail = currentUser.email || userProfile?.email;
+          if (!adminEmail) {
+            setError('No email found for this Admin account. Please contact support.');
+            setLoading(false);
+            return;
+          }
+          
+          setPhoneLoginAdminEmail(adminEmail);
+          
+          // Send Email OTP
+          const emailOtpRes = await fetch('/api/auth/email-otp', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'send', email: adminEmail }),
+          });
+          const emailOtpData = await emailOtpRes.json();
+
+          
+          setSuccess('Phone verified. Please enter the OTP sent to your registered Email to complete login.');
+          setPhoneStep('email-verify');
+          setLoading(false);
+          return;
         }
       }
 
@@ -434,8 +487,52 @@ export default function LoginPage() {
     }
   };
 
+  /* ── Phone Login: Admin Email Verify ── */
+  const handlePhoneLoginEmailVerify = async () => {
+    const code = phoneLoginEmailOtp.join('');
+    if (code.length !== 6) return setError('Please enter the complete 6-digit Email OTP.');
+
+    setError('');
+    setLoading(true);
+    try {
+      const emailVerifyRes = await fetch('/api/auth/email-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'verify', email: phoneLoginAdminEmail.trim().toLowerCase(), otp: code }),
+      });
+      const emailVerifyData = await emailVerifyRes.json();
+      if (!emailVerifyRes.ok) throw new Error(emailVerifyData.error || 'Invalid Email OTP.');
+
+      sessionStorage.setItem('mfa_verified', 'true');
+      await triggerMfaSuccess();
+
+      // Track login activity
+      await fetch('/api/admin/activities', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'Admin Login via Phone',
+          performed_by: phoneLoginAdminEmail,
+          user_role: phoneLoginAdminEmail === SUPER_ADMIN_EMAIL ? 'superadmin' : 'admin',
+          details: 'Admin successfully logged in and verified via multi-factor authentication (Phone tab)'
+        })
+      }).catch(() => {});
+
+      setSuccess('MFA Verification successful! Redirecting to panel...');
+      setTimeout(() => {
+        router.push('/admin');
+      }, 1000);
+    } catch (err: any) {
+      setError(err.message || 'Verification failed.');
+      setPhoneLoginEmailOtp(['', '', '', '', '', '']);
+      phoneLoginEmailOtpRefs.current[0]?.focus();
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleOtpChange = (
-    type: 'phone' | 'superadmin' | 'admin-phone' | 'admin-email',
+    type: 'phone' | 'superadmin' | 'superadmin-email' | 'admin-phone' | 'admin-email' | 'phone-login-email',
     index: number,
     value: string
   ) => {
@@ -452,9 +549,14 @@ export default function LoginPage() {
       next[index] = value;
       setSuperAdminOtp(next);
       if (value && index < 5) superAdminOtpRefs.current[index + 1]?.focus();
+    } else if (type === 'superadmin-email') {
+      const next = [...superAdminEmailOtp];
+      next[index] = value;
+      setSuperAdminEmailOtp(next);
+      if (value && index < 5) superAdminEmailOtpRefs.current[index + 1]?.focus();
       if (value && index === 5) {
         const fullCode = next.join('');
-        if (fullCode.length === 6) setTimeout(() => handleSuperAdminOtpVerify(), 200);
+        if (fullCode.length === 6 && superAdminOtp.join('').length === 6) setTimeout(() => handleSuperAdminOtpVerify(), 200);
       }
     } else if (type === 'admin-phone') {
       const next = [...adminPhoneOtp];
@@ -466,19 +568,30 @@ export default function LoginPage() {
       next[index] = value;
       setAdminEmailOtp(next);
       if (value && index < 5) adminEmailOtpRefs.current[index + 1]?.focus();
+    } else if (type === 'phone-login-email') {
+      const next = [...phoneLoginEmailOtp];
+      next[index] = value;
+      setPhoneLoginEmailOtp(next);
+      if (value && index < 5) phoneLoginEmailOtpRefs.current[index + 1]?.focus();
+      if (value && index === 5) {
+        const fullCode = next.join('');
+        if (fullCode.length === 6) setTimeout(() => handlePhoneLoginEmailVerify(), 200);
+      }
     }
   };
 
   const handleOtpKeyDown = (
-    type: 'phone' | 'superadmin' | 'admin-phone' | 'admin-email',
+    type: 'phone' | 'superadmin' | 'superadmin-email' | 'admin-phone' | 'admin-email' | 'phone-login-email',
     index: number,
     e: React.KeyboardEvent
   ) => {
     if (e.key === 'Backspace') {
       if (type === 'phone' && !otp[index] && index > 0) otpRefs.current[index - 1]?.focus();
       if (type === 'superadmin' && !superAdminOtp[index] && index > 0) superAdminOtpRefs.current[index - 1]?.focus();
+      if (type === 'superadmin-email' && !superAdminEmailOtp[index] && index > 0) superAdminEmailOtpRefs.current[index - 1]?.focus();
       if (type === 'admin-phone' && !adminPhoneOtp[index] && index > 0) adminPhoneOtpRefs.current[index - 1]?.focus();
       if (type === 'admin-email' && !adminEmailOtp[index] && index > 0) adminEmailOtpRefs.current[index - 1]?.focus();
+      if (type === 'phone-login-email' && !phoneLoginEmailOtp[index] && index > 0) phoneLoginEmailOtpRefs.current[index - 1]?.focus();
     }
   };
 
@@ -509,41 +622,68 @@ export default function LoginPage() {
 
 
 
-          {/* 1. SUPER ADMIN PHONE OTP SECOND-FACTOR */}
+          {/* 1. SUPER ADMIN DOUBLE OTP SECOND-FACTOR */}
           {superAdminVerify && (
-            <div className="space-y-4">
+            <form onSubmit={handleSuperAdminOtpVerify} className="space-y-6">
               <div className="text-center mb-2">
                 <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-amber-100 to-yellow-100 flex items-center justify-center relative">
                   <Shield className="w-8 h-8 text-amber-600" />
                 </div>
                 <h3 className="text-lg font-bold text-text-primary mb-1">
-                  {email.trim().toLowerCase() === SUPER_ADMIN_EMAIL ? 'Super Admin Verification' : 'Admin Verification'}
+                  {email.trim().toLowerCase() === SUPER_ADMIN_EMAIL ? 'Super Admin Authentication' : 'Admin Authentication'}
                 </h3>
-                <p className="text-sm text-text-muted">Enter verification code sent to your registered phone</p>
-                <p className="text-sm font-semibold text-text-primary mt-1">{adminPhoneDisplay}</p>
+                <p className="text-xs text-text-muted">Enter the verification codes sent to your registered Email & Phone</p>
               </div>
 
-              <div className="flex justify-center gap-2">
-                {superAdminOtp.map((digit, i) => (
-                  <input
-                    key={i}
-                    ref={el => { superAdminOtpRefs.current[i] = el; }}
-                    type="text"
-                    inputMode="numeric"
-                    maxLength={1}
-                    value={digit}
-                    onChange={e => handleOtpChange('superadmin', i, e.target.value)}
-                    onKeyDown={e => handleOtpKeyDown('superadmin', i, e)}
-                    className="w-10 h-12 text-center text-lg font-bold rounded-xl border border-border bg-surface focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20"
-                  />
-                ))}
+
+
+              <div>
+                <label className="block text-xs font-semibold text-text-primary mb-2 flex items-center gap-1">
+                  <Phone className="w-3.5 h-3.5 text-primary" /> Phone OTP ({adminPhoneDisplay})
+                </label>
+                <div className="flex justify-center gap-2">
+                  {superAdminOtp.map((digit, i) => (
+                    <input
+                      key={i}
+                      ref={el => { superAdminOtpRefs.current[i] = el; }}
+                      type="text"
+                      inputMode="numeric"
+                      maxLength={1}
+                      value={digit}
+                      onChange={e => handleOtpChange('superadmin', i, e.target.value)}
+                      onKeyDown={e => handleOtpKeyDown('superadmin', i, e)}
+                      className="w-10 h-12 text-center text-lg font-bold rounded-xl border border-border bg-surface focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20"
+                    />
+                  ))}
+                </div>
               </div>
 
-              <Button variant="primary" size="lg" className="w-full" onClick={handleSuperAdminOtpVerify} disabled={loading}>
+              <div>
+                <label className="block text-xs font-semibold text-text-primary mb-2 flex items-center gap-1">
+                  <Mail className="w-3.5 h-3.5 text-accent" /> Email OTP ({email})
+                </label>
+                <div className="flex justify-center gap-2">
+                  {superAdminEmailOtp.map((digit, i) => (
+                    <input
+                      key={i}
+                      ref={el => { superAdminEmailOtpRefs.current[i] = el; }}
+                      type="text"
+                      inputMode="numeric"
+                      maxLength={1}
+                      value={digit}
+                      onChange={e => handleOtpChange('superadmin-email', i, e.target.value)}
+                      onKeyDown={e => handleOtpKeyDown('superadmin-email', i, e)}
+                      className="w-10 h-12 text-center text-lg font-bold rounded-xl border border-border bg-surface focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20"
+                    />
+                  ))}
+                </div>
+              </div>
+
+              <Button variant="primary" size="lg" className="w-full" type="submit" disabled={loading}>
                 {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
-                {loading ? 'Verifying...' : 'Verify & Proceed'}
+                {loading ? 'Verifying...' : 'Verify Codes & Proceed'}
               </Button>
-            </div>
+            </form>
           )}
 
           {/* 2. ADMIN FIRST LOGIN: DOUBLE OTP */}
@@ -553,6 +693,8 @@ export default function LoginPage() {
                 <h3 className="text-lg font-bold text-text-primary">Admin Authentication</h3>
                 <p className="text-xs text-text-muted">Verify registered Email & Phone before configuring password</p>
               </div>
+
+
 
               <div>
                 <label className="block text-xs font-semibold text-text-primary mb-2 flex items-center gap-1">
@@ -780,7 +922,7 @@ export default function LoginPage() {
 
                       <Button variant="primary" size="lg" className="w-full" onClick={() => handleVerifyOtp()} disabled={loading || otp.join('').length !== 6}>
                         {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
-                        {loading ? 'Verifying...' : 'Verify & Login'}
+                        {loading ? 'Verifying...' : 'Verify Phone'}
                       </Button>
 
                       <div className="flex items-center justify-between text-xs pt-1">
@@ -788,6 +930,41 @@ export default function LoginPage() {
                           <ArrowLeft className="w-3.5 h-3.5" /> Change number
                         </button>
                       </div>
+                    </>
+                  )}
+
+                  {phoneStep === 'email-verify' && (
+                    <>
+                      <div className="text-center mb-2">
+                        <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-amber-100 to-yellow-100 flex items-center justify-center relative">
+                          <Shield className="w-8 h-8 text-amber-600" />
+                        </div>
+                        <h3 className="text-lg font-bold text-text-primary mb-1">Admin Authentication</h3>
+                        <p className="text-sm font-semibold text-text-primary mt-0.5">Step 2: Email Verification</p>
+                        <p className="text-xs text-text-muted mt-1">Verify Email: {phoneLoginAdminEmail}</p>
+                      </div>
+
+
+                      <div className="flex justify-center gap-2">
+                        {phoneLoginEmailOtp.map((digit, i) => (
+                          <input
+                            key={i}
+                            ref={el => { phoneLoginEmailOtpRefs.current[i] = el; }}
+                            type="text"
+                            inputMode="numeric"
+                            maxLength={1}
+                            value={digit}
+                            onChange={e => handleOtpChange('phone-login-email', i, e.target.value)}
+                            onKeyDown={e => handleOtpKeyDown('phone-login-email', i, e)}
+                            className="w-10 h-12 text-center text-lg font-bold rounded-xl border border-border bg-surface focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20"
+                          />
+                        ))}
+                      </div>
+
+                      <Button variant="primary" size="lg" className="w-full" onClick={handlePhoneLoginEmailVerify} disabled={loading || phoneLoginEmailOtp.join('').length !== 6}>
+                        {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
+                        {loading ? 'Verifying...' : 'Verify Email & Login'}
+                      </Button>
                     </>
                   )}
                 </div>

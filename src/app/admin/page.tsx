@@ -19,7 +19,7 @@ interface StatCard {
 }
 
 export default function AdminDashboard() {
-  const { profile } = useAuth();
+  const { profile, firebaseUser } = useAuth();
   const [stats, setStats] = useState<StatCard[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -40,10 +40,25 @@ export default function AdminDashboard() {
         const results: StatCard[] = [];
         for (const col of collections) {
           try {
-            const snap = await getDocs(query(collection(db, col.name), limit(1000)));
+            let count = 0;
+            if (col.name === 'users') {
+              const token = firebaseUser ? await firebaseUser.getIdToken() : 'mock-bypass-token';
+              const res = await fetch('/api/admin/users', {
+                headers: { 'Authorization': `Bearer ${token}` }
+              });
+              if (res.ok) {
+                const data = await res.json();
+                count = data.users?.length || 0;
+              } else {
+                throw new Error('Failed to fetch users');
+              }
+            } else {
+              const snap = await getDocs(query(collection(db, col.name), limit(1000)));
+              count = snap.size;
+            }
             results.push({
               label: col.label,
-              value: snap.size.toString(),
+              value: count.toString(),
               icon: col.icon,
               color: col.color,
               bg: col.bg,

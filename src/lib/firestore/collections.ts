@@ -36,4 +36,6 @@ export const MODULE_TO_COLLECTION: Record<ModuleKey, string> = {
   blog: COLLECTIONS.blog_posts,
   users: COLLECTIONS.users,
   matrimony: COLLECTIONS.matrimonial_profiles,
+  blood_bank: COLLECTIONS.blood_banks,
+  ambulance: COLLECTIONS.ambulances,
 };

@@ -88,7 +88,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           permissions: isAdminRole ? {
             stay: 'manage', food: 'manage', travel: 'manage', emergency: 'manage',
             community: 'manage', services: 'manage', blog: 'manage', users: 'none',
-            matrimony: 'manage'
+            matrimony: 'manage', blood_bank: 'manage', ambulance: 'manage'
           } : getDefaultPermissions('superadmin'),
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),

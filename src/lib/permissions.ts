@@ -45,7 +45,8 @@ export function getAccessibleModules(
 ): ModuleKey[] {
   const ALL_MODULES: ModuleKey[] = [
     'stay', 'food', 'travel', 'emergency',
-    'community', 'services', 'blog', 'users', 'matrimony'
+    'community', 'services', 'blog', 'users', 'matrimony',
+    'blood_bank', 'ambulance'
   ];
 
   // Super Admin only sees User/Admin Management
@@ -69,6 +70,8 @@ export function getDefaultPermissions(role: UserRole): ModulePermissions {
     blog: 'none',
     users: 'none',
     matrimony: 'none',
+    blood_bank: 'none',
+    ambulance: 'none',
   };
 
   const full: ModulePermissions = {
@@ -81,6 +84,8 @@ export function getDefaultPermissions(role: UserRole): ModulePermissions {
     blog: 'manage',
     users: 'manage',
     matrimony: 'manage',
+    blood_bank: 'manage',
+    ambulance: 'manage',
   };
 
   switch (role) {
@@ -100,7 +105,8 @@ export function getDefaultPermissions(role: UserRole): ModulePermissions {
  */
 export const ALL_MODULES: ModuleKey[] = [
   'stay', 'food', 'travel', 'emergency',
-  'community', 'services', 'blog', 'users', 'matrimony'
+  'community', 'services', 'blog', 'users', 'matrimony',
+  'blood_bank', 'ambulance'
 ];
 
 /**

@@ -23,6 +23,8 @@ const moduleIcons: Record<ModuleKey, React.ReactNode> = {
   blog: <FileText className="w-4 h-4" />,
   users: <UserCog className="w-4 h-4" />,
   matrimony: <Heart className="w-4 h-4" />,
+  blood_bank: <Droplets className="w-4 h-4" />,
+  ambulance: <Truck className="w-4 h-4" />,
 };
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -80,20 +82,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { key: 'activity-log', label: 'Activity Tracking', href: '/admin/users?tab=activities', icon: <Activity className="w-4 h-4" /> },
   ] : [
     { key: 'dashboard', label: 'Dashboard', href: '/admin', icon: <LayoutDashboard className="w-4 h-4" /> },
-    ...accessibleModules.flatMap((mod) => {
-      if (mod === 'emergency') {
-        return [
-          { key: 'emergency', label: 'Hospital Management', href: '/admin/emergency', icon: moduleIcons[mod] },
-          { key: 'blood-banks', label: 'Blood Banks', href: '/admin/blood-bank', icon: <Droplets className="w-4 h-4" /> },
-          { key: 'ambulance', label: 'Ambulance Directory', href: '/admin/ambulance', icon: <Truck className="w-4 h-4" /> }
-        ];
-      }
-      return [{
+    ...accessibleModules.map((mod) => {
+      const href = mod === 'blood_bank' ? '/admin/blood-bank' : `/admin/${mod}`;
+      return {
         key: mod,
         label: MODULE_LABELS[mod],
-        href: `/admin/${mod}`,
+        href: href,
         icon: moduleIcons[mod],
-      }];
+      };
     }),
   ];
 
