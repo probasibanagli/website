@@ -232,17 +232,17 @@ export const TREATMENT_TYPES = [
 ] as const;
 
 export const GOVT_SERVICES = [
-  { id: 'ration-card', title: 'Ration Card (PDS)', description: 'Apply for or update your ration card for subsidized food grains.', category: 'Ration card', url: 'https://www.tnpds.gov.in/pages/registercard/register-card.xhtml', icon: 'Home01' },
-  { id: 'aadhaar', title: 'Aadhaar Update / Enrolment', description: 'Update your Aadhaar address or biometrics at nearest centre.', category: 'Aadhaar', url: 'https://myaadhaar.uidai.gov.in/address-update', icon: 'User01' },
-  { id: 'biometrics', title: 'Aadhaar Biometric Services', description: 'Lock or unlock your Aadhaar biometrics online for enhanced security.', category: 'Aadhaar', url: 'https://myaadhaar.uidai.gov.in/lock-unlock-aadhaar', icon: 'Shield01' },
-  { id: 'driving-licence', title: 'Driving Licence (TN)', description: 'Apply or renew your driving licence in Tamil Nadu.', category: 'Transport', url: 'https://sarathi.parivahan.gov.in/sarathiservice/stateSelection.do', icon: 'Car01' },
+  { id: 'ration-card', title: 'Ration Card (PDS)', description: 'Apply for or update your ration card for subsidized food grains.', category: 'Ration card', url: '/services/government/ration-card', icon: 'Home01' },
+  { id: 'aadhaar', title: 'Aadhaar Update / Enrolment', description: 'Update your Aadhaar address or biometrics at nearest centre.', category: 'Aadhaar', url: '/services/government/aadhaar', icon: 'User01' },
+  { id: 'biometrics', title: 'Aadhaar Biometric Services', description: 'Lock or unlock your Aadhaar biometrics online for enhanced security.', category: 'Aadhaar', url: '/services/government/biometrics', icon: 'Shield01' },
+  { id: 'driving-licence', title: 'Driving Licence (TN)', description: 'Apply or renew your driving licence in Tamil Nadu.', category: 'Transport', url: '/services/government/driving-licence', icon: 'Car01' },
   { id: 'ayushman-bharat', title: 'Ayushman Bharat', description: 'Government health insurance covering ₹5 lakh per year per family.', category: 'Health schemes', url: '/services/government/ayushman-bharat', icon: 'MedicalCross' },
   { id: 'mgnregs', title: 'MGNREGS Job Card', description: 'Register for 100 days guaranteed employment scheme.', category: 'Employment', url: 'https://nrega.nic.in/netnrega/statepage.aspx?Page=C&Action=A', icon: 'Users01' },
   { id: 'tn-e-seva', title: 'TN e-Seva Portal', description: 'One-stop portal for various Tamil Nadu government services.', category: 'Government', url: 'https://www.tnesevai.tn.gov.in/Citizen/Registration.aspx', icon: 'Building01' },
   { id: 'passport', title: 'Passport Seva', description: 'Apply for a new passport or renew existing one.', category: 'Travel', url: '/services/government/passport', icon: 'Map01' },
-  { id: 'visa', title: 'Visa Services', description: 'Apply for an Indian Visa, e-Visa, or check application status online.', category: 'Travel', url: 'https://indianvisaonline.gov.in/evisa/tvoa.html', icon: 'Globe01' },
+  { id: 'visa', title: 'Visa Services', description: 'Apply for an Indian Visa, e-Visa, or check application status online.', category: 'Travel', url: '/services/government/visa', icon: 'Globe01' },
   { id: 'voter-id', title: 'Voter ID (EPIC)', description: 'Register as a voter or update your electoral details.', category: 'Election', url: '/services/government/voter-id', icon: 'UserCheck01' },
-  { id: 'police-verification', title: 'Police Verification (Cyber Crime)', description: 'Direct link to the Cyber Crime Portal for police verification, reporting cyber fraud and safety checks.', category: 'Safety', url: 'https://eservices.tnpolice.gov.in/', icon: 'Shield01' },
+  { id: 'police-verification', title: 'Register a Complaint (Police & Cyber Crime)', description: 'Direct link to the Cyber Crime Portal to register complaints, report cyber fraud, request police verification and safety checks.', category: 'Safety', url: '/services/government/police-verification', icon: 'Shield01' },
   { id: 'labour-registration', title: 'TN Labour Registration', description: 'Register as a migrant worker with the Tamil Nadu Labour Department.', category: 'Employment', url: 'https://labour.tn.gov.in/', icon: 'Users01' },
   { id: 'scholarships', title: 'Scholarship Schemes', description: 'Central and state scholarship schemes for students from economically weaker sections.', category: 'Education', url: 'https://scholarships.gov.in/', icon: 'GraduationHat01' },
 ];
@@ -747,19 +747,28 @@ export const WORK_CITIES = [
   'Other'
 ] as const;
 
-export const CHENNAI_ZONES = [
-  'North Chennai (Tondiarpet, Royapuram, Thiru. Vi. Ka Nagar)',
-  'Central Chennai (Anna Nagar, Teynampet, Kodambakkam)',
-  'South Chennai (Adyar, Velachery, Sholinganallur)',
-  'West Chennai (Ambattur, Valasaravakkam, Alandur)',
-  'Suburbs (Tambaram, Avadi, Pallavaram)',
-];
+export const MAJOR_DISTRICTS = ['Chennai', 'Coimbatore', 'Madurai', 'Tiruchirappalli', 'Salem'];
 
-export const ESEVA_CENTRES_CHENNAI = [
-  { id: 1, name: 'e-Seva Centre, Ripon Building', address: 'Ripon Building Campus, Chennai Corporation, Park Town, Chennai', type: 'Arasu e-Seva', zone: 'Central Chennai', phone: '1100 (Toll Free)' },
-  { id: 2, name: 'e-Seva Centre, Tondiarpet Zonal Office', address: 'No. 266, Tiruvottiyur High Road, Tondiarpet, Chennai', type: 'Arasu e-Seva', zone: 'North Chennai', phone: '1100 (Toll Free)' },
-  { id: 3, name: 'e-Seva Centre, Adyar Zonal Office', address: 'No. 115, Dr. Muthulakshmi Salai, Adyar, Chennai', type: 'Arasu e-Seva', zone: 'South Chennai', phone: '1100 (Toll Free)' },
-  { id: 4, name: 'e-Seva Centre, Ambattur Zonal Office', address: 'No. 536, CTH Road, Ambattur, Chennai', type: 'Arasu e-Seva', zone: 'West Chennai', phone: '1100 (Toll Free)' },
-  { id: 5, name: 'e-Seva Centre, Tambaram Taluk Office', address: 'Taluk Office Campus, GST Road, Tambaram', type: 'Arasu e-Seva', zone: 'Suburbs', phone: '1100 (Toll Free)' },
-  { id: 6, name: 'e-Seva Centre, Anna Nagar Zonal Office', address: '2nd Avenue, Anna Nagar East, Chennai', type: 'Arasu e-Seva', zone: 'Central Chennai', phone: '1100 (Toll Free)' },
+export const ESEVA_CENTRES = [
+  // Chennai (existing)
+  { id: 1, name: 'e-Seva Centre, Ripon Building', address: 'Ripon Building Campus, Chennai Corporation, Park Town, Chennai', type: 'Arasu e-Seva', city: 'Chennai', phone: '1100 (Toll Free)' },
+  { id: 2, name: 'e-Seva Centre, Tondiarpet Zonal Office', address: 'No. 266, Tiruvottiyur High Road, Tondiarpet, Chennai', type: 'Arasu e-Seva', city: 'Chennai', phone: '1100 (Toll Free)' },
+  { id: 3, name: 'e-Seva Centre, Adyar Zonal Office', address: 'No. 115, Dr. Muthulakshmi Salai, Adyar, Chennai', type: 'Arasu e-Seva', city: 'Chennai', phone: '1100 (Toll Free)' },
+  { id: 4, name: 'e-Seva Centre, Ambattur Zonal Office', address: 'No. 536, CTH Road, Ambattur, Chennai', type: 'Arasu e-Seva', city: 'Chennai', phone: '1100 (Toll Free)' },
+  { id: 5, name: 'e-Seva Centre, Tambaram Taluk Office', address: 'Taluk Office Campus, GST Road, Tambaram', type: 'Arasu e-Seva', city: 'Chennai', phone: '1100 (Toll Free)' },
+  { id: 6, name: 'e-Seva Centre, Anna Nagar Zonal Office', address: '2nd Avenue, Anna Nagar East, Chennai', type: 'Arasu e-Seva', city: 'Chennai', phone: '1100 (Toll Free)' },
+  
+  // Coimbatore
+  { id: 7, name: 'e-Seva Centre, Collectorate', address: 'Collectorate Complex, Coimbatore', type: 'Arasu e-Seva', city: 'Coimbatore', phone: '1100 (Toll Free)' },
+  { id: 8, name: 'e-Seva Centre, Corporation Office', address: 'Town Hall, Coimbatore', type: 'Arasu e-Seva', city: 'Coimbatore', phone: '1100 (Toll Free)' },
+  
+  // Madurai
+  { id: 9, name: 'e-Seva Centre, District Collectorate', address: 'Collectorate, Madurai', type: 'Arasu e-Seva', city: 'Madurai', phone: '1100 (Toll Free)' },
+  { id: 10, name: 'e-Seva Centre, Tallakulam', address: 'Tallakulam, Madurai', type: 'Arasu e-Seva', city: 'Madurai', phone: '1100 (Toll Free)' },
+  
+  // Tiruchirappalli
+  { id: 11, name: 'e-Seva Centre, Cantonment', address: 'Cantonment, Tiruchirappalli', type: 'Arasu e-Seva', city: 'Tiruchirappalli', phone: '1100 (Toll Free)' },
+  
+  // Salem
+  { id: 12, name: 'e-Seva Centre, Salem Corporation', address: 'Salem Corporation Office, Salem', type: 'Arasu e-Seva', city: 'Salem', phone: '1100 (Toll Free)' },
 ];

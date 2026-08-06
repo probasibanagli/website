@@ -141,7 +141,7 @@ export default function CollegePage() {
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-start">
               {filtered.map((college) => {
                 const theme = CATEGORY_THEMES[college.type || 'arts_science'] || CATEGORY_THEMES.arts_science;
                 return (
@@ -225,19 +225,6 @@ export default function CollegePage() {
                                     Login to Account <ArrowRight className="w-3.5 h-3.5 ml-1" />
                                   </Button>
                                 </Link>
-                              </div>
-                            ) : !isVerified ? (
-                              <div className="p-4 bg-amber-50/50 border border-amber-200 rounded-2xl text-center">
-                                <ShieldAlert className="w-6 h-6 text-amber-600 mx-auto mb-2" />
-                                <p className="text-xs font-bold text-amber-800">Verification Required</p>
-                                <p className="text-xs text-amber-700/80 mt-1">Verify your phone and email to access direct contact details.</p>
-                                <Button
-                                  size="sm"
-                                  onClick={() => setShowOtpModal(true)}
-                                  className="w-full mt-3 bg-amber-600 text-white hover:bg-amber-700 font-semibold cursor-pointer border-transparent"
-                                >
-                                  Verify via OTP
-                                </Button>
                               </div>
                             ) : (
                               <div className="space-y-3">

@@ -24,6 +24,7 @@ export default function AdminServicesPage() {
         { key: 'phone', label: 'Phone' },
         { key: 'website', label: 'Website URL' },
         { key: 'google_maps_url', label: 'Google Maps URL' },
+        { key: 'staff_contacts', label: 'Bengali Staff / Professors', type: 'staff_contacts' },
       ]}
     />
   );

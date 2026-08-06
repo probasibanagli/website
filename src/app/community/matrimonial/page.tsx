@@ -71,6 +71,7 @@ export default function MatrimonialPage() {
   const [showFilters, setShowFilters] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [visibleCount, setVisibleCount] = useState(9);
+  const [activeTab, setActiveTab] = useState<'browse' | 'matches'>('browse');
 
   const updateFilter = useCallback((key: keyof MatrimonyFilters, value: string | number | undefined) => {
     setFilters(prev => ({ ...prev, [key]: value || undefined }));
@@ -84,12 +85,40 @@ export default function MatrimonialPage() {
   }, []);
 
   const filtered = useMemo(() => {
-    const results = searchProfiles({ ...filters, searchQuery });
+    let results = searchProfiles({ ...filters, searchQuery });
+    if (myProfile) {
+      results = results.filter(p => 
+        p.id !== myProfile.id && 
+        !(p.email && p.email === myProfile.email) &&
+        !(p.phone && p.phone === myProfile.phone)
+      );
+    }
     return sortProfiles(results, sort);
-  }, [filters, searchQuery, sort]);
+  }, [filters, searchQuery, sort, myProfile]);
 
-  const visibleProfiles = filtered.slice(0, visibleCount);
-  const hasMore = visibleCount < filtered.length;
+  // Automatic matching: find mutual matches
+  const autoMatches = useMemo(() => {
+    if (!myProfile) return [];
+    const all = getAllProfiles().filter(p => 
+      p.id !== myProfile.id && 
+      !(p.email && p.email === myProfile.email) &&
+      !(p.phone && p.phone === myProfile.phone) &&
+      p.published
+    );
+    const matches = all.map(candidate => {
+      const myMatchOnCandidate = calculateMatchPercentage(myProfile, candidate);
+      const candidateMatchOnMe = calculateMatchPercentage(candidate, myProfile);
+      const mutualScore = Math.round((myMatchOnCandidate.percentage + candidateMatchOnMe.percentage) / 2);
+      return { profile: candidate, myScore: myMatchOnCandidate.percentage, theirScore: candidateMatchOnMe.percentage, mutualScore };
+    })
+    .filter(m => m.myScore >= 50 && m.theirScore >= 50)
+    .sort((a, b) => b.mutualScore - a.mutualScore);
+    return matches;
+  }, [myProfile]);
+
+  const displayProfiles = activeTab === 'browse' ? filtered : autoMatches.map(m => m.profile);
+  const visibleProfiles = displayProfiles.slice(0, visibleCount);
+  const hasMore = visibleCount < displayProfiles.length;
   const activeFilterCount = Object.values(filters).filter(v => v !== undefined && v !== '').length;
 
   // Stats
@@ -173,9 +202,9 @@ export default function MatrimonialPage() {
           {/* Stats */}
           <div className="mt-8 flex flex-wrap gap-6 animate-fade-in delay-300">
             {[
-              { icon: Users, label: 'Registered Profiles', value: totalProfiles.toString() },
-              { icon: CheckCircle2, label: 'Verified Profiles', value: verifiedProfiles.toString() },
-              { icon: MapPin, label: 'Cities Covered', value: citiesCount.toString() },
+              { icon: Users, label: 'Registered Profiles', value: hasProfile === null ? '-' : totalProfiles.toString() },
+              { icon: CheckCircle2, label: 'Verified Profiles', value: hasProfile === null ? '-' : verifiedProfiles.toString() },
+              { icon: MapPin, label: 'Cities Covered', value: hasProfile === null ? '-' : citiesCount.toString() },
               { icon: Star, label: 'Success Stories', value: '50+' },
             ].map((stat) => (
               <div key={stat.label} className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-xl px-4 py-3">
@@ -531,11 +560,50 @@ export default function MatrimonialPage() {
 
           {/* Results */}
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            {/* Tab Switcher */}
+            {myProfile && (
+              <div className="flex items-center gap-1 mb-6 p-1 bg-surface rounded-xl border border-border w-fit">
+                <button
+                  onClick={() => { setActiveTab('browse'); setVisibleCount(9); }}
+                  className={`px-5 py-2.5 rounded-lg text-sm font-semibold transition-all cursor-pointer flex items-center gap-2 ${
+                    activeTab === 'browse'
+                      ? 'bg-white text-primary shadow-sm border border-border'
+                      : 'text-text-muted hover:text-text-primary'
+                  }`}
+                >
+                  <Users className="w-4 h-4" /> Browse All
+                </button>
+                <button
+                  onClick={() => { setActiveTab('matches'); setVisibleCount(9); }}
+                  className={`px-5 py-2.5 rounded-lg text-sm font-semibold transition-all cursor-pointer flex items-center gap-2 ${
+                    activeTab === 'matches'
+                      ? 'bg-white text-primary shadow-sm border border-border'
+                      : 'text-text-muted hover:text-text-primary'
+                  }`}
+                >
+                  <Heart className="w-4 h-4" /> Find My Matches
+                  {autoMatches.length > 0 && (
+                    <span className="w-5 h-5 rounded-full bg-primary text-white text-[10px] flex items-center justify-center font-bold">
+                      {autoMatches.length}
+                    </span>
+                  )}
+                </button>
+              </div>
+            )}
+
             {/* Results count */}
             <div className="flex items-center justify-between mb-6">
               <p className="text-sm text-text-muted">
-                Showing <span className="font-semibold text-text-primary">{Math.min(visibleCount, filtered.length)}</span> of{' '}
-                <span className="font-semibold text-text-primary">{filtered.length}</span> profiles
+                {activeTab === 'matches' ? (
+                  <>
+                    Found <span className="font-semibold text-text-primary">{autoMatches.length}</span> mutual match{autoMatches.length !== 1 ? 'es' : ''}
+                  </>
+                ) : (
+                  <>
+                    Showing <span className="font-semibold text-text-primary">{Math.min(visibleCount, displayProfiles.length)}</span> of{' '}
+                    <span className="font-semibold text-text-primary">{displayProfiles.length}</span> profiles
+                  </>
+                )}
               </p>
               {activeFilterCount > 0 && (
                 <button onClick={clearFilters} className="text-sm text-primary hover:underline flex items-center gap-1 cursor-pointer">
@@ -550,7 +618,9 @@ export default function MatrimonialPage() {
                 const matchResult = myProfile && profile.id !== myProfile.id
                   ? calculateMatchPercentage(myProfile, profile)
                   : null;
-                const matchPct = matchResult?.percentage ?? null;
+                // In matches tab, use the mutual (bidirectional) score
+                const autoMatch = activeTab === 'matches' ? autoMatches.find(m => m.profile.id === profile.id) : null;
+                const matchPct = autoMatch ? autoMatch.mutualScore : (matchResult?.percentage ?? null);
 
                 return (
                 <Card key={profile.id} className="group relative overflow-hidden">
@@ -579,7 +649,7 @@ export default function MatrimonialPage() {
                                   ? 'bg-amber-100 text-amber-700 border border-amber-200'
                                   : 'bg-gray-100 text-gray-600 border border-gray-200'
                             }`}>
-                              {matchPct}% Match
+                              {matchPct}% {autoMatch ? 'Mutual Match' : 'Match'}
                             </span>
                           )}
                         </div>
@@ -646,16 +716,11 @@ export default function MatrimonialPage() {
                       </Link>
                     </div>
 
-                    {/* Contact blur */}
-                    <div className="mt-3 relative">
-                      <div className="blur-sm select-none text-sm text-text-muted">📞 98765XXXXX • ✉️ email@hidden.com</div>
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <Link href="/auth/login">
-                          <Badge variant="bengali" className="cursor-pointer">
-                            <Lock className="w-3 h-3 mr-1" /> Login to view contact
-                          </Badge>
-                        </Link>
-                      </div>
+                    {/* Privacy note */}
+                    <div className="mt-3 text-center">
+                      <p className="text-[11px] text-text-muted flex items-center justify-center gap-1">
+                        <Lock className="w-3 h-3" /> Express interest to exchange details via email
+                      </p>
                     </div>
                   </div>
                 </Card>
@@ -667,23 +732,32 @@ export default function MatrimonialPage() {
             {hasMore && (
               <div className="text-center mt-8">
                 <Button variant="outline" size="lg" onClick={() => setVisibleCount(prev => prev + 9)}>
-                  Load More Profiles ({filtered.length - visibleCount} remaining)
+                  Load More {activeTab === 'matches' ? 'Matches' : 'Profiles'} ({displayProfiles.length - visibleCount} remaining)
                 </Button>
               </div>
             )}
 
             {/* Empty State */}
-            {filtered.length === 0 && (
+            {displayProfiles.length === 0 && (
               <div className="text-center py-20 animate-fade-in">
                 <div className="w-24 h-24 mx-auto rounded-full bg-primary-light flex items-center justify-center mb-6">
                   <Heart className="w-10 h-10 text-primary" />
                 </div>
-                <h3 className="text-2xl font-bold font-display mb-2">No profiles found</h3>
+                <h3 className="text-2xl font-bold font-display mb-2">
+                  {activeTab === 'matches' ? 'No mutual matches found yet' : 'No profiles found'}
+                </h3>
                 <p className="text-text-muted max-w-md mx-auto mb-6">
-                  Try adjusting your filters or search query. You can also register your own profile to get started.
+                  {activeTab === 'matches'
+                    ? 'Update your partner preferences to find better matches, or browse all profiles manually.'
+                    : 'Try adjusting your filters or search query. You can also register your own profile to get started.'
+                  }
                 </p>
                 <div className="flex gap-3 justify-center">
-                  <Button variant="ghost" onClick={clearFilters}>Clear Filters</Button>
+                  {activeTab === 'matches' ? (
+                    <Button variant="ghost" onClick={() => setActiveTab('browse')}>Browse All Profiles</Button>
+                  ) : (
+                    <Button variant="ghost" onClick={clearFilters}>Clear Filters</Button>
+                  )}
                   <Link href="/community/matrimonial/register">
                     <Button variant="primary">Register Your Profile</Button>
                   </Link>

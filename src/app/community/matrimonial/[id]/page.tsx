@@ -337,13 +337,23 @@ export default function MatrimonialDetailPage() {
     setSendingInterest(true);
     setInterestMessage('');
 
-    // Send email notification
+    // Send email notification (bidirectional)
     try {
       const res = await fetch('/api/matrimony/send-interest', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          // Recipient info (person whose profile I'm viewing)
           recipientEmail: profile.email,
+          recipientName: profile.full_name,
+          recipientProfileId: profile.profile_id,
+          recipientPhone: profile.phone,
+          recipientSocialHandle: profile.social_handle,
+          recipientProfession: profile.profession,
+          recipientAge: profile.age,
+          recipientCity: profile.city,
+          recipientProfilePageId: profile.id,
+          // Sender info (me)
           senderName: myProfile.full_name,
           senderProfileId: myProfile.profile_id,
           senderPhone: myProfile.phone,
@@ -353,13 +363,15 @@ export default function MatrimonialDetailPage() {
           senderAge: myProfile.age,
           senderCity: myProfile.city,
           senderProfilePageId: myProfile.id,
+          // Sender's registered account email (to receive recipient's details)
+          senderRegisteredEmail: userProfile?.email || myProfile.email,
         }),
       });
       const data = await res.json();
       if (data.success && data.emailSent) {
-        setInterestMessage('Interest sent! Your contact details have been emailed to this person.');
+        setInterestMessage('Interest sent! Profile details have been exchanged securely via email to both parties.');
       } else if (data.success) {
-        setInterestMessage('Interest sent! Email notification could not be delivered.');
+        setInterestMessage('Interest sent! Email delivery could not be confirmed.');
       } else {
         setInterestMessage('Interest saved, but email could not be sent.');
       }
@@ -697,22 +709,21 @@ export default function MatrimonialDetailPage() {
               </Card>
             )}
 
-            {/* Contact Card */}
-            <Card hover={false} className="bg-gradient-to-br from-pink-50 to-white sticky top-4">
-              <h3 className="text-lg font-bold mb-4">Contact Information</h3>
-              <div className="space-y-3 text-sm text-text-primary">
-                {profile.phone && (
-                  <p className="flex items-center gap-2"><Phone className="w-4 h-4 text-primary shrink-0" /> {profile.phone}</p>
-                )}
-                {profile.email && (
-                  <p className="flex items-center gap-2"><Mail className="w-4 h-4 text-primary shrink-0" /> {profile.email}</p>
-                )}
-                {profile.social_handle && (
-                  <p className="flex items-center gap-2"><Globe className="w-4 h-4 text-primary shrink-0" /> {profile.social_handle}</p>
-                )}
-                {!profile.phone && !profile.email && !profile.social_handle && (
-                  <p className="text-xs text-text-muted italic">No contact details provided.</p>
-                )}
+            {/* Privacy Notice Card */}
+            <Card hover={false} className="bg-gradient-to-br from-amber-50 to-white sticky top-4 border-amber-200/60">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center">
+                  <Lock className="w-4 h-4 text-amber-600" />
+                </div>
+                <h3 className="text-sm font-bold text-amber-800">Privacy Protected</h3>
+              </div>
+              <p className="text-xs text-amber-700/80 leading-relaxed">
+                To protect member privacy, contact details (phone, email, social) are <strong>never displayed</strong> on the website. When you express interest, both profiles are exchanged securely via email.
+              </p>
+              <div className="mt-3 pt-3 border-t border-amber-200/60">
+                <p className="text-[10px] text-amber-600/70 flex items-center gap-1">
+                  <Mail className="w-3 h-3" /> Details sent to your registered email
+                </p>
               </div>
             </Card>
 

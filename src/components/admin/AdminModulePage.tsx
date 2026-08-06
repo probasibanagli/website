@@ -163,6 +163,56 @@ export default function AdminModulePage({ moduleKey, collectionName, columns, fo
                       />
                       <span className="text-sm text-text-muted">Enable {f.label.toLowerCase()}</span>
                     </div>
+                  ) : f.type === 'staff_contacts' ? (
+                    <div className="space-y-3">
+                      {((formData[f.key] as any[]) || []).map((contact, index) => (
+                        <div key={index} className="p-4 border border-border rounded-xl bg-surface relative shadow-sm">
+                          <button type="button" onClick={() => {
+                            const newContacts = [...((formData[f.key] as any[]) || [])];
+                            newContacts.splice(index, 1);
+                            setFormData({ ...formData, [f.key]: newContacts });
+                          }} className="absolute top-2 right-2 p-1.5 text-red-500 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"><X className="w-4 h-4" /></button>
+                          
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-2">
+                            <input type="text" placeholder="Name" value={contact.name || ''} onChange={e => {
+                              const newContacts = [...((formData[f.key] as any[]) || [])];
+                              newContacts[index] = { ...contact, name: e.target.value };
+                              setFormData({ ...formData, [f.key]: newContacts });
+                            }} className="w-full px-3 py-2 border border-border rounded-lg text-sm bg-white focus:ring-2 focus:ring-primary/20 focus:outline-none" />
+                            
+                            <input type="text" placeholder="Role (e.g. Professor)" value={contact.role || ''} onChange={e => {
+                              const newContacts = [...((formData[f.key] as any[]) || [])];
+                              newContacts[index] = { ...contact, role: e.target.value };
+                              setFormData({ ...formData, [f.key]: newContacts });
+                            }} className="w-full px-3 py-2 border border-border rounded-lg text-sm bg-white focus:ring-2 focus:ring-primary/20 focus:outline-none" />
+                            
+                            <input type="text" placeholder="Department" value={contact.department || ''} onChange={e => {
+                              const newContacts = [...((formData[f.key] as any[]) || [])];
+                              newContacts[index] = { ...contact, department: e.target.value };
+                              setFormData({ ...formData, [f.key]: newContacts });
+                            }} className="w-full px-3 py-2 border border-border rounded-lg text-sm bg-white focus:ring-2 focus:ring-primary/20 focus:outline-none" />
+                            
+                            <input type="text" placeholder="Phone" value={contact.phone || ''} onChange={e => {
+                              const newContacts = [...((formData[f.key] as any[]) || [])];
+                              newContacts[index] = { ...contact, phone: e.target.value };
+                              setFormData({ ...formData, [f.key]: newContacts });
+                            }} className="w-full px-3 py-2 border border-border rounded-lg text-sm bg-white focus:ring-2 focus:ring-primary/20 focus:outline-none" />
+                            
+                            <input type="email" placeholder="Email" value={contact.email || ''} onChange={e => {
+                              const newContacts = [...((formData[f.key] as any[]) || [])];
+                              newContacts[index] = { ...contact, email: e.target.value };
+                              setFormData({ ...formData, [f.key]: newContacts });
+                            }} className="w-full px-3 py-2 border border-border rounded-lg text-sm bg-white focus:ring-2 focus:ring-primary/20 focus:outline-none sm:col-span-2" />
+                          </div>
+                        </div>
+                      ))}
+                      <button type="button" onClick={() => {
+                        const newContacts = [...((formData[f.key] as any[]) || []), { name: '', role: '', department: '', phone: '', email: '' }];
+                        setFormData({ ...formData, [f.key]: newContacts });
+                      }} className="flex items-center gap-2 px-4 py-2.5 text-sm font-bold text-primary bg-primary/10 hover:bg-primary/20 rounded-xl transition-colors cursor-pointer w-full justify-center">
+                        <Plus className="w-4 h-4" /> Add Staff / Professor
+                      </button>
+                    </div>
                   ) : (
                     <input type={f.type || 'text'} value={String(formData[f.key] || '')} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, [f.key]: e.target.value })} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" placeholder={`Enter ${f.label.toLowerCase()}...`} />
                   )}
