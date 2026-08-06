@@ -31,27 +31,28 @@ export default function DoctorsListPage({ params }: { params: Promise<{ id: stri
 
     const loadData = async () => {
       try {
-        const hRef = doc(db, COLLECTIONS.hospitals, id);
-        const hSnap = await getDoc(hRef);
+        const hRes = await fetch(`/api/public/firestore?collection=hospitals&docId=${id}`);
         let currentHospital: Hospital | null = null;
-        if (hSnap.exists()) {
-          currentHospital = { id: hSnap.id, ...hSnap.data() } as Hospital;
+        if (hRes.ok) {
+          currentHospital = await hRes.json() as Hospital;
           setHospital(currentHospital);
         }
 
-        const docsRef = collection(db, COLLECTIONS.bengali_doctors);
-        const dSnap = await getDocs(docsRef);
-        const allDoctors = dSnap.docs.map(doc => ({ id: doc.id, ...doc.data() } as any));
-        
-        // Filter by either hospital ID or hospital Name to handle inconsistencies in the database
-        const hospitalDoctors = allDoctors.filter(d => 
-          d.hospital_id === id || 
-          (currentHospital && d.hospital_id === currentHospital.name) ||
-          (currentHospital && d.hospital === currentHospital.name) ||
-          (currentHospital && d.hospital_name === currentHospital.name)
-        );
-        
-        setDoctors(hospitalDoctors as BengaliDoctor[]);
+        const dRes = await fetch(`/api/public/firestore?collection=bengali_doctors`);
+        if (dRes.ok) {
+          const dJson = await dRes.json();
+          const allDoctors = (dJson.items || []) as any[];
+          
+          // Filter by either hospital ID or hospital Name to handle inconsistencies in the database
+          const hospitalDoctors = allDoctors.filter(d => 
+            d.hospital_id === id || 
+            (currentHospital && d.hospital_id === currentHospital.name) ||
+            (currentHospital && d.hospital === currentHospital.name) ||
+            (currentHospital && d.hospital_name === currentHospital.name)
+          );
+          
+          setDoctors(hospitalDoctors as BengaliDoctor[]);
+        }
       } catch (e) {
         console.error(e);
       } finally {

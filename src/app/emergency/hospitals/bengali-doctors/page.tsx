@@ -7,9 +7,10 @@ import { collection, getDocs } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { COLLECTIONS } from '@/lib/firestore/collections';
 import type { BengaliDoctor, Hospital } from '@/types';
-import { Search, Phone, ChevronRight, UserRound, Award, Languages, Building2, Stethoscope, Mail, ArrowLeft } from 'lucide-react';
+import { Search, Phone, ChevronRight, UserRound, Award, Languages, Building2, Stethoscope, Mail, ArrowLeft, ShieldAlert } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { OtpVerificationModal } from '@/components/auth/OtpVerificationModal';
 
 const SAMPLE_HOSPITALS: Record<string, Hospital> = {
   'h1': { id: 'h1', name: 'Apollo Hospital Chennai', city: 'Chennai', area: 'Greams Road', specializations: [], is_24_7: true, has_bengali_doctor: true, images: ['/images/hospitals/apollo-chennai.jpg'], created_at: '' },
@@ -32,6 +33,7 @@ export default function BengaliDoctorsPage() {
   const [hospitals, setHospitals] = useState<Record<string, Hospital>>({});
   const [loading, setLoading] = useState(true);
   const [isVerified, setIsVerified] = useState(false);
+  const [showOtpModal, setShowOtpModal] = useState(false);
   const router = useRouter();
   
   const [search, setSearch] = useState('');
@@ -39,27 +41,52 @@ export default function BengaliDoctorsPage() {
   const [langFilter, setLangFilter] = useState('');
 
   useEffect(() => {
-    const verified = localStorage.getItem('directory_verified') === 'true';
-    if (!verified) {
-      router.replace('/emergency/hospitals/general/verify?redirect=/emergency/hospitals/bengali-doctors');
-      return;
-    }
-    setIsVerified(true);
+    setIsVerified(false);
 
     async function loadData() {
       try {
-        const docSnap = await getDocs(collection(db, COLLECTIONS.bengali_doctors));
-        const docsData = docSnap.docs.map(doc => ({ id: doc.id, ...doc.data() } as BengaliDoctor));
+        let docsData: BengaliDoctor[] = [];
+        let hospList: Hospital[] = [];
+
+        try {
+          const [docRes, hospRes] = await Promise.all([
+            fetch(`/api/public/firestore?collection=bengali_doctors`),
+            fetch(`/api/public/firestore?collection=hospitals`)
+          ]);
+
+          if (docRes.ok) {
+            const docJson = await docRes.json();
+            if (!docJson.fallback && Array.isArray(docJson.items) && docJson.items.length > 0) {
+              docsData = docJson.items;
+            }
+          }
+          if (hospRes.ok) {
+            const hospJson = await hospRes.json();
+            if (!hospJson.fallback && Array.isArray(hospJson.items) && hospJson.items.length > 0) {
+              hospList = hospJson.items;
+            }
+          }
+        } catch (apiErr) {
+          console.warn("API fetch failed, falling back to client-side Firestore:", apiErr);
+        }
+
+        if (docsData.length === 0) {
+          const docSnap = await getDocs(collection(db, COLLECTIONS.bengali_doctors));
+          docsData = docSnap.docs.map(d => ({ id: d.id, ...d.data() } as BengaliDoctor));
+        }
+        if (hospList.length === 0) {
+          const hospSnap = await getDocs(collection(db, COLLECTIONS.hospitals));
+          hospList = hospSnap.docs.map(d => ({ id: d.id, ...d.data() } as Hospital));
+        }
+
         setDoctors(docsData.length > 0 ? docsData : SAMPLE_DOCTORS);
         
-        const hospSnap = await getDocs(collection(db, COLLECTIONS.hospitals));
         const hospData: Record<string, Hospital> = {};
-        hospSnap.docs.forEach(d => {
-          hospData[d.id] = { id: d.id, ...d.data() } as Hospital;
+        hospList.forEach((d: Hospital) => {
+          hospData[d.id] = d;
         });
         
         let finalHospitals = { ...hospData };
-        // If we fell back to SAMPLE_DOCTORS, we need to ensure the sample hospitals exist in the mapping
         if (docsData.length === 0) {
            finalHospitals = { ...SAMPLE_HOSPITALS, ...finalHospitals };
         }
@@ -161,7 +188,7 @@ export default function BengaliDoctorsPage() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {(loading || !isVerified) ? (
+        {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
              {[1, 2, 3, 4, 5, 6].map(i => (
                <Card key={i} className="animate-pulse p-6">
@@ -178,6 +205,21 @@ export default function BengaliDoctorsPage() {
                  </div>
                </Card>
              ))}
+          </div>
+        ) : !isVerified ? (
+          <div className="max-w-xl mx-auto py-12 text-center">
+            <Card className="p-8 rounded-3xl border-border shadow-md bg-white">
+              <div className="w-16 h-16 bg-amber-500/10 rounded-2xl flex items-center justify-center mx-auto mb-5 text-amber-600">
+                <ShieldAlert className="w-8 h-8" />
+              </div>
+              <h2 className="text-2xl font-bold text-text-primary mb-2">Doctor Directory Locked</h2>
+              <p className="text-sm text-text-muted mb-6">
+                To protect practitioner privacy and maintain security, complete a quick OTP verification to unlock doctor profiles and contact details.
+              </p>
+              <Button onClick={() => setShowOtpModal(true)} variant="primary" size="lg" className="w-full font-semibold">
+                Verify via OTP to Access Directory
+              </Button>
+            </Card>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -249,7 +291,7 @@ export default function BengaliDoctorsPage() {
             })}
           </div>
         )}
-        {!loading && filtered.length === 0 && (
+        {isVerified && !loading && filtered.length === 0 && (
           <div className="text-center py-20 bg-white rounded-3xl border border-border mt-8">
             <p className="text-5xl mb-4">👨‍⚕️</p>
             <h3 className="text-xl font-bold mb-2">No doctors found</h3>
@@ -257,6 +299,18 @@ export default function BengaliDoctorsPage() {
           </div>
         )}
       </div>
+
+      <OtpVerificationModal 
+        isOpen={showOtpModal}
+        onClose={() => setShowOtpModal(false)}
+        onSuccess={() => {
+          setIsVerified(true);
+          setShowOtpModal(false);
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('directory_verified', 'true');
+          }
+        }}
+      />
     </div>
   );
 }

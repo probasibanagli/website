@@ -106,21 +106,57 @@ export default function EmergencyHospitalsPage() {
   const [doctorToVerify, setDoctorToVerify] = useState<string | undefined>(undefined);
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setIsVerified(localStorage.getItem('directory_verified') === 'true');
-    }
+    setIsVerified(false);
     
     const fetchData = async () => {
       try {
-        const [hSnap, dSnap, sSnap] = await Promise.all([
-          getDocs(collection(db, COLLECTIONS.hospitals)),
-          getDocs(collection(db, COLLECTIONS.bengali_doctors)),
-          getDocs(collection(db, COLLECTIONS.bengali_staff || 'bengali_staff'))
-        ]);
-        const hData = hSnap.docs.map(doc => ({ id: doc.id, ...doc.data() } as Hospital));
-        const dData = dSnap.docs.map(doc => ({ id: doc.id, ...doc.data() } as BengaliDoctor));
-        const sData = sSnap.docs.map(doc => ({ id: doc.id, ...doc.data() } as BengaliStaff));
-        
+        let hData: Hospital[] = [];
+        let dData: BengaliDoctor[] = [];
+        let sData: BengaliStaff[] = [];
+
+        try {
+          const [hRes, dRes, sRes] = await Promise.all([
+            fetch(`/api/public/firestore?collection=hospitals`),
+            fetch(`/api/public/firestore?collection=bengali_doctors`),
+            fetch(`/api/public/firestore?collection=bengali_staff`)
+          ]);
+
+          if (hRes.ok) {
+            const hJson = await hRes.json();
+            if (!hJson.fallback && Array.isArray(hJson.items) && hJson.items.length > 0) {
+              hData = hJson.items;
+            }
+          }
+          if (dRes.ok) {
+            const dJson = await dRes.json();
+            if (!dJson.fallback && Array.isArray(dJson.items) && dJson.items.length > 0) {
+              dData = dJson.items;
+            }
+          }
+          if (sRes.ok) {
+            const sJson = await sRes.json();
+            if (!sJson.fallback && Array.isArray(sJson.items) && sJson.items.length > 0) {
+              sData = sJson.items;
+            }
+          }
+        } catch (apiErr) {
+          console.warn("Public API fetch failed, falling back to client-side Firestore:", apiErr);
+        }
+
+        // Fallback to client-side Firestore if API returned fallback or empty array
+        if (hData.length === 0) {
+          const hSnap = await getDocs(collection(db, COLLECTIONS.hospitals));
+          hData = hSnap.docs.map(d => ({ id: d.id, ...d.data() } as Hospital));
+        }
+        if (dData.length === 0) {
+          const dSnap = await getDocs(collection(db, COLLECTIONS.bengali_doctors));
+          dData = dSnap.docs.map(d => ({ id: d.id, ...d.data() } as BengaliDoctor));
+        }
+        if (sData.length === 0) {
+          const sSnap = await getDocs(collection(db, COLLECTIONS.bengali_staff || 'bengali_staff'));
+          sData = sSnap.docs.map(d => ({ id: d.id, ...d.data() } as BengaliStaff));
+        }
+
         setHospitals(hData.length > 0 ? hData : sampleHospitals);
         setDoctors(dData.length > 0 ? dData : SAMPLE_DOCTORS);
         setStaff(sData.length > 0 ? sData : SAMPLE_STAFF);
@@ -459,7 +495,7 @@ export default function EmergencyHospitalsPage() {
                   {filteredDoctors.map((doctor) => {
                     const docHospitals = doctor.hospital_ids?.map(hid => hospitals.find(h => h.id === hid)).filter(Boolean) || [hospitals.find(h => h.id === doctor.hospital_id)].filter(Boolean);
                     const otpRequired = doctor.otp_required !== false;
-                    const canViewProfile = isVerified || !otpRequired;
+                    const canViewProfile = isVerified;
 
                     return (
                       <Card key={doctor.id} className="group hover:shadow-lg transition-all duration-300 relative overflow-hidden bg-white border border-border flex flex-col justify-between">
@@ -583,53 +619,69 @@ export default function EmergencyHospitalsPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {filteredStaff.map((s) => {
                     const hospital = hospitals.find((h) => h.id === s.hospital_id);
+                    const otpRequired = s.otp_required !== false;
+                    const canViewProfile = isVerified;
+
                     return (
                       <Card key={s.id} className="group hover:shadow-lg transition-all duration-300 relative overflow-hidden bg-white border border-border p-5 flex flex-col justify-between">
-                        <div className="flex items-start gap-4">
-                          <div className="w-16 h-16 rounded-xl bg-surface border border-border overflow-hidden shrink-0 relative flex items-center justify-center text-primary/30">
-                            {s.photo ? (
-                              <img src={s.photo} alt={s.name} className="w-full h-full object-cover" />
-                            ) : (
-                              <Users className="w-8 h-8" />
+                        <div>
+                          <div className="flex items-start gap-4">
+                            <div className="w-16 h-16 rounded-xl bg-surface border border-border overflow-hidden shrink-0 relative flex items-center justify-center text-primary/30">
+                              {canViewProfile && s.photo ? (
+                                <img src={s.photo} alt={s.name} className="w-full h-full object-cover" />
+                              ) : (
+                                <Users className="w-8 h-8" />
+                              )}
+                            </div>
+                            <div className="flex-1">
+                              <h3 className="text-base font-bold text-text-primary leading-tight group-hover:text-primary transition-colors">
+                                {s.name}
+                              </h3>
+                              <p className="text-primary font-semibold text-xs mt-1">{s.role}</p>
+                              <Badge className="bg-surface border border-border/50 text-text-muted font-bold text-[10px] mt-1.5">
+                                {s.department}
+                              </Badge>
+                              {!canViewProfile && (
+                                <div className="flex items-center gap-1.5 mt-2 text-[10px] text-amber-600 font-bold bg-amber-50 px-2 py-0.5 rounded-md border border-amber-100 max-w-fit">
+                                  <Lock className="w-3 h-3" /> OTP Required
+                                </div>
+                              )}
+                            </div>
+                          </div>
+
+                          <div className="mt-4 space-y-2 border-t border-border/50 pt-4">
+                            {hospital && (
+                              <div className="flex items-start gap-2 text-xs text-text-primary font-semibold">
+                                <Building2 className="w-4 h-4 text-text-muted mt-0.5" />
+                                <span>{hospital.name} ({hospital.city})</span>
+                              </div>
+                            )}
+                            {s.languages && s.languages.length > 0 && (
+                              <div className="flex items-center gap-2 text-xs text-text-muted font-medium">
+                                <Clock className="w-4 h-4 text-text-muted" />
+                                <span>Languages: {s.languages.join(', ')}</span>
+                              </div>
+                            )}
+                            {canViewProfile && s.experience && (
+                              <div className="text-xs text-text-muted font-medium pl-6">
+                                Experience: {s.experience}
+                              </div>
                             )}
                           </div>
-                          <div className="flex-1">
-                            <h3 className="text-base font-bold text-text-primary leading-tight group-hover:text-primary transition-colors">
-                              {s.name}
-                            </h3>
-                            <p className="text-primary font-semibold text-xs mt-1">{s.role}</p>
-                            <Badge className="bg-surface border border-border/50 text-text-muted font-bold text-[10px] mt-1.5">
-                              {s.department}
-                            </Badge>
-                          </div>
                         </div>
 
-                        <div className="mt-4 space-y-2 border-t border-border/50 pt-4">
-                          {hospital && (
-                            <div className="flex items-start gap-2 text-xs text-text-primary font-semibold">
-                              <Building2 className="w-4 h-4 text-text-muted mt-0.5" />
-                              <span>{hospital.name} ({hospital.city})</span>
-                            </div>
-                          )}
-                          {s.languages && s.languages.length > 0 && (
-                            <div className="flex items-center gap-2 text-xs text-text-muted font-medium">
-                              <Clock className="w-4 h-4 text-text-muted" />
-                              <span>Languages: {s.languages.join(', ')}</span>
-                            </div>
-                          )}
-                          {s.experience && (
-                            <div className="text-xs text-text-muted font-medium pl-6">
-                              Experience: {s.experience}
-                            </div>
-                          )}
-                        </div>
-
-                        <div className="mt-5 pt-3 border-t border-border flex items-center gap-2">
-                          <a href={`tel:${s.phone}`} className="flex-1">
-                            <Button variant="outline" size="sm" className="w-full font-semibold">
-                              <Phone className="w-3.5 h-3.5 mr-1.5" /> Call Staff
+                        <div className="mt-5 pt-3 border-t border-border">
+                          {canViewProfile ? (
+                            <Link href={`/emergency/hospitals/bengali-staff/${s.id}`}>
+                              <Button variant="primary" size="sm" className="w-full font-bold">
+                                View Profile Details
+                              </Button>
+                            </Link>
+                          ) : (
+                            <Button onClick={() => triggerVerification(s.id)} variant="danger" size="sm" className="w-full font-bold shadow-md shadow-red-500/10">
+                              <Lock className="w-4 h-4 mr-2" /> Verify OTP to View Staff Details
                             </Button>
-                          </a>
+                          )}
                         </div>
                       </Card>
                     );

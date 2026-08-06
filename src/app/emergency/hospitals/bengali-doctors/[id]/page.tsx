@@ -52,25 +52,46 @@ export default function DoctorDetailsPage({ params }: { params: Promise<{ id: st
   useEffect(() => {
     async function loadDoctorAndCheckOtp() {
       try {
-        const docSnap = await getDoc(doc(db, COLLECTIONS.bengali_doctors, id));
-        if (docSnap.exists()) {
-          const d = { id: docSnap.id, ...docSnap.data() } as BengaliDoctor;
+        let d: BengaliDoctor | null = null;
+        try {
+          const dRes = await fetch(`/api/public/firestore?collection=bengali_doctors&docId=${id}`);
+          if (dRes.ok) {
+            const dJson = await dRes.json();
+            if (dJson && !dJson.fallback && dJson.id && (dJson.doctor_name || dJson.name)) {
+              d = dJson as BengaliDoctor;
+            }
+          }
+        } catch (apiErr) {
+          console.warn("Doctor API fetch failed, querying client-side Firestore:", apiErr);
+        }
+
+        if (!d) {
+          const docSnap = await getDoc(doc(db, COLLECTIONS.bengali_doctors, id));
+          if (docSnap.exists()) {
+            d = { id: docSnap.id, ...docSnap.data() } as BengaliDoctor;
+          }
+        }
+
+        if (d) {
           setDoctor(d);
           
-          const verified = localStorage.getItem('directory_verified') === 'true';
-          const otpRequired = d.otp_required !== false;
-          
-          if (otpRequired && !verified) {
-            router.replace(`/emergency/hospitals/general/verify?redirect=/emergency/hospitals/bengali-doctors/${id}`);
-            return;
-          }
-          
-          setIsVerified(true);
+          setIsVerified(false);
           
           // Fetch associated hospitals
           const hospIds = d.hospital_ids || (d.hospital_id ? [d.hospital_id] : []);
           const hospData: Hospital[] = [];
           for (const hid of hospIds) {
+            try {
+              const hRes = await fetch(`/api/public/firestore?collection=hospitals&docId=${hid}`);
+              if (hRes.ok) {
+                const hJson = await hRes.json();
+                if (hJson && !hJson.fallback && hJson.id) {
+                  hospData.push(hJson as Hospital);
+                  continue;
+                }
+              }
+            } catch (err) {}
+            
             const hSnap = await getDoc(doc(db, COLLECTIONS.hospitals, hid));
             if (hSnap.exists()) {
               hospData.push({ id: hSnap.id, ...hSnap.data() } as Hospital);
@@ -106,6 +127,50 @@ export default function DoctorDetailsPage({ params }: { params: Promise<{ id: st
          <Link href="/emergency/hospitals/bengali-doctors">
            <Button variant="primary">Back to Directory</Button>
          </Link>
+      </div>
+    );
+  }
+
+  if (!isVerified) {
+    return (
+      <div className="min-h-screen bg-surface pb-20">
+        <div className="bg-white border-b border-border">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div className="flex items-center gap-2 text-sm text-text-muted overflow-x-auto whitespace-nowrap">
+              <Link href="/" className="hover:text-primary shrink-0">Home</Link><span>/</span>
+              <Link href="/emergency" className="hover:text-primary shrink-0">Emergency</Link><span>/</span>
+              <Link href="/emergency/hospitals/bengali-doctors" className="hover:text-primary shrink-0">Bengali Doctors</Link><span>/</span>
+              <span className="text-text-primary font-medium truncate">Verification Required</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="max-w-xl mx-auto px-4 py-16 text-center">
+          <Card className="p-8 rounded-3xl border-border shadow-md bg-white">
+            <div className="w-16 h-16 bg-amber-500/10 rounded-2xl flex items-center justify-center mx-auto mb-5 text-amber-600">
+              <ShieldAlert className="w-8 h-8" />
+            </div>
+            <h2 className="text-2xl font-bold text-text-primary mb-2">OTP Verification Required</h2>
+            <p className="text-sm text-text-muted mb-6">
+              Doctor profile details and contact information are protected. Please complete a quick OTP verification to unlock full profile details.
+            </p>
+            <Button onClick={() => setShowOtpModal(true)} variant="primary" size="lg" className="w-full font-semibold">
+              Verify via OTP to View Profile
+            </Button>
+          </Card>
+        </div>
+
+        <OtpVerificationModal 
+          isOpen={showOtpModal}
+          onClose={() => setShowOtpModal(false)}
+          onSuccess={() => {
+            setIsVerified(true);
+            setShowOtpModal(false);
+            if (typeof window !== 'undefined') {
+              localStorage.setItem('directory_verified', 'true');
+            }
+          }}
+        />
       </div>
     );
   }

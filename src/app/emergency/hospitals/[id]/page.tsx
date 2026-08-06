@@ -44,9 +44,7 @@ export default function HospitalDetailsPage({ params }: { params: Promise<{ id: 
   const [staffSearch, setStaffSearch] = useState('');
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setIsVerified(localStorage.getItem('directory_verified') === 'true');
-    }
+    setIsVerified(false);
   }, []);
 
   const canViewDoctors = isVerified;
@@ -57,23 +55,68 @@ export default function HospitalDetailsPage({ params }: { params: Promise<{ id: 
 
   const loadData = async () => {
     try {
-      let currentHospital = null;
+      let currentHospital: Hospital | null = null;
       
-      // Load Hospital Document from DB
-      const hSnap = await getDoc(doc(db, COLLECTIONS.hospitals, id));
-      if (hSnap.exists()) {
-         currentHospital = { id: hSnap.id, ...hSnap.data() } as Hospital;
-      } else {
-         currentHospital = SAMPLE_HOSPITALS.find(h => h.id === id) || null;
+      try {
+        const hRes = await fetch(`/api/public/firestore?collection=hospitals&docId=${id}`);
+        if (hRes.ok) {
+          const hJson = await hRes.json();
+          if (hJson && !hJson.fallback && hJson.id && hJson.name) {
+            currentHospital = hJson as Hospital;
+          }
+        }
+      } catch (apiErr) {
+        console.warn('Hospital API fetch failed, querying client-side Firestore:', apiErr);
+      }
+
+      if (!currentHospital) {
+        const docSnap = await getDoc(doc(db, COLLECTIONS.hospitals, id));
+        if (docSnap.exists()) {
+          currentHospital = { id: docSnap.id, ...docSnap.data() } as Hospital;
+        } else {
+          currentHospital = SAMPLE_HOSPITALS.find(h => h.id === id) || null;
+        }
       }
       setHospital(currentHospital);
 
       // Load Doctors & Staff
-      const dSnap = await getDocs(query(collection(db, COLLECTIONS.bengali_doctors), where("hospital_id", "==", id)));
-      setDoctors(dSnap.docs.map(d => ({id: d.id, ...d.data()} as BengaliDoctor)));
-        
-      const sSnap = await getDocs(query(collection(db, COLLECTIONS.bengali_staff || 'bengali_staff'), where("hospital_id", "==", id)));
-      setStaff(sSnap.docs.map(d => ({id: d.id, ...d.data()} as BengaliStaff)));
+      let dList: BengaliDoctor[] = [];
+      let sList: BengaliStaff[] = [];
+
+      try {
+        const [dRes, sRes] = await Promise.all([
+          fetch(`/api/public/firestore?collection=bengali_doctors&whereField=hospital_id&whereValue=${id}`),
+          fetch(`/api/public/firestore?collection=bengali_staff&whereField=hospital_id&whereValue=${id}`)
+        ]);
+
+        if (dRes.ok) {
+          const dJson = await dRes.json();
+          if (!dJson.fallback && Array.isArray(dJson.items)) dList = dJson.items;
+        }
+        if (sRes.ok) {
+          const sJson = await sRes.json();
+          if (!sJson.fallback && Array.isArray(sJson.items)) sList = sJson.items;
+        }
+      } catch (apiErr) {
+        console.warn('Doctors/Staff API fetch failed:', apiErr);
+      }
+
+      if (dList.length === 0) {
+        const dSnap = await getDocs(query(collection(db, COLLECTIONS.bengali_doctors), where('hospital_id', '==', id)));
+        dList = dSnap.docs.map(d => ({ id: d.id, ...d.data() } as BengaliDoctor));
+        if (dList.length === 0) {
+          const dSnapAll = await getDocs(collection(db, COLLECTIONS.bengali_doctors));
+          dList = dSnapAll.docs.map(d => ({ id: d.id, ...d.data() } as BengaliDoctor)).filter(d => d.hospital_ids?.includes(id) || d.hospital_id === id);
+        }
+      }
+
+      if (sList.length === 0) {
+        const sSnap = await getDocs(query(collection(db, COLLECTIONS.bengali_staff || 'bengali_staff'), where('hospital_id', '==', id)));
+        sList = sSnap.docs.map(d => ({ id: d.id, ...d.data() } as BengaliStaff));
+      }
+
+      setDoctors(dList);
+      setStaff(sList);
     } catch (e) {
       console.error(e);
       const foundHospital = SAMPLE_HOSPITALS.find(h => h.id === id);
@@ -81,7 +124,7 @@ export default function HospitalDetailsPage({ params }: { params: Promise<{ id: 
     }
     
     setLoading(false);
-  }
+  };
 
   if (loading) {
     return (

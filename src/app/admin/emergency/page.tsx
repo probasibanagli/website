@@ -132,7 +132,7 @@ export default function AdminEmergencyPage() {
         ? { specializations: [], category: 'Private', status: 'Active', main_branch: false, is_24_7: false, has_bengali_doctor: false } 
         : activeTab === 'doctors'
           ? { hospital_ids: [], languages: ['Bengali'], specialization: 'Cardiology', otp_required: true }
-          : { languages: ['Bengali'], department: 'Reception' }
+          : { languages: ['Bengali'], department: 'Reception', otp_required: true }
     );
     setShowForm(true);
   }
@@ -154,6 +154,7 @@ export default function AdminEmergencyPage() {
     }
     if (activeTab === 'staff') {
       if (!Array.isArray(data.languages)) data.languages = [];
+      if (data.otp_required === undefined) data.otp_required = true;
     }
     setFormData(data);
     setShowForm(true);
@@ -708,6 +709,18 @@ export default function AdminEmergencyPage() {
                           </label>
                         ))}
                       </div>
+                    </div>
+                    <div className="md:col-span-2 flex items-center gap-3 mt-2">
+                      <input 
+                        type="checkbox" 
+                        id="staff_otp_required" 
+                        checked={formData.otp_required !== false} 
+                        onChange={e => setFormData({...formData, otp_required: e.target.checked})} 
+                        className="w-5 h-5 rounded border-border" 
+                      />
+                      <label htmlFor="staff_otp_required" className="text-sm font-semibold text-text-primary cursor-pointer">
+                        Require OTP verification to view staff profile details
+                      </label>
                     </div>
                     <div className="md:col-span-2">
                       <label className="block text-sm font-semibold text-text-primary mb-1.5">Description</label>
