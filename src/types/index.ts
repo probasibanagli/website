@@ -12,7 +12,10 @@ export type ModuleKey =
   | 'community'
   | 'services'
   | 'blog'
-  | 'users';
+  | 'users'
+  | 'matrimony'
+  | 'blood_bank'
+  | 'ambulance';
 
 export type ModulePermissions = Record<ModuleKey, PermissionLevel>;
 
@@ -31,6 +34,7 @@ export interface UserProfile {
   is_active: boolean;
   phone_verified?: boolean;
   email_verified?: boolean;
+  is_first_login?: boolean;
 }
 
 /* ──────────────── Module Labels (for UI) ──────────────── */
@@ -44,6 +48,9 @@ export const MODULE_LABELS: Record<ModuleKey, string> = {
   services: 'Campus & Government',
   blog: 'Blog Posts',
   users: 'User Management',
+  matrimony: 'Matrimonial',
+  blood_bank: 'Blood Banks',
+  ambulance: 'Ambulance Directory',
 };
 
 /* ──────────────── Data Models ──────────────── */
@@ -72,6 +79,17 @@ export interface Listing {
   verified: boolean;
   available_rooms?: number;
   deposit_amount?: number;
+  accommodation_type?: 'PG' | 'Hotel' | 'Service Apartment' | 'Rental Home';
+  contact_person_name?: string;
+  contact_whatsapp?: string;
+  contact_email?: string;
+  contact_phone?: string;
+  price_range?: string;
+  price_daily?: number;
+  price_monthly?: number;
+  website_link?: string;
+  nearby_hospital?: string;
+  landmark?: string;
   created_at: string;
 }
 
@@ -105,6 +123,8 @@ export interface Hospital {
   id: string;
   name: string;
   city: string;
+  state?: string;
+  district?: string;
   area?: string;
   address?: string;
   phone?: string;
@@ -112,6 +132,7 @@ export interface Hospital {
   specializations: string[];
   is_24_7: boolean;
   has_bengali_doctor: boolean;
+  has_bengali_staff?: boolean;
   google_maps_url?: string;
   lat?: number;
   lng?: number;
@@ -129,12 +150,38 @@ export interface BengaliDoctor {
   id: string;
   doctor_name: string;
   specialization: string;
+  department?: string;
   hospital_id: string;
   experience: string;
+  qualifications?: string[];
   languages: string[];
+  consultation_timings?: string;
   photo: string;
   phone: string;
   email: string;
+  social_links?: {
+    linkedin?: string;
+    facebook?: string;
+    instagram?: string;
+    x?: string;
+  };
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface BengaliStaff {
+  id: string;
+  name: string;
+  photo: string;
+  hospital_id: string;
+  department: string;
+  role: string;
+  languages: string[];
+  phone: string;
+  email: string;
+  experience: string;
+  availability: string;
+  description: string;
   created_at?: string;
   updated_at?: string;
 }
@@ -147,8 +194,21 @@ export interface BloodBank {
   phone?: string;
   available_groups: string[];
   google_maps_url?: string;
+  website?: string;
   lat?: number;
   lng?: number;
+}
+
+export interface Ambulance {
+  id: string;
+  name: string;
+  city: string;
+  phone?: string;
+  address?: string;
+  google_maps_url?: string;
+  website?: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface CommunityGroup {
@@ -171,6 +231,7 @@ export interface MatrimonialProfile {
   id: string;
   user_id: string;
   profile_id?: string; // e.g. PB-0001
+  profile_for?: string; // added
 
   // Personal
   full_name?: string;
@@ -214,6 +275,8 @@ export interface MatrimonialProfile {
   sub_caste?: string;
   gotra?: string;
   manglik?: string;
+  raasi?: string;
+  star?: string;
 
   // Lifestyle
   diet?: string;
@@ -241,23 +304,39 @@ export interface MatrimonialProfile {
   phone?: string;
   email?: string;
   whatsapp?: string;
+  social_handle?: string;
 
-  // Photos
+  // Photos & Videos
   profile_photo?: string;
+  photos?: string[];
+  video?: string;
 
   // System
   verified: boolean;
   published: boolean;
-  status?: 'draft' | 'pending' | 'approved' | 'rejected';
+  status?: 'draft' | 'pending' | 'approved' | 'rejected' | 'married' | 'verified';
   contact_visible_after_login: boolean;
   created_at: string;
   updated_at?: string;
 }
 
+export interface BengaliForum {
+  name: string;
+  link: string;
+}
+
+export interface CollegeStaffContact {
+  name: string;
+  role: 'lecturer' | 'staff';
+  department: string;
+  phone: string;
+  email: string;
+}
+
 export interface College {
   id: string;
   name: string;
-  type?: string;
+  type?: 'engineering' | 'medical' | 'arts_science';
   city?: string;
   area?: string;
   address?: string;
@@ -266,6 +345,9 @@ export interface College {
   google_maps_url?: string;
   lat?: number;
   lng?: number;
+  ranking?: number;
+  bengali_forums?: BengaliForum[];
+  staff_contacts?: CollegeStaffContact[];
 }
 
 export interface Event {
@@ -279,6 +361,7 @@ export interface Event {
   contact?: string;
   image_url?: string;
   category?: string;
+  community_group_id?: string;
 }
 
 export interface BlogPost {

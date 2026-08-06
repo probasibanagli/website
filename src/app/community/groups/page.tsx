@@ -197,11 +197,7 @@ export default function GroupsPage() {
                 </div>
                 <p className="text-sm text-text-muted mt-3 leading-relaxed">{group.description}</p>
 
-                <div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
-                  <div className="flex items-center gap-1.5 text-sm text-text-muted">
-                    <Users className="w-4 h-4" />
-                    {(group.member_count || 0).toLocaleString()} {group.platform === 'website' ? 'visitors' : 'members'}
-                  </div>
+                <div className="flex items-center justify-end mt-4 pt-4 border-t border-border">
                   <a href={link} target="_blank" rel="noopener noreferrer">
                     <Button variant="primary" size="sm">
                       {buttonLabel} <ExternalLink className="w-3.5 h-3.5" />

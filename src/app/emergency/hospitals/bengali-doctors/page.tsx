@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { COLLECTIONS } from '@/lib/firestore/collections';
@@ -30,22 +31,54 @@ export default function BengaliDoctorsPage() {
   const [doctors, setDoctors] = useState<BengaliDoctor[]>([]);
   const [hospitals, setHospitals] = useState<Record<string, Hospital>>({});
   const [loading, setLoading] = useState(true);
+  const [isVerified, setIsVerified] = useState(false);
+  const router = useRouter();
   
   const [search, setSearch] = useState('');
   const [specialtyFilter, setSpecialtyFilter] = useState('');
   const [langFilter, setLangFilter] = useState('');
 
   useEffect(() => {
-    async function loadData() {
-      setDoctors(SAMPLE_DOCTORS);
-      setHospitals(SAMPLE_HOSPITALS);
-      setLoading(false);
+    const verified = localStorage.getItem('directory_verified') === 'true';
+    if (!verified) {
+      router.replace('/emergency/hospitals/general/verify?redirect=/emergency/hospitals/bengali-doctors');
+      return;
     }
-    const handle = requestAnimationFrame(() => {
-      loadData();
-    });
-    return () => cancelAnimationFrame(handle);
-  }, []);
+    setIsVerified(true);
+
+    async function loadData() {
+      try {
+        const docSnap = await getDocs(collection(db, COLLECTIONS.bengali_doctors));
+        const docsData = docSnap.docs.map(doc => ({ id: doc.id, ...doc.data() } as BengaliDoctor));
+        setDoctors(docsData.length > 0 ? docsData : SAMPLE_DOCTORS);
+        
+        const hospSnap = await getDocs(collection(db, COLLECTIONS.hospitals));
+        const hospData: Record<string, Hospital> = {};
+        hospSnap.docs.forEach(d => {
+          hospData[d.id] = { id: d.id, ...d.data() } as Hospital;
+        });
+        
+        let finalHospitals = { ...hospData };
+        // If we fell back to SAMPLE_DOCTORS, we need to ensure the sample hospitals exist in the mapping
+        if (docsData.length === 0) {
+           finalHospitals = { ...SAMPLE_HOSPITALS, ...finalHospitals };
+        }
+        
+        if (Object.keys(finalHospitals).length > 0) {
+          setHospitals(finalHospitals);
+        } else {
+          setHospitals(SAMPLE_HOSPITALS);
+        }
+      } catch (err) {
+        console.error(err);
+        setDoctors(SAMPLE_DOCTORS);
+        setHospitals(SAMPLE_HOSPITALS);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadData();
+  }, [router]);
 
   const specialties = useMemo(() => Array.from(new Set(doctors.map(d => d.specialization).filter(Boolean))), [doctors]);
   const allLangs = useMemo(() => {
@@ -86,9 +119,12 @@ export default function BengaliDoctorsPage() {
               <p className="mt-2 text-text-muted">Find and connect with highly experienced Bengali-speaking doctors.</p>
             </div>
             
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
                <Link href="/emergency/hospitals/bengali-hospitals">
-                 <Button variant="outline" className="shadow-sm">View Hospitals Directory <ChevronRight className="w-4 h-4 ml-1"/></Button>
+                 <Button variant="outline" className="shadow-sm">View Hospitals <ChevronRight className="w-4 h-4 ml-1"/></Button>
+               </Link>
+               <Link href="/emergency/hospitals/bengali-staff">
+                 <Button variant="primary" className="shadow-sm bg-primary hover:bg-primary-dark text-white border-none">View Bengali Staff <ChevronRight className="w-4 h-4 ml-1"/></Button>
                </Link>
             </div>
           </div>
@@ -125,7 +161,7 @@ export default function BengaliDoctorsPage() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {loading ? (
+        {(loading || !isVerified) ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
              {[1, 2, 3, 4, 5, 6].map(i => (
                <Card key={i} className="animate-pulse p-6">
@@ -180,10 +216,10 @@ export default function BengaliDoctorsPage() {
                     {hospital && (
                       <div className="flex items-start gap-2.5 text-sm text-text-primary p-3 bg-surface/50 rounded-xl border border-border/50">
                         <Building2 className="w-4 h-4 text-text-muted shrink-0 mt-0.5" />
-                        <div>
-                          <p className="font-semibold">{hospital.name}</p>
+                        <Link href={`/emergency/hospitals/${hospital.id}`} className="hover:text-primary transition-colors">
+                          <p className="font-semibold hover:underline">{hospital.name}</p>
                           <p className="text-text-muted text-xs mt-0.5">{hospital.city}</p>
-                        </div>
+                        </Link>
                       </div>
                     )}
                     
@@ -202,16 +238,11 @@ export default function BengaliDoctorsPage() {
                   </div>
 
                   <div className="mt-6 pt-4 border-t border-border flex items-center gap-2">
-                    {doctor.phone && (
-                      <a href={`tel:${doctor.phone}`} className="flex-1">
-                        <Button variant="outline" size="sm" className="w-full"><Phone className="w-3.5 h-3.5 mr-1.5" /> Call</Button>
-                      </a>
-                    )}
-                    {doctor.email && (
-                      <a href={`mailto:${doctor.email}`} className="flex-1">
-                        <Button variant="ghost" size="sm" className="w-full bg-surface"><Mail className="w-3.5 h-3.5 mr-1.5" /> Email</Button>
-                      </a>
-                    )}
+                    <Link href={`/emergency/hospitals/bengali-doctors/${doctor.id}`} className="flex-1">
+                      <Button variant="primary" size="sm" className="w-full">
+                        View Profile
+                      </Button>
+                    </Link>
                   </div>
                 </Card>
               );

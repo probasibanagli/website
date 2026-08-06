@@ -7,6 +7,7 @@ export default function AdminServicesPage() {
       moduleKey="services"
       collectionName="colleges"
       columns={[
+        { key: 'ranking', label: 'Rank' },
         { key: 'name', label: 'Name' },
         { key: 'type', label: 'Type' },
         { key: 'city', label: 'City' },
@@ -15,7 +16,8 @@ export default function AdminServicesPage() {
       ]}
       formFields={[
         { key: 'name', label: 'College Name', required: true },
-        { key: 'type', label: 'Type', type: 'select', options: ['engineering', 'medical', 'arts', 'management', 'polytechnic'], required: true },
+        { key: 'type', label: 'Type', type: 'select', options: ['engineering', 'medical', 'arts_science'], required: true },
+        { key: 'ranking', label: 'Ranking / Priority (1 = Top, 2 = Second, etc.)', type: 'number' },
         { key: 'city', label: 'City', required: true },
         { key: 'area', label: 'Area' },
         { key: 'address', label: 'Address' },

@@ -10,53 +10,71 @@ import { Badge } from '@/components/ui/Badge';
 
 export default function HomePage() {
   return (
-    <div className="overflow-hidden">
+    <div className="overflow-hidden bg-alpana">
       {/* ====== HERO SECTION ====== */}
-      <section className="relative bg-gradient-to-br from-white via-primary-light/30 to-accent-light/20 py-20 sm:py-28 lg:py-36">
+      <section className="relative bg-gradient-to-br from-white/90 via-primary-light/40 to-accent-light/30 py-20 sm:py-24 lg:py-32 border-b border-border/50">
         {/* Decorative blobs */}
         <div className="absolute top-10 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl" />
         <div className="absolute bottom-10 right-10 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <Badge variant="teal" className="mb-6 animate-fade-in">
-            <T>Bengali community platform for Tamil Nadu</T>
-          </Badge>
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
+            
+            {/* Text Column */}
+            <div className="flex-1 text-center lg:text-left space-y-6 animate-fade-in">
+              <Badge variant="teal" className="inline-flex">
+                <T>Bengali community platform for Tamil Nadu</T>
+              </Badge>
 
-          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold font-display text-text-primary leading-tight animate-fade-in delay-100">
-            <T>Feel at</T> <em className="text-primary not-italic"><T>Home</T></em>,<br />
-            <T>Wherever You Are</T>
-          </h1>
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold font-display text-text-primary leading-tight animate-fade-in delay-100">
+                <T>Feel at</T> <em className="text-primary not-italic"><T>Home</T></em>,<br />
+                <T>Wherever You Are</T>
+              </h1>
 
-          <p className="mt-6 text-lg sm:text-xl text-text-muted max-w-2xl mx-auto leading-relaxed animate-fade-in delay-200">
-            <T>Find Bengali food, safe accommodation, travel help, and community connections — built for Bengalis living in Tamil Nadu.</T>
-          </p>
+              <p className="text-lg text-text-muted max-w-2xl mx-auto lg:mx-0 leading-relaxed animate-fade-in delay-200">
+                <T>Find Bengali food, safe accommodation, travel help, and community connections — built for Bengalis living in Tamil Nadu.</T>
+              </p>
 
-          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in delay-300">
-            <Link href="/explore/stay">
-              <Button variant="primary" size="lg">
-                <T>Explore Services</T> <ArrowRight className="w-5 h-5" />
-              </Button>
-            </Link>
-            <Link href="/community/groups">
-              <Button variant="outline" size="lg">
-                <T>Join Community</T>
-              </Button>
-            </Link>
-          </div>
-
-          {/* Stats Bar */}
-          <div className="mt-16 grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl mx-auto animate-fade-in delay-400">
-            {[
-              { icon: <MapPin className="w-5 h-5" />, label: '4+ Cities', color: 'text-primary' },
-              { icon: <Zap className="w-5 h-5" />, label: '6 Core Services', color: 'text-accent' },
-              { icon: <Shield className="w-5 h-5" />, label: '24/7 Emergency', color: 'text-red-500' },
-              { icon: <Heart className="w-5 h-5" />, label: 'Free Basic Access', color: 'text-purple-500' },
-            ].map((stat) => (
-              <div key={stat.label} className="flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-white/80 backdrop-blur-sm border border-border shadow-sm">
-                <span className={stat.color}>{stat.icon}</span>
-                <span className="text-sm font-semibold text-text-primary"><T>{stat.label}</T></span>
+              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-4 animate-fade-in delay-300">
+                <Link href="/explore/stay">
+                  <Button variant="primary" size="lg" className="w-full sm:w-auto shadow-md">
+                    <T>Explore Services</T> <ArrowRight className="w-5 h-5" />
+                  </Button>
+                </Link>
+                <Link href="/community/groups">
+                  <Button variant="outline" size="lg" className="w-full sm:w-auto bg-white/80">
+                    <T>Join Community</T>
+                  </Button>
+                </Link>
               </div>
-            ))}
+
+              {/* Stats Bar */}
+              <div className="grid grid-cols-2 gap-3 max-w-md pt-4 animate-fade-in delay-400">
+                {[
+                  { icon: <MapPin className="w-4 h-4" />, label: '4+ Cities', color: 'text-primary' },
+                  { icon: <Zap className="w-4 h-4" />, label: '6 Core Services', color: 'text-accent' },
+                  { icon: <Shield className="w-4 h-4" />, label: '24/7 Emergency', color: 'text-red-500' },
+                  { icon: <Heart className="w-4 h-4" />, label: 'Free Basic Access', color: 'text-purple-500' },
+                ].map((stat) => (
+                  <div key={stat.label} className="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-white/95 border border-border/85 shadow-sm">
+                    <span className={stat.color}>{stat.icon}</span>
+                    <span className="text-xs font-semibold text-text-primary"><T>{stat.label}</T></span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Image Column */}
+            <div className="flex-1 w-full max-w-md lg:max-w-lg animate-fade-in delay-200">
+              <div className="relative aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl border-4 border-white/80 ring-8 ring-primary-light/20 bg-white">
+                <img 
+                  src="/images/bengali_culture_hero.png" 
+                  alt="Bengali Culture in Tamil Nadu" 
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            </div>
+
           </div>
         </div>
       </section>
