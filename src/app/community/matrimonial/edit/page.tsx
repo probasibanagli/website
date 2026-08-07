@@ -20,12 +20,15 @@ import {
 import { getMyProfile, saveMyProfile, storeMedia, getMedia } from '@/lib/matrimony-service';
 import type { MatrimonialProfile } from '@/types';
 
+import { useAuth } from '@/lib/auth/AuthContext';
+
 interface FormData {
   [key: string]: string | number | string[] | undefined;
 }
 
 export default function EditMatrimonialProfile() {
   const router = useRouter();
+  const { firebaseUser, loading: authLoading } = useAuth();
   const [formData, setFormData] = useState<FormData>({});
   const [selectedHobbies, setSelectedHobbies] = useState<string[]>([]);
   const [activeSection, setActiveSection] = useState('personal');
@@ -39,35 +42,55 @@ export default function EditMatrimonialProfile() {
   const [uploadError, setUploadError] = useState('');
 
   useEffect(() => {
-    const myProfile = getMyProfile();
-    if (!myProfile) {
-      router.push('/community/matrimonial/register');
+    if (authLoading) return;
+    if (!firebaseUser) {
+      router.push('/auth/login');
       return;
     }
-    setProfile(myProfile);
-    setSelectedHobbies(myProfile.hobbies || []);
-    const data: FormData = {};
-    Object.entries(myProfile).forEach(([key, value]) => {
-      if (typeof value === 'string' || typeof value === 'number' || Array.isArray(value)) data[key] = value;
-    });
-    setFormData(data);
 
-    // Load media from IndexedDB
-    const loadMedia = async () => {
-      const previews: (string | null)[] = [null, null, null, null, null];
-      for (let i = 0; i < 5; i++) {
-        const url = await getMedia(`profile_${myProfile.id}_photo_${i}`);
-        if (url) previews[i] = url;
+    let mounted = true;
+    const loadProfile = async () => {
+      try {
+        const myProfile = await getMyProfile(firebaseUser.uid);
+        if (!mounted) return;
+        
+        if (!myProfile) {
+          router.push('/community/matrimonial/register');
+          return;
+        }
+        
+        setProfile(myProfile);
+        setSelectedHobbies(myProfile.hobbies || []);
+        const data: FormData = {};
+        Object.entries(myProfile).forEach(([key, value]) => {
+          if (typeof value === 'string' || typeof value === 'number' || Array.isArray(value)) data[key] = value;
+        });
+        setFormData(data);
+
+        // Load media from Firestore / Storage URLs
+        const previews: (string | null)[] = [null, null, null, null, null];
+        for (let i = 0; i < 5; i++) {
+          if (myProfile.photos?.[i]) {
+            const url = await getMedia(myProfile.photos[i]);
+            if (url) previews[i] = url;
+          }
+        }
+        setPhotoPreviews(previews);
+
+        if (myProfile.video) {
+          const vUrl = await getMedia(myProfile.video);
+          if (vUrl) setVideoPreview(vUrl);
+        }
+      } catch (err) {
+        console.error("Error loading profile:", err);
+      } finally {
+        if (mounted) setLoading(false);
       }
-      setPhotoPreviews(previews);
-
-      const vUrl = await getMedia(`profile_${myProfile.id}_video`);
-      if (vUrl) setVideoPreview(vUrl);
     };
 
-    loadMedia();
-    setLoading(false);
-  }, [router]);
+    loadProfile();
+    return () => { mounted = false; };
+  }, [router, firebaseUser, authLoading]);
 
   const updateField = useCallback((field: string, value: string | number) => {
     setFormData(prev => {
@@ -200,7 +223,7 @@ export default function EditMatrimonialProfile() {
     setSaved(false);
   };
 
-  const handleSave = useCallback(() => {
+  const handleSave = useCallback(async () => {
     if (!profile) return;
     const dobStr = formData.date_of_birth as string;
     const dobParts = dobStr ? dobStr.split('-') : [];
@@ -268,7 +291,7 @@ export default function EditMatrimonialProfile() {
       updated_at: new Date().toISOString(),
     };
 
-    saveMyProfile(updatedProfile);
+    await saveMyProfile(updatedProfile);
     setSaved(true);
     setTimeout(() => setSaved(false), 3000);
   }, [profile, formData, selectedHobbies]);

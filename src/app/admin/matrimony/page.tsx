@@ -38,71 +38,78 @@ export default function MatrimonialAdminPage() {
     loadProfiles();
   }, []);
 
-  const loadProfiles = () => {
+  const loadProfiles = async () => {
     setLoading(true);
-    const all = getAllProfiles();
-    setProfiles(all);
+    try {
+      const all = await getAllProfiles();
+      setProfiles(all);
+    } catch (err) {
+      console.error(err);
+    }
     setLoading(false);
   };
 
-  // Load media files from IndexedDB for selected profile
+  // Load media files from Firestore / Storage for selected profile
   useEffect(() => {
     if (!selectedProfile) return;
     
+    let mounted = true;
     const loadMediaUrls = async () => {
       const urls: Record<string, string> = {};
       
       // Load photos
       if (selectedProfile.photos && Array.isArray(selectedProfile.photos)) {
         for (let i = 0; i < selectedProfile.photos.length; i++) {
-          const key = `profile_${selectedProfile.id}_photo_${i}`;
-          const url = await getMedia(key);
-          if (url) urls[key] = url;
+          const key = selectedProfile.photos[i];
+          if (key) {
+            const url = await getMedia(key);
+            if (url) urls[key] = url;
+          }
         }
       }
       
       // Load video
       if (selectedProfile.video) {
-        const key = `profile_${selectedProfile.id}_video`;
-        const url = await getMedia(key);
-        if (url) urls[key] = url;
+        const url = await getMedia(selectedProfile.video);
+        if (url) urls[selectedProfile.video] = url;
       }
       
-      setMediaUrls(urls);
+      if (mounted) setMediaUrls(urls);
     };
 
     loadMediaUrls();
+    return () => { mounted = false; };
   }, [selectedProfile]);
 
-  const handleVerify = (id: string) => {
-    adminUpdateProfileStatus(id, 'verified');
-    loadProfiles();
+  const handleVerify = async (id: string) => {
+    await adminUpdateProfileStatus(id, 'verified');
+    await loadProfiles();
     if (selectedProfile?.id === id) {
       setSelectedProfile(prev => prev ? { ...prev, status: 'verified', published: true } : null);
     }
   };
 
-  const handleReject = (id: string) => {
-    adminUpdateProfileStatus(id, 'rejected');
-    loadProfiles();
+  const handleReject = async (id: string) => {
+    await adminUpdateProfileStatus(id, 'rejected');
+    await loadProfiles();
     if (selectedProfile?.id === id) {
       setSelectedProfile(prev => prev ? { ...prev, status: 'rejected', published: false } : null);
     }
   };
 
-  const handleMatchedAndMarried = (id: string) => {
-    adminUpdateProfileStatus(id, 'married');
-    loadProfiles();
+  const handleMatchedAndMarried = async (id: string) => {
+    await adminUpdateProfileStatus(id, 'married');
+    await loadProfiles();
     if (selectedProfile?.id === id) {
       setSelectedProfile(prev => prev ? { ...prev, status: 'married', published: false } : null);
     }
   };
 
-  const handleDelete = (id: string) => {
-    if (confirm('Are you sure you want to permanently delete this profile?')) {
-      adminDeleteProfile(id);
-      setSelectedProfile(null);
-      loadProfiles();
+  const handleDelete = async (id: string) => {
+    if (confirm('Are you sure you want to completely delete this profile? This cannot be undone.')) {
+      await adminDeleteProfile(id);
+      await loadProfiles();
+      if (selectedProfile?.id === id) setSelectedProfile(null);
     }
   };
 
@@ -215,8 +222,8 @@ export default function MatrimonialAdminPage() {
                       <h4 className="font-bold text-text-primary text-sm">{p.full_name}</h4>
                       <p className="text-[10px] text-pink-600 font-bold mt-0.5">{p.profile_id || 'ID Pending'}</p>
                     </div>
-                    <Badge variant={p.gender === 'male' ? 'pg' : 'bengali'} className="text-[9px] px-2">
-                      {p.gender === 'male' ? 'Groom' : 'Bride'}
+                    <Badge variant={p.gender?.toLowerCase() === 'male' ? 'pg' : 'bengali'} className="text-[9px] px-2">
+                      {p.gender?.toLowerCase() === 'male' ? 'Groom' : 'Bride'}
                     </Badge>
                   </div>
 

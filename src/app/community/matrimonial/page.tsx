@@ -62,24 +62,41 @@ export default function MatrimonialPage() {
   const [allProfs, setAllProfs] = useState<MatrimonialProfile[]>([]);
 
   useEffect(() => {
-    const all = getAllProfiles();
-    setAllProfs(all);
+    let mounted = true;
+    const fetchProfiles = async () => {
+      try {
+        const all = await getAllProfiles();
+        if (!mounted) return;
+        setAllProfs(all);
 
-    let mp = getMyProfile();
-    // Auto-link if logged in but localStorage my_profile is missing
-    if (!mp && firebaseUser) {
-      const found = all.find(p => 
-        (firebaseUser.email && p.email === firebaseUser.email) || 
-        (firebaseUser.phoneNumber && p.phone === firebaseUser.phoneNumber)
-      );
-      if (found) {
-        import('@/lib/matrimony-service').then(m => m.saveMyProfile(found));
-        mp = found;
+        let mp = firebaseUser ? await getMyProfile(firebaseUser.uid) : null;
+        
+        // Auto-link if logged in but local link is missing
+        if (!mp && firebaseUser) {
+          const found = all.find(p => 
+            (firebaseUser.email && p.email === firebaseUser.email) || 
+            (firebaseUser.phoneNumber && p.phone === firebaseUser.phoneNumber)
+          );
+          if (found) {
+            // Update the profile with the user_id so it's linked permanently in Firestore
+            const m = await import('@/lib/matrimony-service');
+            found.user_id = firebaseUser.uid;
+            await m.saveMyProfile(found);
+            mp = found;
+          }
+        }
+        
+        if (mounted) {
+          setHasProfile(!!mp);
+          setMyProfile(mp);
+        }
+      } catch (err) {
+        console.error(err);
+        if (mounted) setHasProfile(false);
       }
-    }
-    
-    setHasProfile(!!mp);
-    setMyProfile(mp);
+    };
+    fetchProfiles();
+    return () => { mounted = false; };
   }, [firebaseUser]);
 
   const [filters, setFilters] = useState<MatrimonyFilters>({});
@@ -101,7 +118,7 @@ export default function MatrimonialPage() {
   }, []);
 
   const filtered = useMemo(() => {
-    let results = searchProfiles({ ...filters, searchQuery });
+    let results = searchProfiles(allProfs, { ...filters, searchQuery });
     if (myProfile) {
       results = results.filter(p => 
         p.id !== myProfile.id && 

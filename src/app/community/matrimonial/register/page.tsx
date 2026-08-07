@@ -514,15 +514,15 @@ export default function MatrimonialRegisterPage() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
-  const handleSubmit = useCallback(() => {
+  const handleSubmit = useCallback(async () => {
     const dob = new Date(formData.date_of_birth as string);
     const age = Math.floor((Date.now() - dob.getTime()) / 31557600000);
-    const id = generateProfileId();
+    const id = await generateProfileId();
     const now = new Date().toISOString();
 
     const profile: MatrimonialProfile = {
       id: realId,
-      user_id: `local-${Date.now()}`,
+      user_id: firebaseUser ? firebaseUser.uid : `local-${Date.now()}`,
       profile_id: id,
       profile_for: formData.profile_for as string,
       full_name: formData.full_name as string,
@@ -590,11 +590,11 @@ export default function MatrimonialRegisterPage() {
       updated_at: now,
     };
 
-    saveMyProfile(profile);
+    await saveMyProfile(profile);
     localStorage.removeItem('pb_matrimony_draft');
     setProfileId(id);
     setSubmitted(true);
-  }, [formData, selectedHobbies]);
+  }, [formData, selectedHobbies, realId]);
 
   // Success screen
   if (submitted) {

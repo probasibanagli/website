@@ -56,6 +56,7 @@ export default function MatrimonialDetailPage() {
   const [viewCount, setViewCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [hasProfile, setHasProfile] = useState<boolean | null>(null);
+  const [myProfileData, setMyProfileData] = useState<MatrimonialProfile | null>(null);
   const [sendingInterest, setSendingInterest] = useState(false);
   const [interestMessage, setInterestMessage] = useState('');
 
@@ -64,69 +65,91 @@ export default function MatrimonialDetailPage() {
   const [videoPreview, setVideoPreview] = useState<string | null>(null);
   const [activePhotoIndex, setActivePhotoIndex] = useState<number>(0);
 
+  const [similarProfiles, setSimilarProfiles] = useState<MatrimonialProfile[]>([]);
+  const [matchResult, setMatchResult] = useState<MatchResult | null>(null);
+
   useEffect(() => {
+    let mounted = true;
     const id = params.id as string;
-    const p = getProfile(id);
-    setProfile(p);
     
-    const myProfile = getMyProfile();
-    setHasProfile(!!myProfile);
+    const loadProfileData = async () => {
+      try {
+        const p = await getProfile(id);
+        if (!mounted) return;
+        setProfile(p);
+        
+        let myProfile = firebaseUser ? await getMyProfile(firebaseUser.uid) : null;
+        if (!mounted) return;
+        setHasProfile(!!myProfile);
+        setMyProfileData(myProfile);
 
-    if (p) {
-      recordView(id);
-      setViewCount(getViewCount(id));
-      setShortlisted(isShortlisted(id));
-      if (myProfile) {
-        setInterestSent(hasInterest(myProfile.id, id));
-      }
+        if (p) {
+          await recordView(id);
+          const views = await getViewCount(id);
+          if (!mounted) return;
+          setViewCount(views);
+          
+          if (myProfile) {
+            const isShort = await isShortlisted(myProfile.id, id);
+            const hasInt = await hasInterest(myProfile.id, id);
+            if (!mounted) return;
+            setShortlisted(isShort);
+            setInterestSent(hasInt);
+            
+            if (myProfile.id !== p.id) {
+              setMatchResult(calculateMatchPercentage(myProfile, p));
+            }
+          }
 
-      // Load media from IndexedDB
-      const loadMedia = async () => {
-        const previews: (string | null)[] = [null, null, null, null, null];
-        let hasAnyPhoto = false;
-        if (p.photos && Array.isArray(p.photos)) {
-          for (let i = 0; i < 5; i++) {
-            const key = p.photos[i];
-            if (key) {
-              const url = await getMedia(key);
-              if (url) {
-                previews[i] = url;
-                hasAnyPhoto = true;
+          const allProfiles = await getAllProfiles();
+          if (mounted) {
+            const similar = allProfiles
+              .filter(op => op.id !== p.id && op.published && (op.city === p.city || Math.abs((op.age || 0) - (p.age || 0)) <= 5))
+              .slice(0, 3);
+            setSimilarProfiles(similar);
+          }
+
+          // Load media from Firestore / Storage URLs
+          const previews: (string | null)[] = [null, null, null, null, null];
+          let hasAnyPhoto = false;
+          if (p.photos && Array.isArray(p.photos)) {
+            for (let i = 0; i < 5; i++) {
+              const key = p.photos[i];
+              if (key) {
+                const url = await getMedia(key);
+                if (url) {
+                  previews[i] = url;
+                  hasAnyPhoto = true;
+                }
               }
             }
           }
-        }
-        setPhotoPreviews(previews);
+          if (!mounted) return;
+          setPhotoPreviews(previews);
 
-        const firstPhotoIdx = previews.findIndex(url => url !== null);
-        if (firstPhotoIdx !== -1) {
-          setActivePhotoIndex(firstPhotoIdx);
-        }
+          const firstPhotoIdx = previews.findIndex(url => url !== null);
+          if (firstPhotoIdx !== -1) {
+            setActivePhotoIndex(firstPhotoIdx);
+          }
 
-        if (p.video) {
-          const vUrl = await getMedia(p.video);
-          if (vUrl) setVideoPreview(vUrl);
+          if (p.video) {
+            const vUrl = await getMedia(p.video);
+            if (vUrl && mounted) setVideoPreview(vUrl);
+          }
         }
-      };
-      loadMedia();
+      } catch (error) {
+        console.error("Error loading profile details:", error);
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    };
+
+    if (!authLoading) {
+      loadProfileData();
     }
-    setLoading(false);
-  }, [params.id]);
-
-  // Similar profiles
-  const similarProfiles = useMemo(() => {
-    if (!profile) return [];
-    return getAllProfiles()
-      .filter(p => p.id !== profile.id && p.published && (p.city === profile.city || Math.abs((p.age || 0) - (profile.age || 0)) <= 5))
-      .slice(0, 3);
-  }, [profile]);
-
-  // Match percentage
-  const matchResult: MatchResult | null = useMemo(() => {
-    const myProfile = getMyProfile();
-    if (!myProfile || !profile || myProfile.id === profile.id) return null;
-    return calculateMatchPercentage(myProfile, profile);
-  }, [profile]);
+    
+    return () => { mounted = false; };
+  }, [params.id, firebaseUser, authLoading]);
 
   if (loading || hasProfile === null || authLoading) {
     return (
@@ -319,20 +342,21 @@ export default function MatrimonialDetailPage() {
     );
   }
 
-  const handleShortlist = () => {
-    const result = toggleShortlist(profile.id);
+  const handleShortlist = async () => {
+    if (!myProfileData || !profile) return;
+    await toggleShortlist(myProfileData.id, profile.id);
+    const result = await isShortlisted(myProfileData.id, profile.id);
     setShortlisted(result);
   };
 
   const handleSendInterest = async () => {
-    const myProfile = getMyProfile();
-    if (!myProfile) {
+    if (!myProfileData || !profile) {
       alert('Please register your profile first to send interest.');
       return;
     }
 
     // Save locally first
-    sendInterest(myProfile.id, profile.id);
+    await sendInterest(myProfileData.id, profile.id);
     setInterestSent(true);
     setSendingInterest(true);
     setInterestMessage('');
@@ -344,15 +368,15 @@ export default function MatrimonialDetailPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           recipientEmail: profile.email,
-          senderName: myProfile.full_name,
-          senderProfileId: myProfile.profile_id,
-          senderPhone: myProfile.phone,
-          senderEmail: myProfile.email,
-          senderSocialHandle: myProfile.social_handle,
-          senderProfession: myProfile.profession,
-          senderAge: myProfile.age,
-          senderCity: myProfile.city,
-          senderProfilePageId: myProfile.id,
+          senderName: myProfileData.full_name,
+          senderProfileId: myProfileData.profile_id,
+          senderPhone: myProfileData.phone,
+          senderEmail: myProfileData.email,
+          senderSocialHandle: myProfileData.social_handle,
+          senderProfession: myProfileData.profession,
+          senderAge: myProfileData.age,
+          senderCity: myProfileData.city,
+          senderProfilePageId: myProfileData.id,
         }),
       });
       const data = await res.json();

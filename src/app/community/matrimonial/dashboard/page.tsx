@@ -83,53 +83,74 @@ export default function MatrimonialDashboard() {
   const [activeTab, setActiveTab] = useState<'received' | 'sent' | 'shortlist'>('received');
 
   useEffect(() => {
-    let profile = getMyProfile();
-    if (!profile && firebaseUser) {
-      import('@/lib/matrimony-service').then(m => {
-        const all = m.getAllProfiles();
-        const found = all.find(p => 
-          (firebaseUser.email && p.email === firebaseUser.email) || 
-          (firebaseUser.phoneNumber && p.phone === firebaseUser.phoneNumber)
-        );
-        if (found) {
-          m.saveMyProfile(found);
-          setMyProfile(found);
-          loadDashboardData(found);
+    let mounted = true;
+    const fetchDashboard = async () => {
+      try {
+        let mp = firebaseUser ? await getMyProfile(firebaseUser.uid) : null;
+        
+        if (!mp && firebaseUser) {
+          const m = await import('@/lib/matrimony-service');
+          const all = await m.getAllProfiles();
+          const found = all.find(p => 
+            (firebaseUser.email && p.email === firebaseUser.email) || 
+            (firebaseUser.phoneNumber && p.phone === firebaseUser.phoneNumber)
+          );
+          if (found) {
+            found.user_id = firebaseUser.uid;
+            await m.saveMyProfile(found);
+            mp = found;
+          }
         }
-      });
-    } else {
-      setMyProfile(profile);
-      if (profile) loadDashboardData(profile);
+        
+        if (!mounted) return;
+        setMyProfile(mp);
+        
+        if (mp) {
+          // Interests sent
+          const sentInterests = await getInterestsSent(mp.id);
+          const sentProfiles = await Promise.all(sentInterests.map(i => getProfile(i.toId)));
+          if (mounted) setInterestsSent(sentProfiles.filter(Boolean) as MatrimonialProfile[]);
+
+          // Interests received
+          const receivedInterests = await getInterestsReceived(mp.id);
+          const receivedProfiles = await Promise.all(receivedInterests.map(i => getProfile(i.fromId)));
+          if (mounted) setInterestsReceived(receivedProfiles.filter(Boolean) as MatrimonialProfile[]);
+
+          // Shortlist
+          const shortlistIds = await getShortlist(mp.id);
+          const shortlistProfiles = await Promise.all(shortlistIds.map(id => getProfile(id)));
+          if (mounted) setShortlisted(shortlistProfiles.filter(Boolean) as MatrimonialProfile[]);
+
+          // Views
+          const views = await getViewCount(mp.id);
+          if (mounted) setViewCount(views);
+        }
+        
+        if (mounted) setLoading(false);
+      } catch (err) {
+        console.error(err);
+        if (mounted) setLoading(false);
+      }
+    };
+    
+    if (firebaseUser) {
+      fetchDashboard();
+    } else if (!authLoading) {
+      setLoading(false);
     }
+    
+    return () => { mounted = false; };
+  }, [firebaseUser, authLoading]);
 
-    function loadDashboardData(p: MatrimonialProfile) {
-      // Interests sent
-      const sentInterests = getInterestsSent(p.id);
-      setInterestsSent(sentInterests.map(i => getProfile(i.toId)).filter(Boolean) as MatrimonialProfile[]);
-
-      // Interests received
-      const receivedInterests = getInterestsReceived(p.id);
-      setInterestsReceived(receivedInterests.map(i => getProfile(i.fromId)).filter(Boolean) as MatrimonialProfile[]);
-
-      // Shortlist
-      const shortlistIds = getShortlist();
-      setShortlisted(shortlistIds.map(id => getProfile(id)).filter(Boolean) as MatrimonialProfile[]);
-
-      // Views
-      setViewCount(getViewCount(p.id));
-    }
-
-    setLoading(false);
-  }, [firebaseUser]);
-
-  const handleRemoveShortlist = (profileId: string) => {
-    toggleShortlist(profileId);
+  const handleRemoveShortlist = async (profileId: string) => {
+    if (!myProfile) return;
+    await toggleShortlist(myProfile.id, profileId);
     setShortlisted(prev => prev.filter(p => p.id !== profileId));
   };
 
-  const handleDeleteProfile = () => {
+  const handleDeleteProfile = async () => {
     if (confirm('Are you sure you want to delete your matrimonial profile? This action cannot be undone.')) {
-      deleteMyProfile();
+      if (myProfile) await deleteMyProfile(myProfile.id);
       setMyProfile(null);
     }
   };
