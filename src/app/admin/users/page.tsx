@@ -111,15 +111,28 @@ export default function AdminUsersPage() {
   async function loadUsers() {
     if (!firebaseUser) return;
     try {
-      const token = await getIdToken();
-      const res = await fetch('/api/admin/users', {
-        headers: {
-          'Authorization': `Bearer ${token}`
+      let list: UserProfile[] = [];
+      try {
+        const token = await getIdToken();
+        const res = await fetch('/api/admin/users', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        if (res.ok) {
+          const data = await res.json() as { users: UserProfile[] };
+          if (Array.isArray(data.users)) {
+            list = data.users;
+          }
         }
-      });
-      if (!res.ok) throw new Error('Failed to fetch users from server');
-      const data = await res.json() as { users: UserProfile[] };
-      const list = data.users || [];
+      } catch (apiErr) {
+        console.warn('Admin API fetch failed, falling back to Firestore client:', apiErr);
+      }
+
+      if (list.length === 0) {
+        const uSnap = await getDocs(collection(db, 'users'));
+        list = uSnap.docs.map(d => ({ uid: d.id, ...d.data() } as UserProfile));
+      }
       
       list.sort((a, b) => {
         const dateA = a.created_at ? new Date(a.created_at).getTime() : 0;

@@ -32,20 +32,25 @@ async function verifyRequest(request: Request) {
 }
 
 export async function GET(request: Request) {
-  const user = await verifyRequest(request);
-  if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
-  }
+  try {
+    const user = await verifyRequest(request);
+    if (!user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
+    }
 
-  const isSuperAdmin = user.role === 'superadmin';
-  const hasUsersPermission = user.role === 'admin' && user.permissions?.users && user.permissions.users !== 'none';
+    const isSuperAdmin = user.role === 'superadmin';
+    const hasUsersPermission = user.role === 'admin' && user.permissions?.users && user.permissions.users !== 'none';
 
-  if (!isSuperAdmin && !hasUsersPermission) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
+    if (!isSuperAdmin && !hasUsersPermission) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
+    }
+    const snap = await adminDb.collection('users').orderBy('created_at', 'desc').get();
+    const users = snap.docs.map((d) => ({ uid: d.id, ...d.data() }));
+    return NextResponse.json({ users });
+  } catch (err: any) {
+    console.error("GET /api/admin/users error:", err);
+    return NextResponse.json({ error: err?.message || 'Failed to fetch users' }, { status: 500 });
   }
-  const snap = await adminDb.collection('users').orderBy('created_at', 'desc').get();
-  const users = snap.docs.map((d) => ({ uid: d.id, ...d.data() }));
-  return NextResponse.json({ users });
 }
 
 export async function POST(request: Request) {
