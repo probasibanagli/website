@@ -7,7 +7,7 @@ import { db } from '@/lib/firebase';
 import { useAuth } from '@/lib/auth/AuthContext';
 import {
   Users, Home, UtensilsCrossed, FileText, AlertTriangle, TrendingUp,
-  Activity, Crown,
+  Activity, Crown, ShieldCheck
 } from 'lucide-react';
 
 interface StatCard {
@@ -19,14 +19,16 @@ interface StatCard {
 }
 
 export default function AdminDashboard() {
-  const { profile } = useAuth();
+  const { profile, firebaseUser } = useAuth();
   const [stats, setStats] = useState<StatCard[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function loadStats() {
       try {
-        const collections = [
+        const collections = profile?.role === 'superadmin' ? [
+          { name: 'users', label: 'Total Users & Admins', icon: <Users className="w-5 h-5" />, color: 'text-blue-400', bg: 'bg-blue-500/10' }
+        ] : [
           { name: 'users', label: 'Total Users', icon: <Users className="w-5 h-5" />, color: 'text-blue-400', bg: 'bg-blue-500/10' },
           { name: 'listings', label: 'Stay Listings', icon: <Home className="w-5 h-5" />, color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
           { name: 'food_listings', label: 'Food Listings', icon: <UtensilsCrossed className="w-5 h-5" />, color: 'text-orange-400', bg: 'bg-orange-500/10' },
@@ -38,10 +40,25 @@ export default function AdminDashboard() {
         const results: StatCard[] = [];
         for (const col of collections) {
           try {
-            const snap = await getDocs(query(collection(db, col.name), limit(1000)));
+            let count = 0;
+            if (col.name === 'users') {
+              const token = firebaseUser ? await firebaseUser.getIdToken() : 'mock-bypass-token';
+              const res = await fetch('/api/admin/users', {
+                headers: { 'Authorization': `Bearer ${token}` }
+              });
+              if (res.ok) {
+                const data = await res.json();
+                count = data.users?.length || 0;
+              } else {
+                throw new Error('Failed to fetch users');
+              }
+            } else {
+              const snap = await getDocs(query(collection(db, col.name), limit(1000)));
+              count = snap.size;
+            }
             results.push({
               label: col.label,
-              value: snap.size.toString(),
+              value: count.toString(),
               icon: col.icon,
               color: col.color,
               bg: col.bg,
@@ -50,6 +67,100 @@ export default function AdminDashboard() {
             results.push({ label: col.label, value: '—', icon: col.icon, color: col.color, bg: col.bg });
           }
         }
+
+        // Fetch directory visitor analytics from server-side API (bypasses Firestore Security Rules)
+        try {
+          const token = firebaseUser && typeof firebaseUser.getIdToken === 'function'
+            ? await firebaseUser.getIdToken()
+            : 'temp_token';
+            
+          const res = await fetch('/api/admin/visitor-analytics', {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+          
+          if (res.ok) {
+            const data = await res.json();
+            results.push({
+              label: 'Registered Members (Visitors)',
+              value: (data.registeredMembers ?? 0).toString(),
+              icon: <ShieldCheck className="w-5 h-5" />,
+              color: 'text-emerald-500',
+              bg: 'bg-emerald-500/10'
+            });
+            
+            results.push({
+              label: 'New Visitors (OTP Verified)',
+              value: (data.newVisitors ?? 0).toString(),
+              icon: <Activity className="w-5 h-5" />,
+              color: 'text-amber-500',
+              bg: 'bg-amber-500/10'
+            });
+          } else {
+            throw new Error('Backend fetch failed');
+          }
+        } catch (e) {
+          console.warn("API visitor stats failed, falling back to local client-side query:", e);
+          try {
+            const [usersSnap, otpsSnap] = await Promise.all([
+              getDocs(collection(db, 'users')),
+              getDocs(collection(db, 'otps'))
+            ]);
+            
+            const usersList = usersSnap.docs.map(doc => doc.data());
+            const registeredPhones = new Set(usersList.map(u => u.phone?.trim()).filter(Boolean));
+            const registeredEmails = new Set(usersList.map(u => u.email?.trim().toLowerCase()).filter(Boolean));
+            
+            let regMembers = 0;
+            let newVisitors = 0;
+            
+            const uniqueVisitors = new Map<string, { phone?: string, email?: string }>();
+            otpsSnap.docs.forEach(doc => {
+              const data = doc.data();
+              if (data.verified) {
+                const phone = data.phone?.trim();
+                const email = data.email?.trim().toLowerCase();
+                if (phone) {
+                  uniqueVisitors.set(phone, { phone, email });
+                } else if (email) {
+                  uniqueVisitors.set(email, { phone, email });
+                }
+              }
+            });
+            
+            uniqueVisitors.forEach(v => {
+              const isRegPhone = v.phone && registeredPhones.has(v.phone);
+              const isRegEmail = v.email && registeredEmails.has(v.email);
+              if (isRegPhone || isRegEmail) {
+                regMembers++;
+              } else {
+                newVisitors++;
+              }
+            });
+            
+            results.push({
+              label: 'Registered Members (Visitors)',
+              value: regMembers.toString(),
+              icon: <ShieldCheck className="w-5 h-5" />,
+              color: 'text-emerald-500',
+              bg: 'bg-emerald-500/10'
+            });
+            
+            results.push({
+              label: 'New Visitors (OTP Verified)',
+              value: newVisitors.toString(),
+              icon: <Activity className="w-5 h-5" />,
+              color: 'text-amber-500',
+              bg: 'bg-amber-500/10'
+            });
+          } catch (fallbackErr) {
+            console.error("Firestore stats query failed:", fallbackErr);
+            results.push({ label: 'Registered Members (Visitors)', value: '—', icon: <ShieldCheck className="w-5 h-5" />, color: 'text-emerald-500', bg: 'bg-emerald-500/10' });
+            results.push({ label: 'New Visitors (OTP Verified)', value: '—', icon: <Activity className="w-5 h-5" />, color: 'text-amber-500', bg: 'bg-amber-500/10' });
+          }
+        }
+
         setStats(results);
       } catch (error) {
         console.error('Error loading stats:', error);
@@ -57,8 +168,8 @@ export default function AdminDashboard() {
         setLoading(false);
       }
     }
-    loadStats();
-  }, []);
+    if (profile) loadStats();
+  }, [profile, firebaseUser]);
 
   return (
     <div className="space-y-6">
@@ -136,12 +247,14 @@ export default function AdminDashboard() {
             <h3 className="text-sm font-semibold text-text-primary">Quick Actions</h3>
           </div>
           <div className="grid grid-cols-2 gap-2">
-            {[
+            {(profile?.role === 'superadmin' ? [
+              { label: 'Manage Users & Admins', href: '/admin/users', color: 'bg-accent/10 text-accent hover:bg-accent/20 col-span-2' }
+            ] : [
               { label: 'Add Stay', href: '/admin/stay', color: 'bg-primary/5 text-primary hover:bg-primary/10' },
               { label: 'Add Food', href: '/admin/food', color: 'bg-orange-500/10 text-orange-600 hover:bg-orange-500/20' },
               { label: 'Write Blog', href: '/admin/blog', color: 'bg-purple-500/10 text-purple-600 hover:bg-purple-500/20' },
               { label: 'Manage Users', href: '/admin/users', color: 'bg-accent/10 text-accent hover:bg-accent/20' },
-            ].map((action) => (
+            ]).map((action) => (
               <a
                 key={action.label}
                 href={action.href}

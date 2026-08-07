@@ -42,7 +42,7 @@ export default function DoctorDetailsPage({ params }: { params: Promise<{ id: st
   const id = resolvedParams.id;
   
   const [doctor, setDoctor] = useState<BengaliDoctor | null>(null);
-  const [hospital, setHospital] = useState<Hospital | null>(null);
+  const [associatedHospitals, setAssociatedHospitals] = useState<Hospital[]>([]);
   const [loading, setLoading] = useState(true);
   const [isVerified, setIsVerified] = useState(false);
   const [showOtpModal, setShowOtpModal] = useState(false);
@@ -50,45 +50,67 @@ export default function DoctorDetailsPage({ params }: { params: Promise<{ id: st
   const router = useRouter();
 
   useEffect(() => {
-    const verified = localStorage.getItem('directory_verified') === 'true';
-    if (!verified) {
-      router.replace(`/emergency/hospitals/general/verify?redirect=/emergency/hospitals/bengali-doctors/${id}`);
-      return;
+    async function loadDoctorAndCheckOtp() {
+      try {
+        let d: BengaliDoctor | null = null;
+        try {
+          const dRes = await fetch(`/api/public/firestore?collection=bengali_doctors&docId=${id}`);
+          if (dRes.ok) {
+            const dJson = await dRes.json();
+            if (dJson && !dJson.fallback && dJson.id && (dJson.doctor_name || dJson.name)) {
+              d = dJson as BengaliDoctor;
+            }
+          }
+        } catch (apiErr) {
+          console.warn("Doctor API fetch failed, querying client-side Firestore:", apiErr);
+        }
+
+        if (!d) {
+          const docSnap = await getDoc(doc(db, COLLECTIONS.bengali_doctors, id));
+          if (docSnap.exists()) {
+            d = { id: docSnap.id, ...docSnap.data() } as BengaliDoctor;
+          }
+        }
+
+        if (d) {
+          setDoctor(d);
+          
+          setIsVerified(false);
+          
+          // Fetch associated hospitals
+          const hospIds = d.hospital_ids || (d.hospital_id ? [d.hospital_id] : []);
+          const hospData: Hospital[] = [];
+          for (const hid of hospIds) {
+            try {
+              const hRes = await fetch(`/api/public/firestore?collection=hospitals&docId=${hid}`);
+              if (hRes.ok) {
+                const hJson = await hRes.json();
+                if (hJson && !hJson.fallback && hJson.id) {
+                  hospData.push(hJson as Hospital);
+                  continue;
+                }
+              }
+            } catch (err) {}
+            
+            const hSnap = await getDoc(doc(db, COLLECTIONS.hospitals, hid));
+            if (hSnap.exists()) {
+              hospData.push({ id: hSnap.id, ...hSnap.data() } as Hospital);
+            }
+          }
+          setAssociatedHospitals(hospData);
+        }
+      } catch (e) {
+        console.error("Error loading doctor data:", e);
+      } finally {
+        setLoading(false);
+      }
     }
-    setIsVerified(true);
+    loadDoctorAndCheckOtp();
   }, [id, router]);
 
   const canViewContact = isVerified;
 
-  useEffect(() => {
-    if (isVerified) {
-      loadData();
-    }
-  }, [id, isVerified]);
-
-  const loadData = async () => {
-    try {
-      const docSnap = await getDoc(doc(db, COLLECTIONS.bengali_doctors, id));
-      if (docSnap.exists()) {
-        const d = { id: docSnap.id, ...docSnap.data() } as BengaliDoctor;
-        setDoctor(d);
-        
-        // Fetch hospital
-        if (d.hospital_id) {
-          const hSnap = await getDoc(doc(db, COLLECTIONS.hospitals, d.hospital_id));
-          if (hSnap.exists()) {
-            setHospital({ id: hSnap.id, ...hSnap.data() } as Hospital);
-          }
-        }
-      }
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  if (loading || !isVerified) {
+  if (loading) {
     return (
       <div className="min-h-screen bg-surface flex items-center justify-center">
          <div className="w-10 h-10 border-3 border-primary border-t-transparent rounded-full animate-spin" />
@@ -105,6 +127,50 @@ export default function DoctorDetailsPage({ params }: { params: Promise<{ id: st
          <Link href="/emergency/hospitals/bengali-doctors">
            <Button variant="primary">Back to Directory</Button>
          </Link>
+      </div>
+    );
+  }
+
+  if (!isVerified) {
+    return (
+      <div className="min-h-screen bg-surface pb-20">
+        <div className="bg-white border-b border-border">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div className="flex items-center gap-2 text-sm text-text-muted overflow-x-auto whitespace-nowrap">
+              <Link href="/" className="hover:text-primary shrink-0">Home</Link><span>/</span>
+              <Link href="/emergency" className="hover:text-primary shrink-0">Emergency</Link><span>/</span>
+              <Link href="/emergency/hospitals/bengali-doctors" className="hover:text-primary shrink-0">Bengali Doctors</Link><span>/</span>
+              <span className="text-text-primary font-medium truncate">Verification Required</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="max-w-xl mx-auto px-4 py-16 text-center">
+          <Card className="p-8 rounded-3xl border-border shadow-md bg-white">
+            <div className="w-16 h-16 bg-amber-500/10 rounded-2xl flex items-center justify-center mx-auto mb-5 text-amber-600">
+              <ShieldAlert className="w-8 h-8" />
+            </div>
+            <h2 className="text-2xl font-bold text-text-primary mb-2">OTP Verification Required</h2>
+            <p className="text-sm text-text-muted mb-6">
+              Doctor profile details and contact information are protected. Please complete a quick OTP verification to unlock full profile details.
+            </p>
+            <Button onClick={() => setShowOtpModal(true)} variant="primary" size="lg" className="w-full font-semibold">
+              Verify via OTP to View Profile
+            </Button>
+          </Card>
+        </div>
+
+        <OtpVerificationModal 
+          isOpen={showOtpModal}
+          onClose={() => setShowOtpModal(false)}
+          onSuccess={() => {
+            setIsVerified(true);
+            setShowOtpModal(false);
+            if (typeof window !== 'undefined') {
+              localStorage.setItem('directory_verified', 'true');
+            }
+          }}
+        />
       </div>
     );
   }
@@ -197,16 +263,20 @@ export default function DoctorDetailsPage({ params }: { params: Promise<{ id: st
               {/* Hospital Affiliation */}
               <div className="p-5 rounded-2xl bg-surface/50 border border-border/50">
                 <h3 className="font-semibold text-text-primary mb-3 flex items-center gap-2">
-                  <Building2 className="w-4 h-4 text-primary" /> Associated Hospital
+                  <Building2 className="w-4 h-4 text-primary" /> Associated Hospitals
                 </h3>
-                {hospital ? (
-                  <Link href={`/emergency/hospitals/${hospital.id}`} className="block group">
-                    <p className="font-bold text-text-primary group-hover:text-primary transition-colors">{hospital.name}</p>
-                    <p className="text-sm text-text-muted mt-1">{hospital.city} • {hospital.area}</p>
-                  </Link>
-                ) : (
-                  <p className="text-sm text-text-muted">Hospital information not available.</p>
-                )}
+                <div className="space-y-3">
+                  {associatedHospitals.length > 0 ? (
+                    associatedHospitals.map(h => (
+                      <Link key={h.id} href={`/emergency/hospitals/${h.id}`} className="block group border-b border-border/50 pb-2 last:border-b-0 last:pb-0">
+                        <p className="font-bold text-text-primary group-hover:text-primary transition-colors">{h.name}</p>
+                        <p className="text-xs text-text-muted mt-0.5">{h.city} • {h.area}</p>
+                      </Link>
+                    ))
+                  ) : (
+                    <p className="text-sm text-text-muted">No associated hospitals configured.</p>
+                  )}
+                </div>
               </div>
 
               {/* Contact Information */}

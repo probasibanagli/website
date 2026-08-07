@@ -125,11 +125,19 @@ export default function VerifyPage({ params }: { params: Promise<{ id: string }>
     setError('');
     setLoading(true);
     
+    let doctorId: string | undefined = undefined;
+    if (redirectUrl.includes('/bengali-doctors/')) {
+      const parts = redirectUrl.split('/bengali-doctors/');
+      if (parts[1]) {
+        doctorId = parts[1].split('?')[0];
+      }
+    }
+
     try {
       const res = await fetch('/api/auth/verify-otp', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type: 'email', phone, email, emailOtp }),
+        body: JSON.stringify({ type: 'email', phone, email, emailOtp, doctorId }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Invalid OTP');

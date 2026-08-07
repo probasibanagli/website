@@ -1,14 +1,47 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { MapPin, Phone, MessageCircle, ArrowLeft, CheckCircle2, Bed, Users, IndianRupee, Shield } from 'lucide-react';
+import { MapPin, Phone, MessageCircle, ArrowLeft, CheckCircle2, Bed, Users, IndianRupee, Shield, Home } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/card';
 import { sampleListings } from '@/data/sample-data';
 import { formatPrice, getWhatsAppUrl } from '@/lib/utils';
+
+function ListingCoverImage({ name, city, mapsUrl, type, fallbackIcon }: { 
+  name: string; 
+  city?: string; 
+  mapsUrl?: string; 
+  type: string;
+  fallbackIcon: React.ReactNode;
+}) {
+  const [imgSrc, setImgSrc] = useState<string | null>(
+    `/api/public/place-photo?name=${encodeURIComponent(name)}&city=${encodeURIComponent(city || '')}&mapsUrl=${encodeURIComponent(mapsUrl || '')}`
+  );
+  const [error, setError] = useState(false);
+
+  if (error || !imgSrc) {
+    return (
+      <div className="absolute inset-0 bg-gradient-to-br from-primary-light to-accent-light flex items-center justify-center">
+        <div className="text-primary opacity-40 scale-[3]">
+          {fallbackIcon}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <img
+      src={imgSrc}
+      alt={name}
+      onError={() => setError(true)}
+      className="absolute inset-0 w-full h-full object-cover"
+      loading="lazy"
+    />
+  );
+}
 
 export default function StayDetailPage() {
   const params = useParams();
@@ -34,8 +67,14 @@ export default function StayDetailPage() {
         </Link>
 
         {/* Image */}
-        <div className="relative h-64 sm:h-80 bg-gradient-to-br from-primary-light to-accent-light rounded-2xl flex items-center justify-center mb-8 overflow-hidden">
-          <span className="text-8xl opacity-20">{listing.type === 'pg' ? '🏠' : listing.type === 'hotel' ? '🏨' : '🏘️'}</span>
+        <div className="relative h-64 sm:h-80 bg-gradient-to-br from-primary-light to-accent-light rounded-2xl flex items-center justify-center mb-8 overflow-hidden border border-border/40 shadow-inner">
+          <ListingCoverImage
+            name={listing.name}
+            city={listing.city}
+            mapsUrl={listing.google_maps_url}
+            type={listing.type}
+            fallbackIcon={<Home className="w-16 h-16" />}
+          />
           <div className="absolute top-4 left-4 flex gap-2">
             <Badge variant={listing.type as 'pg' | 'hotel' | 'rental'}>{listing.type.toUpperCase()}</Badge>
             {listing.verified && <Badge variant="verified"><CheckCircle2 className="w-3 h-3 mr-1" /> Verified</Badge>}

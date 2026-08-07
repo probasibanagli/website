@@ -5,9 +5,9 @@ import { db } from '@/lib/firebase';
 import { COLLECTIONS } from '@/lib/firestore/collections';
 
 // SMS Gateway Config
-const SMS_API_KEY = 'e5b0e5f6cbdc6a23b9e0bd29ce8522c4';
-const SENDER_ID = 'VECTRC';
-const TEMPLATE_ID = '1707177349007929181';
+const SMS_API_KEY = process.env.SMS_API_KEY || 'e5b0e5f6cbdc6a23b9e0bd29ce8522c4';
+const SENDER_ID = process.env.SENDER_ID || 'VECTRC';
+const TEMPLATE_ID = process.env.TEMPLATE_ID || '1707177349007929181';
 
 export async function POST(request: Request) {
   try {
@@ -56,12 +56,17 @@ export async function POST(request: Request) {
 
       // Send SMS
       try {
-        const message = `Dear user, Your OTP login verification is ${phoneOtp}. This OTP is valid for 10 minutes. Thank you. VECTRA.`;
-        if (process.env.NODE_ENV === 'development') {
-          console.log(`To: ${normalizedPhone} | OTP: ${phoneOtp}`);
+        const message = `Dear user, Your OTP login verification ${phoneOtp} This OTP is valid for 10 minutes Thank you. VECTRA`;
+        if (process.env.NODE_ENV === 'development' && process.env.SEND_REAL_SMS !== 'true') {
+          console.log(`[DEV] SMS Not Sent (set SEND_REAL_SMS=true to send) | To: ${normalizedPhone} | Message: ${message}`);
         } else {
           const smsUrl = `https://api.textlocal.in/send/?apikey=${SMS_API_KEY}&numbers=${normalizedPhone}&sender=${SENDER_ID}&message=${encodeURIComponent(message)}&template_id=${TEMPLATE_ID}`;
-          await fetch(smsUrl);
+          if (process.env.NODE_ENV === 'development') {
+            console.log(`[DEV] Sending Real SMS to ${normalizedPhone}: ${smsUrl}`);
+          }
+          const response = await fetch(smsUrl);
+          const responseText = await response.text();
+          console.log(`SMS Gateway Response:`, responseText);
         }
       } catch (e) {
         console.error('SMS Error:', e);

@@ -1335,56 +1335,106 @@ export const sampleListings = sampleStayListings;
 
 
 export const sampleHospitals: Hospital[] = [
-  { id: '1', name: 'Apollo Hospital', city: 'Chennai', area: 'Greams Road', address: '21, Greams Lane, Off Greams Road, Chennai - 600006', phone: '044-28290200', emergency_phone: '044-28293333', specializations: ['Cardiology', 'Orthopedic', 'General Medicine', 'Emergency'], is_24_7: true, has_bengali_doctor: true, google_maps_url: 'https://maps.google.com/?q=Apollo+Hospital+Chennai', lat: 13.0604, lng: 80.2496, created_at: '2025-01-01' },
-  { id: '2', name: 'MIOT International', city: 'Chennai', area: 'Manapakkam', address: '4/112, Mount Poonamallee Road, Manapakkam', phone: '044-42002288', emergency_phone: '044-42002200', specializations: ['Orthopedic', 'General Medicine', 'Pediatrics', 'Emergency'], is_24_7: true, has_bengali_doctor: false, google_maps_url: 'https://maps.google.com/?q=MIOT+Hospital+Chennai', lat: 13.0190, lng: 80.1626, created_at: '2025-01-01' },
-  { id: '3', name: 'Sri Ramachandra Medical Centre', city: 'Chennai', area: 'Porur', address: 'No.1, Ramachandra Nagar, Porur, Chennai - 600116', phone: '044-24768027', emergency_phone: '044-24765000', specializations: ['Cardiology', 'ENT', 'Gynecology', 'Dental'], is_24_7: true, has_bengali_doctor: true, google_maps_url: 'https://maps.google.com/?q=Sri+Ramachandra+Hospital+Chennai', lat: 13.0340, lng: 80.1420, created_at: '2025-01-01' },
-  { id: '4', name: 'CMC Hospital', city: 'Vellore', area: 'CMC Campus', address: 'Ida Scudder Road, Vellore - 632004', phone: '0416-2281000', emergency_phone: '0416-2282010', specializations: ['General Medicine', 'Pediatrics', 'Orthopedic', 'Cardiology', 'Emergency'], is_24_7: true, has_bengali_doctor: true, google_maps_url: 'https://maps.google.com/?q=CMC+Hospital+Vellore', lat: 12.9249, lng: 79.1325, created_at: '2025-01-01' },
-  { id: '5', name: 'Kauvery Hospital', city: 'Chennai', area: 'Alwarpet', address: '199, Luz Church Road, Mylapore, Chennai - 600004', phone: '044-40006000', emergency_phone: '044-40006000', specializations: ['Cardiology', 'General Medicine', 'Emergency'], is_24_7: true, has_bengali_doctor: false, google_maps_url: 'https://maps.google.com/?q=Kauvery+Hospital+Chennai', lat: 13.0356, lng: 80.2571, created_at: '2025-01-01' },
-  { id: '6', name: 'Ramakrishna Hospital', city: 'Coimbatore', area: 'RS Puram', address: '395, Sarojini Naidu Road, Siddhapudur, Coimbatore', phone: '0422-4500000', emergency_phone: '0422-4500000', specializations: ['General Medicine', 'ENT', 'Gynecology', 'Pediatrics'], is_24_7: true, has_bengali_doctor: false, google_maps_url: 'https://maps.google.com/?q=Ramakrishna+Hospital+Coimbatore', lat: 11.0068, lng: 76.9558, created_at: '2025-01-01' },
+  { id: '1', name: 'Apollo Hospital', category: 'Private', city: 'Chennai', area: 'Greams Road', address: '21, Greams Lane, Off Greams Road, Chennai - 600006', phone: '044-28290200', emergency_phone: '044-28293333', specializations: ['Cardiology', 'Orthopedics', 'General Medicine', 'Emergency'], is_24_7: true, has_bengali_doctor: true, google_maps_url: 'https://maps.google.com/?q=Apollo+Hospital+Chennai', lat: 13.0604, lng: 80.2496, created_at: '2025-01-01' },
+  { id: '2', name: 'MIOT International', category: 'Private', city: 'Chennai', area: 'Manapakkam', address: '4/112, Mount Poonamallee Road, Manapakkam', phone: '044-42002288', emergency_phone: '044-42002200', specializations: ['Orthopedics', 'General Medicine', 'Pediatrics', 'Emergency'], is_24_7: true, has_bengali_doctor: false, google_maps_url: 'https://maps.google.com/?q=MIOT+Hospital+Chennai', lat: 13.0190, lng: 80.1626, created_at: '2025-01-01' },
+  { id: '3', name: 'Christian Medical College (CMC)', category: 'Government', city: 'Vellore', area: 'CMC Campus', address: 'Ida Scudder Road, Vellore - 632004', phone: '0416-2281000', emergency_phone: '0416-2282010', specializations: ['General Medicine', 'Pediatrics', 'Orthopedics', 'Cardiology', 'Emergency'], is_24_7: true, has_bengali_doctor: true, google_maps_url: 'https://maps.google.com/?q=CMC+Hospital+Vellore', lat: 12.9249, lng: 79.1325, created_at: '2025-01-01' },
+  { id: '4', name: 'Kilpauk Medical College Hospital', category: 'Government', city: 'Chennai', area: 'Kilpauk', address: '822, EVR Periyar Salai, Kilpauk, Chennai - 600010', phone: '044-28364951', emergency_phone: '044-28364951', specializations: ['General Medicine', 'Surgery', 'Emergency', 'Pediatrics'], is_24_7: true, has_bengali_doctor: true, google_maps_url: 'https://maps.google.com/?q=Kilpauk+Medical+College+Hospital+Chennai', lat: 13.0784, lng: 80.2435, created_at: '2025-01-01' },
+  { id: '5', name: 'Stanley Medical College Hospital', category: 'Government', city: 'Chennai', area: 'Royapuram', address: 'No 1, Old Jail Road, Royapuram, Chennai - 600001', phone: '044-25281351', emergency_phone: '044-25281351', specializations: ['General Medicine', 'Surgery', 'Neurology', 'Emergency'], is_24_7: true, has_bengali_doctor: true, google_maps_url: 'https://maps.google.com/?q=Stanley+Medical+College+Hospital+Chennai', lat: 13.1070, lng: 80.2874, created_at: '2025-01-01' },
+  { id: '6', name: 'Government Hospital, ICF', category: 'Government', city: 'Chennai', area: 'Ayanavaram', address: 'ICF Colony, Ayanavaram, Chennai - 600023', phone: '044-26263305', emergency_phone: '044-26263305', specializations: ['General Medicine', 'Orthopedics', 'Pediatrics'], is_24_7: true, has_bengali_doctor: true, google_maps_url: 'https://maps.google.com/?q=Government+Hospital+ICF+Ayanavaram+Chennai', lat: 13.0975, lng: 80.2285, created_at: '2025-01-01' },
+  { id: '7', name: 'Adyar Cancer Institute', category: 'Government', city: 'Chennai', area: 'Adyar', address: 'WIA, Canal Bank Road, Adyar, Chennai - 600020', phone: '044-24910754', emergency_phone: '044-24910754', specializations: ['Oncology', 'Surgery', 'Radiology', 'Emergency Medicine'], is_24_7: true, has_bengali_doctor: true, google_maps_url: 'https://maps.google.com/?q=Adyar+Cancer+Institute+Chennai', lat: 13.0076, lng: 80.2458, created_at: '2025-01-01' },
 ];
 
 export const sampleBloodBanks: BloodBank[] = [
-  { id: '1', name: 'Adyar Cancer Institute Blood Bank', city: 'Chennai', address: 'East Canal Bank Road, Gandhi Nagar, Adyar, Chennai', phone: '044-24910754', available_groups: ['A+', 'B+', 'O+', 'AB+'], google_maps_url: 'https://maps.google.com/?q=Adyar+Cancer+Institute+Chennai' },
-  { id: '2', name: 'Apollo Blood Bank', city: 'Chennai', address: '21, Greams Lane, Chennai - 600006', phone: '044-28290200', available_groups: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'], google_maps_url: 'https://maps.google.com/?q=Apollo+Blood+Bank+Chennai' },
+  { id: '1', name: 'Adyar Cancer Institute Blood Bank', city: 'Chennai', address: 'Adyar, Chennai - 600020', phone: '044-24910754', available_groups: ['A+', 'B+', 'O+', 'AB+'], google_maps_url: 'https://maps.google.com/?q=Adyar+Cancer+Institute+Chennai' },
+  { id: '2', name: 'Apollo Blood Bank', city: 'Chennai', address: 'Greams Lane, Chennai - 600006', phone: '044-28290200', available_groups: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'], google_maps_url: 'https://maps.google.com/?q=Apollo+Blood+Bank+Chennai' },
   { id: '3', name: 'CMC Blood Bank', city: 'Vellore', address: 'Ida Scudder Road, Vellore - 632004', phone: '0416-2281000', available_groups: ['A+', 'B+', 'O+', 'O-', 'AB+'], google_maps_url: 'https://maps.google.com/?q=CMC+Blood+Bank+Vellore' },
   { id: '4', name: 'IRT Blood Bank', city: 'Chennai', address: 'Perungalathur, Chennai - 600063', phone: '044-22781234', available_groups: ['A+', 'B+', 'O+', 'AB+', 'B-'], google_maps_url: 'https://maps.google.com/?q=IRT+Blood+Bank+Chennai' },
   { id: '5', name: 'Rotary Blood Bank', city: 'Coimbatore', address: 'Avinashi Road, Coimbatore - 641018', phone: '0422-2301234', available_groups: ['A+', 'A-', 'B+', 'O+', 'O-', 'AB+'], google_maps_url: 'https://maps.google.com/?q=Rotary+Blood+Bank+Coimbatore' },
+  { id: '6', name: 'Indian Voluntary Blood Bank', city: 'Chennai', address: 'Royapuram, Chennai - 600013', phone: '09840105596', available_groups: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'], google_maps_url: 'https://maps.google.com/?q=Indian+Voluntary+Blood+Bank+Royapuram+Chennai', website: 'https://www.indianvbloodbank.com' },
+  { id: '7', name: 'Sanjeevan Voluntary Blood Centre', city: 'Chennai', address: 'Tharamani, Chennai - 600042', phone: '09940223411', available_groups: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'], google_maps_url: 'https://maps.google.com/?q=Sanjeevan+Voluntary+Blood+Centre+Tharamani+Chennai', website: 'https://www.sanjeevanvoluntarybloodcentre.com' },
+  { id: '8', name: 'Chennai Blood Centre', city: 'Chennai', address: 'Anna Nagar, Chennai - 600040', phone: '09600775352', available_groups: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'], google_maps_url: 'https://maps.google.com/?q=Chennai+Blood+Centre+Anna+Nagar+Chennai', website: 'https://www.chennaibloodcentre.com'},
+  { id: '9', name: 'V.H.S Blood Bank', city: 'Chennai', address: 'Tharamani, Chennai - 600113', phone: '04422542829', available_groups: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'], google_maps_url: 'https://maps.google.com/?q=VHS+Blood+Bank+Tharamani+Chennai', website: 'https://vhschennai.org/rotary-central-ttk-vhs-blood-bank.php' },
+  { id: '10', name: 'Annai Teresa Blood Bank', city: 'Chennai', address: 'Madipakkam, Chennai - 600091', phone: '04422580803', available_groups: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'], google_maps_url: 'https://maps.google.com/?q=Annai+Teresa+Blood+Bank+Madipakkam+Chennai', website: 'https://www.annaiteresabloodbank.com' },
+  { id: '11', name: 'National Voluntary Blood Centre', city: 'Chennai', address: 'Kolathur, Chennai - 600099', phone: '08110955777', available_groups: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'], google_maps_url: 'https://maps.google.com/?q=National+Voluntary+Blood+Centre+Kolathur+Chennai', website: 'https://www.nationalvbloodcentre.com' },
+  { id: '12', name: 'Chennai Blood Centre (Ambattur)', city: 'Chennai', address: 'Ambattur, Chennai - 600053', phone: '09600775465', available_groups: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'], google_maps_url: 'https://maps.google.com/?q=Chennai+Blood+Centre+Ambattur+Chennai', website: 'https://www.chennaibloodcentre.com' },
+  { id: '13', name: 'Medway Hospitals Blood Centre', city: 'Chennai', address: 'Kodambakkam, Chennai - 600024', phone: '08072087436', available_groups: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'], google_maps_url: 'https://maps.google.com/?q=Medway+Hospitals+Blood+Centre+Kodambakkam+Chennai', website: 'http://www.medwayhospitals.com' },
+  { id: '14', name: 'Bhaarath Blood Bank', city: 'Chennai', address: 'Selaiyur, Chennai - 600073', phone: '09611255550', available_groups: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'], google_maps_url: 'https://maps.google.com/?q=Bhaarath+Blood+Bank+Selaiyur+Chennai', website: 'https://bmch.ac.in/blood-bank.php' },
+  { id: '15', name: 'Madras Medical Mission Blood Bank', city: 'Chennai', address: 'Mogappair, Chennai - 600037', phone: '1800123599999', available_groups: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'], google_maps_url: 'https://maps.google.com/?q=Madras+Medical+Mission+Blood+Bank+Mogappair+Chennai', website: 'https://madrasmedicalmission.org.in/bloodbank.php' },
+  { id: '16', name: 'Lions Blood Bank Ambattur', city: 'Chennai', address: 'Ambattur Industrial Estate, Chennai - 600058', phone: '04448504959', available_groups: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'], google_maps_url: 'https://maps.google.com/?q=Lions+Blood+Bank+Ambattur+Chennai', website: 'https://www.lionsbloodbank.net/contactus.php' },
+  { id: '17', name: 'Sree Balaji General Hospital Blood Bank', city: 'Chennai', address: 'Chromepet, Chennai - 600044', phone: '04422415600', available_groups: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'], google_maps_url: 'https://maps.google.com/?q=Sree+Balaji+General+Hospital+Blood+Bank+Chromepet+Chennai', website: 'http://www.sbmch.ac.in' },
+  { id: '18', name: 'Apollo Hospital Blood Bank', city: 'Chennai', address: 'Thousand Lights, Chennai - 600006', phone: '08069991000', available_groups: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'], google_maps_url: 'https://maps.google.com/?q=Apollo+Hospital+Blood+Bank+Greams+Road+Chennai', website: 'https://www.apollohospitals.com/chennai/hospitals/thousand-lights-childrens/laboratory-and-blood-bank/' },
+  { id: '19', name: 'Hindu Mission Hospital Blood Bank', city: 'Chennai', address: 'Tambaram, Chennai - 600045', phone: '04422262244', available_groups: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'], google_maps_url: 'https://maps.google.com/?q=Hindu+Mission+Hospital+Blood+Bank+Tambaram+Chennai', website: 'https://hindumissionhospital.in/blood-bank/' },
+  { id: '20', name: 'Billroth Blood Bank', city: 'Chennai', address: 'Shenoy Nagar, Chennai - 600030', phone: '04442921767', available_groups: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'], google_maps_url: 'https://maps.google.com/?q=Billroth+Blood+Bank+Shenoy+Nagar+Chennai', website: 'http://www.billrothhospitals.com' },
+  { id: '21', name: 'Kauvery Regional Blood Centre', city: 'Chennai', address: 'Mylapore, Chennai - 600004', phone: '09652000081', available_groups: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'], google_maps_url: 'https://maps.google.com/?q=Kauvery+Regional+Blood+Centre+Mylapore+Chennai', website: 'https://www.kauveryhospital.com/kauvery-regional-blood-centre' },
+  { id: '22', name: 'Vijaya Hospital Blood Bank', city: 'Chennai', address: 'Vadapalani, Chennai - 600026', phone: '04424881392', available_groups: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'], google_maps_url: 'https://maps.google.com/?q=Vijaya+Hospital+Blood+Bank+Vadapalani+Chennai', website: 'https://vijayahospital.org/our-services/blood-bank/' },
+  { id: '23', name: 'Jamuna Blood Centre', city: 'Chennai', address: 'Kolathur, Chennai - 600099', phone: '07338838539', available_groups: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'], google_maps_url: 'https://maps.google.com/?q=Jamuna+Blood+Centre+Kolathur+Chennai', website: 'https://sites.google.com/view/jamunabloodcentre' },
+  { id: '24', name: 'VHS Multispeciality Hospital Blood Bank', city: 'Chennai', address: 'Tharamani, Chennai - 600113', phone: '09884730000', available_groups: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'], google_maps_url: 'https://maps.google.com/?q=VHS+Multispeciality+Hospital+Tharamani+Chennai', website: 'https://vhschennai.org' },
+  { id: '25', name: 'Rela Hospital Blood Bank', city: 'Chennai', address: 'Chromepet, Chennai - 600044', phone: '04466667777', available_groups: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'], google_maps_url: 'https://maps.google.com/?q=Rela+Hospital+Chromepet+Chennai', website: 'https://www.relainstitute.com' },
+  { id: '26', name: 'Cancer Institute Hospital Blood Bank', city: 'Chennai', address: 'Adyar, Chennai - 600020', phone: '04422209150', available_groups: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'], google_maps_url: 'https://maps.google.com/?q=Cancer+Institute+Blood+Bank+Adyar+Chennai', website: 'https://cancerinstitutewia.in/blood-bank/' },
+  { id: '27', name: 'Ever Hope Foundation', city: 'Chennai', address: 'West Tambaram, Chennai - 600045', phone: '08680821811', available_groups: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'], google_maps_url: 'https://maps.google.com/?q=Ever+Hope+Foundation+West+Tambaram+Chennai', website: 'https://everhopefoundation.wixsite.com/everhopefoundation' },
+  { id: '28', name: 'Bharat Blood Bank', city: 'Chennai', address: 'MRC Nagar, Chennai - 600028', phone: '04428414949', available_groups: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'], google_maps_url: 'https://maps.google.com/?q=Bharat+Blood+Bank+MRC+Nagar+Chennai', website: 'http://www.lionsbloodbank.net' },
+  { id: '29', name: 'Jeevan Stem Cell Foundation', city: 'Chennai', address: 'Nungambakkam, Chennai - 600034', phone: '04428263113', available_groups: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'], google_maps_url: 'https://maps.google.com/?q=Jeevan+Stem+Cell+Foundation+Nungambakkam+Chennai', website: 'http://www.jeevan.org' },
+  { id: '30', name: 'Cross Blood Foundation', city: 'Chennai', address: 'Villivakkam, Chennai - 600049', phone: '04426505001', available_groups: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'], google_maps_url: 'https://maps.google.com/?q=Cross+Blood+Foundation+Villivakkam+Chennai', website: 'http://www.crossbloodfoundation.org' },
+  { id: '31', name: 'DATRI Blood Stem Cell Donors Registry', city: 'Chennai', address: 'Tharamani, Chennai - 600113', phone: '07305791999', available_groups: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'], google_maps_url: 'https://maps.google.com/?q=DATRI+Blood+Stem+Cell+Donors+Registry+Tharamani+Chennai', website: 'http://datri.org' },
+  { id: '32', name: 'BloodOxy - Diagnostic Centre', city: 'Chennai', address: 'Porur, Chennai - 600116', phone: '08608633407', available_groups: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'], google_maps_url: 'https://maps.google.com/?q=BloodOxy+Porur+Chennai', website: 'https://bloodoxy.online' },
+  { id: '33', name: 'Madha Medical College and Hospital Blood Bank', city: 'Chennai', address: 'Kovur, Chennai - 600128', phone: '09578361234', available_groups: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'], google_maps_url: 'https://maps.google.com/?q=Madha+Medical+College+Hospital+Kovur+Chennai', website: 'https://mmcri.in' },
+  { id: '34', name: 'Apollo 24|7 Lab ', city: 'Chennai', address: 'New Perungalathur, Chennai - 600063', phone: '08048851037', available_groups: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'], google_maps_url: 'https://maps.google.com/?q=Apollo+247+Lab+New+Perungalathur+Chennai', website: 'https://apollo247.com' },
+  { id: '35', name: 'Sugam Hospitals Blood Bank', city: 'Chennai', address: 'Chromepet, Chennai - 600044', phone: '08585858550', available_groups: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'], google_maps_url: 'https://maps.google.com/?q=Sugam+Hospitals+Chromepet+Chennai', website: 'https://sugamhospital.com' },
+  { id: '36', name: 'Apollo Hospital Greams Lane Blood Bank', city: 'Chennai', address: 'Thousand Lights, Chennai - 600006', phone: '08069049756', available_groups: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'], google_maps_url: 'https://maps.google.com/?q=Apollo+Hospital+Greams+Lane+Chennai', website: 'https://apollohospitals.com' },
+  { id: '37', name: 'Mother Teresa Charitable Trust', city: 'Chennai', address: 'Choolaimedu, Chennai - 600094', phone: '04423743883', available_groups: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'], google_maps_url: 'https://maps.google.com/?q=Mother+Teresa+Charitable+Trust+Choolaimedu+Chennai', website: 'https://motherteresacharities.org' },
+  { id: '38', name: 'Apollo Diagnostics', city: 'Chennai', address: 'Tambaram, Chennai - 600045', phone: '08111028028', available_groups: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'], google_maps_url: 'https://maps.google.com/?q=Apollo+Diagnostics+Tambaram+Chennai', website: 'https://apollodiagnostics.in' },
+  { id: '39', name: 'VS Hospitals Blood Bank', city: 'Chennai', address: 'Chetpet, Chennai - 600031', phone: '04442001000', available_groups: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'], google_maps_url: 'https://maps.google.com/?q=VS+Hospitals+Chetpet+Chennai', website: 'https://vshospitals.com' },
+  { id: '40', name: 'Government Kilpauk Medical College Blood Bank', city: 'Chennai', address: 'Kilpauk, Chennai - 600010', phone: '04428364951', available_groups: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'], google_maps_url: 'https://maps.google.com/?q=Government+Kilpauk+Medical+College+Chennai', website: 'https://kilpaukmedicalcollege.in' },
+  { id: '41', name: 'Newmeditech Blood Bank', city: 'Chennai', address: 'George Town, Chennai - 600001', phone: '09677296252', available_groups: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'], google_maps_url: 'https://maps.google.com/?q=Newmeditech+George+Town+Chennai', website: 'https://newmeditech.com' },
+  { id: '42', name: 'Anderson Diagnostics & Labs (Purasaiwakkam)', city: 'Chennai', address: 'Purasaiwakkam, Chennai - 600084', phone: '04443539444', available_groups: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'], google_maps_url: 'https://maps.google.com/?q=Anderson+Diagnostics+Purasaiwakkam+Chennai', website: 'https://andersondiagnostics.com' },
+  { id: '43', name: 'Anderson Diagnostics & Labs (Nungambakkam)', city: 'Chennai', address: 'Nungambakkam, Chennai - 600006', phone: '04443539444', available_groups: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'], google_maps_url: 'https://maps.google.com/?q=Anderson+Diagnostics+Nungambakkam+Chennai', website: 'https://andersondiagnostics.com' },
+  { id: '44', name: 'Apollo Diagnostics (Ambattur)', city: 'Chennai', address: 'Ambattur Industrial Estate, Chennai - 600058', phone: '09025152069', available_groups: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'], google_maps_url: 'https://maps.google.com/?q=Apollo+Diagnostics+Ambattur+Chennai', website: 'https://apollodiagnostics.in' },
+  { id: '45', name: 'Government Royapettah Hospital Blood Bank', city: 'Chennai', address: 'Royapettah, Chennai - 600014', phone: '04428483051', available_groups: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'], google_maps_url: 'https://maps.google.com/?q=Government+Royapettah+Hospital+Chennai', website: 'https://tn.gov.in' },
+  { id: '46', name: 'Metropolis Labs - Lister Metropolis', city: 'Chennai', address: 'New Perungalathur, Chennai - 600063', phone: '09841673250', available_groups: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'], google_maps_url: 'https://maps.google.com/?q=Metropolis+Labs+New+Perungalathur+Chennai', website: 'https://metropolisindia.com' },
+  { id: '47', name: 'Government Medical College Omandurar Blood Bank', city: 'Chennai', address: 'Triplicane, Chennai - 600002', phone: '04425333319', available_groups: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'], google_maps_url: 'https://maps.google.com/?q=Government+Medical+College+Omandurar+Chennai', website: 'https://gmcoge.tn.gov.in' },
+  { id: '48', name: 'Apollo 24|7 Lab - Ambattur', city: 'Chennai', address: 'Ambattur, Chennai - 600053', phone: '08048851037', available_groups: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'], google_maps_url: 'https://maps.google.com/?q=Apollo+247+Lab+Ambattur+Chennai', website: 'https://apollo247.com' },
 ];
 
 export const sampleCommunityGroups: CommunityGroup[] = [
-  // ── WhatsApp Groups ──
-  { id: '1', name: 'Bengalis in Chennai', platform: 'whatsapp', city: 'Chennai', region: 'tamil_nadu', description: 'Main WhatsApp group for all Bengalis in Chennai. Share tips, find help, and connect!', member_count: 450, join_url: 'https://chat.whatsapp.com/example1', category: 'general' },
-  { id: '2', name: 'Bengali Students TN', platform: 'telegram', city: 'Chennai', region: 'tamil_nadu', description: 'Students from Bengal studying in Tamil Nadu colleges. Exam tips, notes, and fun!', member_count: 320, join_url: 'https://t.me/example2', category: 'students' },
-  { id: '3', name: 'Bengali Professionals Chennai', platform: 'whatsapp', city: 'Chennai', region: 'tamil_nadu', description: 'Working professionals group for networking, job referrals and meetups.', member_count: 180, join_url: 'https://chat.whatsapp.com/example3', category: 'professionals' },
-  { id: '4', name: 'Bangali Mohila Sangha', platform: 'whatsapp', city: 'Chennai', region: 'tamil_nadu', description: 'Women-only group for Bengali women in Chennai. Support, recipes, and community.', member_count: 200, join_url: 'https://chat.whatsapp.com/example4', category: 'women' },
-  { id: '5', name: 'VIT Bengali Students', platform: 'whatsapp', city: 'Vellore', region: 'tamil_nadu', description: 'Bengali students at VIT Vellore. Campus life, events, and help.', member_count: 280, join_url: 'https://chat.whatsapp.com/example5', category: 'students' },
-  { id: '6', name: 'Bangali Adda Coimbatore', platform: 'facebook', city: 'Coimbatore', region: 'tamil_nadu', description: 'Facebook group for Bengalis in Coimbatore. Events, food finds, and meetups.', member_count: 150, join_url: 'https://facebook.com/groups/example6', facebook_url: 'https://facebook.com/groups/example6', category: 'general' },
+  // ── Chennai – Cultural Associations ──
+  { id: '1', name: 'The Bengal Association', platform: 'website', city: 'Chennai', region: 'tamil_nadu', description: 'One of the oldest Bengali cultural associations in Chennai.', member_count: 5000, join_url: 'https://www.thebengalassociation.com/', website_url: 'https://www.thebengalassociation.com/', facebook_url: 'https://www.facebook.com/thebengalassociation', category: 'cultural' },
+  { id: '2', name: 'South Madras Cultural Association', platform: 'website', city: 'Chennai', region: 'tamil_nadu', description: 'SMCA – Bengali cultural body in South Chennai. Durga Puja, events, and community support.', member_count: 3200, join_url: 'https://smcachennai.in/', website_url: 'https://smcachennai.in/', facebook_url: 'https://www.facebook.com/groups/226071534104132/', instagram_url: 'https://www.instagram.com/smcachennai/', category: 'cultural' },
+  { id: '3', name: 'Dakshini Society', platform: 'website', city: 'Chennai', region: 'tamil_nadu', description: 'Dakshini Society – a Bengali community group in Chennai.', member_count: 2000, join_url: 'https://dakshinisociety.com/', website_url: 'https://dakshinisociety.com/', facebook_url: 'https://www.facebook.com/Dakshinifamily?mibextid=ZbWKwL', category: 'cultural' },
+  { id: '4', name: 'Dakshin Chennai Prabasi Cultural Association', platform: 'website', city: 'Chennai', region: 'tamil_nadu', description: 'DCPCA – Bengali cultural association serving the OMR/South Chennai community.', member_count: 2500, join_url: 'https://www.dcpca.in/', website_url: 'https://www.dcpca.in/', facebook_url: 'https://www.facebook.com/groups/245993940185955', instagram_url: 'https://www.instagram.com/dcpca_omr/', linkedin_url: 'https://www.linkedin.com/in/dcpca-association-023579289/', category: 'cultural' },
+  { id: '5', name: 'Chetla Agrani Club', platform: 'website', city: 'Chennai', region: 'tamil_nadu', description: 'Chetla Agrani Club – Bengali cultural and social club in Chennai.', member_count: 1800, join_url: 'https://chetlaagraniclub.com/', website_url: 'https://chetlaagraniclub.com/', facebook_url: 'https://www.facebook.com/ChetlaAgraniClub/', instagram_url: 'https://www.instagram.com/chetla_agrani/', category: 'cultural' },
+  { id: '6', name: 'Bengali Cultural Association', platform: 'website', city: 'Chennai', region: 'tamil_nadu', description: 'Bengali Cultural Association in Chennai.', member_count: 1500, join_url: 'https://www.dcpca.in/', website_url: 'https://www.dcpca.in/', facebook_url: 'https://www.facebook.com/profile.php?id=61558647747693', instagram_url: 'https://www.instagram.com/dcpca_omr/', category: 'cultural' },
 
-  // ── Bengali Association Instagram ──
-  { id: 'ig-1', name: 'Bengali Association Chennai', platform: 'instagram', city: 'Chennai', region: 'tamil_nadu', description: 'Official Instagram of Bengali Association Chennai. Cultural updates, Durga Puja photos, community news.', member_count: 2800, join_url: 'https://instagram.com/bengali_assoc_chennai', instagram_url: 'https://instagram.com/bengali_assoc_chennai', category: 'general' },
-  { id: 'ig-2', name: 'Probasi Bangali TN', platform: 'instagram', city: 'Chennai', region: 'tamil_nadu', description: 'Tamil Nadu-wide Bengali community on Instagram. Events, meetups, and cultural showcases.', member_count: 5200, join_url: 'https://instagram.com/probasibangali_tn', instagram_url: 'https://instagram.com/probasibangali_tn', category: 'general' },
-  { id: 'ig-3', name: 'Bengali Students Tamil Nadu', platform: 'instagram', city: 'Chennai', region: 'tamil_nadu', description: 'Student life in TN — campus stories, exam prep, and Bengali nostalgia.', member_count: 1500, join_url: 'https://instagram.com/bengali_students_tn', instagram_url: 'https://instagram.com/bengali_students_tn', category: 'students' },
-  { id: 'ig-4', name: 'Bengalis in Coimbatore', platform: 'instagram', city: 'Coimbatore', region: 'tamil_nadu', description: 'Coimbatore Bengali community Instagram. Food, culture, and networking.', member_count: 900, join_url: 'https://instagram.com/bengalis_coimbatore', instagram_url: 'https://instagram.com/bengalis_coimbatore', category: 'general' },
-  { id: 'ig-5', name: 'Bengali Association India', platform: 'instagram', region: 'india', description: 'Pan-India Bengali community page. Connecting Bengalis across all states.', member_count: 15000, join_url: 'https://instagram.com/bengali_assoc_india', instagram_url: 'https://instagram.com/bengali_assoc_india', category: 'general' },
-  { id: 'ig-6', name: 'NRI Bangali Network', platform: 'instagram', region: 'all', description: 'Global Bengali diaspora network. Connecting Bengalis worldwide through culture and heritage.', member_count: 25000, join_url: 'https://instagram.com/nri_bangali', instagram_url: 'https://instagram.com/nri_bangali', category: 'general' },
-  { id: 'ig-7', name: 'Probasi Bangali Worldwide', platform: 'instagram', region: 'all', description: 'International platform for Bengalis living outside Bengal. Events, culture, and connections.', member_count: 18000, join_url: 'https://instagram.com/probasibangali_world', instagram_url: 'https://instagram.com/probasibangali_world', category: 'general' },
+  // ── Chennai – Facebook Community Groups ──
+  { id: '7', name: 'Bengali Sangha Avadi', platform: 'facebook', city: 'Chennai', region: 'tamil_nadu', description: 'Bengali Sangha Avadi – Bengali community group in the Avadi area of Chennai.', member_count: 800, join_url: 'https://www.facebook.com/groups/356921118761909/', facebook_url: 'https://www.facebook.com/groups/356921118761909/', category: 'cultural' },
+  { id: '8', name: 'Bengali Milon Sangho', platform: 'facebook', city: 'Chennai', region: 'tamil_nadu', description: 'Bengali Milon Sangho – a Facebook community for Bengalis in Chennai.', member_count: 1200, join_url: 'https://www.facebook.com/groups/3268377266791010', facebook_url: 'https://www.facebook.com/groups/3268377266791010', category: 'cultural' },
+  { id: '9', name: 'South Chennai Bengalees', platform: 'facebook', city: 'Chennai', region: 'tamil_nadu', description: 'South Chennai Bengalees – Facebook group for Bengali residents of South Chennai.', member_count: 2200, join_url: 'https://www.facebook.com/groups/2283898985246706/', facebook_url: 'https://www.facebook.com/groups/2283898985246706/', category: 'general' },
+  { id: '10', name: 'Bengali in OMR', platform: 'website', city: 'Chennai', region: 'tamil_nadu', description: 'Bengali in OMR – community group for Bengalis living along the OMR corridor in Chennai.', member_count: 3000, join_url: 'https://obmschennai.in/', website_url: 'https://obmschennai.in/', facebook_url: 'https://www.facebook.com/groups/1656951674390382', instagram_url: 'https://www.instagram.com/obmschennai4/?g=5', category: 'general' },
 
-  // ── Bengali Association Facebook ──
-  { id: 'fb-1', name: 'Bengali Association Chennai', platform: 'facebook', city: 'Chennai', region: 'tamil_nadu', description: 'Official Facebook group of Bengali Association Chennai. Community events, discussions, and help.', member_count: 3500, join_url: 'https://facebook.com/groups/bengali_chennai', facebook_url: 'https://facebook.com/groups/bengali_chennai', category: 'general' },
-  { id: 'fb-2', name: 'Bangali Samaj Tamil Nadu', platform: 'facebook', region: 'tamil_nadu', description: 'Tamil Nadu-wide Bengali Samaj community. Puja committees, cultural events, and support network.', member_count: 4200, join_url: 'https://facebook.com/groups/bangali_samaj_tn', facebook_url: 'https://facebook.com/groups/bangali_samaj_tn', category: 'general' },
-  { id: 'fb-3', name: 'Bengalis in India', platform: 'facebook', region: 'india', description: 'Pan-India Facebook community for Bengalis. Job posts, cultural discussions, and networking.', member_count: 28000, join_url: 'https://facebook.com/groups/bengalis_india', facebook_url: 'https://facebook.com/groups/bengalis_india', category: 'general' },
-  { id: 'fb-4', name: 'Global Bengali Forum', platform: 'facebook', region: 'all', description: 'Worldwide forum for Bengali diaspora. Heritage, literature, and global meetups.', member_count: 45000, join_url: 'https://facebook.com/groups/global_bengali', facebook_url: 'https://facebook.com/groups/global_bengali', category: 'general' },
+  // ── Chennai – Religious / Puja ──
+  { id: '11', name: 'Durgapuja Ramakrishna Math Chennai', platform: 'website', city: 'Chennai', region: 'tamil_nadu', description: 'Ramakrishna Math Chennai – Durga Puja celebrations and spiritual activities.', member_count: 4000, join_url: 'https://chennaimath.org/', website_url: 'https://chennaimath.org/', facebook_url: 'https://www.facebook.com/ramakrishnamath', instagram_url: 'https://www.instagram.com/ramakrishnamath', category: 'religious' },
+  { id: '12', name: 'Madras Kali Bari', platform: 'website', city: 'Chennai', region: 'tamil_nadu', description: 'Madras Kali Bari – one of the oldest Bengali temples in Chennai.', member_count: 3500, join_url: 'https://www.madraskalibari.com/', website_url: 'https://www.madraskalibari.com/', facebook_url: 'https://www.facebook.com/madraskalibari.chennai/', instagram_url: 'https://www.instagram.com/explore/locations/74865356/madras-kali-bari/', category: 'religious' },
+  { id: '13', name: 'Korattur Pooja Association', platform: 'facebook', city: 'Chennai', region: 'tamil_nadu', description: 'Korattur Pooja Association – organises Durga Puja and cultural events in Korattur, Chennai.', member_count: 600, join_url: 'https://www.facebook.com/groups/6869883776369306/', facebook_url: 'https://www.facebook.com/groups/6869883776369306/', instagram_url: 'https://www.instagram.com/koratturpujaassociation/', category: 'religious' },
+  { id: '14', name: 'Madambakkam Kali Bari', platform: 'facebook', city: 'Chennai', region: 'tamil_nadu', description: 'Madambakkam Kali Bari – Kali temple and Bengali community in Madambakkam, Chennai.', member_count: 500, join_url: 'https://www.facebook.com/madambakkamkalitemple/', facebook_url: 'https://www.facebook.com/madambakkamkalitemple/', category: 'religious' },
+  { id: '15', name: 'Nandavanam Durgotsav Committee', platform: 'facebook', city: 'Chennai', region: 'tamil_nadu', description: 'Nandavanam Durgotsav Committee – organises Durga Puja in Nandavanam, Chennai.', member_count: 700, join_url: 'https://www.facebook.com/groups/228305683303138/', facebook_url: 'https://www.facebook.com/groups/228305683303138/', category: 'religious' },
+  { id: '16', name: 'Anya Mukh Durgotsov', platform: 'website', city: 'Chennai', region: 'tamil_nadu', description: 'Anya Mukh Durgotsov – Durga Puja celebrations and Bengali cultural events in Chennai.', member_count: 900, join_url: 'https://www.anyamukh.com/', website_url: 'https://www.anyamukh.com/', facebook_url: 'https://www.facebook.com/people/%E0%A6%85%E0%A6%A8%E0%A7%8D%E0%A6%AF-%E0%A6%AE%E0%A7%81%E0%A6%96/100083421592158/', instagram_url: 'https://www.instagram.com/anyamukh?igsh=MW1tbDJ1Z21iY2EwdQ%3D%3D', category: 'religious' },
+  { id: '17', name: 'The Assam Spiritual Society Durgotsav', platform: 'facebook', city: 'Chennai', region: 'tamil_nadu', description: 'Assam Spiritual Society Durgotsav celebration at Odisha Bhawan, Chennai.', member_count: 400, join_url: 'https://www.facebook.com/events/odisha-bhawan-chennai/assam-spiritual-society-durga-puja-2025/1992510888183625/', facebook_url: 'https://www.facebook.com/events/odisha-bhawan-chennai/assam-spiritual-society-durga-puja-2025/1992510888183625/', category: 'religious' },
 
-  // ── Bengali Association LinkedIn ──
-  { id: 'li-1', name: 'Bengali Professionals TN', platform: 'linkedin', city: 'Chennai', region: 'tamil_nadu', description: 'Professional networking for Bengalis in Tamil Nadu. Job opportunities, career advice, and industry connections.', member_count: 1200, join_url: 'https://linkedin.com/groups/bengali-professionals-tn', linkedin_url: 'https://linkedin.com/groups/bengali-professionals-tn', category: 'professionals' },
-  { id: 'li-2', name: 'Bengali Entrepreneurs India', platform: 'linkedin', region: 'india', description: 'Network of Bengali entrepreneurs and business professionals across India. Startups, investments, and mentorship.', member_count: 5600, join_url: 'https://linkedin.com/groups/bengali-entrepreneurs', linkedin_url: 'https://linkedin.com/groups/bengali-entrepreneurs', category: 'professionals' },
-  { id: 'li-3', name: 'Bengali Tech Network', platform: 'linkedin', region: 'all', description: 'Global community of Bengali tech professionals. Hiring, projects, and knowledge sharing.', member_count: 8900, join_url: 'https://linkedin.com/groups/bengali-tech', linkedin_url: 'https://linkedin.com/groups/bengali-tech', category: 'professionals' },
+  // ── Coimbatore ──
+  { id: '18', name: 'The Bengali Association Coimbatore', platform: 'website', city: 'Coimbatore', region: 'tamil_nadu', description: 'The Bengali Association Coimbatore – cultural body for Bengalis in Coimbatore.', member_count: 1500, join_url: 'https://www.bengaliassociationcoimbatore.com/', website_url: 'https://www.bengaliassociationcoimbatore.com/', facebook_url: 'https://www.facebook.com/tbacbe', category: 'cultural' },
+  { id: '19', name: 'Durgapuja Ramakrishna Math Coimbatore', platform: 'website', city: 'Coimbatore', region: 'tamil_nadu', description: 'Ramakrishna Math Coimbatore – Durga Puja and spiritual activities.', member_count: 2000, join_url: 'https://chennaimath.org/', website_url: 'https://chennaimath.org/', facebook_url: 'https://www.facebook.com/srkmv/', instagram_url: 'https://www.instagram.com/ramakrishnamath', category: 'religious' },
+  { id: '20', name: 'SNV Kalyana Mandapam', platform: 'website', city: 'Coimbatore', region: 'tamil_nadu', description: 'Sri SNV Kalyana Mandapam – Bengali community venue in Coimbatore.', member_count: 800, join_url: 'https://srisnvkalyanamandapam.in/', website_url: 'https://srisnvkalyanamandapam.in/', category: 'cultural' },
 
-  // ── Bengali Association Websites ──
-  { id: 'web-1', name: 'ProbasiBangali.in', platform: 'website', region: 'tamil_nadu', description: 'Official website for Bengalis in Tamil Nadu. PG listings, food guides, emergency services, and community resources.', member_count: 10000, join_url: 'https://probasibangali.in', website_url: 'https://probasibangali.in', category: 'general' },
-  { id: 'web-2', name: 'Chennai Bengali Association', platform: 'website', city: 'Chennai', region: 'tamil_nadu', description: 'Official website of Chennai Bengali Association. Durga Puja schedules, membership, and cultural events.', member_count: 5000, join_url: 'https://chennaibengali.org', website_url: 'https://chennaibengali.org', category: 'general' },
-  { id: 'web-3', name: 'Bengal Foundation India', platform: 'website', region: 'india', description: 'Pan-India Bengali foundation website. Scholarships, cultural programs, and community support.', member_count: 20000, join_url: 'https://bengalfoundation.in', website_url: 'https://bengalfoundation.in', category: 'general' },
-  { id: 'web-4', name: 'Global Bangali Portal', platform: 'website', region: 'all', description: 'International web portal connecting the Bengali diaspora. News, events, and community directory.', member_count: 50000, join_url: 'https://globalbangali.com', website_url: 'https://globalbangali.com', category: 'general' },
+  // ── Trichy ──
+  { id: '21', name: 'The Bengali Association Trichy', platform: 'website', city: 'Tiruchirappalli', region: 'tamil_nadu', description: 'The Bengali Association Trichy – cultural association for Bengalis in Tiruchirappalli.', member_count: 1000, join_url: 'https://www.thebengalassociation.com/', website_url: 'https://www.thebengalassociation.com/', facebook_url: 'https://www.facebook.com/profile.php?id=61558647747693', instagram_url: 'https://www.instagram.com/bengaliassociationtrichy/', category: 'cultural' },
+
+  // ── Puducherry ──
+  { id: '22', name: 'Bangabharathi Puducherry', platform: 'website', city: 'Puducherry', region: 'tamil_nadu', description: 'Bangabharathi – Bengali cultural organisation in Puducherry.', member_count: 600, join_url: 'https://bangabharati.weebly.com/', website_url: 'https://bangabharati.weebly.com/', facebook_url: 'https://www.facebook.com/BangabharathiPuducherry', category: 'cultural' },
+
+  // ── Madurai ──
+  { id: '23', name: 'Durgapuja Ramakrishna Math Madurai', platform: 'website', city: 'Madurai', region: 'tamil_nadu', description: 'Ramakrishna Math Madurai – Durga Puja and spiritual activities.', member_count: 1200, join_url: 'https://chennaimath.org/', website_url: 'https://chennaimath.org/', category: 'religious' },
+
+  // ── ProbasiBangali ──
+  { id: '24', name: 'ProbasiBangali.in', platform: 'website', region: 'tamil_nadu', description: 'Official website for Bengalis in Tamil Nadu. PG listings, food guides, emergency services, and community resources.', member_count: 10000, join_url: 'https://probasibangali.in', website_url: 'https://probasibangali.in', category: 'general' },
 ];
 
 export const sampleMatrimonialProfiles: MatrimonialProfile[] = [
@@ -1399,7 +1449,7 @@ export const sampleMatrimonialProfiles: MatrimonialProfile[] = [
     siblings: '1 Elder Sister (Married)', family_type: 'Nuclear', family_values: 'Moderate', family_status: 'Upper Middle Class',
     education: 'B.Tech / B.E.', field_of_study: 'Computer Science', institution: 'IIT Madras',
     profession: 'Software Engineer', company: 'Google India', annual_income: '20-30 LPA', work_city: 'Chennai',
-    religion: 'Hindu', caste: 'Bengali', sub_caste: 'Brahmin', gotra: 'Kashyap', manglik: 'No',
+    religion: 'Hindu', caste: 'Brahmin', sub_caste: 'Rarhi', gotra: 'Kashyap', raasi: 'Mesha (Aries)', manglik: 'No',
     diet: 'Non-Vegetarian', smoking: 'No', drinking: 'Socially',
     hobbies: ['Reading', 'Traveling', 'Cooking Bengali Food', 'Photography', 'Adda (Group Conversations)'],
     about_me: 'I am a passionate software engineer who loves exploring new technologies. Born and raised in Kolkata, I moved to Chennai for IIT and fell in love with the city. I enjoy cooking Bengali dishes for friends, exploring temples, and weekend photography trips. Looking for someone who shares the warmth of Bengali culture while being open to new experiences.',
@@ -1421,7 +1471,7 @@ export const sampleMatrimonialProfiles: MatrimonialProfile[] = [
     siblings: '1 Younger Brother (Student)', family_type: 'Joint', family_values: 'Moderate', family_status: 'Upper Middle Class',
     education: 'MBA', field_of_study: 'Marketing', institution: 'Anna University',
     profession: 'Marketing Manager', company: 'Zoho Corp', annual_income: '8-10 LPA', work_city: 'Chennai',
-    religion: 'Hindu', caste: 'Bengali', sub_caste: 'Kayastha', gotra: '', manglik: 'No',
+    religion: 'Hindu', caste: 'Kayastha', sub_caste: 'Kulin', gotra: '', raasi: 'Vrishabha (Taurus)', manglik: 'No',
     diet: 'Non-Vegetarian', smoking: 'No', drinking: 'No',
     hobbies: ['Dancing', 'Painting', 'Music', 'Cooking', 'Traveling'],
     about_me: 'Passionate about travel, art and Bengali cuisine. I love exploring new places and trying local foods. Dancing is my stress-buster — I\'ve trained in Rabindra Nritya. Looking for a life partner who respects Bengali traditions while having a progressive outlook on life.',
@@ -1443,7 +1493,7 @@ export const sampleMatrimonialProfiles: MatrimonialProfile[] = [
     siblings: '1 Elder Brother (Married)', family_type: 'Nuclear', family_values: 'Moderate', family_status: 'Middle Class',
     education: 'M.Tech / M.E.', field_of_study: 'Mechanical Engineering', institution: 'NIT Trichy',
     profession: 'Mechanical Engineer', company: 'Caterpillar India', annual_income: '10-15 LPA', work_city: 'Coimbatore',
-    religion: 'Hindu', caste: 'Bengali', sub_caste: 'Brahmin', gotra: 'Bharadwaj', manglik: 'No',
+    religion: 'Hindu', caste: 'Brahmin', sub_caste: 'Barendra', gotra: 'Bharadwaj', raasi: 'Mithuna (Gemini)', manglik: 'No',
     diet: 'Non-Vegetarian', smoking: 'No', drinking: 'Occasionally',
     hobbies: ['Sports', 'Music', 'Bengali Literature', 'Cooking Bengali Food'],
     about_me: 'Working in the manufacturing sector. Sports enthusiast — I play cricket every weekend. Love reading Bengali literature and listening to Rabindra Sangeet.',
@@ -1465,7 +1515,7 @@ export const sampleMatrimonialProfiles: MatrimonialProfile[] = [
     siblings: 'Only Child', family_type: 'Nuclear', family_values: 'Liberal', family_status: 'Rich',
     education: 'MBBS', field_of_study: 'Medicine', institution: 'CMC Vellore',
     profession: 'Doctor', company: 'CMC Hospital', annual_income: '15-20 LPA', work_city: 'Vellore',
-    religion: 'Hindu', caste: 'Bengali', sub_caste: 'Baidya', gotra: '', manglik: 'No',
+    religion: 'Hindu', caste: 'Baidya', sub_caste: 'Sen', gotra: '', raasi: 'Karka (Cancer)', manglik: 'No',
     diet: 'Non-Vegetarian', smoking: 'No', drinking: 'No',
     hobbies: ['Music', 'Dancing', 'Reading', 'Yoga & Fitness', 'Rabindra Sangeet'],
     about_me: 'Doctor by profession, Bengali at heart. Love music and dance. Trained in Kathak since childhood. I believe in the healing power of art and science. Looking for someone who is equally passionate about life.',
@@ -1487,7 +1537,7 @@ export const sampleMatrimonialProfiles: MatrimonialProfile[] = [
     siblings: '2 Younger Sisters', family_type: 'Joint', family_values: 'Orthodox', family_status: 'Upper Middle Class',
     education: 'MBA', field_of_study: 'Finance', institution: 'IIM Trichy',
     profession: 'Investment Banker', company: 'HDFC Securities', annual_income: '30-50 LPA', work_city: 'Chennai',
-    religion: 'Hindu', caste: 'Bengali', sub_caste: 'Brahmin', gotra: 'Vatsa', manglik: 'No',
+    religion: 'Hindu', caste: 'Brahmin', sub_caste: 'Vaidik', gotra: 'Vatsa', raasi: 'Simha (Leo)', manglik: 'No',
     diet: 'Non-Vegetarian', smoking: 'No', drinking: 'Socially',
     hobbies: ['Traveling', 'Movies', 'Sports', 'Adda (Group Conversations)', 'Photography'],
     about_me: 'Finance professional with a love for Bengali culture. Weekends are for Durga Puja committee meetings, cricket, and exploring South Indian cuisine. Born in Barrackpore, raised in Kolkata, thriving in Chennai.',
@@ -1509,7 +1559,7 @@ export const sampleMatrimonialProfiles: MatrimonialProfile[] = [
     siblings: '1 Elder Brother (Engineer)', family_type: 'Nuclear', family_values: 'Moderate', family_status: 'Middle Class',
     education: 'M.Tech / M.E.', field_of_study: 'Data Science', institution: 'Anna University',
     profession: 'Data Scientist', company: 'TCS Innovation Labs', annual_income: '10-15 LPA', work_city: 'Chennai',
-    religion: 'Hindu', caste: 'Bengali', sub_caste: 'Kayastha', gotra: '', manglik: 'No',
+    religion: 'Hindu', caste: 'Kayastha', sub_caste: 'Maulik', gotra: '', raasi: 'Kanya (Virgo)', manglik: 'No',
     diet: 'Non-Vegetarian', smoking: 'No', drinking: 'No',
     hobbies: ['Cooking', 'Reading', 'Gardening', 'Bengali Literature', 'Singing'],
     about_me: 'Data scientist by day, cook by night! I love recreating Ma\'s recipes in my Chennai kitchen. Grew up in Krishnanagar (famous for its sweets!). Looking for a partner who appreciates good food and better conversations.',
@@ -1531,7 +1581,7 @@ export const sampleMatrimonialProfiles: MatrimonialProfile[] = [
     siblings: '1 Younger Sister (Student)', family_type: 'Joint', family_values: 'Moderate', family_status: 'Upper Middle Class',
     education: 'MBBS', field_of_study: 'Medicine', institution: 'Madurai Medical College',
     profession: 'Doctor', company: 'Government Hospital Madurai', annual_income: '10-15 LPA', work_city: 'Madurai',
-    religion: 'Hindu', caste: 'Bengali', sub_caste: 'Kayastha', gotra: '', manglik: 'No',
+    religion: 'Hindu', caste: 'Kayastha', sub_caste: 'Dakshin Rarh', gotra: '', raasi: 'Tula (Libra)', manglik: 'No',
     diet: 'Non-Vegetarian', smoking: 'No', drinking: 'No',
     hobbies: ['Music', 'Sports', 'Social Work', 'Traveling', 'Cooking Bengali Food'],
     about_me: 'Doctor working in Madurai. I am passionate about serving patients and love the temple city. In free time, I cook Bengali food for my friends here and explore the rich culture of Tamil Nadu.',
@@ -1553,7 +1603,7 @@ export const sampleMatrimonialProfiles: MatrimonialProfile[] = [
     siblings: '2 Elder Brothers (Both Married)', family_type: 'Joint', family_values: 'Orthodox', family_status: 'Middle Class',
     education: 'CA / CS / ICWA', field_of_study: 'Chartered Accountancy', institution: 'ICAI',
     profession: 'Chartered Accountant', company: 'Deloitte Coimbatore', annual_income: '10-15 LPA', work_city: 'Coimbatore',
-    religion: 'Hindu', caste: 'Bengali', sub_caste: 'Mahishya', gotra: '', manglik: 'No',
+    religion: 'Hindu', caste: 'Mahishya', sub_caste: 'Mahishya', gotra: '', raasi: 'Vrishchika (Scorpio)', manglik: 'No',
     diet: 'Non-Vegetarian', smoking: 'No', drinking: 'No',
     hobbies: ['Cooking', 'Singing', 'Rabindra Sangeet', 'Yoga & Fitness', 'Painting'],
     about_me: 'CA working in Coimbatore. I am deeply connected to my Bengali roots — I sing Rabindra Sangeet and cook authentic Bengali food. Looking for someone who shares these values.',
@@ -1575,7 +1625,7 @@ export const sampleMatrimonialProfiles: MatrimonialProfile[] = [
     siblings: '3 Siblings', family_type: 'Joint', family_values: 'Orthodox', family_status: 'Middle Class',
     education: 'Bachelor\'s (B.A/B.Sc/B.Com)', field_of_study: 'Commerce', institution: 'Presidency College',
     profession: 'Bank Officer', company: 'State Bank of India', annual_income: '6-8 LPA', work_city: 'Chennai',
-    religion: 'Hindu', caste: 'Bengali', sub_caste: 'Namasudra', gotra: '', manglik: 'No',
+    religion: 'Hindu', caste: 'Namasudra', sub_caste: 'Namasudra', gotra: '', raasi: 'Dhanu (Sagittarius)', manglik: 'No',
     diet: 'Non-Vegetarian', smoking: 'No', drinking: 'No',
     hobbies: ['Reading', 'Gardening', 'Movies', 'Social Work'],
     about_me: 'Bank officer working in Chennai for 8 years. Simple, honest, and hardworking. I value family above everything. Looking for a fresh start with the right person.',
@@ -1596,7 +1646,7 @@ export const sampleMatrimonialProfiles: MatrimonialProfile[] = [
     siblings: 'Only Child', family_type: 'Nuclear', family_values: 'Liberal', family_status: 'Upper Middle Class',
     education: 'MBBS', field_of_study: 'Medicine', institution: 'CMC Vellore',
     profession: 'Medical Student (Final Year)', company: 'CMC Vellore', annual_income: 'Not Disclosed', work_city: 'Vellore',
-    religion: 'Hindu', caste: 'Bengali', sub_caste: 'Brahmin', gotra: 'Shandilya', manglik: 'No',
+    religion: 'Hindu', caste: 'Brahmin', sub_caste: 'Srotriya', gotra: 'Shandilya', raasi: 'Makara (Capricorn)', manglik: 'No',
     diet: 'Non-Vegetarian', smoking: 'No', drinking: 'No',
     hobbies: ['Reading', 'Music', 'Photography', 'Traveling', 'Writing'],
     about_me: 'Final year MBBS student at CMC Vellore. From the beautiful hills of Darjeeling. I love writing poetry in Bengali and exploring the beauty of South India. Looking for someone who understands the demands of a medical career.',
@@ -1618,7 +1668,7 @@ export const sampleMatrimonialProfiles: MatrimonialProfile[] = [
     siblings: '1 Younger Sister', family_type: 'Nuclear', family_values: 'Moderate', family_status: 'Middle Class',
     education: 'B.Tech / B.E.', field_of_study: 'Electrical Engineering', institution: 'VIT Vellore',
     profession: 'Electrical Engineer', company: 'Salem Steel Plant (SAIL)', annual_income: '6-8 LPA', work_city: 'Salem',
-    religion: 'Hindu', caste: 'Bengali', sub_caste: 'Sadgop', gotra: '', manglik: 'Don\'t Know',
+    religion: 'Hindu', caste: 'Sadgop', sub_caste: 'Sadgop', gotra: '', raasi: 'Kumbha (Aquarius)', manglik: 'Don\'t Know',
     diet: 'Non-Vegetarian', smoking: 'No', drinking: 'Occasionally',
     hobbies: ['Sports', 'Gaming', 'Movies', 'Cooking', 'Durga Puja Organizing'],
     about_me: 'Engineer working at Salem Steel Plant. I help organize the local Durga Puja every year! Simple guy who loves his work and misses Ma\'s cooking.',
@@ -1640,7 +1690,7 @@ export const sampleMatrimonialProfiles: MatrimonialProfile[] = [
     siblings: '1 Elder Brother (Doctor)', family_type: 'Nuclear', family_values: 'Moderate', family_status: 'Upper Middle Class',
     education: 'Master\'s (M.A/M.Sc/M.Com)', field_of_study: 'English Literature', institution: 'Jadavpur University',
     profession: 'Content Writer', company: 'Freshworks', annual_income: '6-8 LPA', work_city: 'Chennai',
-    religion: 'Hindu', caste: 'Bengali', sub_caste: 'Kayastha', gotra: '', manglik: 'No',
+    religion: 'Hindu', caste: 'Kayastha', sub_caste: 'Bangaja', gotra: '', raasi: 'Meena (Pisces)', manglik: 'No',
     diet: 'Non-Vegetarian', smoking: 'No', drinking: 'No',
     hobbies: ['Writing', 'Reading', 'Bengali Literature', 'Music', 'Cooking Bengali Food', 'Adda (Group Conversations)'],
     about_me: 'Content writer and aspiring novelist. Jadavpur University alumna. I think in Bengali and write in English! My weekends are spent cooking Kosha Mangsho and reading Satyajit Ray. Chennai is my second home now.',
@@ -1654,20 +1704,366 @@ export const sampleMatrimonialProfiles: MatrimonialProfile[] = [
 ];
 
 export const sampleColleges: College[] = [
-  { id: '1', name: 'IIT Madras', type: 'engineering', city: 'Chennai', area: 'Guindy', address: 'IIT P.O., Chennai - 600036', phone: '044-22578100', website: 'https://www.iitm.ac.in', google_maps_url: 'https://maps.google.com/?q=IIT+Madras' },
-  { id: '2', name: 'VIT University', type: 'engineering', city: 'Vellore', area: 'Katpadi', address: 'VIT Campus, Katpadi, Vellore - 632014', phone: '0416-2202300', website: 'https://vit.ac.in', google_maps_url: 'https://maps.google.com/?q=VIT+Vellore' },
-  { id: '3', name: 'Anna University', type: 'engineering', city: 'Chennai', area: 'Guindy', address: 'Sardar Patel Road, Guindy, Chennai - 600025', phone: '044-22358190', website: 'https://www.annauniv.edu', google_maps_url: 'https://maps.google.com/?q=Anna+University+Chennai' },
-  { id: '4', name: 'CMC Vellore', type: 'medical', city: 'Vellore', area: 'CMC Campus', address: 'Ida Scudder Road, Vellore - 632004', phone: '0416-2281000', website: 'https://www.cmch-vellore.edu', google_maps_url: 'https://maps.google.com/?q=CMC+Vellore' },
-  { id: '5', name: 'SRM Institute', type: 'engineering', city: 'Chennai', area: 'Potheri', address: 'SRM Nagar, Kattankulathur - 603203', phone: '044-27417000', website: 'https://www.srmist.edu.in', google_maps_url: 'https://maps.google.com/?q=SRM+University+Chennai' },
-  { id: '6', name: 'Madras Medical College', type: 'medical', city: 'Chennai', area: 'Park Town', address: 'Park Town, Chennai - 600003', phone: '044-25305000', website: 'https://mmc.tn.gov.in', google_maps_url: 'https://maps.google.com/?q=Madras+Medical+College' },
+  {
+    id: 'col-13',
+    name: 'IIT Madras',
+    type: 'engineering',
+    city: 'Chennai',
+    area: 'Adyar',
+    address: 'IIT Madras Campus, Adyar, Chennai - 600036',
+    phone: '044-22578100',
+    website: 'https://www.iitm.ac.in',
+    google_maps_url: 'https://maps.google.com/?q=IIT+Madras',
+    ranking: 1,
+    bengali_forums: [
+      { name: 'IITM Bengali Students Association', link: 'https://facebook.com' }
+    ],
+    staff_contacts: [
+      { name: 'Dr. Debabrata Roy', role: 'lecturer', department: 'Mechanical Engineering', phone: '9876500140', email: 'debabrata@iitm.ac.in' }
+    ]
+  },
+  {
+    id: 'col-1',
+    name: 'Anna University',
+    type: 'engineering',
+    city: 'Chennai',
+    area: 'Guindy',
+    address: 'Sardar Patel Road, Guindy, Chennai - 600025',
+    phone: '044-22358190',
+    website: 'https://www.annauniv.edu',
+    google_maps_url: 'https://maps.google.com/?q=Anna+University+Chennai',
+    ranking: 2,
+    bengali_forums: [],
+    staff_contacts: [
+      { name: 'Prof. Parthasarathi Mitra', role: 'lecturer', department: 'Computer Science', phone: '9876500125', email: 'p.mitra@annauniv.edu' },
+      { name: 'Dr. Swagata Sen', role: 'lecturer', department: 'Biotechnology', phone: '9876500126', email: 'swagata.sen@annauniv.edu' }
+    ]
+  },
+  {
+    id: 'col-2',
+    name: 'VIT University',
+    type: 'engineering',
+    city: 'Vellore',
+    area: 'Katpadi',
+    address: 'VIT Campus, Katpadi, Vellore - 632014',
+    phone: '0416-2202300',
+    website: 'https://vit.ac.in',
+    google_maps_url: 'https://maps.google.com/?q=VIT+Vellore',
+    ranking: 3,
+    bengali_forums: [],
+    staff_contacts: [
+      { name: 'Dr. Amitava Bhattacharya', role: 'lecturer', department: 'Physics', phone: '9876543210', email: 'amitava.b@vit.ac.in' },
+      { name: 'Dr. Barnali Sengupta', role: 'lecturer', department: 'Chemistry', phone: '9876543211', email: 'barnali.s@vit.ac.in' }
+    ]
+  },
+  {
+    id: 'col-3',
+    name: 'Madras Medical College',
+    type: 'medical',
+    city: 'Chennai',
+    area: 'Park Town',
+    address: 'Park Town, Chennai - 600003',
+    phone: '044-25305000',
+    website: 'https://mmc.tn.gov.in',
+    google_maps_url: 'https://maps.google.com/?q=Madras+Medical+College',
+    ranking: 1,
+    bengali_forums: [],
+    staff_contacts: [
+      { name: 'Dr. Subir K. Dey', role: 'lecturer', department: 'Cardiology', phone: '9876500123', email: 'subir.dey@mmc.tn.gov.in' },
+      { name: 'Dr. Rimpa Banerjee', role: 'lecturer', department: 'Pediatrics', phone: '9876500124', email: 'rimpa.b@mmc.tn.gov.in' }
+    ]
+  },
+  {
+    id: 'col-4',
+    name: 'CMC Vellore',
+    type: 'medical',
+    city: 'Vellore',
+    area: 'CMC Campus',
+    address: 'Ida Scudder Road, Vellore - 632004',
+    phone: '0416-2281000',
+    website: 'https://www.cmch-vellore.edu',
+    google_maps_url: 'https://maps.google.com/?q=CMC+Vellore',
+    ranking: 2,
+    bengali_forums: [],
+    staff_contacts: [
+      { name: 'Dr. Aniruddha Das', role: 'lecturer', department: 'Neurology', phone: '9876500127', email: 'aniruddha.das@cmch-vellore.edu' },
+      { name: 'Dr. Sucharita Sen', role: 'lecturer', department: 'Anesthesia', phone: '9876500128', email: 'sucharita.sen@cmch-vellore.edu' }
+    ]
+  },
+  {
+    id: 'col-5',
+    name: 'Presidency College',
+    type: 'arts_science',
+    city: 'Chennai',
+    area: 'Triplicane',
+    address: 'Kamarajar Salai, Triplicane, Chennai - 600005',
+    phone: '044-28544899',
+    website: 'https://www.presidencycollegechennai.ac.in',
+    google_maps_url: 'https://maps.google.com/?q=Presidency+College+Chennai',
+    ranking: 1,
+    bengali_forums: [],
+    staff_contacts: [
+      { name: 'Prof. Somnath Mukherjee', role: 'lecturer', department: 'Bengali Literature', phone: '9876500121', email: 's.mukherjee@presidency.edu.in' },
+      { name: 'Dr. Tanmay Roy', role: 'lecturer', department: 'History', phone: '9876500122', email: 'tanmay.roy@presidency.edu.in' }
+    ]
+  },
+  {
+    id: 'col-14',
+    name: 'Loyola College',
+    type: 'arts_science',
+    city: 'Chennai',
+    area: 'Nungambakkam',
+    address: 'Sterling Road, Nungambakkam, Chennai - 600034',
+    phone: '044-28178200',
+    website: 'https://www.loyolacollege.edu',
+    google_maps_url: 'https://maps.google.com/?q=Loyola+College+Chennai',
+    ranking: 2,
+    bengali_forums: [],
+    staff_contacts: [
+      { name: 'Dr. Subhabrata Sen', role: 'lecturer', department: 'Sociology', phone: '9876500141', email: 's.sen@loyolacollege.edu' }
+    ]
+  },
+  {
+    id: 'col-15',
+    name: 'Madras Christian College (MCC)',
+    type: 'arts_science',
+    city: 'Chennai',
+    area: 'Tambaram',
+    address: 'Velachery Road, East Tambaram, Chennai - 600059',
+    phone: '044-22390675',
+    website: 'https://mcc.edu.in',
+    google_maps_url: 'https://maps.google.com/?q=Madras+Christian+College',
+    ranking: 3,
+    bengali_forums: [],
+    staff_contacts: [
+      { name: 'Prof. Arijit Chaudhuri', role: 'lecturer', department: 'Economics', phone: '9876500142', email: 'a.chaudhuri@mcc.edu.in' }
+    ]
+  },
+  {
+    id: 'col-6',
+    name: 'PSG College of Technology',
+    type: 'engineering',
+    city: 'Coimbatore',
+    area: 'Peelamedu',
+    address: 'Avinashi Road, Peelamedu, Coimbatore - 641004',
+    phone: '0422-2572177',
+    website: 'https://www.psgtech.edu',
+    google_maps_url: 'https://maps.google.com/?q=PSG+College+of+Technology',
+    ranking: 4,
+    bengali_forums: [],
+    staff_contacts: [
+      { name: 'Dr. Abhijit Sen', role: 'lecturer', department: 'Mechanical Engineering', phone: '9876500130', email: 'abhijit.sen@psgtech.edu' }
+    ]
+  },
+  {
+    id: 'col-7',
+    name: 'PSG College of Arts and Science',
+    type: 'arts_science',
+    city: 'Coimbatore',
+    area: 'Peelamedu',
+    address: 'Avinashi Road, Peelamedu, Coimbatore - 641014',
+    phone: '0422-4303300',
+    website: 'https://www.psgcas.ac.in',
+    google_maps_url: 'https://maps.google.com/?q=PSG+College+of+Arts+and+Science',
+    ranking: 4,
+    bengali_forums: [],
+    staff_contacts: [
+      { name: 'Dr. Dipankar Banerjee', role: 'lecturer', department: 'Mathematics', phone: '9876500129', email: 'dipankar.b@psgcas.ac.in' }
+    ]
+  },
+  {
+    id: 'col-16',
+    name: 'Coimbatore Medical College',
+    type: 'medical',
+    city: 'Coimbatore',
+    area: 'Avinashi Road',
+    address: 'Avinashi Road, Civil Aerodrome Post, Coimbatore - 641014',
+    phone: '0422-2574375',
+    website: 'http://www.cmccbe.ac.in',
+    google_maps_url: 'https://maps.google.com/?q=Coimbatore+Medical+College',
+    ranking: 3,
+    bengali_forums: [],
+    staff_contacts: [
+      { name: 'Dr. Swapna Guha', role: 'lecturer', department: 'Gynaecology', phone: '9876500143', email: 'swapna.guha@cmccbe.ac.in' }
+    ]
+  },
+  {
+    id: 'col-17',
+    name: "St. Joseph's College",
+    type: 'arts_science',
+    city: 'Tiruchirappalli',
+    area: 'Trichy',
+    address: 'Chathiram Bus Stand, Tiruchirappalli - 620002',
+    phone: '0431-4226436',
+    website: 'https://www.sjctni.edu',
+    google_maps_url: 'https://maps.google.com/?q=St+Josephs+College+Trichy',
+    ranking: 5,
+    bengali_forums: [],
+    staff_contacts: [
+      { name: 'Dr. Probal Roy', role: 'lecturer', department: 'Physics', phone: '9876500144', email: 'p.roy@sjctni.edu' }
+    ]
+  },
+  {
+    id: 'col-18',
+    name: 'Government College of Technology (GCT) Coimbatore',
+    type: 'engineering',
+    city: 'Coimbatore',
+    area: 'Thadagam Road',
+    address: 'Thadagam Road, Coimbatore - 641013',
+    phone: '0422-2432221',
+    website: 'https://gct.ac.in',
+    google_maps_url: 'https://maps.google.com/?q=Government+College+of+Technology+Coimbatore',
+    ranking: 5,
+    bengali_forums: [],
+    staff_contacts: [
+      { name: 'Dr. Joydev Das', role: 'lecturer', department: 'Civil Engineering', phone: '9876500145', email: 'joydev@gct.ac.in' }
+    ]
+  },
+  {
+    id: 'col-8',
+    name: 'The American College',
+    type: 'arts_science',
+    city: 'Madurai',
+    area: 'Tallakulam',
+    address: 'Alagar Kovil Road, Tallakulam, Madurai - 625002',
+    phone: '0452-2530070',
+    website: 'https://americancollege.edu.in',
+    google_maps_url: 'https://maps.google.com/?q=The+American+College+Madurai',
+    ranking: 6,
+    bengali_forums: [],
+    staff_contacts: [
+      { name: 'Dr. Sudipto Roy', role: 'lecturer', department: 'English Literature', phone: '9876500131', email: 'sudipto.roy@americancollege.edu' }
+    ]
+  },
+  {
+    id: 'col-9',
+    name: 'Madurai Medical College',
+    type: 'medical',
+    city: 'Madurai',
+    area: 'Panagal Road',
+    address: 'Panagal Road, Madurai - 625020',
+    phone: '0452-2532535',
+    website: 'https://www.mdumc.edu.in',
+    google_maps_url: 'https://maps.google.com/?q=Madurai+Medical+College',
+    ranking: 4,
+    bengali_forums: [],
+    staff_contacts: [
+      { name: 'Dr. Tapas K. Bose', role: 'lecturer', department: 'General Surgery', phone: '9876500132', email: 'tapas.bose@mdumc.edu' }
+    ]
+  },
+  {
+    id: 'col-10',
+    name: 'KAP Viswanathan Government Medical College',
+    type: 'medical',
+    city: 'Tiruchirappalli',
+    area: 'Trichy',
+    address: 'Collectorate Road, Trichy - 620001',
+    phone: '0431-2415666',
+    website: 'http://www.kapvgmc.ac.in',
+    google_maps_url: 'https://maps.google.com/?q=KAP+Viswanathan+Government+Medical+College',
+    ranking: 5,
+    bengali_forums: [],
+    staff_contacts: [
+      { name: 'Dr. Nandini Dasgupta', role: 'lecturer', department: 'Pathology', phone: '9876500133', email: 'nandini.dg@kapvgmc.ac.in' }
+    ]
+  },
+  {
+    id: 'col-11',
+    name: 'Government College of Engineering, Salem',
+    type: 'engineering',
+    city: 'Salem',
+    area: 'Karuppur',
+    address: 'NH 44, Karuppur, Salem - 636011',
+    phone: '0427-2346102',
+    website: 'https://gcesalem.edu.in',
+    google_maps_url: 'https://maps.google.com/?q=Government+College+of+Engineering+Salem',
+    ranking: 6,
+    bengali_forums: [],
+    staff_contacts: [
+      { name: 'Prof. Biswajit Ghosh', role: 'lecturer', department: 'Electrical Engineering', phone: '9876500134', email: 'biswajit.ghosh@gcesalem.edu.in' }
+    ]
+  },
+  {
+    id: 'col-12',
+    name: 'Voorhees College',
+    type: 'arts_science',
+    city: 'Vellore',
+    area: 'Officers Line',
+    address: '1, Officers Line, Vellore - 632001',
+    phone: '0416-2220317',
+    website: 'https://voorheescollege.edu.in',
+    google_maps_url: 'https://maps.google.com/?q=Voorhees+College+Vellore',
+    ranking: 7,
+    bengali_forums: [],
+    staff_contacts: [
+      { name: 'Dr. Subhabrata Ray', role: 'lecturer', department: 'Commerce', phone: '9876500135', email: 'subhabrata.ray@voorheescollege.edu.in' }
+    ]
+  }
 ];
 
 export const sampleEvents: Event[] = [
-  { id: '1', title: 'Durga Puja 2025 — Chennai', description: 'Grand Durga Puja celebration at Deshapriya Park, T.Nagar. 5 days of cultural programs, Bengali food stalls, dhunuchi naach.', event_date: '2025-10-01', city: 'Chennai', venue: 'Deshapriya Park, T.Nagar', organizer: 'Chennai Bengali Association', contact: '9876543230', category: 'festival' },
-  { id: '2', title: 'Saraswati Puja', description: 'Saraswati Puja celebration with pushpanjali, cultural events and prasad distribution.', event_date: '2025-02-02', city: 'Chennai', venue: 'Bengali Club, Anna Nagar', organizer: 'Anna Nagar Bengali Sabha', contact: '9876543231', category: 'religious' },
-  { id: '3', title: 'Bengali New Year (Poila Boishakh)', description: 'Celebrate Poila Boishakh with music, dance, and traditional Bengali food.', event_date: '2025-04-15', city: 'Chennai', venue: 'Kalaivanar Arangam', organizer: 'ProbasiBangali Chennai', contact: '9876543232', category: 'cultural' },
-  { id: '4', title: 'Rabindra Jayanti', description: 'Tribute to Rabindranath Tagore with recitations, songs, and drama.', event_date: '2025-05-09', city: 'Vellore', venue: 'VIT Auditorium', organizer: 'VIT Bengali Students Club', contact: '9876543233', category: 'cultural' },
-  { id: '5', title: 'Community Meetup — Coimbatore', description: 'Monthly meetup for Bengali families in Coimbatore. Food, fun and networking.', event_date: '2025-04-20', city: 'Coimbatore', venue: 'Hotel Residency Towers', organizer: 'Coimbatore Banga Samaj', contact: '9876543234', category: 'social' },
+  // ── January ──
+  { id: '1', title: 'New Year Bangla Adda', description: 'Welcome 2026 with a grand Bengali cultural get-together. Enjoy live Rabindra Sangeet, baul performances, and a feast of authentic Bengali cuisine.', event_date: '2026-01-03', city: 'Chennai', venue: 'Bengali Club, Anna Nagar', organizer: 'Bengali Association Chennai', contact: '9876543230', category: 'social', community_group_id: 'fb-1' },
+  { id: '2', title: 'Saraswati Puja 2026', description: 'Grand Saraswati Puja celebration with pushpanjali, anjali, cultural events, and prasad distribution. Students come in yellow basanti attire.', event_date: '2026-01-30', city: 'Chennai', venue: 'Bengali Club, Anna Nagar', organizer: 'Anna Nagar Bengali Sabha', contact: '9876543231', category: 'religious', community_group_id: 'fb-1' },
+  { id: '3', title: 'Saraswati Puja — VIT Campus', description: 'Saraswati Puja organized by VIT Bengali Students Club. Pushpanjali, cultural program, and khichuri bhog.', event_date: '2026-01-30', city: 'Vellore', venue: 'VIT Auditorium', organizer: 'VIT Bengali Students Club', contact: '9876543233', category: 'religious', community_group_id: '5' },
+
+  // ── February ──
+  { id: '4', title: 'Bengali Professional Networking Night', description: 'Monthly networking event for Bengali professionals. Presentations, career talks, and dinner.', event_date: '2026-02-14', city: 'Chennai', venue: 'ITC Grand Chola, Guindy', organizer: 'Bengali Professionals TN', contact: '9876543235', category: 'social', community_group_id: 'li-1' },
+  { id: '5', title: 'Mohila Sangha Cultural Evening', description: 'Women-only cultural evening with recitations, dance performances, and handicraft exhibition.', event_date: '2026-02-21', city: 'Chennai', venue: 'Kalaivanar Arangam', organizer: 'Bangali Mohila Sangha', contact: '9876543236', category: 'cultural', community_group_id: '4' },
+
+  // ── March ──
+  { id: '6', title: 'Dol Yatra / Holi Celebrations', description: 'Celebrate Dol Purnima and Holi with colours, sweets, and traditional Bengali songs. Abir khela and cultural programs.', event_date: '2026-03-03', city: 'Chennai', venue: 'Deshapriya Park, T.Nagar', organizer: 'Chennai Bengali Association', contact: '9876543230', category: 'festival', community_group_id: '1' },
+  { id: '7', title: 'Bengali Food Festival — Coimbatore', description: 'Two-day Bengali food mela with stalls serving luchi-alur dom, mishti doi, rosogolla, kosha mangsho, and more.', event_date: '2026-03-14', city: 'Coimbatore', venue: 'Hotel Residency Towers', organizer: 'Coimbatore Banga Samaj', contact: '9876543234', category: 'cultural', community_group_id: '6' },
+  { id: '8', title: 'Student Community Meetup — March', description: 'Monthly meetup for Bengali students across Tamil Nadu. Academic tips, career guidance, and fun.', event_date: '2026-03-22', city: 'Chennai', venue: 'SRM Campus, Potheri', organizer: 'Bengali Students TN', contact: '9876543237', category: 'social', community_group_id: '2' },
+
+  // ── April ──
+  { id: '9', title: 'Poila Boishakh (Bengali New Year) 2026', description: 'Grand Poila Boishakh celebration! Shubho Noboborsho with traditional alpana, halkhata, music, dance, and authentic Bengali food festival.', event_date: '2026-04-14', city: 'Chennai', venue: 'Kalaivanar Arangam', organizer: 'ProbasiBangali Chennai', contact: '9876543232', category: 'festival', community_group_id: 'web-1' },
+  { id: '10', title: 'Poila Boishakh — Coimbatore', description: 'New Year celebration in Coimbatore. Cultural program, traditional songs, and community feast.', event_date: '2026-04-14', city: 'Coimbatore', venue: 'Town Hall, RS Puram', organizer: 'Bangali Adda Coimbatore', contact: '9876543234', category: 'festival', community_group_id: '6' },
+  { id: '11', title: 'Community Sports Day', description: 'Annual sports day for Bengali community. Cricket, badminton, kabaddi, and fun games for kids and adults.', event_date: '2026-04-26', city: 'Chennai', venue: 'YMCA Grounds, Nandanam', organizer: 'Bengalis in Chennai', contact: '9876543230', category: 'social', community_group_id: '1' },
+
+  // ── May ──
+  { id: '12', title: 'Rabindra Jayanti 2026', description: 'Tribute to Gurudev Rabindranath Tagore on his 165th birth anniversary. Recitations, Rabindra Sangeet, classical dance, and drama.', event_date: '2026-05-08', city: 'Chennai', venue: 'Narada Gana Sabha, T.Nagar', organizer: 'Bengali Association Chennai', contact: '9876543230', category: 'cultural', community_group_id: 'ig-1' },
+  { id: '13', title: 'Rabindra Jayanti — VIT', description: 'Rabindra Jayanti celebration at VIT. Recitation, songs, and drama by Bengali students.', event_date: '2026-05-09', city: 'Vellore', venue: 'VIT Auditorium', organizer: 'VIT Bengali Students Club', contact: '9876543233', category: 'cultural', community_group_id: '5' },
+  { id: '14', title: 'Bengali Literature Meet', description: 'Discussion on modern Bengali literature. Book reading, author talk, and poetry session.', event_date: '2026-05-24', city: 'Chennai', venue: 'Madras Literary Society', organizer: 'Probasi Bangali TN', contact: '9876543238', category: 'cultural', community_group_id: 'ig-2' },
+
+  // ── June ──
+  { id: '15', title: 'Community Meetup — June', description: 'Monthly meetup for Bengali families. Food, fun, networking, and kids activities.', event_date: '2026-06-07', city: 'Chennai', venue: 'Savera Hotel, Mylapore', organizer: 'Bengalis in Chennai', contact: '9876543230', category: 'social', community_group_id: '1' },
+  { id: '16', title: 'Bengali Film Screening Night', description: 'Screening of classic and new Bengali cinema. Discussion panel with local film enthusiasts.', event_date: '2026-06-20', city: 'Chennai', venue: 'Sathyam Cinemas, Royapettah', organizer: 'Bengali Association Chennai', contact: '9876543239', category: 'cultural', community_group_id: 'fb-1' },
+
+  // ── July ──
+  { id: '17', title: 'Rath Yatra Celebrations', description: 'Grand Rath Yatra procession and celebrations. Chariot pulling, devotional songs, and prasad distribution.', event_date: '2026-07-07', city: 'Chennai', venue: 'Jagannath Temple, Perambur', organizer: 'Chennai Bengali Association', contact: '9876543230', category: 'religious', community_group_id: 'web-2' },
+  { id: '18', title: 'Monsoon Bengali Music Night', description: 'An evening of Rabindra Sangeet and monsoon-themed Bengali music. Live performances by local artists.', event_date: '2026-07-18', city: 'Chennai', venue: 'Music Academy, TTK Road', organizer: 'Bengali Association Chennai', contact: '9876543240', category: 'cultural', community_group_id: 'ig-1' },
+  { id: '19', title: 'Student Orientation — New Batch', description: 'Welcome session for new Bengali students arriving in Tamil Nadu. City guide, tips, and networking.', event_date: '2026-07-25', city: 'Chennai', venue: 'IIT Madras Campus', organizer: 'Bengali Students TN', contact: '9876543237', category: 'social', community_group_id: '2' },
+
+  // ── August ──
+  { id: '20', title: 'Janmashtami Celebrations', description: 'Krishna Janmashtami puja and cultural program. Dahi handi, bhajans, and prasad.', event_date: '2026-08-14', city: 'Chennai', venue: 'ISKCON Temple, Injambakkam', organizer: 'Bengalis in Chennai', contact: '9876543230', category: 'religious', community_group_id: '1' },
+  { id: '21', title: 'Independence Day Cultural Program', description: 'Independence Day celebration with patriotic songs, recitations, and Bengali cultural showcase.', event_date: '2026-08-15', city: 'Chennai', venue: 'Bengali Club, Anna Nagar', organizer: 'Bengali Association Chennai', contact: '9876543230', category: 'cultural', community_group_id: 'fb-1' },
+  { id: '22', title: 'Bengali Cooking Workshop', description: 'Learn authentic Bengali cooking — shorshe ilish, chingri malaikari, mishti. Hands-on workshop with expert chefs.', event_date: '2026-08-23', city: 'Coimbatore', venue: 'Hotel Residency Towers', organizer: 'Bengalis in Coimbatore', contact: '9876543234', category: 'social', community_group_id: 'ig-4' },
+
+  // ── September ──
+  { id: '23', title: 'Mahalaya — Dawn Ceremony', description: 'Early morning Mahalaya celebration with Birendra Krishna Bhadra\'s Mahishasura Mardini live relay, followed by breakfast.', event_date: '2026-09-21', city: 'Chennai', venue: 'Bengali Club, Anna Nagar', organizer: 'Chennai Bengali Association', contact: '9876543230', category: 'religious', community_group_id: 'web-2' },
+  { id: '24', title: 'Pre-Puja Community Planning Meet', description: 'Planning session for Durga Puja 2026. Volunteer signup, fund collection, and pandal design discussion.', event_date: '2026-09-27', city: 'Chennai', venue: 'Deshapriya Park, T.Nagar', organizer: 'Bangali Samaj Tamil Nadu', contact: '9876543230', category: 'social', community_group_id: 'fb-2' },
+
+  // ── October ──
+  { id: '25', title: 'Durga Puja 2026 — Maha Shasthi', description: 'Grand Durga Puja begins! Bodhon, Amontron, and Adhivas. Five days of cultural programs, food stalls, dhunuchi naach.', event_date: '2026-10-01', city: 'Chennai', venue: 'Deshapriya Park, T.Nagar', organizer: 'Chennai Bengali Association', contact: '9876543230', category: 'festival', community_group_id: 'web-2' },
+  { id: '26', title: 'Durga Puja 2026 — Maha Saptami', description: 'Maha Saptami celebrations with Nabapatrika puja, pushpanjali, and cultural programs.', event_date: '2026-10-02', city: 'Chennai', venue: 'Deshapriya Park, T.Nagar', organizer: 'Chennai Bengali Association', contact: '9876543230', category: 'festival', community_group_id: 'web-2' },
+  { id: '27', title: 'Durga Puja 2026 — Maha Ashtami', description: 'Maha Ashtami with Kumari Puja, Sandhi Puja, and grand celebrations.', event_date: '2026-10-03', city: 'Chennai', venue: 'Deshapriya Park, T.Nagar', organizer: 'Chennai Bengali Association', contact: '9876543230', category: 'festival', community_group_id: 'web-2' },
+  { id: '28', title: 'Durga Puja 2026 — Maha Navami', description: 'Maha Navami with Homa, Bali, and grand cultural evening. Dhunuchi naach competition.', event_date: '2026-10-04', city: 'Chennai', venue: 'Deshapriya Park, T.Nagar', organizer: 'Chennai Bengali Association', contact: '9876543230', category: 'festival', community_group_id: 'web-2' },
+  { id: '29', title: 'Durga Puja 2026 — Bijoya Dashami', description: 'Bijoya Dashami with Devi Bisarjan, Sindur Khela, and emotional Bijoya Sammilani.', event_date: '2026-10-05', city: 'Chennai', venue: 'Deshapriya Park, T.Nagar', organizer: 'Chennai Bengali Association', contact: '9876543230', category: 'festival', community_group_id: 'web-2' },
+  { id: '30', title: 'Durga Puja — Coimbatore', description: 'Durga Puja celebrations in Coimbatore. Three-day cultural extravaganza with pandal, food, and entertainment.', event_date: '2026-10-02', city: 'Coimbatore', venue: 'Town Hall, RS Puram', organizer: 'Bangali Adda Coimbatore', contact: '9876543234', category: 'festival', community_group_id: '6' },
+  { id: '31', title: 'Kojagori Lakshmi Puja', description: 'Lakshmi Puja on Kojagori Purnima night. Alpana decoration, puja, and moonlit celebrations.', event_date: '2026-10-06', city: 'Chennai', venue: 'Bengali Club, Anna Nagar', organizer: 'Bangali Mohila Sangha', contact: '9876543236', category: 'religious', community_group_id: '4' },
+  { id: '32', title: 'Kali Puja & Diwali 2026', description: 'Kali Puja and Diwali celebrations. Lighting of clay lamps, fireworks, and puja followed by community dinner.', event_date: '2026-10-20', city: 'Chennai', venue: 'Deshapriya Park, T.Nagar', organizer: 'Chennai Bengali Association', contact: '9876543230', category: 'festival', community_group_id: 'web-2' },
+
+  // ── November ──
+  { id: '33', title: 'Bhai Phonta Celebration', description: 'Community Bhai Phonta (Bhai Dooj) celebration. Sisters and brothers celebrate the bond of love with tilak and sweets.', event_date: '2026-11-01', city: 'Chennai', venue: 'Bengali Club, Anna Nagar', organizer: 'Bangali Mohila Sangha', contact: '9876543236', category: 'festival', community_group_id: '4' },
+  { id: '34', title: 'Bengali Heritage Walk — Chennai', description: 'Guided heritage walk exploring Bengali historical connections in Chennai. Visit temples, old Bengali quarters, and heritage buildings.', event_date: '2026-11-15', city: 'Chennai', venue: 'Fort St George (Start Point)', organizer: 'Probasi Bangali TN', contact: '9876543238', category: 'cultural', community_group_id: 'ig-2' },
+  { id: '35', title: 'Professional Year-End Mixer', description: 'Year-end networking mixer for Bengali professionals. Awards, career highlights, and dinner.', event_date: '2026-11-28', city: 'Chennai', venue: 'Taj Coromandel, Nungambakkam', organizer: 'Bengali Professionals TN', contact: '9876543235', category: 'social', community_group_id: 'li-1' },
+
+  // ── December ──
+  { id: '36', title: 'Annual Bengali Drama Festival', description: 'Two-day Bengali drama festival featuring plays by local Bengali theatre groups. Comedy, tragedy, and contemporary themes.', event_date: '2026-12-05', city: 'Chennai', venue: 'Music Academy, TTK Road', organizer: 'Bengali Association Chennai', contact: '9876543230', category: 'cultural', community_group_id: 'ig-1' },
+  { id: '37', title: 'Community Picnic — Year End', description: 'Annual year-end picnic for Bengali families. Games, BBQ, live music, and fun activities for kids.', event_date: '2026-12-13', city: 'Chennai', venue: 'Muttukadu Boat House', organizer: 'Bengalis in Chennai', contact: '9876543230', category: 'social', community_group_id: '1' },
+  { id: '38', title: 'Christmas & Year-End Celebration', description: 'Christmas and year-end celebration with cake cutting, carol singing, and community dinner.', event_date: '2026-12-25', city: 'Chennai', venue: 'Bengali Club, Anna Nagar', organizer: 'Chennai Bengali Association', contact: '9876543239', category: 'social', community_group_id: 'fb-1' },
+  { id: '39', title: 'Student Farewell & Awards Night', description: 'Annual farewell for graduating Bengali students. Awards for academic excellence and community contributions.', event_date: '2026-12-20', city: 'Vellore', venue: 'VIT Auditorium', organizer: 'VIT Bengali Students Club', contact: '9876543233', category: 'social', community_group_id: '5' },
 ];
 
 export const sampleBlogPosts: BlogPost[] = [

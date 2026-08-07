@@ -20,18 +20,8 @@ export function GlobalLoader() {
   }, []);
 
   useEffect(() => {
-    if (pathname?.startsWith('/admin')) {
-      const handle = requestAnimationFrame(() => {
-        setIsLoading(false);
-      });
-      return () => cancelAnimationFrame(handle);
-    }
-    if (!authLoading) {
-      // Small delay to prevent flashing for very fast loads
-      const timer = setTimeout(() => setIsLoading(false), 300);
-      return () => clearTimeout(timer);
-    }
-  }, [pathname, searchParams, authLoading]);
+    setIsLoading(false);
+  }, [pathname, searchParams]);
 
   useEffect(() => {
     const handleAnchorClick = (event: MouseEvent) => {
@@ -63,7 +53,28 @@ export function GlobalLoader() {
 
   if (!mounted) return null;
   if (pathname?.startsWith('/admin')) return null;
-  if (!isLoading && !authLoading) return null;
 
-  return <PageSkeleton />;
+  return (
+    <>
+      {isLoading && (
+        <>
+          <style>{`
+            @keyframes shift-rightwards {
+              0% { transform: translateX(-100%); }
+              50% { transform: translateX(0); }
+              100% { transform: translateX(100%); }
+            }
+            .nav-progress-bar {
+              animation: shift-rightwards 1.5s infinite linear;
+              transform-origin: left;
+            }
+          `}</style>
+          <div className="fixed top-0 left-0 right-0 h-[3px] z-[9999] bg-primary/10 overflow-hidden">
+            <div className="h-full bg-gradient-to-r from-primary via-accent to-primary w-full nav-progress-bar" />
+          </div>
+        </>
+      )}
+      {authLoading && <PageSkeleton />}
+    </>
+  );
 }

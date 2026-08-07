@@ -2,13 +2,15 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { COLLECTIONS } from '@/lib/firestore/collections';
 import type { BengaliDoctor, Hospital } from '@/types';
-import { Search, Phone, ChevronRight, UserRound, Award, Languages, Building2, Stethoscope, Mail, ArrowLeft } from 'lucide-react';
+import { Search, Phone, ChevronRight, UserRound, Award, Languages, Building2, Stethoscope, Mail, ArrowLeft, ShieldAlert } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { OtpVerificationModal } from '@/components/auth/OtpVerificationModal';
 
 const SAMPLE_HOSPITALS: Record<string, Hospital> = {
   'h1': { id: 'h1', name: 'Apollo Hospital Chennai', city: 'Chennai', area: 'Greams Road', specializations: [], is_24_7: true, has_bengali_doctor: true, images: ['/images/hospitals/apollo-chennai.jpg'], created_at: '' },
@@ -30,22 +32,80 @@ export default function BengaliDoctorsPage() {
   const [doctors, setDoctors] = useState<BengaliDoctor[]>([]);
   const [hospitals, setHospitals] = useState<Record<string, Hospital>>({});
   const [loading, setLoading] = useState(true);
+  const [isVerified, setIsVerified] = useState(false);
+  const [showOtpModal, setShowOtpModal] = useState(false);
+  const router = useRouter();
   
   const [search, setSearch] = useState('');
   const [specialtyFilter, setSpecialtyFilter] = useState('');
   const [langFilter, setLangFilter] = useState('');
 
   useEffect(() => {
+    setIsVerified(false);
+
     async function loadData() {
-      setDoctors(SAMPLE_DOCTORS);
-      setHospitals(SAMPLE_HOSPITALS);
-      setLoading(false);
+      try {
+        let docsData: BengaliDoctor[] = [];
+        let hospList: Hospital[] = [];
+
+        try {
+          const [docRes, hospRes] = await Promise.all([
+            fetch(`/api/public/firestore?collection=bengali_doctors`),
+            fetch(`/api/public/firestore?collection=hospitals`)
+          ]);
+
+          if (docRes.ok) {
+            const docJson = await docRes.json();
+            if (!docJson.fallback && Array.isArray(docJson.items) && docJson.items.length > 0) {
+              docsData = docJson.items;
+            }
+          }
+          if (hospRes.ok) {
+            const hospJson = await hospRes.json();
+            if (!hospJson.fallback && Array.isArray(hospJson.items) && hospJson.items.length > 0) {
+              hospList = hospJson.items;
+            }
+          }
+        } catch (apiErr) {
+          console.warn("API fetch failed, falling back to client-side Firestore:", apiErr);
+        }
+
+        if (docsData.length === 0) {
+          const docSnap = await getDocs(collection(db, COLLECTIONS.bengali_doctors));
+          docsData = docSnap.docs.map(d => ({ id: d.id, ...d.data() } as BengaliDoctor));
+        }
+        if (hospList.length === 0) {
+          const hospSnap = await getDocs(collection(db, COLLECTIONS.hospitals));
+          hospList = hospSnap.docs.map(d => ({ id: d.id, ...d.data() } as Hospital));
+        }
+
+        setDoctors(docsData.length > 0 ? docsData : SAMPLE_DOCTORS);
+        
+        const hospData: Record<string, Hospital> = {};
+        hospList.forEach((d: Hospital) => {
+          hospData[d.id] = d;
+        });
+        
+        let finalHospitals = { ...hospData };
+        if (docsData.length === 0) {
+           finalHospitals = { ...SAMPLE_HOSPITALS, ...finalHospitals };
+        }
+        
+        if (Object.keys(finalHospitals).length > 0) {
+          setHospitals(finalHospitals);
+        } else {
+          setHospitals(SAMPLE_HOSPITALS);
+        }
+      } catch (err) {
+        console.error(err);
+        setDoctors(SAMPLE_DOCTORS);
+        setHospitals(SAMPLE_HOSPITALS);
+      } finally {
+        setLoading(false);
+      }
     }
-    const handle = requestAnimationFrame(() => {
-      loadData();
-    });
-    return () => cancelAnimationFrame(handle);
-  }, []);
+    loadData();
+  }, [router]);
 
   const specialties = useMemo(() => Array.from(new Set(doctors.map(d => d.specialization).filter(Boolean))), [doctors]);
   const allLangs = useMemo(() => {
@@ -86,9 +146,12 @@ export default function BengaliDoctorsPage() {
               <p className="mt-2 text-text-muted">Find and connect with highly experienced Bengali-speaking doctors.</p>
             </div>
             
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
                <Link href="/emergency/hospitals/bengali-hospitals">
-                 <Button variant="outline" className="shadow-sm">View Hospitals Directory <ChevronRight className="w-4 h-4 ml-1"/></Button>
+                 <Button variant="outline" className="shadow-sm">View Hospitals <ChevronRight className="w-4 h-4 ml-1"/></Button>
+               </Link>
+               <Link href="/emergency/hospitals/bengali-staff">
+                 <Button variant="primary" className="shadow-sm bg-primary hover:bg-primary-dark text-white border-none">View Bengali Staff <ChevronRight className="w-4 h-4 ml-1"/></Button>
                </Link>
             </div>
           </div>
@@ -143,10 +206,25 @@ export default function BengaliDoctorsPage() {
                </Card>
              ))}
           </div>
+        ) : !isVerified ? (
+          <div className="max-w-xl mx-auto py-12 text-center">
+            <Card className="p-8 rounded-3xl border-border shadow-md bg-white">
+              <div className="w-16 h-16 bg-amber-500/10 rounded-2xl flex items-center justify-center mx-auto mb-5 text-amber-600">
+                <ShieldAlert className="w-8 h-8" />
+              </div>
+              <h2 className="text-2xl font-bold text-text-primary mb-2">Doctor Directory Locked</h2>
+              <p className="text-sm text-text-muted mb-6">
+                To protect practitioner privacy and maintain security, complete a quick OTP verification to unlock doctor profiles and contact details.
+              </p>
+              <Button onClick={() => setShowOtpModal(true)} variant="primary" size="lg" className="w-full font-semibold">
+                Verify via OTP to Access Directory
+              </Button>
+            </Card>
+          </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filtered.map((doctor) => {
-              const hospital = hospitals[doctor.hospital_id];
+              const hospital = doctor.hospital_id ? hospitals[doctor.hospital_id] : undefined;
               return (
                 <Card key={doctor.id} className="group hover:shadow-lg transition-all duration-300 relative overflow-hidden">
                   <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full -z-10 transition-transform group-hover:scale-110 duration-500" />
@@ -180,10 +258,10 @@ export default function BengaliDoctorsPage() {
                     {hospital && (
                       <div className="flex items-start gap-2.5 text-sm text-text-primary p-3 bg-surface/50 rounded-xl border border-border/50">
                         <Building2 className="w-4 h-4 text-text-muted shrink-0 mt-0.5" />
-                        <div>
-                          <p className="font-semibold">{hospital.name}</p>
+                        <Link href={`/emergency/hospitals/${hospital.id}`} className="hover:text-primary transition-colors">
+                          <p className="font-semibold hover:underline">{hospital.name}</p>
                           <p className="text-text-muted text-xs mt-0.5">{hospital.city}</p>
-                        </div>
+                        </Link>
                       </div>
                     )}
                     
@@ -202,23 +280,18 @@ export default function BengaliDoctorsPage() {
                   </div>
 
                   <div className="mt-6 pt-4 border-t border-border flex items-center gap-2">
-                    {doctor.phone && (
-                      <a href={`tel:${doctor.phone}`} className="flex-1">
-                        <Button variant="outline" size="sm" className="w-full"><Phone className="w-3.5 h-3.5 mr-1.5" /> Call</Button>
-                      </a>
-                    )}
-                    {doctor.email && (
-                      <a href={`mailto:${doctor.email}`} className="flex-1">
-                        <Button variant="ghost" size="sm" className="w-full bg-surface"><Mail className="w-3.5 h-3.5 mr-1.5" /> Email</Button>
-                      </a>
-                    )}
+                    <Link href={`/emergency/hospitals/bengali-doctors/${doctor.id}`} className="flex-1">
+                      <Button variant="primary" size="sm" className="w-full">
+                        View Profile
+                      </Button>
+                    </Link>
                   </div>
                 </Card>
               );
             })}
           </div>
         )}
-        {!loading && filtered.length === 0 && (
+        {isVerified && !loading && filtered.length === 0 && (
           <div className="text-center py-20 bg-white rounded-3xl border border-border mt-8">
             <p className="text-5xl mb-4">👨‍⚕️</p>
             <h3 className="text-xl font-bold mb-2">No doctors found</h3>
@@ -226,6 +299,18 @@ export default function BengaliDoctorsPage() {
           </div>
         )}
       </div>
+
+      <OtpVerificationModal 
+        isOpen={showOtpModal}
+        onClose={() => setShowOtpModal(false)}
+        onSuccess={() => {
+          setIsVerified(true);
+          setShowOtpModal(false);
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('directory_verified', 'true');
+          }
+        }}
+      />
     </div>
   );
 }

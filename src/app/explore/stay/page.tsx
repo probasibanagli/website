@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { MapPin, Phone, MessageCircle, Wifi, Wind, CheckCircle2, Search, SlidersHorizontal, ChevronDown, Home, Building, Building2, Download, GraduationCap, Train, Bus, Gift } from 'lucide-react';
+import { MapPin, Phone, MessageCircle, Wifi, Wind, CheckCircle2, Search, SlidersHorizontal, ChevronDown, Home, Building, Building2, Download, GraduationCap, Train, Bus, Gift, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/card';
@@ -23,6 +23,39 @@ const STAY_TYPE_ICONS: Record<string, React.ReactNode> = {
   hotel: <Building className="w-5 h-5" />,
   rental: <Building2 className="w-5 h-5" />,
 };
+
+function ListingCoverImage({ name, city, mapsUrl, type, fallbackIcon }: { 
+  name: string; 
+  city?: string; 
+  mapsUrl?: string; 
+  type: string;
+  fallbackIcon: React.ReactNode;
+}) {
+  const [imgSrc, setImgSrc] = useState<string | null>(
+    `/api/public/place-photo?name=${encodeURIComponent(name)}&city=${encodeURIComponent(city || '')}&mapsUrl=${encodeURIComponent(mapsUrl || '')}`
+  );
+  const [error, setError] = useState(false);
+
+  if (error || !imgSrc) {
+    return (
+      <div className="absolute inset-0 bg-gradient-to-br from-primary-light to-accent-light flex items-center justify-center">
+        <div className="text-primary opacity-40 scale-[3]">
+          {fallbackIcon}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <img
+      src={imgSrc}
+      alt={name}
+      onError={() => setError(true)}
+      className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+      loading="lazy"
+    />
+  );
+}
 
 export default function StayPage() {
   const { data: firestoreListings, loading } = useFirestore<Listing>('listings');
@@ -345,61 +378,81 @@ export default function StayPage() {
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filtered.map((listing) => (
-            <Card key={listing.id} padding="none" className="overflow-hidden group">
-              <div className="relative h-48 bg-gradient-to-br from-primary-light to-accent-light flex items-center justify-center">
-                <div className="text-primary opacity-40 scale-[3]">
-                  {STAY_TYPE_ICONS[listing.type] || <Home />}
-                </div>
-                <div className="absolute top-3 left-3 flex gap-2">
-                  <Badge variant={listing.type as 'pg' | 'hotel' | 'rental'}>{listing.type.toUpperCase()}</Badge>
-                  {listing.verified && <Badge variant="verified"><CheckCircle2 className="w-3 h-3 mr-1" /> Verified</Badge>}
-                </div>
-                {listing.bengali_food && (
-                  <div className="absolute top-3 right-3"><Badge variant="bengali">🍛 Bengali Food</Badge></div>
-                )}
-              </div>
-              <div className="p-5">
-                <Link href={`/explore/stay/${listing.id}`}>
-                  <h3 className="text-lg font-bold text-text-primary group-hover:text-primary transition-colors">{listing.name}</h3>
-                </Link>
-                <div className="flex items-center gap-1.5 mt-1 text-sm text-text-muted">
-                  <MapPin className="w-3.5 h-3.5" />{listing.area}, {listing.city}
-                </div>
-                {listing.owner_phone && (
-                  <div className="flex items-center gap-1.5 mt-1 text-sm font-medium text-text-primary">
-                    <Phone className="w-3.5 h-3.5 text-primary" />+91 {listing.owner_phone}
-                    {listing.verified && <CheckCircle2 className="w-3.5 h-3.5 text-green-500" />}
+          {filtered.map((listing) => {
+            const typeLabel = listing.accommodation_type || (listing.type ? listing.type.toUpperCase() : 'STAY');
+            const contactName = listing.contact_person_name || listing.owner_name || 'Contact Person';
+            const whatsappNum = listing.contact_whatsapp || listing.owner_whatsapp;
+            const phoneNum = listing.contact_phone || listing.owner_phone;
+            const priceVal = listing.accommodation_type === 'Hotel' ? (listing.price_daily || 0) : (listing.price_monthly || listing.price_per_month || 0);
+            const pricePeriod = listing.accommodation_type === 'Hotel' ? 'per day' : 'per month';
+            
+            return (
+              <Card key={listing.id} padding="none" className="overflow-hidden group">
+                <div className="relative h-48 bg-gradient-to-br from-primary-light to-accent-light overflow-hidden">
+                  <ListingCoverImage
+                    name={listing.name}
+                    city={listing.city}
+                    mapsUrl={listing.google_maps_url}
+                    type={listing.type}
+                    fallbackIcon={STAY_TYPE_ICONS[listing.type] || <Home />}
+                  />
+                  <div className="absolute top-3 left-3 flex gap-2">
+                    <Badge variant={listing.type as 'pg' | 'hotel' | 'rental'}>{typeLabel}</Badge>
+                    {listing.verified && <Badge variant="verified"><CheckCircle2 className="w-3 h-3 mr-1" /> Verified</Badge>}
                   </div>
-                )}
-                <div className="flex flex-wrap gap-1.5 mt-3">
-                  {(listing.amenities || []).slice(0, 4).map((a) => (
-                    <span key={a} className="inline-flex items-center gap-1 px-2 py-0.5 bg-surface rounded-md text-xs text-text-muted">
-                      {amenityIcons[a] || null} {a}
-                    </span>
-                  ))}
+                  {listing.bengali_food && (
+                    <div className="absolute top-3 right-3"><Badge variant="bengali">🍛 Bengali Food</Badge></div>
+                  )}
                 </div>
-                <div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
-                  <div>
-                    <p className="text-xl font-bold text-primary">{formatPrice(listing.price_per_month || 0)}</p>
-                    <p className="text-xs text-text-muted">per month</p>
+                <div className="p-5">
+                  <Link href={`/explore/stay/${listing.id}`}>
+                    <h3 className="text-lg font-bold text-text-primary group-hover:text-primary transition-colors">{listing.name}</h3>
+                  </Link>
+                  <div className="flex items-center gap-1.5 mt-1 text-sm text-text-muted">
+                    <MapPin className="w-3.5 h-3.5" />{listing.area}, {listing.city}
                   </div>
-                  <div className="flex gap-2">
-                    {listing.google_maps_url && (
-                      <a href={listing.google_maps_url} target="_blank" rel="noopener noreferrer">
-                        <Button variant="ghost" size="sm"><MapPin className="w-4 h-4" /> Google Page</Button>
-                      </a>
-                    )}
-                    {listing.owner_whatsapp && (
-                      <a href={getWhatsAppUrl(listing.owner_whatsapp, `Hi, I found your listing "${listing.name}" on ProbasiBangali.in`)} target="_blank" rel="noopener noreferrer">
-                        <Button variant="secondary" size="sm"><MessageCircle className="w-4 h-4" /> Chat</Button>
-                      </a>
-                    )}
+                  {listing.landmark && (
+                    <p className="text-xs text-text-muted mt-1 font-medium">📍 Landmark: {listing.landmark}</p>
+                  )}
+                  {listing.nearby_hospital && (
+                    <p className="text-xs text-text-muted mt-1 flex items-center gap-1">
+                      🏥 Nearby Hospital: <span className="font-semibold text-text-primary">{listing.nearby_hospital}</span>
+                    </p>
+                  )}
+                  <div className="mt-2 text-xs space-y-1">
+                    <p className="text-text-muted">Contact: <span className="font-bold text-text-primary">{contactName}</span></p>
+                    {phoneNum && <p className="text-text-muted">Phone: <span className="font-bold text-text-primary">{phoneNum}</span></p>}
+                  </div>
+                  <div className="flex flex-wrap gap-1.5 mt-3">
+                    {(listing.amenities || []).slice(0, 4).map((a) => (
+                      <span key={a} className="inline-flex items-center gap-1 px-2 py-0.5 bg-surface rounded-md text-xs text-text-muted">
+                        {amenityIcons[a] || null} {a}
+                      </span>
+                    ))}
+                  </div>
+                  <div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
+                    <div>
+                      <p className="text-xl font-bold text-primary">{formatPrice(priceVal)}</p>
+                      <p className="text-xs text-text-muted">{pricePeriod}</p>
+                      {listing.price_range && <p className="text-[10px] text-text-muted italic">{listing.price_range}</p>}
+                    </div>
+                    <div className="flex gap-2">
+                      {listing.website_link && (
+                        <a href={listing.website_link} target="_blank" rel="noopener noreferrer">
+                          <Button variant="ghost" size="sm"><Globe className="w-4 h-4" /> Web</Button>
+                        </a>
+                      )}
+                      {whatsappNum && (
+                        <a href={getWhatsAppUrl(whatsappNum, `Hi, I found your listing "${listing.name}" on ProbasiBangali.in`)} target="_blank" rel="noopener noreferrer">
+                          <Button variant="secondary" size="sm"><MessageCircle className="w-4 h-4" /> Chat</Button>
+                        </a>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            </Card>
-          ))}
+              </Card>
+            );
+          })}
         </div>
 
         {filtered.length === 0 && !loading && (

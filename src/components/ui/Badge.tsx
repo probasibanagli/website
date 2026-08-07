@@ -30,7 +30,7 @@ const variantStyles: Record<BadgeVariant, string> = {
   amber: 'bg-amber-50 text-amber-700 border-amber-200',
   red: 'bg-red-100 text-red-700 border-red-200',
   outline: 'bg-transparent text-primary border-primary/30',
-  secondary: 'bg-accent-light text-accent border-accent-light',
+  secondary: 'bg-slate-100 text-slate-700 border-slate-200', // wait, let's see if we have accent-light, or just slate as fallback
   default: 'bg-gray-100 text-gray-700 border-gray-200',
 };
 
