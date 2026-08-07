@@ -57,6 +57,7 @@ export async function saveProfile(profile: MatrimonialProfile): Promise<void> {
     }
   } catch (error) {
     console.error("Error saving profile:", error);
+    throw error;
   }
 }
 
