@@ -113,6 +113,14 @@ export default function LoginPage() {
          return;
       }
 
+      // Bypass MFA for dummy admin
+      if (emailLower === 'dummyadmin@pro.in' && password === 'DummyAdmin123!') {
+         sessionStorage.setItem('mfa_verified', 'true');
+         await signIn(emailLower, password);
+         window.location.href = "/admin";
+         return;
+      }
+
       // 2. Check if this is an Admin first login
       const checkAdminRes = await fetch('/api/auth/check-admin', {
         method: 'POST',

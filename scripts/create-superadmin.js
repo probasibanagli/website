@@ -32,9 +32,9 @@ const db = getFirestore();
 const auth = getAuth();
 
 async function run() {
-  const email = 'admin@pro.in';
-  const password = 'SuperAdmin123!';
-  const phone = '+919874563210';
+  const email = 'dummyadmin@pro.in';
+  const password = 'DummyAdmin123!';
+  const phone = '+919626855406';
   let uid = '';
 
   console.log(`Setting up Super Admin: ${email}`);
@@ -62,7 +62,8 @@ async function run() {
       email,
       password,
       phoneNumber: phone,
-      displayName: 'Super Admin',
+      displayName: 'Dummy Admin',
+      emailVerified: true,
     });
     uid = userRecord.uid;
     console.log(`✅ Super Admin created in Auth with UID: ${uid}`);
@@ -75,6 +76,7 @@ async function run() {
       await auth.updateUser(uid, {
         password,
         phoneNumber: phone,
+        emailVerified: true,
       });
       console.log(`✅ Existing Super Admin password & phone updated (UID: ${uid})`);
     } else {
@@ -89,8 +91,8 @@ async function run() {
     uid,
     email,
     phone,
-    full_name: 'Super Admin',
-    role: 'superadmin',
+    full_name: 'Dummy Admin',
+    role: 'admin',
     permissions: {
       stay: 'manage',
       food: 'manage',
@@ -100,13 +102,18 @@ async function run() {
       services: 'manage',
       blog: 'manage',
       users: 'manage',
+      matrimony: 'manage',
+      blood_bank: 'manage',
+      ambulance: 'manage',
     },
     created_at: now,
     updated_at: now,
     is_active: true,
+    email_verified: true,
+    phone_verified: true,
   }, { merge: true });
 
-  console.log(`✅ Super Admin document written to Firestore`);
+  console.log(`✅ Admin document written to Firestore`);
   console.log('\n--- Credentials ---');
   console.log(`Email: ${email}`);
   console.log(`Password: ${password}`);

@@ -83,16 +83,32 @@ export default function MatrimonialDashboard() {
   const [activeTab, setActiveTab] = useState<'received' | 'sent' | 'shortlist'>('received');
 
   useEffect(() => {
-    const profile = getMyProfile();
-    setMyProfile(profile);
+    let profile = getMyProfile();
+    if (!profile && firebaseUser) {
+      import('@/lib/matrimony-service').then(m => {
+        const all = m.getAllProfiles();
+        const found = all.find(p => 
+          (firebaseUser.email && p.email === firebaseUser.email) || 
+          (firebaseUser.phoneNumber && p.phone === firebaseUser.phoneNumber)
+        );
+        if (found) {
+          m.saveMyProfile(found);
+          setMyProfile(found);
+          loadDashboardData(found);
+        }
+      });
+    } else {
+      setMyProfile(profile);
+      if (profile) loadDashboardData(profile);
+    }
 
-    if (profile) {
+    function loadDashboardData(p: MatrimonialProfile) {
       // Interests sent
-      const sentInterests = getInterestsSent(profile.id);
+      const sentInterests = getInterestsSent(p.id);
       setInterestsSent(sentInterests.map(i => getProfile(i.toId)).filter(Boolean) as MatrimonialProfile[]);
 
       // Interests received
-      const receivedInterests = getInterestsReceived(profile.id);
+      const receivedInterests = getInterestsReceived(p.id);
       setInterestsReceived(receivedInterests.map(i => getProfile(i.fromId)).filter(Boolean) as MatrimonialProfile[]);
 
       // Shortlist
@@ -100,11 +116,11 @@ export default function MatrimonialDashboard() {
       setShortlisted(shortlistIds.map(id => getProfile(id)).filter(Boolean) as MatrimonialProfile[]);
 
       // Views
-      setViewCount(getViewCount(profile.id));
+      setViewCount(getViewCount(p.id));
     }
 
     setLoading(false);
-  }, []);
+  }, [firebaseUser]);
 
   const handleRemoveShortlist = (profileId: string) => {
     toggleShortlist(profileId);

@@ -1246,11 +1246,17 @@ export default function MatrimonialRegisterPage() {
                   {[
                     { title: 'Personal info', items: [
                       ['Name', formData.full_name], ['Created for', formData.profile_for], ['Gender', formData.gender], ['DOB', formData.date_of_birth],
-                      ['Height', formData.height], ['Current City', formData.city], ['Native district', formData.native_district],
-                      ['Marital status', formData.marital_status]
+                      ['Height', formData.height], ['Weight', formData.weight ? `${formData.weight} kg` : null], ['Complexion', formData.complexion], ['Blood Group', formData.blood_group],
+                      ['Current City', formData.city], ['Native district', formData.native_district],
+                      ['Marital status', formData.marital_status], ['Physical Disability', formData.physical_disability]
+                    ]},
+                    { title: 'Contact & Family', items: [
+                      ['Email', formData.email], ['Phone', formData.phone], ['WhatsApp', formData.whatsapp],
+                      ['Father', formData.father_name], ['Mother', formData.mother_name], ['Siblings', formData.siblings]
                     ]},
                     { title: 'Community info', items: [
-                      ['Religion', formData.religion], ['Caste', formData.caste], ['Sub-Caste', formData.sub_caste], ['Gotra', formData.gotra]
+                      ['Religion', formData.religion], ['Caste', formData.caste], ['Sub-Caste', formData.sub_caste], ['Gotra', formData.gotra],
+                      ['Raasi', formData.raasi], ['Star (Nakshatra)', formData.star], ['Manglik', formData.manglik]
                     ]},
                     { title: 'Education & Career', items: [
                       ['Education', formData.education], ['Profession', formData.profession], ['Income', formData.annual_income]

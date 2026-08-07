@@ -376,8 +376,17 @@ export default function MatrimonialAdminPage() {
                 {[
                   { title: 'Personal Details', items: [
                     ['Name', selectedProfile.full_name], ['Gender', selectedProfile.gender], ['DOB', selectedProfile.date_of_birth],
-                    ['Age', selectedProfile.age ? `${selectedProfile.age} yrs` : null], ['Height', selectedProfile.height], ['Weight', selectedProfile.weight],
-                    ['City', selectedProfile.city], ['Native', selectedProfile.native_district], ['Marital Status', selectedProfile.marital_status]
+                    ['Age', selectedProfile.age ? `${selectedProfile.age} yrs` : null], ['Height', selectedProfile.height], ['Weight', selectedProfile.weight ? `${selectedProfile.weight} kg` : null],
+                    ['Complexion', selectedProfile.complexion], ['Blood Group', selectedProfile.blood_group],
+                    ['City', selectedProfile.city], ['Native', selectedProfile.native_district], ['Marital Status', selectedProfile.marital_status],
+                    ['Physical Disability', selectedProfile.physical_disability]
+                  ]},
+                  { title: 'Contact & Family', items: [
+                    ['Email', selectedProfile.email], ['Phone', selectedProfile.phone], ['WhatsApp', selectedProfile.whatsapp],
+                    ['Father', selectedProfile.father_name], ["Father's Occupation", selectedProfile.father_occupation],
+                    ['Mother', selectedProfile.mother_name], ["Mother's Occupation", selectedProfile.mother_occupation],
+                    ['Siblings', selectedProfile.siblings], ['Family Type', selectedProfile.family_type],
+                    ['Family Status', selectedProfile.family_status], ['Family Values', selectedProfile.family_values]
                   ]},
                   { title: 'Education & Profession', items: [
                     ['Education', selectedProfile.education], ['Field of Study', selectedProfile.field_of_study], ['Institution', selectedProfile.institution],
@@ -385,8 +394,18 @@ export default function MatrimonialAdminPage() {
                     ['Annual Income', selectedProfile.annual_income]
                   ]},
                   { title: 'Religion & Lifestyle', items: [
-                    ['Religion', selectedProfile.religion], ['Sub-caste', selectedProfile.sub_caste], ['Diet', selectedProfile.diet],
-                    ['Smoking', selectedProfile.smoking], ['Drinking', selectedProfile.drinking]
+                    ['Religion', selectedProfile.religion], ['Caste', selectedProfile.caste], ['Sub-caste', selectedProfile.sub_caste],
+                    ['Gotra', selectedProfile.gotra], ['Raasi', selectedProfile.raasi], ['Star (Nakshatra)', selectedProfile.star], ['Manglik', selectedProfile.manglik],
+                    ['Diet', selectedProfile.diet], ['Smoking', selectedProfile.smoking], ['Drinking', selectedProfile.drinking]
+                  ]},
+                  { title: 'Expected Match Preferences', items: [
+                    ['Age range', `${selectedProfile.pref_age_min || 'Any'} - ${selectedProfile.pref_age_max || 'Any'} yrs`],
+                    ['Height range', `${selectedProfile.pref_height_min || 'Any'} - ${selectedProfile.pref_height_max || 'Any'}`],
+                    ['Marital status', selectedProfile.pref_marital_status || 'Any'],
+                    ['Education', selectedProfile.pref_education || 'Any'],
+                    ['Profession', selectedProfile.pref_profession || 'Any'],
+                    ['Preferred City', selectedProfile.pref_city || 'Any'],
+                    ['Diet', selectedProfile.pref_diet || 'Any']
                   ]}
                 ].map((section) => (
                   <div key={section.title} className="space-y-2">
@@ -402,18 +421,18 @@ export default function MatrimonialAdminPage() {
                   </div>
                 ))}
 
-                {/* About Me & Partner Preferences text areas */}
+                {/* About Me & Partner Preferences Descriptions */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
                   <div className="p-3 bg-white border border-border/60 rounded-xl">
-                    <h5 className="text-xs font-bold text-pink-600 mb-1.5">About Me</h5>
+                    <h5 className="text-xs font-bold text-pink-600 mb-1.5">About Me Description</h5>
                     <p className="text-xs text-text-muted leading-relaxed whitespace-pre-line bg-surface p-2.5 rounded-lg border border-border/30">
                       {selectedProfile.about_me || 'No description provided.'}
                     </p>
                   </div>
                   <div className="p-3 bg-white border border-border/60 rounded-xl">
-                    <h5 className="text-xs font-bold text-pink-600 mb-1.5">Partner Preferences</h5>
+                    <h5 className="text-xs font-bold text-pink-600 mb-1.5">Partner Preferences Description</h5>
                     <p className="text-xs text-text-muted leading-relaxed whitespace-pre-line bg-surface p-2.5 rounded-lg border border-border/30">
-                      {selectedProfile.partner_preference || 'No partner preferences specified.'}
+                      {selectedProfile.partner_preference || 'No expectations description specified.'}
                     </p>
                   </div>
                 </div>

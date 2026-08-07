@@ -59,12 +59,28 @@ export default function MatrimonialPage() {
   const { firebaseUser, profile: userProfile, loading: authLoading } = useAuth();
   const [hasProfile, setHasProfile] = useState<boolean | null>(null);
   const [myProfile, setMyProfile] = useState<MatrimonialProfile | null>(null);
+  const [allProfs, setAllProfs] = useState<MatrimonialProfile[]>([]);
 
   useEffect(() => {
-    const mp = getMyProfile();
+    const all = getAllProfiles();
+    setAllProfs(all);
+
+    let mp = getMyProfile();
+    // Auto-link if logged in but localStorage my_profile is missing
+    if (!mp && firebaseUser) {
+      const found = all.find(p => 
+        (firebaseUser.email && p.email === firebaseUser.email) || 
+        (firebaseUser.phoneNumber && p.phone === firebaseUser.phoneNumber)
+      );
+      if (found) {
+        import('@/lib/matrimony-service').then(m => m.saveMyProfile(found));
+        mp = found;
+      }
+    }
+    
     setHasProfile(!!mp);
     setMyProfile(mp);
-  }, []);
+  }, [firebaseUser]);
 
   const [filters, setFilters] = useState<MatrimonyFilters>({});
   const [sort, setSort] = useState<SortOption>('newest');
@@ -94,12 +110,12 @@ export default function MatrimonialPage() {
       );
     }
     return sortProfiles(results, sort);
-  }, [filters, searchQuery, sort, myProfile]);
+  }, [filters, searchQuery, sort, myProfile, allProfs]);
 
   // Automatic matching: find mutual matches
   const autoMatches = useMemo(() => {
     if (!myProfile) return [];
-    const all = getAllProfiles().filter(p => 
+    const all = allProfs.filter(p => 
       p.id !== myProfile.id && 
       !(p.email && p.email === myProfile.email) &&
       !(p.phone && p.phone === myProfile.phone) &&
@@ -114,7 +130,7 @@ export default function MatrimonialPage() {
     .filter(m => m.myScore >= 50 && m.theirScore >= 50)
     .sort((a, b) => b.mutualScore - a.mutualScore);
     return matches;
-  }, [myProfile]);
+  }, [myProfile, allProfs]);
 
   const displayProfiles = activeTab === 'browse' ? filtered : autoMatches.map(m => m.profile);
   const visibleProfiles = displayProfiles.slice(0, visibleCount);
@@ -122,7 +138,6 @@ export default function MatrimonialPage() {
   const activeFilterCount = Object.values(filters).filter(v => v !== undefined && v !== '').length;
 
   // Stats
-  const allProfs = useMemo(() => getAllProfiles(), []);
   const totalProfiles = allProfs.length;
   const verifiedProfiles = allProfs.filter(p => p.verified).length;
   const citiesCount = new Set(allProfs.map(p => p.city)).size;
