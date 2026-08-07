@@ -590,11 +590,20 @@ export default function MatrimonialRegisterPage() {
       updated_at: now,
     };
 
-    await saveMyProfile(profile);
-    localStorage.removeItem('pb_matrimony_draft');
-    setProfileId(id);
-    setSubmitted(true);
-  }, [formData, selectedHobbies, realId]);
+    try {
+      await saveMyProfile(profile);
+      localStorage.removeItem('pb_matrimony_draft');
+      setProfileId(id);
+      setSubmitted(true);
+    } catch (err: any) {
+      console.error(err);
+      if (err.message && err.message.includes('permission-denied')) {
+        setUploadError("Permission denied: You must be logged in and verified to submit a profile. Please login first.");
+      } else {
+        setUploadError("Failed to save profile. Please check your network connection and try again.");
+      }
+    }
+  }, [formData, selectedHobbies, realId, firebaseUser]);
 
   // Success screen
   if (submitted) {
