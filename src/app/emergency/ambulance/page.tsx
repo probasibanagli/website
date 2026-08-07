@@ -1,14 +1,10 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
-import { Phone, Siren, Shield, Flame, MapPin, AlertTriangle, Loader2 } from 'lucide-react';
+import { Phone, Siren, Shield, Flame, MapPin, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { db } from '@/lib/firebase';
-import { collection, getDocs } from 'firebase/firestore';
-import { COLLECTIONS } from '@/lib/firestore/collections';
-import type { Ambulance } from '@/types';
 
 const emergencyNumbers = [
   { label: 'All Emergency', number: '112', icon: <AlertTriangle className="w-6 h-6" />, color: 'bg-red-600', desc: 'Police, Fire, Ambulance' },
@@ -19,26 +15,15 @@ const emergencyNumbers = [
   { label: 'Child Helpline', number: '1098', icon: <Phone className="w-6 h-6" />, color: 'bg-teal-600', desc: 'Child Protection' },
 ];
 
+const privateAmbulances = [
+  { name: 'GVK EMRI (108)', phone: '108', area: 'All Tamil Nadu' },
+  { name: 'Apollo Ambulance', phone: '1066', area: 'Chennai' },
+  { name: 'Stan Ambulance', phone: '044-28112222', area: 'Chennai' },
+  { name: 'Jeevan Ambulance', phone: '9840012345', area: 'Chennai & Suburbs' },
+];
+
 export default function AmbulancePage() {
   const [showSOS, setShowSOS] = useState(false);
-  const [ambulances, setAmbulances] = useState<Ambulance[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function fetchAmbulances() {
-      try {
-        const res = await fetch('/api/public/firestore?collection=ambulances');
-        if (!res.ok) throw new Error('Failed to fetch ambulances');
-        const data = await res.json();
-        setAmbulances(data.items || []);
-      } catch (e) {
-        console.error('Error fetching ambulances:', e);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchAmbulances();
-  }, []);
 
   return (
     <div className="min-h-screen bg-surface">
@@ -105,49 +90,17 @@ export default function AmbulancePage() {
 
         {/* Private Ambulances */}
         <h2 className="text-2xl font-bold font-display mb-6">Private Ambulance Services</h2>
-        {loading ? (
-          <div className="flex justify-center items-center py-10">
-            <Loader2 className="w-8 h-8 animate-spin text-red-600" />
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {ambulances.map((amb) => (
-              <Card key={amb.id} className="flex items-center justify-between p-5 hover:border-red-200 transition-colors">
-                <div>
-                  <h3 className="font-bold text-text-primary">{amb.name}</h3>
-                  <div className="flex items-center gap-1.5 text-sm text-text-muted mt-1">
-                    <MapPin className="w-3.5 h-3.5 shrink-0" />
-                    <span>{amb.city}</span>
-                  </div>
-                  {amb.phone && (
-                    <div className="flex items-center gap-1.5 text-sm text-text-muted mt-1 font-semibold">
-                      <Phone className="w-3.5 h-3.5 shrink-0 text-red-500" />
-                      <span>{amb.phone}</span>
-                    </div>
-                  )}
-                  {amb.address && (
-                    <p className="text-xs text-text-muted mt-2 max-w-md line-clamp-2" title={amb.address}>
-                      {amb.address}
-                    </p>
-                  )}
-                </div>
-                {amb.phone && (
-                  <a href={`tel:${amb.phone}`} className="ml-4 shrink-0">
-                    <Button variant="danger" size="sm" className="font-bold flex items-center gap-1">
-                      <Phone className="w-4 h-4" />
-                      <span>Call</span>
-                    </Button>
-                  </a>
-                )}
-              </Card>
-            ))}
-            {ambulances.length === 0 && (
-              <div className="col-span-2 text-center py-10 text-text-muted italic">
-                No ambulance services registered in this region yet.
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {privateAmbulances.map((amb) => (
+            <Card key={amb.name} className="flex items-center justify-between">
+              <div>
+                <h3 className="font-bold text-text-primary">{amb.name}</h3>
+                <div className="flex items-center gap-1.5 text-sm text-text-muted mt-1"><MapPin className="w-3.5 h-3.5" />{amb.area}</div>
               </div>
-            )}
-          </div>
-        )}
+              <a href={`tel:${amb.phone}`}><Button variant="danger" size="sm"><Phone className="w-4 h-4" />{amb.phone}</Button></a>
+            </Card>
+          ))}
+        </div>
       </div>
     </div>
   );

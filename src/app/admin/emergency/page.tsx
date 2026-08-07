@@ -1,24 +1,20 @@
 'use client';
 
-import React, { useEffect, useState, Suspense } from 'react';
+import React, { useEffect, useState } from 'react';
 import { collection, getDocs, doc, setDoc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
-import { useSearchParams } from 'next/navigation';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { canAccess } from '@/lib/permissions';
 import { COLLECTIONS } from '@/lib/firestore/collections';
-import type { Hospital, BengaliDoctor, BengaliStaff } from '@/types';
-import { Plus, Pencil, Trash2, X, Loader2, Shield, Building2, UserRound, PhoneCall, CheckCircle, Users } from 'lucide-react';
-
-const CHENNAI_AREAS = ['Adyar', 'Alandur', 'Ambattur', 'Anna Nagar', 'Ashok Nagar', 'Aminjikarai', 'Avadi', 'Besant Nagar', 'Broadway', 'Chromepet', 'Egmore', 'Guindy', 'Kilpauk', 'Kodambakkam', 'Kolathur', 'Madipakkam', 'Madhavaram', 'Mambalam', 'Manapakkam', 'Medavakkam', 'Mogappair', 'Nanganallur', 'OMR', 'Pallavaram', 'Perambur', 'Porur', 'Royapettah', 'Saidapet', 'Sholinganallur', 'Tambaram', 'T Nagar', 'Thiruvanmiyur', 'Triplicane', 'Vadapalani', 'Velachery', 'Villivakkam', 'Virugambakkam', 'West Mambalam', 'Greams Road', 'Gandhi Nagar', 'Koyambedu', 'Mylapore', 'Perungudi'].sort();
-const LANGUAGES = ['Bengali', 'Tamil', 'English', 'Hindi', 'Telugu', 'Malayalam', 'Kannada', 'Urdu'];
+import type { Hospital, BengaliDoctor } from '@/types';
+import { Plus, Pencil, Trash2, X, Loader2, Shield, Building2, UserRound, PhoneCall, CheckCircle } from 'lucide-react';
 
 const SAMPLE_HOSPITALS = [
-  { name: 'Apollo Hospital Chennai', city: 'Chennai', area: 'Greams Road', emergency_phone: '1066', phone: '044-28293333', is_24_7: true, has_bengali_doctor: true, main_branch: true, specializations: ['Cardiology', 'Neurology', 'Oncology'], description: 'Leading multi-specialty hospital.' },
-  { name: 'MGM Healthcare Chennai', city: 'Chennai', area: 'Aminjikarai', emergency_phone: '044-45688888', phone: '044-45688888', is_24_7: true, has_bengali_doctor: true, main_branch: false, specializations: ['Heart Transplant', 'Orthopedics'], description: 'State of the art healthcare.' },
-  { name: 'MIOT International Chennai', city: 'Chennai', area: 'Manapakkam', emergency_phone: '105710', phone: '044-22492288', is_24_7: true, has_bengali_doctor: true, main_branch: true, specializations: ['Orthopedics', 'Trauma'], description: 'Pioneers in orthopedic care.' },
-  { name: 'Fortis Malar Hospital Chennai', city: 'Chennai', area: 'Adyar', emergency_phone: '044-42892222', phone: '044-42892222', is_24_7: true, has_bengali_doctor: true, main_branch: false, specializations: ['Cardiology', 'Gynecology'], description: 'Comprehensive medical care.' },
-  { name: 'SIMS Hospital Chennai', city: 'Chennai', area: 'Vadapalani', emergency_phone: '044-20002001', phone: '044-20002001', is_24_7: true, has_bengali_doctor: true, main_branch: false, specializations: ['Gastroenterology', 'Neurology'], description: 'Expert medical professionals.' }
+  { name: 'Apollo Hospital Chennai', city: 'Chennai', area: 'Greams Road', emergency_phone: '1066', phone: '044-28293333', is_24_7: true, has_bengali_doctor: true, main_branch: true, specializations: ['Cardiology', 'Neurology', 'Oncology'], description: 'Leading multi-specialty hospital.', images: ['/images/hospitals/apollo-chennai.jpg'] },
+  { name: 'MGM Healthcare Chennai', city: 'Chennai', area: 'Aminjikarai', emergency_phone: '044-45688888', phone: '044-45688888', is_24_7: true, has_bengali_doctor: true, main_branch: false, specializations: ['Heart Transplant', 'Orthopedics'], description: 'State of the art healthcare.', images: ['/images/hospitals/mgm-healthcare.jpg'] },
+  { name: 'MIOT International Chennai', city: 'Chennai', area: 'Manapakkam', emergency_phone: '105710', phone: '044-22492288', is_24_7: true, has_bengali_doctor: true, main_branch: true, specializations: ['Orthopedics', 'Trauma'], description: 'Pioneers in orthopedic care.', images: ['/images/hospitals/miot-international.jpg'] },
+  { name: 'Fortis Malar Hospital Chennai', city: 'Chennai', area: 'Adyar', emergency_phone: '044-42892222', phone: '044-42892222', is_24_7: true, has_bengali_doctor: true, main_branch: false, specializations: ['Cardiology', 'Gynecology'], description: 'Comprehensive medical care.', images: ['/images/hospitals/fortis-malar.jpg'] },
+  { name: 'SIMS Hospital Chennai', city: 'Chennai', area: 'Vadapalani', emergency_phone: '044-20002001', phone: '044-20002001', is_24_7: true, has_bengali_doctor: true, main_branch: false, specializations: ['Gastroenterology', 'Neurology'], description: 'Expert medical professionals.', images: ['/images/hospitals/sims-hospital.jpg'] }
 ];
 
 const SAMPLE_DOCTORS = [
@@ -29,21 +25,12 @@ const SAMPLE_DOCTORS = [
   { doctor_name: 'Dr. Priyanka Ghosh', specialization: 'Gynecologist', experience: '10 years', languages: ['Bengali', 'English'] }
 ];
 
-function AdminEmergencyPageContent() {
+export default function AdminEmergencyPage() {
   const { profile } = useAuth();
-  const searchParams = useSearchParams();
-  const tabParam = searchParams.get('tab');
-  const [activeTab, setActiveTab] = useState<'hospitals' | 'doctors' | 'staff'>('hospitals');
-
-  useEffect(() => {
-    if (tabParam && ['hospitals', 'doctors', 'staff'].includes(tabParam)) {
-      setActiveTab(tabParam as any);
-    }
-  }, [tabParam]);
+  const [activeTab, setActiveTab] = useState<'hospitals' | 'doctors' | 'contacts'>('hospitals');
   
   const [hospitals, setHospitals] = useState<Hospital[]>([]);
   const [doctors, setDoctors] = useState<BengaliDoctor[]>([]);
-  const [staff, setStaff] = useState<BengaliStaff[]>([]);
   const [loading, setLoading] = useState(true);
   
   const [showForm, setShowForm] = useState(false);
@@ -51,7 +38,6 @@ function AdminEmergencyPageContent() {
   const [formData, setFormData] = useState<any>({});
   const [saving, setSaving] = useState(false);
   const [seeding, setSeeding] = useState(false);
-  const [selectedHospitalFilter, setSelectedHospitalFilter] = useState<string>('all');
 
   const moduleKey = 'emergency';
   const canView = canAccess(profile?.role || 'user', profile?.permissions, moduleKey, 'view');
@@ -67,14 +53,12 @@ function AdminEmergencyPageContent() {
   async function loadData() {
     setLoading(true);
     try {
-      const [hSnap, dSnap, sSnap] = await Promise.all([
+      const [hSnap, dSnap] = await Promise.all([
         getDocs(collection(db, COLLECTIONS.hospitals)),
-        getDocs(collection(db, COLLECTIONS.bengali_doctors)),
-        getDocs(collection(db, COLLECTIONS.bengali_staff || 'bengali_staff'))
+        getDocs(collection(db, COLLECTIONS.bengali_doctors))
       ]);
       setHospitals(hSnap.docs.map(d => ({ id: d.id, ...d.data() } as Hospital)));
       setDoctors(dSnap.docs.map(d => ({ id: d.id, ...d.data() } as BengaliDoctor)));
-      setStaff(sSnap.docs.map(d => ({ id: d.id, ...d.data() } as BengaliStaff)));
     } catch (e: any) {
       console.error(e);
     } finally {
@@ -96,9 +80,10 @@ function AdminEmergencyPageContent() {
         hospitalDocs.push(payload);
       }
       
-      for (let i = 0; i < SAMPLE_DOCTORS.length; i++) {
+      for (let i=0; i<SAMPLE_DOCTORS.length; i++) {
         const d = SAMPLE_DOCTORS[i];
         const id = `doc-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+        // Assign to a random hospital we just created, or cycle through
         const hId = hospitalDocs[i % hospitalDocs.length].id;
         const payload = { ...d, id, hospital_id: hId, created_at: now };
         await setDoc(doc(db, COLLECTIONS.bengali_doctors, id), payload);
@@ -116,11 +101,11 @@ function AdminEmergencyPageContent() {
 
   function openAdd() {
     setEditId(null);
-    if (activeTab === 'hospitals') {
-      setFormData({ specializations: '', main_branch: false, is_24_7: false, has_bengali_doctor: false });
-    } else {
-      setFormData({ languages: [] });
-    }
+    setFormData(
+      activeTab === 'hospitals' 
+        ? { specializations: '', images: '', main_branch: false, is_24_7: false, has_bengali_doctor: false } 
+        : { languages: '' }
+    );
     setShowForm(true);
   }
 
@@ -128,10 +113,11 @@ function AdminEmergencyPageContent() {
     setEditId(item.id);
     const data = { ...item };
     if (activeTab === 'hospitals') {
+      if (Array.isArray(data.images)) data.images = data.images.join('\n');
       if (Array.isArray(data.specializations)) data.specializations = data.specializations.join('\n');
     }
-    if (activeTab === 'doctors' || activeTab === 'staff') {
-      if (!Array.isArray(data.languages)) data.languages = [];
+    if (activeTab === 'doctors') {
+      if (Array.isArray(data.languages)) data.languages = data.languages.join('\n');
     }
     setFormData(data);
     setShowForm(true);
@@ -140,74 +126,54 @@ function AdminEmergencyPageContent() {
   async function handleSave() {
     setSaving(true);
     try {
-      const collectionName = activeTab === 'hospitals' 
-        ? COLLECTIONS.hospitals 
-        : activeTab === 'doctors' 
-          ? COLLECTIONS.bengali_doctors 
-          : (COLLECTIONS.bengali_staff || 'bengali_staff');
+      const collectionName = activeTab === 'hospitals' ? COLLECTIONS.hospitals : COLLECTIONS.bengali_doctors;
       const now = new Date().toISOString();
       const payload = { ...formData };
       
       if (activeTab === 'hospitals') {
+        payload.images = typeof payload.images === 'string' 
+          ? payload.images.split('\n').map((s: string) => s.trim()).filter(Boolean) : [];
         payload.specializations = typeof payload.specializations === 'string' 
           ? payload.specializations.split('\n').map((s: string) => s.trim()).filter(Boolean) : [];
       } else {
-        if (!Array.isArray(payload.languages)) {
-          payload.languages = [];
-        }
+        payload.languages = typeof payload.languages === 'string' 
+          ? payload.languages.split('\n').map((s: string) => s.trim()).filter(Boolean) : [];
       }
-
-      if (editId) {
-        if (activeTab === 'hospitals') {
-          setHospitals(prev => prev.map(i => i.id === editId ? { ...i, ...payload } as Hospital : i));
-        } else if (activeTab === 'doctors') {
-          setDoctors(prev => prev.map(i => i.id === editId ? { ...i, ...payload } as BengaliDoctor : i));
-        } else {
-          setStaff(prev => prev.map(i => i.id === editId ? { ...i, ...payload } as BengaliStaff : i));
-        }
-      } else {
-        const id = `${activeTab === 'hospitals' ? 'hosp' : 'item'}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
-        payload.id = id;
-        payload.created_at = now;
-        
-        if (activeTab === 'hospitals') {
-          setHospitals(prev => [{ ...payload } as Hospital, ...prev]);
-        } else if (activeTab === 'doctors') {
-          setDoctors(prev => [{ ...payload } as BengaliDoctor, ...prev]);
-        } else {
-          setStaff(prev => [{ ...payload } as BengaliStaff, ...prev]);
-        }
-      }
-      
-      setShowForm(false);
-      setSaving(false);
 
       if (editId) {
         await updateDoc(doc(db, collectionName, editId), { ...payload, updated_at: now });
+        if (activeTab === 'hospitals') {
+          setHospitals(prev => prev.map(i => i.id === editId ? { ...i, ...payload } as Hospital : i));
+        } else {
+          setDoctors(prev => prev.map(i => i.id === editId ? { ...i, ...payload } as BengaliDoctor : i));
+        }
       } else {
-        await setDoc(doc(db, collectionName, payload.id), { ...payload });
+        const id = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+        await setDoc(doc(db, collectionName, id), { ...payload, id, created_at: now });
+        if (activeTab === 'hospitals') {
+          setHospitals(prev => [{ id, ...payload, created_at: now } as Hospital, ...prev]);
+        } else {
+          setDoctors(prev => [{ id, ...payload, created_at: now } as BengaliDoctor, ...prev]);
+        }
       }
+      setShowForm(false);
     } catch (e) {
       console.error(e);
-      alert('Error saving item to database.');
+      alert('Error saving item.');
+    } finally {
+      setSaving(false);
     }
   }
 
   async function handleDelete(id: string) {
     if (!confirm('Are you sure you want to delete this item?')) return;
     try {
-      const collectionName = activeTab === 'hospitals' 
-        ? COLLECTIONS.hospitals 
-        : activeTab === 'doctors' 
-          ? COLLECTIONS.bengali_doctors 
-          : (COLLECTIONS.bengali_staff || 'bengali_staff');
+      const collectionName = activeTab === 'hospitals' ? COLLECTIONS.hospitals : COLLECTIONS.bengali_doctors;
       await deleteDoc(doc(db, collectionName, id));
       if (activeTab === 'hospitals') {
         setHospitals(prev => prev.filter(i => i.id !== id));
-      } else if (activeTab === 'doctors') {
-        setDoctors(prev => prev.filter(i => i.id !== id));
       } else {
-        setStaff(prev => prev.filter(i => i.id !== id));
+        setDoctors(prev => prev.filter(i => i.id !== id));
       }
     } catch (e) {
       console.error(e);
@@ -232,9 +198,9 @@ function AdminEmergencyPageContent() {
               {seeding ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle className="w-4 h-4 text-emerald-500" />} Load Sample Data
             </button>
           )}
-          {canEdit && (
+          {canEdit && activeTab !== 'contacts' && (
             <button onClick={openAdd} className="inline-flex items-center gap-2 px-4 py-2.5 bg-primary hover:bg-primary-dark text-white rounded-xl text-sm font-medium transition-colors shadow-md active:scale-95 cursor-pointer">
-              <Plus className="w-4 h-4" /> Add New {activeTab === 'hospitals' ? 'Hospital' : activeTab === 'doctors' ? 'Doctor' : 'Staff'}
+              <Plus className="w-4 h-4" /> Add New {activeTab === 'hospitals' ? 'Hospital' : 'Doctor'}
             </button>
           )}
         </div>
@@ -254,29 +220,21 @@ function AdminEmergencyPageContent() {
           <UserRound className="w-4 h-4" /> Bengali Doctors
         </button>
         <button
-          onClick={() => setActiveTab('staff')}
-          className={`px-4 py-3 text-sm font-semibold border-b-2 transition-colors cursor-pointer flex items-center gap-2 whitespace-nowrap ${activeTab === 'staff' ? 'border-primary text-primary' : 'border-transparent text-text-muted hover:text-text-primary'}`}
+          onClick={() => setActiveTab('contacts')}
+          className={`px-4 py-3 text-sm font-semibold border-b-2 transition-colors cursor-pointer flex items-center gap-2 whitespace-nowrap ${activeTab === 'contacts' ? 'border-primary text-primary' : 'border-transparent text-text-muted hover:text-text-primary'}`}
         >
-          <Users className="w-4 h-4" /> Bengali Staff
+          <PhoneCall className="w-4 h-4" /> Emergency Contacts
         </button>
       </div>
 
-      {(activeTab === 'doctors' || activeTab === 'staff') && hospitals.length > 0 && (
-        <div className="flex items-center gap-4 bg-white p-4 rounded-2xl border border-border shadow-sm">
-          <label className="text-sm font-bold text-text-primary whitespace-nowrap">Filter by Hospital:</label>
-          <select 
-            value={selectedHospitalFilter} 
-            onChange={e => setSelectedHospitalFilter(e.target.value)} 
-            className="w-full max-w-xs px-3 py-2 bg-surface border border-border rounded-lg text-sm cursor-pointer"
-          >
-            <option value="all">All Hospitals</option>
-            {hospitals.map(h => <option key={h.id} value={h.id}>{h.name} ({h.city})</option>)}
-          </select>
-        </div>
-      )}
-
       {loading ? (
         <div className="flex justify-center py-20"><Loader2 className="w-6 h-6 animate-spin text-primary" /></div>
+      ) : activeTab === 'contacts' ? (
+        <div className="bg-white rounded-2xl border border-border p-8 text-center shadow-sm">
+           <PhoneCall className="w-12 h-12 text-primary/40 mx-auto mb-4" />
+           <h3 className="text-xl font-bold text-text-primary mb-2">Emergency Contacts</h3>
+           <p className="text-text-muted max-w-md mx-auto">This section can be expanded to manage global emergency numbers, ambulance services, and direct helplines.</p>
+        </div>
       ) : (
         <div className="bg-white rounded-2xl border border-border overflow-hidden shadow-sm">
           <table className="w-full">
@@ -287,83 +245,48 @@ function AdminEmergencyPageContent() {
                     <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Hospital Name</th>
                     <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">City</th>
                     <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Phone</th>
-                    <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Emergency No</th>
                     <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Branch</th>
                   </>
-                ) : activeTab === 'doctors' ? (
+                ) : (
                   <>
                     <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Doctor Name</th>
                     <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Specialization</th>
                     <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Hospital</th>
                   </>
-                ) : (
-                  <>
-                    <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Staff Name</th>
-                    <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Designation</th>
-                    <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Hospital</th>
-                  </>
                 )}
-                {canEdit && <th className="text-right px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Actions</th>}
+                {(canEdit || canManage) && <th className="text-right px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Actions</th>}
               </tr>
             </thead>
-            <tbody className="divide-y divide-border text-sm text-text-primary">
-              {activeTab === 'hospitals' && hospitals.map(item => (
-                <tr key={item.id} className="hover:bg-surface/30 transition-colors">
-                  <td className="px-5 py-4 font-bold">{item.name}</td>
-                  <td className="px-5 py-4">{item.city}</td>
-                  <td className="px-5 py-4">{item.phone || '-'}</td>
-                  <td className="px-5 py-4 font-semibold text-red-600">{item.emergency_phone || '-'}</td>
-                  <td className="px-5 py-4">{item.main_branch ? 'Main' : 'Sub'}</td>
-                  {canEdit && (
-                    <td className="text-right px-5 py-4">
-                      <div className="flex items-center justify-end gap-1.5">
-                        <button onClick={() => openEdit(item)} className="p-2 text-text-muted hover:text-primary hover:bg-primary/5 rounded-lg transition-colors cursor-pointer"><Pencil className="w-4 h-4" /></button>
-                        <button onClick={() => handleDelete(item.id)} className="p-2 text-text-muted hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"><Trash2 className="w-4 h-4" /></button>
+            <tbody className="divide-y divide-border">
+              {(activeTab === 'hospitals' ? hospitals : doctors).map((item: any) => (
+                <tr key={item.id} className="hover:bg-surface transition-colors">
+                  {activeTab === 'hospitals' ? (
+                    <>
+                      <td className="px-5 py-4 text-sm text-text-primary font-medium">{item.name}</td>
+                      <td className="px-5 py-4 text-sm text-text-muted">{item.city}</td>
+                      <td className="px-5 py-4 text-sm text-text-muted">{item.phone}</td>
+                      <td className="px-5 py-4 text-sm text-text-muted">{item.main_branch ? <span className="text-emerald-600 font-semibold text-xs bg-emerald-50 px-2 py-1 rounded">Main</span> : <span className="text-text-muted text-xs">Branch</span>}</td>
+                    </>
+                  ) : (
+                    <>
+                      <td className="px-5 py-4 text-sm text-text-primary font-medium">{item.doctor_name}</td>
+                      <td className="px-5 py-4 text-sm text-text-muted">{item.specialization}</td>
+                      <td className="px-5 py-4 text-sm text-text-muted">
+                        {hospitals.find(h => h.id === item.hospital_id)?.name || 'Unknown'}
+                      </td>
+                    </>
+                  )}
+                  {(canEdit || canManage) && (
+                    <td className="px-5 py-4 text-right">
+                      <div className="flex items-center justify-end gap-1">
+                        {canEdit && <button onClick={() => openEdit(item)} className="p-2 rounded-lg hover:bg-primary/10 text-text-muted hover:text-primary transition-colors cursor-pointer"><Pencil className="w-3.5 h-3.5" /></button>}
+                        {canManage && <button onClick={() => handleDelete(item.id)} className="p-2 rounded-lg hover:bg-red-50 text-text-muted hover:text-red-500 transition-colors cursor-pointer"><Trash2 className="w-3.5 h-3.5" /></button>}
                       </div>
                     </td>
                   )}
                 </tr>
               ))}
-
-              {activeTab === 'doctors' && doctors.filter(d => selectedHospitalFilter === 'all' || d.hospital_id === selectedHospitalFilter).map(item => {
-                const hosp = hospitals.find(h => h.id === item.hospital_id);
-                return (
-                  <tr key={item.id} className="hover:bg-surface/30 transition-colors">
-                    <td className="px-5 py-4 font-bold">{item.doctor_name}</td>
-                    <td className="px-5 py-4">{item.specialization}</td>
-                    <td className="px-5 py-4">{hosp ? `${hosp.name} (${hosp.city})` : '-'}</td>
-                    {canEdit && (
-                      <td className="text-right px-5 py-4">
-                        <div className="flex items-center justify-end gap-1.5">
-                          <button onClick={() => openEdit(item)} className="p-2 text-text-muted hover:text-primary hover:bg-primary/5 rounded-lg transition-colors cursor-pointer"><Pencil className="w-4 h-4" /></button>
-                          <button onClick={() => handleDelete(item.id)} className="p-2 text-text-muted hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"><Trash2 className="w-4 h-4" /></button>
-                        </div>
-                      </td>
-                    )}
-                  </tr>
-                );
-              })}
-
-              {activeTab === 'staff' && staff.filter(s => selectedHospitalFilter === 'all' || s.hospital_id === selectedHospitalFilter).map(item => {
-                const hosp = hospitals.find(h => h.id === item.hospital_id);
-                return (
-                  <tr key={item.id} className="hover:bg-surface/30 transition-colors">
-                    <td className="px-5 py-4 font-bold">{item.name}</td>
-                    <td className="px-5 py-4">{item.role}</td>
-                    <td className="px-5 py-4">{hosp ? `${hosp.name} (${hosp.city})` : '-'}</td>
-                    {canEdit && (
-                      <td className="text-right px-5 py-4">
-                        <div className="flex items-center justify-end gap-1.5">
-                          <button onClick={() => openEdit(item)} className="p-2 text-text-muted hover:text-primary hover:bg-primary/5 rounded-lg transition-colors cursor-pointer"><Pencil className="w-4 h-4" /></button>
-                          <button onClick={() => handleDelete(item.id)} className="p-2 text-text-muted hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"><Trash2 className="w-4 h-4" /></button>
-                        </div>
-                      </td>
-                    )}
-                  </tr>
-                );
-              })}
-
-              {(activeTab === 'hospitals' ? hospitals : activeTab === 'doctors' ? doctors : staff).length === 0 && (
+              {(activeTab === 'hospitals' ? hospitals : doctors).length === 0 && (
                 <tr><td colSpan={5} className="px-5 py-12 text-center text-text-muted text-sm italic">No data yet</td></tr>
               )}
             </tbody>
@@ -377,7 +300,7 @@ function AdminEmergencyPageContent() {
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setShowForm(false)} />
           <div className="relative bg-white rounded-3xl border border-border w-full max-w-2xl max-h-[85vh] overflow-hidden flex flex-col shadow-2xl animate-fade-in">
             <div className="flex items-center justify-between p-6 border-b border-border">
-              <h3 className="text-xl font-bold text-text-primary">{editId ? 'Edit' : 'Add'} {activeTab === 'hospitals' ? 'Hospital' : activeTab === 'doctors' ? 'Doctor' : 'Staff'}</h3>
+              <h3 className="text-xl font-bold text-text-primary">{editId ? 'Edit' : 'Add'} {activeTab === 'hospitals' ? 'Hospital' : 'Doctor'}</h3>
               <button onClick={() => setShowForm(false)} className="p-2 rounded-xl hover:bg-surface text-text-muted transition-colors cursor-pointer"><X className="w-5 h-5" /></button>
             </div>
             
@@ -390,23 +313,12 @@ function AdminEmergencyPageContent() {
                       <input type="text" value={formData.name || ''} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
                     </div>
                     <div>
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">State *</label>
-                      <input type="text" value={formData.state || 'Tamil Nadu'} onChange={e => setFormData({...formData, state: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">District *</label>
-                      <input type="text" value={formData.district || 'Chennai'} onChange={e => setFormData({...formData, district: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
+                      <label className="block text-sm font-semibold text-text-primary mb-1.5">City *</label>
+                      <input type="text" value={formData.city || ''} onChange={e => setFormData({...formData, city: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
                     </div>
                     <div>
                       <label className="block text-sm font-semibold text-text-primary mb-1.5">Area</label>
-                      <select value={formData.area || ''} onChange={e => setFormData({...formData, area: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm cursor-pointer">
-                        <option value="">Select Area...</option>
-                        {CHENNAI_AREAS.map(a => <option key={a} value={a}>{a}</option>)}
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">City *</label>
-                      <input type="text" value={formData.city || ''} onChange={e => setFormData({...formData, city: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
+                      <input type="text" value={formData.area || ''} onChange={e => setFormData({...formData, area: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
                     </div>
                     <div>
                       <label className="block text-sm font-semibold text-text-primary mb-1.5">Full Address</label>
@@ -432,31 +344,35 @@ function AdminEmergencyPageContent() {
                       <label className="block text-sm font-semibold text-text-primary mb-1.5">Google Maps Link</label>
                       <input type="text" value={formData.google_maps_url || ''} onChange={e => setFormData({...formData, google_maps_url: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
                     </div>
-                    <div className="flex items-center gap-6 mt-6">
-                      <label className="flex items-center gap-2 cursor-pointer select-none">
-                        <input type="checkbox" checked={!!formData.main_branch} onChange={e => setFormData({...formData, main_branch: e.target.checked})} className="w-4 h-4 rounded border-border" />
-                        <span className="text-sm text-text-primary font-semibold">Main Branch</span>
-                      </label>
-                      <label className="flex items-center gap-2 cursor-pointer select-none">
-                        <input type="checkbox" checked={!!formData.is_24_7} onChange={e => setFormData({...formData, is_24_7: e.target.checked})} className="w-4 h-4 rounded border-border" />
-                        <span className="text-sm text-text-primary font-semibold">Open 24/7</span>
-                      </label>
-                      <label className="flex items-center gap-2 cursor-pointer select-none">
-                        <input type="checkbox" checked={!!formData.has_bengali_doctor} onChange={e => setFormData({...formData, has_bengali_doctor: e.target.checked})} className="w-4 h-4 rounded border-border" />
-                        <span className="text-sm text-text-primary font-semibold">Has Bengali Doctor</span>
-                      </label>
+                    <div className="md:col-span-2 flex flex-col gap-3">
+                      <div className="flex items-center gap-3">
+                        <input type="checkbox" id="is_24_7" checked={!!formData.is_24_7} onChange={e => setFormData({...formData, is_24_7: e.target.checked})} className="w-5 h-5 rounded border-border" />
+                        <label htmlFor="is_24_7" className="text-sm font-semibold text-text-primary cursor-pointer">24/7 Service</label>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <input type="checkbox" id="has_bengali_doctor" checked={!!formData.has_bengali_doctor} onChange={e => setFormData({...formData, has_bengali_doctor: e.target.checked})} className="w-5 h-5 rounded border-border" />
+                        <label htmlFor="has_bengali_doctor" className="text-sm font-semibold text-text-primary cursor-pointer">Has Bengali Doctor</label>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <input type="checkbox" id="main_branch" checked={!!formData.main_branch} onChange={e => setFormData({...formData, main_branch: e.target.checked})} className="w-5 h-5 rounded border-border" />
+                        <label htmlFor="main_branch" className="text-sm font-semibold text-text-primary cursor-pointer">Main Branch</label>
+                      </div>
                     </div>
                     <div className="md:col-span-2">
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Specializations (one per line)</label>
-                      <textarea rows={3} value={formData.specializations || ''} onChange={e => setFormData({...formData, specializations: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm resize-none" />
+                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Specializations (One per line)</label>
+                      <textarea rows={3} value={formData.specializations || ''} onChange={e => setFormData({...formData, specializations: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm resize-none" placeholder="Cardiology&#10;Neurology" />
                     </div>
                     <div className="md:col-span-2">
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Description</label>
+                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Description / Services Offered</label>
                       <textarea rows={3} value={formData.description || ''} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm resize-none" />
+                    </div>
+                    <div className="md:col-span-2">
+                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Images (One URL per line)</label>
+                      <textarea rows={3} value={formData.images || ''} onChange={e => setFormData({...formData, images: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm resize-none" placeholder="https://example.com/image1.jpg" />
                     </div>
                   </div>
                 </>
-              ) : activeTab === 'doctors' ? (
+              ) : (
                 <>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
@@ -467,8 +383,8 @@ function AdminEmergencyPageContent() {
                       <label className="block text-sm font-semibold text-text-primary mb-1.5">Specialization *</label>
                       <input type="text" value={formData.specialization || ''} onChange={e => setFormData({...formData, specialization: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
                     </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Hospital Association *</label>
+                    <div className="md:col-span-2">
+                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Assign to Hospital *</label>
                       <select value={formData.hospital_id || ''} onChange={e => setFormData({...formData, hospital_id: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm cursor-pointer">
                         <option value="">Select Hospital...</option>
                         {hospitals.map(h => <option key={h.id} value={h.id}>{h.name} ({h.city})</option>)}
@@ -478,83 +394,21 @@ function AdminEmergencyPageContent() {
                       <label className="block text-sm font-semibold text-text-primary mb-1.5">Experience (e.g. 10 years)</label>
                       <input type="text" value={formData.experience || ''} onChange={e => setFormData({...formData, experience: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
                     </div>
-                    <div className="md:col-span-2">
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Languages Spoken</label>
-                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-2">
-                        {LANGUAGES.map(lang => (
-                          <label key={lang} className="flex items-center gap-2 cursor-pointer">
-                            <input 
-                              type="checkbox" 
-                              checked={(formData.languages || []).includes(lang)}
-                              onChange={(e) => {
-                                const current = formData.languages || [];
-                                if (e.target.checked) {
-                                  setFormData({ ...formData, languages: [...current, lang] });
-                                } else {
-                                  setFormData({ ...formData, languages: current.filter((l: string) => l !== lang) });
-                                }
-                              }}
-                              className="w-4 h-4 rounded border-border"
-                            />
-                            <span className="text-sm text-text-primary">{lang}</span>
-                          </label>
-                        ))}
-                      </div>
-                    </div>
-                    <div className="md:col-span-2">
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Description</label>
-                      <textarea rows={3} value={formData.description || ''} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm resize-none" />
-                    </div>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Staff Name *</label>
-                      <input type="text" value={formData.name || ''} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Designation *</label>
-                      <input type="text" value={formData.role || ''} onChange={e => setFormData({...formData, role: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Hospital Association *</label>
-                      <select value={formData.hospital_id || ''} onChange={e => setFormData({...formData, hospital_id: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm cursor-pointer">
-                        <option value="">Select Hospital...</option>
-                        {hospitals.map(h => <option key={h.id} value={h.id}>{h.name} ({h.city})</option>)}
-                      </select>
+                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Photo URL</label>
+                      <input type="text" value={formData.photo || ''} onChange={e => setFormData({...formData, photo: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
                     </div>
                     <div>
                       <label className="block text-sm font-semibold text-text-primary mb-1.5">Phone</label>
                       <input type="text" value={formData.phone || ''} onChange={e => setFormData({...formData, phone: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
                     </div>
-                    <div className="md:col-span-2">
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Languages Spoken</label>
-                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-2">
-                        {LANGUAGES.map(lang => (
-                          <label key={lang} className="flex items-center gap-2 cursor-pointer">
-                            <input 
-                              type="checkbox" 
-                              checked={(formData.languages || []).includes(lang)}
-                              onChange={(e) => {
-                                const current = formData.languages || [];
-                                if (e.target.checked) {
-                                  setFormData({ ...formData, languages: [...current, lang] });
-                                } else {
-                                  setFormData({ ...formData, languages: current.filter((l: string) => l !== lang) });
-                                }
-                              }}
-                              className="w-4 h-4 rounded border-border"
-                            />
-                            <span className="text-sm text-text-primary">{lang}</span>
-                          </label>
-                        ))}
-                      </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Email</label>
+                      <input type="email" value={formData.email || ''} onChange={e => setFormData({...formData, email: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
                     </div>
                     <div className="md:col-span-2">
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Description</label>
-                      <textarea rows={3} value={formData.description || ''} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm resize-none" />
+                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Languages (One language per line)</label>
+                      <textarea rows={3} value={formData.languages || ''} onChange={e => setFormData({...formData, languages: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm resize-none" placeholder="Bengali&#10;English&#10;Tamil" />
                     </div>
                   </div>
                 </>
@@ -571,18 +425,5 @@ function AdminEmergencyPageContent() {
         </div>
       )}
     </div>
-  );
-}
-
-export default function AdminEmergencyPage() {
-  return (
-    <Suspense fallback={
-      <div className="flex flex-col items-center justify-center py-20 gap-4 bg-white rounded-2xl border border-border">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
-        <p className="text-text-muted text-sm font-medium">Loading emergency panel...</p>
-      </div>
-    }>
-      <AdminEmergencyPageContent />
-    </Suspense>
   );
 }

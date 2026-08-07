@@ -1,87 +1,27 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { Search, MapPin, Phone, GraduationCap, Globe, ExternalLink, Navigation, ChevronDown, ChevronUp, Lock, ShieldAlert, Mail, ArrowRight, Loader2 } from 'lucide-react';
+import { Search, MapPin, Phone, GraduationCap, Globe, ExternalLink, Navigation } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/card';
 import { sampleColleges } from '@/data/sample-data';
 import { CITIES, COLLEGE_TYPES } from '@/lib/constants';
-import { collection, getDocs } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
-import { COLLECTIONS } from '@/lib/firestore/collections';
-import { useAuth } from '@/lib/auth/AuthContext';
-import { OtpVerificationModal } from '@/components/auth/OtpVerificationModal';
-import type { College } from '@/types';
-
-const CATEGORY_LABELS: Record<string, string> = {
-  engineering: 'Engineering Colleges',
-  medical: 'Medical Colleges',
-  arts_science: 'Arts & Science Colleges'
-};
-
-const CATEGORY_THEMES: Record<string, { bg: string; text: string; iconBg: string; iconColor: string }> = {
-  engineering: { bg: 'bg-blue-50', text: 'text-blue-700', iconBg: 'bg-blue-100', iconColor: 'text-blue-600' },
-  medical: { bg: 'bg-rose-50', text: 'text-rose-700', iconBg: 'bg-rose-100', iconColor: 'text-rose-600' },
-  arts_science: { bg: 'bg-emerald-50', text: 'text-emerald-700', iconBg: 'bg-emerald-100', iconColor: 'text-emerald-600' }
-};
 
 export default function CollegePage() {
   const [type, setType] = useState('');
   const [city, setCity] = useState('');
   const [search, setSearch] = useState('');
-  const [colleges, setColleges] = useState<College[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [isVerified, setIsVerified] = useState(false);
-  const [showOtpModal, setShowOtpModal] = useState(false);
-  const [expandedColleges, setExpandedColleges] = useState<Record<string, boolean>>({});
-  
-  const { firebaseUser: user } = useAuth();
-
-  useEffect(() => {
-    const fetchColleges = async () => {
-      try {
-        const snap = await getDocs(collection(db, COLLECTIONS.colleges));
-        const data = snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as College));
-        setColleges(data.length > 0 ? data : sampleColleges);
-      } catch (err) {
-        console.error("Error fetching colleges:", err);
-        setColleges(sampleColleges);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchColleges();
-  }, []);
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setIsVerified(localStorage.getItem('directory_verified') === 'true');
-    }
-  }, []);
-
-  const toggleExpand = (id: string) => {
-    setExpandedColleges(prev => ({
-      ...prev,
-      [id]: !prev[id]
-    }));
-  };
 
   const filtered = useMemo(() => {
-    return colleges
-      .filter((c) => {
-        if (type && c.type !== type) return false;
-        if (city && c.city !== city) return false;
-        if (search && !c.name.toLowerCase().includes(search.toLowerCase())) return false;
-        return true;
-      })
-      .sort((a, b) => {
-        const rankA = a.ranking !== undefined && a.ranking !== null ? Number(a.ranking) : 9999;
-        const rankB = b.ranking !== undefined && b.ranking !== null ? Number(b.ranking) : 9999;
-        return rankA - rankB;
-      });
-  }, [type, city, search, colleges]);
+    return sampleColleges.filter((c) => {
+      if (type && c.type !== type) return false;
+      if (city && c.city !== city) return false;
+      if (search && !c.name.toLowerCase().includes(search.toLowerCase())) return false;
+      return true;
+    });
+  }, [type, city, search]);
 
   return (
     <div className="min-h-screen bg-surface">
@@ -92,41 +32,21 @@ export default function CollegePage() {
             <span className="text-text-primary font-medium">College Finder</span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-bold font-display text-text-primary">College Finder</h1>
-          <p className="mt-2 text-text-muted">Find Engineering, Medical, and Arts & Science colleges in major districts of Tamil Nadu.</p>
+          <p className="mt-2 text-text-muted">Find engineering, medical, arts, and management colleges in Tamil Nadu.</p>
 
           <div className="mt-6 flex flex-wrap gap-2">
-            <button 
-              onClick={() => setType('')} 
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-all cursor-pointer ${!type ? 'bg-primary text-white shadow-md' : 'bg-white border border-border hover:border-primary'}`}
-            >
-              All Colleges
-            </button>
+            <button onClick={() => setType('')} className={`px-4 py-2 rounded-full text-sm font-medium transition-all cursor-pointer ${!type ? 'bg-primary text-white shadow-md' : 'bg-white border border-border hover:border-primary'}`}>All</button>
             {COLLEGE_TYPES.map((ct) => (
-              <button 
-                key={ct} 
-                onClick={() => setType(ct)} 
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-all cursor-pointer ${type === ct ? 'bg-primary text-white shadow-md' : 'bg-white border border-border hover:border-primary'}`}
-              >
-                {CATEGORY_LABELS[ct] || ct}
-              </button>
+              <button key={ct} onClick={() => setType(ct)} className={`px-4 py-2 rounded-full text-sm font-medium capitalize transition-all cursor-pointer ${type === ct ? 'bg-primary text-white shadow-md' : 'bg-white border border-border hover:border-primary'}`}>{ct}</button>
             ))}
           </div>
           <div className="mt-4 flex flex-wrap items-center gap-3">
             <div className="relative flex-1 min-w-[200px] max-w-sm">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
-              <input 
-                value={search} 
-                onChange={(e) => setSearch(e.target.value)} 
-                placeholder="Search colleges..." 
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" 
-              />
+              <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search colleges..." className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
             </div>
-            <select 
-              value={city} 
-              onChange={(e) => setCity(e.target.value)} 
-              className="px-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
-            >
-              <option value="">All Districts</option>
+            <select value={city} onChange={(e) => setCity(e.target.value)} className="px-4 py-2.5 rounded-xl border border-border text-sm">
+              <option value="">All Cities</option>
               {CITIES.map((c) => <option key={c} value={c}>{c}</option>)}
             </select>
           </div>
@@ -141,7 +61,7 @@ export default function CollegePage() {
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-start">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filtered.map((college) => {
                 const theme = CATEGORY_THEMES[college.type || 'arts_science'] || CATEGORY_THEMES.arts_science;
                 return (
@@ -226,6 +146,19 @@ export default function CollegePage() {
                                   </Button>
                                 </Link>
                               </div>
+                            ) : !isVerified ? (
+                              <div className="p-4 bg-amber-50/50 border border-amber-200 rounded-2xl text-center">
+                                <ShieldAlert className="w-6 h-6 text-amber-600 mx-auto mb-2" />
+                                <p className="text-xs font-bold text-amber-800">Verification Required</p>
+                                <p className="text-xs text-amber-700/80 mt-1">Verify your phone and email to access direct contact details.</p>
+                                <Button
+                                  size="sm"
+                                  onClick={() => setShowOtpModal(true)}
+                                  className="w-full mt-3 bg-amber-600 text-white hover:bg-amber-700 font-semibold cursor-pointer border-transparent"
+                                >
+                                  Verify via OTP
+                                </Button>
+                              </div>
                             ) : (
                               <div className="space-y-3">
                                 {college.staff_contacts && college.staff_contacts.length > 0 ? (
@@ -305,18 +238,6 @@ export default function CollegePage() {
           </>
         )}
       </div>
-
-      <OtpVerificationModal 
-        isOpen={showOtpModal}
-        onClose={() => setShowOtpModal(false)}
-        onSuccess={() => {
-          setIsVerified(true);
-          setShowOtpModal(false);
-          if (typeof window !== 'undefined') {
-            localStorage.setItem('directory_verified', 'true');
-          }
-        }}
-      />
     </div>
   );
 }

@@ -28,10 +28,9 @@ interface AuthState {
 
 interface AuthContextType extends AuthState {
   signIn: (email: string, password: string) => Promise<void>;
-  signUp: (email: string, password: string, fullName: string, phone?: string, phoneVerified?: boolean, emailVerified?: boolean) => Promise<void>;
+  signUp: (email: string, password: string, fullName: string, phone?: string, phoneVerified?: boolean) => Promise<void>;
   logOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
-  triggerMfaSuccess: () => Promise<void>;
   sendPhoneOtp: (phoneNumber: string, recaptchaContainerId: string, flow?: 'login' | 'register') => Promise<ConfirmationResult>;
   verifyPhoneOtp: (confirmationResult: ConfirmationResult, otp: string) => Promise<void>;
   sendVerificationEmail: () => Promise<void>;
@@ -68,46 +67,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setState((prev) => ({ ...prev, profile }));
   }, [state.firebaseUser, fetchProfile]);
 
-  const triggerMfaSuccess = useCallback(async () => {
-    if (auth.currentUser) {
-      const profile = await fetchProfile(auth.currentUser);
-      setState({ firebaseUser: auth.currentUser, profile, loading: false });
-    }
-  }, [fetchProfile]);
-
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (user) => {
-      // TEMPORARY BYPASS
-      if (document.cookie.includes('session=temp_session_cookie') || document.cookie.includes('session=temp_admin_cookie')) {
-        const isAdminRole = document.cookie.includes('session=temp_admin_cookie');
-        const mockProfile: UserProfile = {
-          uid: isAdminRole ? 'temporary-regular-admin-id' : 'temporary-admin-id',
-          email: isAdminRole ? 'admin-regular@pro.in' : 'admin@pro.in',
-          full_name: isAdminRole ? 'Regular Admin' : 'Super Admin',
-          role: isAdminRole ? 'admin' : 'superadmin',
-          permissions: isAdminRole ? {
-            stay: 'manage', food: 'manage', travel: 'manage', emergency: 'manage',
-            community: 'manage', services: 'manage', blog: 'manage', users: 'none',
-            matrimony: 'manage'
-          } : getDefaultPermissions('superadmin'),
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-          is_active: true,
-        };
-        const mockUser = {
-          uid: isAdminRole ? 'temporary-regular-admin-id' : 'temporary-admin-id',
-          getIdToken: async () => isAdminRole ? 'mock-bypass-admin-token' : 'mock-bypass-token'
-        } as any;
-        setState({ firebaseUser: mockUser, profile: mockProfile, loading: false });
-
-        if (!auth.currentUser) {
-          signInWithEmailAndPassword(auth, 'admin@pro.in', '9874563210').catch((err) => {
-            console.error("Firebase auth login sync failed:", err);
-          });
-        }
-        return;
-      }
-
       if (user) {
         const profile = await fetchProfile(user);
 
@@ -133,14 +94,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           console.error('Session sync error:', err);
         }
 
-        const isMfaRequired = profile && (profile.role === 'admin' || profile.role === 'superadmin');
-        const isMfaVerified = typeof window !== 'undefined' && sessionStorage.getItem('mfa_verified') === 'true';
-
-        if (isMfaRequired && !isMfaVerified) {
-          setState({ firebaseUser: null, profile: null, loading: false });
-        } else {
-          setState({ firebaseUser: user, profile, loading: false });
-        }
+        setState({ firebaseUser: user, profile, loading: false });
       } else {
         // Clear session cookie
         try {
@@ -155,22 +109,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [fetchProfile]);
 
   const signIn = async (email: string, password: string) => {
-    if (email === 'admin@pro.in' && password === '9874563210') {
-      if (!document.cookie.includes('session=temp_admin_cookie')) {
-        document.cookie = "session=temp_session_cookie; path=/";
-      }
-      try {
-        await signInWithEmailAndPassword(auth, email, password);
-      } catch (err) {
-        console.error("Firebase auth login failed in bypass:", err);
-      }
-      window.location.href = '/admin';
-      return;
-    }
     await signInWithEmailAndPassword(auth, email, password);
   };
 
-  const signUp = async (email: string, password: string, fullName: string, phone?: string, phoneVerified = false, emailVerified = false) => {
+  const signUp = async (email: string, password: string, fullName: string, phone?: string, phoneVerified = false) => {
     const credential = await createUserWithEmailAndPassword(auth, email, password);
     const user = credential.user;
 
@@ -188,7 +130,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       created_at: now,
       updated_at: now,
       is_active: true,
-      email_verified: emailVerified,
+      email_verified: true,
       phone_verified: phoneVerified,
     };
 
@@ -328,29 +270,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-
-
   const logOut = async () => {
-    document.cookie = "session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     await firebaseSignOut(auth);
   };
 
   return (
-    <AuthContext.Provider
-      value={{
-        ...state,
-        signIn,
-        signUp,
-        logOut,
-        refreshProfile,
-        triggerMfaSuccess,
-        sendPhoneOtp,
-        verifyPhoneOtp,
-        sendVerificationEmail,
-        linkPhoneToAccount,
-        confirmLinkPhone,
-      }}
-    >
+    <AuthContext.Provider value={{
+      ...state, signIn, signUp, logOut, refreshProfile,
+      sendPhoneOtp, verifyPhoneOtp, sendVerificationEmail,
+      linkPhoneToAccount, confirmLinkPhone,
+    }}>
       {children}
     </AuthContext.Provider>
   );

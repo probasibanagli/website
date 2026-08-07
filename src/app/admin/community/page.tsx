@@ -11,6 +11,7 @@ export default function AdminCommunityPage() {
         { key: 'name', label: 'Name' },
         { key: 'platform', label: 'Platform' },
         { key: 'city', label: 'City' },
+        { key: 'member_count', label: 'Members' },
         { key: 'category', label: 'Category' },
       ]}
       formFields={[
@@ -19,6 +20,7 @@ export default function AdminCommunityPage() {
         { key: 'city', label: 'City' },
         { key: 'region', label: 'Region', type: 'select', options: ['tamil_nadu', 'india', 'all'] },
         { key: 'description', label: 'Description', type: 'textarea' },
+        { key: 'member_count', label: 'Member Count', type: 'number' },
         { key: 'join_url', label: 'Join URL' },
         { key: 'website_url', label: 'Website URL' },
         { key: 'facebook_url', label: 'Facebook URL' },

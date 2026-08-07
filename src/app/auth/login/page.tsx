@@ -5,7 +5,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
   Mail, Phone, Lock, Eye, EyeOff, Loader2, ArrowRight,
-  CheckCircle2, Shield, ArrowLeft, RefreshCw, Smartphone, Timer, Fingerprint, ShieldAlert, Key
+  CheckCircle2, MessageCircle, Shield, ArrowLeft, RefreshCw,
+  Smartphone, Timer, Fingerprint
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -15,18 +16,15 @@ import type { ConfirmationResult } from 'firebase/auth';
 
 type LoginMode = 'email' | 'phone';
 type PhoneStep = 'input' | 'otp';
-type AdminFirstLoginStep = 'double-otp' | 'create-password';
 
-const SUPER_ADMIN_EMAIL = 'admin@probasibangali.in';
-const PRECONFIGURED_SUPER_ADMIN_PHONE = '+919626855406';
+const OTP_RESEND_COOLDOWN = 30; // seconds
 
 export default function LoginPage() {
   const router = useRouter();
-  const { signIn, sendPhoneOtp, verifyPhoneOtp, logOut, triggerMfaSuccess, profile } = useAuth();
+  const { signIn, sendPhoneOtp, verifyPhoneOtp, firebaseUser, profile } = useAuth();
 
   const [mode, setMode] = useState<LoginMode>('phone');
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
@@ -38,34 +36,16 @@ export default function LoginPage() {
   const [phoneStep, setPhoneStep] = useState<PhoneStep>('input');
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
+  const [otpMethod, setOtpMethod] = useState<'sms' | 'whatsapp'>('sms');
   const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
-
-  // Super Admin verification state
-  const [superAdminVerify, setSuperAdminVerify] = useState(false);
-  const [superAdminOtp, setSuperAdminOtp] = useState(['', '', '', '', '', '']);
-  const superAdminOtpRefs = useRef<(HTMLInputElement | null)[]>([]);
-
-  // Admin first-login state
-  const [adminFirstLogin, setAdminFirstLogin] = useState(false);
-  const [adminFirstLoginStep, setAdminFirstLoginStep] = useState<AdminFirstLoginStep>('double-otp');
-  const [adminPhoneOtp, setAdminPhoneOtp] = useState(['', '', '', '', '', '']);
-  const [adminEmailOtp, setAdminEmailOtp] = useState(['', '', '', '', '', '']);
-  const [adminPhoneConfirmation, setAdminPhoneConfirmation] = useState<ConfirmationResult | null>(null);
-  const [adminPhoneDisplay, setAdminPhoneDisplay] = useState('');
-  const [adminNewPassword, setAdminNewPassword] = useState('');
-  const [adminConfirmPassword, setAdminConfirmPassword] = useState('');
-  const adminPhoneOtpRefs = useRef<(HTMLInputElement | null)[]>([]);
-  const adminEmailOtpRefs = useRef<(HTMLInputElement | null)[]>([]);
-
-  // Debug OTP display for simulation
-  const [debugEmailOtp, setDebugEmailOtp] = useState('');
 
   // Resend cooldown timer
   const [resendTimer, setResendTimer] = useState(0);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Start countdown
   const startResendTimer = useCallback(() => {
-    setResendTimer(30);
+    setResendTimer(OTP_RESEND_COOLDOWN);
     if (timerRef.current) clearInterval(timerRef.current);
     timerRef.current = setInterval(() => {
       setResendTimer((prev) => {
@@ -88,106 +68,31 @@ export default function LoginPage() {
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    setSuccess('');
     setLoading(true);
 
     try {
-      const emailLower = email.trim().toLowerCase();
-      // 1. Bypass check for temp admin
-      if (emailLower === 'admin@pro.in' && password === '9874563210') {
-         // Bypass Firebase checks for temporary admin
-         return;
-      }
+      await signIn(email, password);
 
-      // 2. Check if this is an Admin first login
-      const checkAdminRes = await fetch('/api/auth/check-admin', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: emailLower }),
-      });
-      const checkAdminData = await checkAdminRes.json();
-
-      if (checkAdminData.isAdmin && checkAdminData.isFirstLogin) {
-        // Send OTPs to registered Admin phone and email
-        setAdminPhoneDisplay(checkAdminData.phone);
-        const formattedPhone = checkAdminData.phone;
-
-        // Send Phone OTP
-        const phoneResult = await sendPhoneOtp(formattedPhone, 'recaptcha-container', 'login');
-        setAdminPhoneConfirmation(phoneResult);
-
-        // Send Email OTP
-        const emailOtpRes = await fetch('/api/auth/email-otp', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'send', email: emailLower }),
-        });
-        const emailOtpData = await emailOtpRes.json();
-        if (emailOtpData.debugOtp) {
-          setDebugEmailOtp(emailOtpData.debugOtp);
-        }
-
-        setAdminFirstLogin(true);
-        setAdminFirstLoginStep('double-otp');
+      // Re-read the current Firebase user to get fresh emailVerified status
+      const { auth } = await import('@/lib/firebase');
+      await auth.currentUser?.reload();
+      const currentUser = auth.currentUser;
+      if (!currentUser) {
+        setError('Failed to retrieve user session.');
         setLoading(false);
         return;
       }
 
-      // 2. Normal Login or Super Admin
-      await signIn(emailLower, password);
-
-      // Re-read current user for status checks
-      const { auth, db } = await import('@/lib/firebase');
+      // Fetch Firestore profile to check phone_verified
+      const { db } = await import('@/lib/firebase');
       const { doc, getDoc } = await import('firebase/firestore');
-      await auth.currentUser?.reload();
-      const currentUser = auth.currentUser;
-
-      if (!currentUser) {
-        throw new Error('Failed to retrieve user session.');
-      }
-
       const snap = await getDoc(doc(db, 'users', currentUser.uid));
       const userProfile = snap.data();
 
-      // Check if blocked
-      if (userProfile?.is_active === false) {
-        setError('Your account is blocked. Redirecting to support...');
-        setTimeout(() => router.push('/blocked'), 1500);
-        setLoading(false);
-        return;
-      }
-
-      // Check if Super Admin
-      if (emailLower === SUPER_ADMIN_EMAIL || userProfile?.role === 'superadmin') {
-        // Must perform second-factor Phone verification
-        setAdminPhoneDisplay(PRECONFIGURED_SUPER_ADMIN_PHONE);
-        setSuperAdminVerify(true);
-        const superAdminResult = await sendPhoneOtp(PRECONFIGURED_SUPER_ADMIN_PHONE, 'recaptcha-container', 'login');
-        setConfirmationResult(superAdminResult);
-        setSuccess('Super Admin credentials verified. Please enter the OTP sent to your pre-configured phone.');
-        setLoading(false);
-        return;
-      }
-
-      // Check if regular Admin
-      if (userProfile?.role === 'admin') {
-        const adminPhone = userProfile?.phone;
-        if (!adminPhone) {
-          throw new Error('No registered phone number found for this Admin account. Please contact Super Admin.');
-        }
-        setAdminPhoneDisplay(adminPhone);
-        setSuperAdminVerify(true);
-        const adminResult = await sendPhoneOtp(adminPhone, 'recaptcha-container', 'login');
-        setConfirmationResult(adminResult);
-        setSuccess('Admin credentials verified. Please enter the OTP sent to your registered phone.');
-        setLoading(false);
-        return;
-      }
-
-      // If not fully verified regular user, check verification status
-      if (userProfile?.role === 'user' && !userProfile?.phone_verified) {
+      if (!userProfile?.phone_verified) {
         setError('Your phone number is not verified. Please complete phone verification to login.');
-        await logOut();
+        const { getAuth, signOut } = await import('firebase/auth');
+        await signOut(getAuth());
         setLoading(false);
         return;
       }
@@ -195,142 +100,14 @@ export default function LoginPage() {
       const params = new URLSearchParams(window.location.search);
       const redirect = params.get('redirect') || '/';
       router.push(redirect);
-    } catch (err: any) {
-      setError(err.message || 'Login failed.');
-    } finally {
-      if (!superAdminVerify && !adminFirstLogin) {
-        setLoading(false);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Login failed';
+      if (message.includes('user-not-found') || message.includes('wrong-password') || message.includes('invalid-credential')) {
+        setError('Invalid email or password. Please try again.');
+      } else {
+        setError(message);
       }
-    }
-  };
-
-  /* ── Super Admin Phone OTP Verification ── */
-  const handleSuperAdminOtpVerify = async () => {
-    setError('');
-    const code = superAdminOtp.join('');
-    if (code.length !== 6) return setError('Please enter the complete 6-digit OTP.');
-    if (!confirmationResult) return setError('Session expired. Please try again.');
-
-    setLoading(true);
-    try {
-      await verifyPhoneOtp(confirmationResult, code);
-      setSuccess('Verification successful! Redirecting...');
-      
-      const isActualSuperAdmin = email.trim().toLowerCase() === SUPER_ADMIN_EMAIL || profile?.role === 'superadmin';
-      
-      // Track login activity
-      await fetch('/api/admin/activities', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: isActualSuperAdmin ? 'Super Admin Login' : 'Admin Login',
-          performed_by: isActualSuperAdmin ? 'Super Admin' : (email.trim().toLowerCase()),
-          user_role: isActualSuperAdmin ? 'superadmin' : 'admin',
-          details: `${isActualSuperAdmin ? 'Super Admin' : 'Admin'} successfully logged in via multi-factor authentication`
-        })
-      }).catch(() => {});
-
-      sessionStorage.setItem('mfa_verified', 'true');
-      await triggerMfaSuccess();
-      setTimeout(() => {
-        router.push('/admin');
-      }, 1000);
-    } catch (err: any) {
-      setError(err.message || 'Verification failed.');
-      setSuperAdminOtp(['', '', '', '', '', '']);
-      superAdminOtpRefs.current[0]?.focus();
     } finally {
-      setLoading(false);
-    }
-  };
-
-  /* ── Admin First-Time Double OTP Verification ── */
-  const handleAdminDoubleOtpVerify = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-    setSuccess('');
-
-    const phoneCode = adminPhoneOtp.join('');
-    const emailCode = adminEmailOtp.join('');
-
-    if (phoneCode.length !== 6) return setError('Please enter the complete 6-digit Phone OTP.');
-    if (emailCode.length !== 6) return setError('Please enter the complete 6-digit Email OTP.');
-
-    setLoading(true);
-    try {
-      // 1. Verify Email OTP
-      const emailVerifyRes = await fetch('/api/auth/email-otp', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'verify', email: email.trim().toLowerCase(), otp: emailCode }),
-      });
-      const emailVerifyData = await emailVerifyRes.json();
-      if (!emailVerifyRes.ok) throw new Error(emailVerifyData.error || 'Invalid Email OTP.');
-
-      // 2. Verify Phone OTP
-      const phoneVerifyRes = await fetch('/api/auth/otp', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'verify', phone: adminPhoneDisplay, otp: phoneCode }),
-      });
-      const phoneVerifyData = await phoneVerifyRes.json();
-      if (!phoneVerifyRes.ok) throw new Error(phoneVerifyData.error || 'Invalid Phone OTP.');
-
-      setSuccess('Verification successful! Set up your password now.');
-      setTimeout(() => {
-        setAdminFirstLoginStep('create-password');
-        setSuccess('');
-        setLoading(false);
-      }, 1000);
-    } catch (err: any) {
-      setError(err.message || 'Verification failed.');
-      setLoading(false);
-    }
-  };
-
-  /* ── Admin Create Password ── */
-  const handleAdminCreatePassword = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-    setSuccess('');
-
-    if (adminNewPassword.length < 6) return setError('Password must be at least 6 characters.');
-    if (adminNewPassword !== adminConfirmPassword) return setError('Passwords do not match.');
-
-    setLoading(true);
-    try {
-      const emailLower = email.trim().toLowerCase();
-      const res = await fetch('/api/auth/setup-admin-password', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: emailLower, password: adminNewPassword }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Failed to configure password.');
-
-      // Perform signIn
-      await signIn(emailLower, adminNewPassword);
-      
-      // Track login activity
-      await fetch('/api/admin/activities', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'Admin Password Configured',
-          performed_by: emailLower,
-          user_role: 'admin',
-          details: 'Admin configured login password and logged in'
-        })
-      }).catch(() => {});
-
-      setSuccess('Password configured successfully! Redirecting to panel...');
-      sessionStorage.setItem('mfa_verified', 'true');
-      await triggerMfaSuccess();
-      setTimeout(() => {
-        router.push('/admin');
-      }, 1500);
-    } catch (err: any) {
-      setError(err.message || 'Failed to complete registration.');
       setLoading(false);
     }
   };
@@ -353,25 +130,6 @@ export default function LoginPage() {
     }
     const formatted = '+91' + digits;
 
-    if (digits === '1234567890') {
-      sessionStorage.setItem('mfa_verified', 'true');
-      setSuccess('Bypass superadmin verification successful! Redirecting...');
-      setTimeout(async () => {
-        await signIn('admin@pro.in', '9874563210');
-      }, 1000);
-      return;
-    }
-
-    if (digits === '1234567899') {
-      document.cookie = "session=temp_admin_cookie; path=/";
-      sessionStorage.setItem('mfa_verified', 'true');
-      setSuccess('Bypass admin verification successful! Redirecting...');
-      setTimeout(async () => {
-        await signIn('admin@pro.in', '9874563210');
-      }, 1000);
-      return;
-    }
-
     setLoading(true);
     try {
       const result = await sendPhoneOtp(formatted, 'recaptcha-container', 'login');
@@ -379,9 +137,17 @@ export default function LoginPage() {
       setPhoneStep('otp');
       startResendTimer();
       setSuccess(`OTP sent via SMS to ${formatted}`);
+      // Auto-focus first OTP input
       setTimeout(() => otpRefs.current[0]?.focus(), 100);
-    } catch (err: any) {
-      setError(err.message || 'Failed to send OTP.');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Failed to send OTP';
+      if (message.includes('too-many-requests')) {
+        setError('Too many attempts. Please try again after some time.');
+      } else if (message.includes('invalid-phone-number')) {
+        setError('Invalid phone number. Please check and try again.');
+      } else {
+        setError(message);
+      }
     } finally {
       setLoading(false);
     }
@@ -390,34 +156,19 @@ export default function LoginPage() {
   /* ── Phone OTP: Verify ── */
   const handleVerifyOtp = async (codeOverride?: string) => {
     const code = codeOverride || otp.join('');
-    if (code.length !== 6) return setError('Please enter the complete 6-digit OTP.');
-    if (!confirmationResult) return setError('Session expired. Please request a new OTP.');
+    if (code.length !== 6) {
+      setError('Please enter the complete 6-digit OTP.');
+      return;
+    }
+    if (!confirmationResult) {
+      setError('Session expired. Please request a new OTP.');
+      return;
+    }
 
     setError('');
     setLoading(true);
     try {
       await verifyPhoneOtp(confirmationResult, code);
-
-      // Re-read profile to check status
-      const { auth, db } = await import('@/lib/firebase');
-      const { doc, getDoc } = await import('firebase/firestore');
-      const currentUser = auth.currentUser;
-      if (currentUser) {
-        const snap = await getDoc(doc(db, 'users', currentUser.uid));
-        const userProfile = snap.data();
-        if (userProfile?.is_active === false) {
-          setError('Your account is blocked.');
-          setTimeout(() => router.push('/blocked'), 1500);
-          setLoading(false);
-          return;
-        }
-
-        // If the logged-in user is an admin or superadmin, mark MFA as verified since they verified their phone number
-        if (userProfile?.role === 'admin' || userProfile?.role === 'superadmin') {
-          sessionStorage.setItem('mfa_verified', 'true');
-          await triggerMfaSuccess();
-        }
-      }
 
       setSuccess('Verified successfully! Redirecting...');
       setTimeout(() => {
@@ -425,61 +176,92 @@ export default function LoginPage() {
         const redirect = params.get('redirect') || '/';
         router.push(redirect);
       }, 1000);
-    } catch (err: any) {
-      setError(err.message || 'Verification failed.');
-      setOtp(['', '', '', '', '', '']);
-      otpRefs.current[0]?.focus();
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'OTP verification failed';
+      if (message.includes('invalid-verification-code')) {
+        setError('Invalid OTP. Please check and try again.');
+        setOtp(['', '', '', '', '', '']);
+        otpRefs.current[0]?.focus();
+      } else if (message.includes('code-expired')) {
+        setError('OTP has expired. Please request a new one.');
+      } else {
+        setError(message);
+      }
     } finally {
       setLoading(false);
     }
   };
 
-  const handleOtpChange = (
-    type: 'phone' | 'superadmin' | 'admin-phone' | 'admin-email',
-    index: number,
-    value: string
-  ) => {
+  /* ── OTP Input Handling ── */
+  const handleOtpChange = (index: number, value: string) => {
     if (value.length > 1) value = value.slice(-1);
     if (value && !/^\d$/.test(value)) return;
 
-    if (type === 'phone') {
-      const next = [...otp];
-      next[index] = value;
-      setOtp(next);
-      if (value && index < 5) otpRefs.current[index + 1]?.focus();
-    } else if (type === 'superadmin') {
-      const next = [...superAdminOtp];
-      next[index] = value;
-      setSuperAdminOtp(next);
-      if (value && index < 5) superAdminOtpRefs.current[index + 1]?.focus();
-      if (value && index === 5) {
-        const fullCode = next.join('');
-        if (fullCode.length === 6) setTimeout(() => handleSuperAdminOtpVerify(), 200);
+    const newOtp = [...otp];
+    newOtp[index] = value;
+    setOtp(newOtp);
+
+    // Auto-focus next
+    if (value && index < 5) {
+      otpRefs.current[index + 1]?.focus();
+    }
+
+    // Auto-submit when all 6 digits are entered
+    if (value && index === 5) {
+      const code = newOtp.join('');
+      if (code.length === 6 && confirmationResult) {
+        setTimeout(() => handleVerifyOtp(code), 200);
       }
-    } else if (type === 'admin-phone') {
-      const next = [...adminPhoneOtp];
-      next[index] = value;
-      setAdminPhoneOtp(next);
-      if (value && index < 5) adminPhoneOtpRefs.current[index + 1]?.focus();
-    } else if (type === 'admin-email') {
-      const next = [...adminEmailOtp];
-      next[index] = value;
-      setAdminEmailOtp(next);
-      if (value && index < 5) adminEmailOtpRefs.current[index + 1]?.focus();
     }
   };
 
-  const handleOtpKeyDown = (
-    type: 'phone' | 'superadmin' | 'admin-phone' | 'admin-email',
-    index: number,
-    e: React.KeyboardEvent
-  ) => {
-    if (e.key === 'Backspace') {
-      if (type === 'phone' && !otp[index] && index > 0) otpRefs.current[index - 1]?.focus();
-      if (type === 'superadmin' && !superAdminOtp[index] && index > 0) superAdminOtpRefs.current[index - 1]?.focus();
-      if (type === 'admin-phone' && !adminPhoneOtp[index] && index > 0) adminPhoneOtpRefs.current[index - 1]?.focus();
-      if (type === 'admin-email' && !adminEmailOtp[index] && index > 0) adminEmailOtpRefs.current[index - 1]?.focus();
+  const handleOtpKeyDown = (index: number, e: React.KeyboardEvent) => {
+    if (e.key === 'Backspace' && !otp[index] && index > 0) {
+      otpRefs.current[index - 1]?.focus();
     }
+  };
+
+  const handleOtpPaste = (e: React.ClipboardEvent) => {
+    e.preventDefault();
+    const paste = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6);
+    const newOtp = [...otp];
+    for (let i = 0; i < paste.length; i++) {
+      newOtp[i] = paste[i];
+    }
+    setOtp(newOtp);
+    if (paste.length > 0) {
+      const focusIdx = Math.min(paste.length, 5);
+      otpRefs.current[focusIdx]?.focus();
+    }
+  };
+
+  const resetPhone = () => {
+    setPhoneStep('input');
+    setOtp(['', '', '', '', '', '']);
+    setConfirmationResult(null);
+    setError('');
+    setSuccess('');
+    setResendTimer(0);
+    if (timerRef.current) clearInterval(timerRef.current);
+  };
+
+  const handleResendOtp = async () => {
+    if (resendTimer > 0) return;
+    setOtp(['', '', '', '', '', '']);
+    await handleSendOtp();
+  };
+
+  // Format phone display
+  const formatPhoneDisplay = (num: string) => {
+    let f = num.trim();
+    if (!f.startsWith('+')) {
+      f = f.replace(/^0+/, '');
+      f = '+91' + f.replace(/\s/g, '');
+    }
+    if (f.length >= 13) {
+      return f.slice(0, 3) + ' ' + f.slice(3, 8) + ' ' + f.slice(8);
+    }
+    return f;
   };
 
   return (
@@ -496,9 +278,34 @@ export default function LoginPage() {
         </div>
 
         <Card padding="lg">
+          {/* Mode Tabs */}
+          <div className="flex rounded-xl border border-border p-1 mb-6 bg-surface/50">
+            <button
+              onClick={() => { setMode('phone'); setError(''); }}
+              className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 cursor-pointer ${
+                mode === 'phone'
+                  ? 'bg-primary text-white shadow-md shadow-primary/25'
+                  : 'text-text-muted hover:text-text-primary'
+              }`}
+            >
+              <Phone className="w-4 h-4" /> Phone OTP
+            </button>
+            <button
+              onClick={() => { setMode('email'); resetPhone(); setError(''); }}
+              className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 cursor-pointer ${
+                mode === 'email'
+                  ? 'bg-primary text-white shadow-md shadow-primary/25'
+                  : 'text-text-muted hover:text-text-primary'
+              }`}
+            >
+              <Mail className="w-4 h-4" /> Email
+            </button>
+          </div>
+
+          {/* Error / Success Messages */}
           {error && (
             <div className="mb-4 p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm flex items-start gap-2 animate-slide-down">
-              <ShieldAlert className="w-4 h-4 mt-0.5 shrink-0" /> {error}
+              <Shield className="w-4 h-4 mt-0.5 shrink-0" /> {error}
             </div>
           )}
           {success && (
@@ -507,295 +314,166 @@ export default function LoginPage() {
             </div>
           )}
 
-
-
-          {/* 1. SUPER ADMIN PHONE OTP SECOND-FACTOR */}
-          {superAdminVerify && (
-            <div className="space-y-4">
-              <div className="text-center mb-2">
-                <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-amber-100 to-yellow-100 flex items-center justify-center relative">
-                  <Shield className="w-8 h-8 text-amber-600" />
-                </div>
-                <h3 className="text-lg font-bold text-text-primary mb-1">
-                  {email.trim().toLowerCase() === SUPER_ADMIN_EMAIL ? 'Super Admin Verification' : 'Admin Verification'}
-                </h3>
-                <p className="text-sm text-text-muted">Enter verification code sent to your registered phone</p>
-                <p className="text-sm font-semibold text-text-primary mt-1">{adminPhoneDisplay}</p>
-              </div>
-
-              <div className="flex justify-center gap-2">
-                {superAdminOtp.map((digit, i) => (
-                  <input
-                    key={i}
-                    ref={el => { superAdminOtpRefs.current[i] = el; }}
-                    type="text"
-                    inputMode="numeric"
-                    maxLength={1}
-                    value={digit}
-                    onChange={e => handleOtpChange('superadmin', i, e.target.value)}
-                    onKeyDown={e => handleOtpKeyDown('superadmin', i, e)}
-                    className="w-10 h-12 text-center text-lg font-bold rounded-xl border border-border bg-surface focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20"
-                  />
-                ))}
-              </div>
-
-              <Button variant="primary" size="lg" className="w-full" onClick={handleSuperAdminOtpVerify} disabled={loading}>
-                {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
-                {loading ? 'Verifying...' : 'Verify & Proceed'}
-              </Button>
-            </div>
-          )}
-
-          {/* 2. ADMIN FIRST LOGIN: DOUBLE OTP */}
-          {adminFirstLogin && adminFirstLoginStep === 'double-otp' && (
-            <form onSubmit={handleAdminDoubleOtpVerify} className="space-y-6">
-              <div className="text-center mb-2">
-                <h3 className="text-lg font-bold text-text-primary">Admin Authentication</h3>
-                <p className="text-xs text-text-muted">Verify registered Email & Phone before configuring password</p>
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-text-primary mb-2 flex items-center gap-1">
-                  <Phone className="w-3.5 h-3.5 text-primary" /> Phone OTP ({adminPhoneDisplay})
-                </label>
-                <div className="flex justify-center gap-2">
-                  {adminPhoneOtp.map((digit, i) => (
-                    <input
-                      key={i}
-                      ref={el => { adminPhoneOtpRefs.current[i] = el; }}
-                      type="text"
-                      inputMode="numeric"
-                      maxLength={1}
-                      value={digit}
-                      onChange={e => handleOtpChange('admin-phone', i, e.target.value)}
-                      onKeyDown={e => handleOtpKeyDown('admin-phone', i, e)}
-                      className="w-10 h-12 text-center text-lg font-bold rounded-xl border border-border bg-surface focus:outline-none focus:border-primary"
-                    />
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-text-primary mb-2 flex items-center gap-1">
-                  <Mail className="w-3.5 h-3.5 text-accent" /> Email OTP ({email})
-                </label>
-                <div className="flex justify-center gap-2">
-                  {adminEmailOtp.map((digit, i) => (
-                    <input
-                      key={i}
-                      ref={el => { adminEmailOtpRefs.current[i] = el; }}
-                      type="text"
-                      inputMode="numeric"
-                      maxLength={1}
-                      value={digit}
-                      onChange={e => handleOtpChange('admin-email', i, e.target.value)}
-                      onKeyDown={e => handleOtpKeyDown('admin-email', i, e)}
-                      className="w-10 h-12 text-center text-lg font-bold rounded-xl border border-border bg-surface focus:outline-none focus:border-accent"
-                    />
-                  ))}
-                </div>
-              </div>
-
-              <Button variant="primary" className="w-full" type="submit" disabled={loading}>
-                {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
-                Verify Codes
-              </Button>
-            </form>
-          )}
-
-          {/* 3. ADMIN FIRST LOGIN: CREATE PASSWORD */}
-          {adminFirstLogin && adminFirstLoginStep === 'create-password' && (
-            <form onSubmit={handleAdminCreatePassword} className="space-y-4">
-              <div className="text-center mb-4">
-                <Key className="w-8 h-8 text-primary mx-auto mb-2" />
-                <h3 className="font-bold text-text-primary">Create Admin Password</h3>
-                <p className="text-xs text-text-muted">Enter a password for future admin panel logins</p>
-              </div>
-
+          {/* ═══ EMAIL LOGIN ═══ */}
+          {mode === 'email' && (
+            <form onSubmit={handleEmailLogin} className="space-y-4">
+              <Input
+                label="Email Address"
+                id="login-email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@example.com"
+              />
               <div className="relative">
                 <Input
                   label="Password"
-                  id="admin-pass"
+                  id="login-password"
                   type={showPassword ? 'text' : 'password'}
-                  value={adminNewPassword}
-                  onChange={e => setAdminNewPassword(e.target.value)}
-                  placeholder="Min 6 characters"
-                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Enter your password"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-[34px] text-text-muted"
+                  className="absolute right-3 top-[34px] text-text-muted hover:text-primary cursor-pointer transition-colors"
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
-
-              <div className="relative">
-                <Input
-                  label="Confirm Password"
-                  id="admin-confirm-pass"
-                  type={showConfirmPassword ? 'text' : 'password'}
-                  value={adminConfirmPassword}
-                  onChange={e => setAdminConfirmPassword(e.target.value)}
-                  placeholder="Confirm password"
-                  required
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-3 top-[34px] text-text-muted"
-                >
-                  {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                </button>
+              <div className="flex justify-end">
+                <button type="button" className="text-xs text-primary hover:underline cursor-pointer">Forgot password?</button>
               </div>
-
-              <Button variant="primary" className="w-full" type="submit" disabled={loading}>
-                Configure Password & Login
+              <Button variant="primary" size="lg" className="w-full" type="submit" disabled={loading}>
+                {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Lock className="w-4 h-4" />}
+                {loading ? 'Logging in...' : 'Login with Email'}
               </Button>
             </form>
           )}
 
-          {/* 4. STANDARD LOGIN SECTIONS */}
-          {!superAdminVerify && !adminFirstLogin && (
-            <>
-              {/* Mode Tabs */}
-              <div className="flex rounded-xl border border-border p-1 mb-6 bg-surface/50">
-                <button
-                  onClick={() => { setMode('phone'); setError(''); }}
-                  className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 cursor-pointer ${
-                    mode === 'phone'
-                      ? 'bg-primary text-white shadow-md shadow-primary/25'
-                      : 'text-text-muted hover:text-text-primary'
-                  }`}
-                >
-                  <Phone className="w-4 h-4" /> Phone OTP
-                </button>
-                <button
-                  onClick={() => { setMode('email'); setError(''); }}
-                  className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 cursor-pointer ${
-                    mode === 'email'
-                      ? 'bg-primary text-white shadow-md shadow-primary/25'
-                      : 'text-text-muted hover:text-text-primary'
-                  }`}
-                >
-                  <Mail className="w-4 h-4" /> Email
-                </button>
-              </div>
-
-              {/* EMAIL MODE */}
-              {mode === 'email' && (
-                <form onSubmit={handleEmailLogin} className="space-y-4">
+          {/* ═══ PHONE OTP LOGIN ═══ */}
+          {mode === 'phone' && (
+            <div className="space-y-4">
+              {phoneStep === 'input' && (
+                <>
                   <Input
-                    label="Email Address"
-                    id="login-email"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="you@example.com"
-                    required
+                    label="Phone Number"
+                    id="login-phone"
+                    type="tel"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    placeholder="98765 43210"
                   />
-                  <div className="relative">
-                    <Input
-                      label="Password"
-                      id="login-password"
-                      type={showPassword ? 'text' : 'password'}
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      placeholder="Enter your password"
-                      required
-                    />
+
+                  {/* Security info */}
+                  <div className="flex items-start gap-2 p-3 rounded-xl bg-blue-50/70 border border-blue-100">
+                    <Fingerprint className="w-4 h-4 text-blue-500 mt-0.5 shrink-0" />
+                    <p className="text-xs text-blue-700 leading-relaxed">
+                      We&apos;ll send a <strong>6-digit verification code</strong> to your phone via SMS.
+                      Standard messaging rates may apply.
+                    </p>
+                  </div>
+
+                  <Button variant="primary" size="lg" className="w-full" onClick={handleSendOtp} disabled={loading}>
+                    {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <ArrowRight className="w-4 h-4" />}
+                    {loading ? 'Sending OTP...' : 'Send OTP'}
+                  </Button>
+                </>
+              )}
+
+              {phoneStep === 'otp' && (
+                <>
+                  {/* OTP verification header */}
+                  <div className="text-center mb-2">
+                    <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center relative">
+                      <Shield className="w-8 h-8 text-primary" />
+                      {/* Animated ring */}
+                      <div className="absolute inset-0 rounded-2xl border-2 border-primary/20 animate-pulse" />
+                    </div>
+                    <h3 className="text-lg font-bold text-text-primary mb-1">Verify Your Phone</h3>
+                    <p className="text-sm text-text-muted">
+                      Enter the 6-digit code sent to
+                    </p>
+                    <p className="text-sm font-semibold text-text-primary mt-0.5">
+                      {formatPhoneDisplay(phone)}
+                    </p>
+                  </div>
+
+                  {/* OTP Input Boxes */}
+                  <div className="flex justify-center gap-2.5" onPaste={handleOtpPaste}>
+                    {otp.map((digit, i) => (
+                      <input
+                        key={i}
+                        ref={(el) => { otpRefs.current[i] = el; }}
+                        type="text"
+                        inputMode="numeric"
+                        maxLength={1}
+                        value={digit}
+                        onChange={(e) => handleOtpChange(i, e.target.value)}
+                        onKeyDown={(e) => handleOtpKeyDown(i, e)}
+                        className={`w-12 h-14 text-center text-xl font-bold rounded-xl border-2 bg-surface transition-all duration-200 focus:outline-none ${
+                          digit
+                            ? 'border-primary bg-primary/5 text-primary shadow-sm shadow-primary/10'
+                            : 'border-border focus:border-primary focus:ring-2 focus:ring-primary/20'
+                        }`}
+                        aria-label={`OTP digit ${i + 1}`}
+                      />
+                    ))}
+                  </div>
+
+                  {/* Timer */}
+                  {resendTimer > 0 && (
+                    <div className="flex items-center justify-center gap-1.5 text-xs text-text-muted">
+                      <Timer className="w-3.5 h-3.5" />
+                      <span>Resend available in <strong className="text-primary">{resendTimer}s</strong></span>
+                    </div>
+                  )}
+
+                  <Button
+                    variant="primary"
+                    size="lg"
+                    className="w-full"
+                    onClick={() => handleVerifyOtp()}
+                    disabled={loading || otp.join('').length !== 6}
+                  >
+                    {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
+                    {loading ? 'Verifying...' : 'Verify & Login'}
+                  </Button>
+
+                  <div className="flex items-center justify-between text-xs pt-1">
                     <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-[34px] text-text-muted hover:text-primary cursor-pointer transition-colors"
+                      onClick={resetPhone}
+                      className="flex items-center gap-1 text-text-muted hover:text-primary cursor-pointer transition-colors"
                     >
-                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      <ArrowLeft className="w-3.5 h-3.5" /> Change number
+                    </button>
+                    <button
+                      onClick={handleResendOtp}
+                      disabled={loading || resendTimer > 0}
+                      className={`flex items-center gap-1 cursor-pointer transition-colors ${
+                        resendTimer > 0
+                          ? 'text-text-muted/50 cursor-not-allowed'
+                          : 'text-primary hover:underline'
+                      }`}
+                    >
+                      <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} /> Resend OTP
                     </button>
                   </div>
-                  <div className="flex justify-end">
-                    <Link href="/auth/forgot-password" className="text-xs text-primary hover:underline cursor-pointer">Forgot password?</Link>
+
+                  {/* Delivery info */}
+                  <div className="text-center">
+                    <p className="text-[11px] text-text-muted leading-relaxed">
+                      Didn&apos;t receive the code? Check your SMS inbox
+                      or try again.
+                    </p>
                   </div>
-                  <Button variant="primary" size="lg" className="w-full" type="submit" disabled={loading}>
-                    {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Lock className="w-4 h-4" />}
-                    {loading ? 'Logging in...' : 'Login with Email'}
-                  </Button>
-                </form>
+                </>
               )}
-
-              {/* PHONE OTP MODE */}
-              {mode === 'phone' && (
-                <div className="space-y-4">
-                  {phoneStep === 'input' && (
-                    <>
-                      <Input
-                        label="Phone Number"
-                        id="login-phone"
-                        type="tel"
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
-                        placeholder="98765 43210"
-                      />
-
-                      <div className="flex items-start gap-2 p-3 rounded-xl bg-blue-50/70 border border-blue-100">
-                        <Fingerprint className="w-4 h-4 text-blue-500 mt-0.5 shrink-0" />
-                        <p className="text-xs text-blue-700 leading-relaxed">
-                          We&apos;ll send a <strong>6-digit verification code</strong> to your phone via SMS.
-                        </p>
-                      </div>
-
-                      <Button variant="primary" size="lg" className="w-full" onClick={handleSendOtp} disabled={loading}>
-                        {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <ArrowRight className="w-4 h-4" />}
-                        {loading ? 'Sending OTP...' : 'Send OTP'}
-                      </Button>
-                    </>
-                  )}
-
-                  {phoneStep === 'otp' && (
-                    <>
-                      <div className="text-center mb-2">
-                        <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center relative">
-                          <Shield className="w-8 h-8 text-primary" />
-                          <div className="absolute inset-0 rounded-2xl border-2 border-primary/20 animate-pulse" />
-                        </div>
-                        <h3 className="text-lg font-bold text-text-primary mb-1">Verify Your Phone</h3>
-                        <p className="text-sm font-semibold text-text-primary mt-0.5">{phone}</p>
-                      </div>
-
-                      <div className="flex justify-center gap-2">
-                        {otp.map((digit, i) => (
-                          <input
-                            key={i}
-                            ref={el => { otpRefs.current[i] = el; }}
-                            type="text"
-                            inputMode="numeric"
-                            maxLength={1}
-                            value={digit}
-                            onChange={e => handleOtpChange('phone', i, e.target.value)}
-                            onKeyDown={e => handleOtpKeyDown('phone', i, e)}
-                            className="w-10 h-12 text-center text-lg font-bold rounded-xl border border-border bg-surface focus:outline-none focus:border-primary"
-                          />
-                        ))}
-                      </div>
-
-                      <Button variant="primary" size="lg" className="w-full" onClick={() => handleVerifyOtp()} disabled={loading || otp.join('').length !== 6}>
-                        {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
-                        {loading ? 'Verifying...' : 'Verify & Login'}
-                      </Button>
-
-                      <div className="flex items-center justify-between text-xs pt-1">
-                        <button onClick={() => setPhoneStep('input')} className="flex items-center gap-1 text-text-muted hover:text-primary cursor-pointer transition-colors">
-                          <ArrowLeft className="w-3.5 h-3.5" /> Change number
-                        </button>
-                      </div>
-                    </>
-                  )}
-                </div>
-              )}
-            </>
+            </div>
           )}
 
-          {/* reCAPTCHA container */}
+          {/* reCAPTCHA container (invisible) */}
           <div id="recaptcha-container" />
 
           <p className="text-center text-sm text-text-muted mt-6">
@@ -803,6 +481,19 @@ export default function LoginPage() {
             <Link href="/auth/register" className="text-primary font-medium hover:underline">Register</Link>
           </p>
         </Card>
+
+        {/* Security badges */}
+        <div className="flex items-center justify-center gap-4 mt-4">
+          <div className="flex items-center gap-1.5 text-xs text-text-muted">
+            <Shield className="w-3.5 h-3.5 text-green-500" />
+            <span>Firebase Secured</span>
+          </div>
+          <div className="w-px h-3 bg-border" />
+          <div className="flex items-center gap-1.5 text-xs text-text-muted">
+            <Lock className="w-3.5 h-3.5 text-blue-500" />
+            <span>256-bit Encrypted</span>
+          </div>
+        </div>
       </div>
     </div>
   );

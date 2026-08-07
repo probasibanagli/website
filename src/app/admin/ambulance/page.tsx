@@ -23,7 +23,7 @@ function AmbulancePageContent() {
   const [cityFilter, setCityFilter] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
 
-  const moduleKey = 'emergency';
+  const moduleKey = 'ambulance';
   const canView = canAccess(profile?.role || 'user', profile?.permissions, moduleKey, 'view');
   const canEdit = canAccess(profile?.role || 'user', profile?.permissions, moduleKey, 'edit');
 

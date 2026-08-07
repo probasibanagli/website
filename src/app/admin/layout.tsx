@@ -2,11 +2,11 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import {
   LayoutDashboard, Home, UtensilsCrossed, Bus, AlertTriangle,
   Users, GraduationCap, FileText, UserCog, LogOut, Menu, X,
-  ChevronRight, Crown, Shield, Heart, Activity, Droplets, Truck
+  ChevronRight, Crown, Shield,
 } from 'lucide-react';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { getAccessibleModules } from '@/lib/permissions';
@@ -22,27 +22,15 @@ const moduleIcons: Record<ModuleKey, React.ReactNode> = {
   services: <GraduationCap className="w-4 h-4" />,
   blog: <FileText className="w-4 h-4" />,
   users: <UserCog className="w-4 h-4" />,
-  matrimony: <Heart className="w-4 h-4" />,
 };
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
-  const searchParams = useSearchParams();
   const { profile, loading, logOut } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [mfaChecked, setMfaChecked] = useState(false);
 
-  React.useEffect(() => {
-    const isMfa = sessionStorage.getItem('mfa_verified') === 'true';
-    if (!isMfa) {
-      router.push('/auth/login');
-    } else {
-      setMfaChecked(true);
-    }
-  }, [router]);
-
-  if (loading || !mfaChecked) {
+  if (loading) {
     return (
       <div className="min-h-screen bg-surface flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
@@ -73,32 +61,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const isSuperAdmin = profile.role === 'superadmin';
   const accessibleModules = getAccessibleModules(profile.role, profile.permissions);
 
-  const sidebarItems: { key: string; label: string; href: string; icon: React.ReactNode }[] = isSuperAdmin ? [
+  const sidebarItems: { key: string; label: string; href: string; icon: React.ReactNode }[] = [
     { key: 'dashboard', label: 'Dashboard', href: '/admin', icon: <LayoutDashboard className="w-4 h-4" /> },
-    { key: 'admin-mgmt', label: 'Admin Management', href: '/admin/users?tab=admins', icon: <Shield className="w-4 h-4" /> },
-    { key: 'user-mgmt', label: 'User Management', href: '/admin/users?tab=users', icon: <Users className="w-4 h-4" /> },
-    { key: 'activity-log', label: 'Activity Tracking', href: '/admin/users?tab=activities', icon: <Activity className="w-4 h-4" /> },
-  ] : [
-    { key: 'dashboard', label: 'Dashboard', href: '/admin', icon: <LayoutDashboard className="w-4 h-4" /> },
-    ...accessibleModules.flatMap((mod) => {
-      if (mod === 'emergency') {
-        return [
-          { key: 'emergency', label: 'Hospital Management', href: '/admin/emergency', icon: moduleIcons[mod] },
-          { key: 'blood-banks', label: 'Blood Banks', href: '/admin/blood-bank', icon: <Droplets className="w-4 h-4" /> },
-          { key: 'ambulance', label: 'Ambulance Directory', href: '/admin/ambulance', icon: <Truck className="w-4 h-4" /> }
-        ];
-      }
-      return [{
-        key: mod,
-        label: MODULE_LABELS[mod],
-        href: `/admin/${mod}`,
-        icon: moduleIcons[mod],
-      }];
-    }),
+    ...accessibleModules.map((mod) => ({
+      key: mod,
+      label: MODULE_LABELS[mod],
+      href: `/admin/${mod}`,
+      icon: moduleIcons[mod],
+    })),
   ];
 
   const handleLogout = async () => {
-    sessionStorage.removeItem('mfa_verified');
     await logOut();
     router.push('/');
   };
@@ -139,17 +112,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* Nav items */}
       <nav className="flex-1 p-3 space-y-0.5 mt-2 overflow-y-auto">
         {sidebarItems.map((item) => {
-          let isActive = false;
-          if (item.href.startsWith('/admin/users')) {
-            const itemUrl = new URL(item.href, 'http://localhost');
-            const itemTab = itemUrl.searchParams.get('tab');
-            const currentTab = searchParams.get('tab') || 'users'; // default is users
-            isActive = pathname.startsWith('/admin/users') && itemTab === currentTab;
-          } else {
-            isActive = item.href === '/admin'
-              ? pathname === '/admin'
-              : pathname.startsWith(item.href);
-          }
+          const isActive = item.href === '/admin'
+            ? pathname === '/admin'
+            : pathname.startsWith(item.href);
 
           return (
             <Link
