@@ -266,6 +266,9 @@ export interface College {
   google_maps_url?: string;
   lat?: number;
   lng?: number;
+  ranking?: number;
+  bengali_forums?: { name: string; link: string }[];
+  staff_contacts?: { name: string; role: string; department: string; phone?: string; email?: string }[];
 }
 
 export interface Event {

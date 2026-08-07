@@ -394,11 +394,14 @@ export default function MatrimonialPage() {
 
             {/* Profile Cards Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {visibleProfiles.map((profile) => (
               {visibleProfiles.map((profile) => {
                 const matchResult = myProfile && profile.id !== myProfile.id
                   ? calculateMatchPercentage(myProfile, profile)
                   : null;
-                const matchPct = matchResult?.percentage ?? null;
+                // In matches tab, use the mutual (bidirectional) score
+                const autoMatch = activeTab === 'matches' ? autoMatches.find(m => m.profile.id === profile.id) : null;
+                const matchPct = autoMatch ? autoMatch.mutualScore : (matchResult?.percentage ?? null);
 
                 return (
                 <Card key={profile.id} className="group relative overflow-hidden">
@@ -423,6 +426,7 @@ export default function MatrimonialPage() {
                         <p className="text-sm text-text-muted">
                           {profile.age} yrs{profile.height ? ` • ${profile.height}` : ''} • {profile.city}
                         </p>
+                        <p className="text-xs text-primary font-medium mt-0.5">{profile.profile_id}</p>
                         <div className="flex items-center gap-2 mt-0.5">
                           <p className="text-xs text-primary font-medium">{profile.profile_id}</p>
                           {matchPct !== null && matchPct > 0 && (
@@ -433,7 +437,7 @@ export default function MatrimonialPage() {
                                   ? 'bg-amber-100 text-amber-700 border border-amber-200'
                                   : 'bg-gray-100 text-gray-600 border border-gray-200'
                             }`}>
-                              {matchPct}% Match
+                              {matchPct}% {autoMatch ? 'Mutual Match' : 'Match'}
                             </span>
                           )}
                         </div>

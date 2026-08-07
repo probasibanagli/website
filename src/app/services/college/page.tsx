@@ -1,18 +1,53 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
-import { Search, MapPin, Phone, GraduationCap, Globe, ExternalLink, Navigation } from 'lucide-react';
+import { Search, MapPin, Phone, GraduationCap, Globe, ExternalLink, Navigation, ChevronUp, ChevronDown, Lock, ArrowRight, ShieldAlert, Mail, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/card';
 import { sampleColleges } from '@/data/sample-data';
 import { CITIES, COLLEGE_TYPES } from '@/lib/constants';
+import { useAuth } from '@/lib/auth/AuthContext';
+import { OtpVerificationModal } from '@/components/auth/OtpVerificationModal';
+
+const CATEGORY_THEMES: Record<string, { bg: string, text: string, iconBg: string, iconColor: string }> = {
+  arts: { bg: 'bg-emerald-100', text: 'text-emerald-700', iconBg: 'bg-emerald-50', iconColor: 'text-emerald-600' },
+  arts_science: { bg: 'bg-emerald-100', text: 'text-emerald-700', iconBg: 'bg-emerald-50', iconColor: 'text-emerald-600' },
+  engineering: { bg: 'bg-blue-100', text: 'text-blue-700', iconBg: 'bg-blue-50', iconColor: 'text-blue-600' },
+  medical: { bg: 'bg-rose-100', text: 'text-rose-700', iconBg: 'bg-rose-50', iconColor: 'text-rose-600' },
+  management: { bg: 'bg-purple-100', text: 'text-purple-700', iconBg: 'bg-purple-50', iconColor: 'text-purple-600' },
+  polytechnic: { bg: 'bg-amber-100', text: 'text-amber-700', iconBg: 'bg-amber-50', iconColor: 'text-amber-600' }
+};
+
+const CATEGORY_LABELS: Record<string, string> = {
+  arts: 'Arts',
+  arts_science: 'Arts & Science',
+  engineering: 'Engineering',
+  medical: 'Medical',
+  management: 'Management',
+  polytechnic: 'Polytechnic'
+};
 
 export default function CollegePage() {
+  const { firebaseUser: user, profile } = useAuth();
   const [type, setType] = useState('');
   const [city, setCity] = useState('');
   const [search, setSearch] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [expandedColleges, setExpandedColleges] = useState<Record<string, boolean>>({});
+  const [showOtpModal, setShowOtpModal] = useState(false);
+
+  const isVerified = profile?.phone_verified && profile?.email_verified;
+
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 500);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const toggleExpand = (id: string) => {
+    setExpandedColleges(prev => ({ ...prev, [id]: !prev[id] }));
+  };
 
   const filtered = useMemo(() => {
     return sampleColleges.filter((c) => {
@@ -238,6 +273,12 @@ export default function CollegePage() {
           </>
         )}
       </div>
+
+      <OtpVerificationModal 
+        isOpen={showOtpModal} 
+        onClose={() => setShowOtpModal(false)}
+        onSuccess={() => setShowOtpModal(false)}
+      />
     </div>
   );
 }
