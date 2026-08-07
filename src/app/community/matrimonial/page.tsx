@@ -132,12 +132,22 @@ export default function MatrimonialPage() {
   // Automatic matching: find mutual matches
   const autoMatches = useMemo(() => {
     if (!myProfile) return [];
-    const all = allProfs.filter(p => 
-      p.id !== myProfile.id && 
-      !(p.email && p.email === myProfile.email) &&
-      !(p.phone && p.phone === myProfile.phone) &&
-      p.published
-    );
+    const myGender = myProfile.gender?.toLowerCase();
+    const targetGender = (myGender === 'male' || myGender === 'groom') ? 'female' : (myGender === 'female' || myGender === 'bride') ? 'male' : null;
+    
+    const all = allProfs.filter(p => {
+      if (p.id === myProfile.id) return false;
+      if (p.email && p.email === myProfile.email) return false;
+      if (p.phone && p.phone === myProfile.phone) return false;
+      if (!p.published) return false;
+      if (targetGender && p.gender) {
+        const pg = p.gender.toLowerCase();
+        if (targetGender === 'female' && pg !== 'female' && pg !== 'bride') return false;
+        if (targetGender === 'male' && pg !== 'male' && pg !== 'groom') return false;
+      }
+      return true;
+    });
+
     const matches = all.map(candidate => {
       const myMatchOnCandidate = calculateMatchPercentage(myProfile, candidate);
       const candidateMatchOnMe = calculateMatchPercentage(candidate, myProfile);
