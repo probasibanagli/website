@@ -381,14 +381,16 @@ export default function MatrimonialDetailPage() {
       });
       const data = await res.json();
       if (data.success && data.emailSent) {
-        setInterestMessage('Interest sent! Your contact details have been emailed to this person.');
+        setInterestMessage('🎉 Interest sent! Your profile details have been emailed directly to this member.');
+      } else if (data.success && data.reason === 'SMTP not configured') {
+        setInterestMessage('✅ Interest expressed & recorded! (Add GMAIL_EMAIL & GMAIL_PASSWORD in .env.local to enable live email delivery).');
       } else if (data.success) {
-        setInterestMessage('Interest sent! Email notification could not be delivered.');
+        setInterestMessage('✅ Interest expressed & recorded! Email delivery failed.');
       } else {
-        setInterestMessage('Interest saved, but email could not be sent.');
+        setInterestMessage('Interest recorded locally.');
       }
     } catch {
-      setInterestMessage('Interest saved locally. Email notification failed.');
+      setInterestMessage('Interest recorded. Email notification service offline.');
     } finally {
       setSendingInterest(false);
     }
