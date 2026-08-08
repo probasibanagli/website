@@ -32,7 +32,12 @@ interface AuthContextType extends AuthState {
   logOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
   triggerMfaSuccess: () => Promise<void>;
-  sendPhoneOtp: (phoneNumber: string, recaptchaContainerId: string, flow?: 'login' | 'register') => Promise<ConfirmationResult>;
+  sendPhoneOtp: (
+    phoneNumber: string,
+    recaptchaContainerId: string,
+    flow?: 'login' | 'register',
+    registrationDetails?: { full_name?: string; email?: string; dob?: string; gender?: string; address?: string }
+  ) => Promise<ConfirmationResult>;
   verifyPhoneOtp: (confirmationResult: ConfirmationResult, otp: string) => Promise<void>;
   sendVerificationEmail: () => Promise<void>;
   linkPhoneToAccount: (phoneNumber: string, recaptchaContainerId: string) => Promise<ConfirmationResult>;
@@ -186,7 +191,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return win.recaptchaVerifier;
   };
 
-  const sendPhoneOtp = async (phoneNumber: string, recaptchaContainerId: string, flow?: 'login' | 'register'): Promise<ConfirmationResult> => {
+  const sendPhoneOtp = async (
+    phoneNumber: string,
+    recaptchaContainerId: string,
+    flow?: 'login' | 'register',
+    registrationDetails?: { full_name?: string; email?: string; dob?: string; gender?: string; address?: string }
+  ): Promise<ConfirmationResult> => {
     const res = await fetch('/api/auth/otp', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -203,7 +213,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const verifyRes = await fetch('/api/auth/otp', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'verify', phone: phoneNumber, otp: otpCode }),
+          body: JSON.stringify({
+            action: 'verify',
+            phone: phoneNumber,
+            otp: otpCode,
+            ...(registrationDetails || {})
+          }),
         });
         const verifyData = await verifyRes.json();
         if (!verifyRes.ok) {

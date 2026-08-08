@@ -21,6 +21,10 @@ export interface UserProfile {
   email: string;
   phone?: string;
   full_name: string;
+  dob?: string;
+  gender?: string;
+  address?: string;
+  assigned_hospitals?: string[];
   bengali_name?: string;
   avatar_url?: string;
   role: UserRole;

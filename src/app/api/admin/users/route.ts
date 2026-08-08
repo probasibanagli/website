@@ -59,7 +59,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
   }
   const body = await request.json();
-  const { email, password, full_name, role, permissions } = body;
+  const { email, password, full_name, role, permissions, assigned_hospitals } = body;
 
   try {
     const newUser = await adminAuth.createUser({ email, password, displayName: full_name });
@@ -67,6 +67,7 @@ export async function POST(request: Request) {
     await adminDb.collection('users').doc(newUser.uid).set({
       uid: newUser.uid, email: email.toLowerCase(), full_name, role: role || 'admin',
       permissions: permissions || {},
+      assigned_hospitals: Array.isArray(assigned_hospitals) ? assigned_hospitals : [],
       created_at: now, updated_at: now, created_by: user.uid, is_active: true,
       is_first_login: false,
     });

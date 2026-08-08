@@ -129,6 +129,8 @@ export async function POST(request: Request) {
       // Delete the OTP document after successful verification
       await otpDocRef.delete();
 
+      const { full_name, email, dob, gender, address } = body;
+
       let targetUid = uid;
       if (!targetUid) {
         // Try finding user by phone first
@@ -138,24 +140,27 @@ export async function POST(request: Request) {
           try {
             const userRecord = await adminAuth.createUser({
               phoneNumber: firebasePhone,
-              displayName: 'Phone User',
+              displayName: full_name || 'Phone User',
+              email: email || undefined,
             });
             targetUid = userRecord.uid;
           } catch (error: any) {
             console.error('Error creating Firebase user:', error);
-            return NextResponse.json({ error: 'Authentication service error' }, { status: 500 });
+            return NextResponse.json({ error: error.message || 'Authentication service error' }, { status: 500 });
           }
         } else {
-          // If we found them (e.g. from Firestore), ensure Firebase Auth object has the phone number set
+          // If we found them, ensure Firebase Auth object has phone/displayName set
           try {
             const authUser = await adminAuth.getUser(targetUid);
-            if (!authUser.phoneNumber) {
-              await adminAuth.updateUser(targetUid, {
-                phoneNumber: firebasePhone,
-              });
+            const authUpdates: any = {};
+            if (!authUser.phoneNumber) authUpdates.phoneNumber = firebasePhone;
+            if (full_name && !authUser.displayName) authUpdates.displayName = full_name;
+            if (email && !authUser.email) authUpdates.email = email;
+            if (Object.keys(authUpdates).length > 0) {
+              await adminAuth.updateUser(targetUid, authUpdates);
             }
           } catch (error: any) {
-            console.warn('Could not sync phoneNumber to Firebase Auth:', error);
+            console.warn('Could not sync details to Firebase Auth:', error);
           }
         }
       } else {
@@ -168,6 +173,52 @@ export async function POST(request: Request) {
           console.error('Error updating phone number on user:', error);
           return NextResponse.json({ error: error.message || 'Failed to link phone number' }, { status: 500 });
         }
+      }
+
+      // Create or update Firestore profile
+      const userRef = adminDb.collection('users').doc(targetUid);
+      const userSnap = await userRef.get();
+      const now = new Date().toISOString();
+
+      if (!userSnap.exists) {
+        await userRef.set({
+          uid: targetUid,
+          full_name: full_name || 'Phone User',
+          email: email || '',
+          phone: firebasePhone,
+          dob: dob || '',
+          gender: gender || '',
+          address: address || '',
+          role: 'user',
+          permissions: {
+            stay: 'none',
+            food: 'none',
+            emergency: 'none',
+            community: 'none',
+            services: 'none',
+            blog: 'none',
+            users: 'none',
+            matrimony: 'none',
+          },
+          created_at: now,
+          updated_at: now,
+          is_active: true,
+          phone_verified: true,
+          email_verified: false,
+        });
+      } else {
+        const updatePayload: Record<string, any> = {
+          phone_verified: true,
+          phone: firebasePhone,
+          updated_at: now,
+        };
+        if (full_name) updatePayload.full_name = full_name;
+        if (email) updatePayload.email = email;
+        if (dob) updatePayload.dob = dob;
+        if (gender) updatePayload.gender = gender;
+        if (address) updatePayload.address = address;
+
+        await userRef.update(updatePayload);
       }
 
       // Generate custom token for signing in

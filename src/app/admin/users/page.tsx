@@ -76,6 +76,8 @@ export default function AdminUsersPage() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [createForm, setCreateForm] = useState({ full_name: '', email: '', password: '', phone: '' });
   const [selectedModules, setSelectedModules] = useState<Record<string, boolean>>({});
+  const [createAssignedHospitals, setCreateAssignedHospitals] = useState<string[]>([]);
+  const [allHospitals, setAllHospitals] = useState<any[]>([]);
   const [creating, setCreating] = useState(false);
   const [createError, setCreateError] = useState('');
 
@@ -99,12 +101,22 @@ export default function AdminUsersPage() {
       await Promise.all([
         loadUsers(),
         loadVisitors(),
+        loadHospitals(),
         isSuperAdmin ? loadActivities() : Promise.resolve()
       ]);
     } catch (e) {
       console.error(e);
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function loadHospitals() {
+    try {
+      const snap = await getDocs(collection(db, 'hospitals'));
+      setAllHospitals(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+    } catch (e) {
+      console.error('Error loading hospitals:', e);
     }
   }
 
@@ -242,6 +254,7 @@ export default function AdminUsersPage() {
   function openCreateModal() {
     setCreateForm({ full_name: '', email: '', password: '', phone: '' });
     setSelectedModules(AVAILABLE_MODULES.reduce((acc, m) => ({ ...acc, [m.key]: true }), {}));
+    setCreateAssignedHospitals([]);
     setCreateError('');
     setShowCreateModal(true);
   }
@@ -277,7 +290,8 @@ export default function AdminUsersPage() {
           full_name: createForm.full_name.trim(),
           phone: `+91${phoneDigits}`,
           role: 'admin',
-          permissions: perms
+          permissions: perms,
+          assigned_hospitals: createAssignedHospitals
         })
       });
 
@@ -724,6 +738,35 @@ export default function AdminUsersPage() {
                           <span className="text-sm font-medium text-text-primary">{m.label}</span>
                         </label>
                       ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-text-primary mb-1 mt-4">Hospital Management Scope</label>
+                    <p className="text-xs text-text-muted mb-2">Select hospitals this admin is granted permission to manage:</p>
+                    <div className="space-y-1.5 max-h-36 overflow-y-auto p-2 border border-border rounded-xl bg-surface/30">
+                      {allHospitals.length === 0 ? (
+                        <p className="text-xs text-text-muted italic">No hospitals registered yet</p>
+                      ) : (
+                        allHospitals.map(h => {
+                          const checked = createAssignedHospitals.includes(h.id);
+                          return (
+                            <label key={h.id} className="flex items-center gap-2.5 p-2 rounded-lg hover:bg-white cursor-pointer text-xs">
+                              <input
+                                type="checkbox"
+                                checked={checked}
+                                onChange={(e) => {
+                                  if (e.target.checked) setCreateAssignedHospitals([...createAssignedHospitals, h.id]);
+                                  else setCreateAssignedHospitals(createAssignedHospitals.filter(id => id !== h.id));
+                                }}
+                                className="w-4 h-4 accent-primary rounded cursor-pointer"
+                              />
+                              <span className="font-semibold text-text-primary">{h.name}</span>
+                              <span className="text-text-muted">({h.city})</span>
+                            </label>
+                          );
+                        })
+                      )}
                     </div>
                   </div>
                 </div>
