@@ -9,6 +9,8 @@ import { AuthProvider } from '@/lib/auth/AuthContext';
 import { GlobalLoader } from '@/components/layout/GlobalLoader';
 import { LanguageProvider } from '@/lib/contexts/LanguageContext';
 import { BlockedCheck } from '@/components/layout/BlockedCheck';
+import { AlertProvider } from '@/lib/contexts/AlertContext';
+
 
 export const metadata: Metadata = {
   title: 'ProbasiBangali – Bengali Community in Tamil Nadu',
@@ -81,17 +83,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           strategy="afterInteractive"
         />
         <LanguageProvider>
-          <AuthProvider>
-            <BlockedCheck>
-              <Suspense fallback={null}>
-                <GlobalLoader />
-              </Suspense>
-              <Navbar />
-              <main className="flex-1">{children}</main>
-              <Footer />
-              <ChatWidget />
-            </BlockedCheck>
-          </AuthProvider>
+          <AlertProvider>
+            <AuthProvider>
+              <BlockedCheck>
+                <Suspense fallback={null}>
+                  <GlobalLoader />
+                </Suspense>
+                <Navbar />
+                <main className="flex-1">{children}</main>
+                <Footer />
+                <ChatWidget />
+              </BlockedCheck>
+            </AuthProvider>
+          </AlertProvider>
         </LanguageProvider>
       </body>
     </html>

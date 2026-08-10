@@ -74,7 +74,6 @@ export function GlobalLoader() {
           </div>
         </>
       )}
-      {authLoading && <PageSkeleton />}
     </>
   );
 }

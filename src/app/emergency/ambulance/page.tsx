@@ -1,13 +1,10 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import Link from 'next/link';
+import { default as Link } from 'next/link';
 import { Phone, Siren, Shield, Flame, MapPin, AlertTriangle, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { db } from '@/lib/firebase';
-import { collection, getDocs } from 'firebase/firestore';
-import { COLLECTIONS } from '@/lib/firestore/collections';
 import type { Ambulance } from '@/types';
 
 const emergencyNumbers = [

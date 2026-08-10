@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { collection, getDocs, doc, setDoc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useAuth } from '@/lib/auth/AuthContext';
@@ -34,6 +35,8 @@ interface ListingItem {
 
 export default function AdminStayPage() {
   const { profile, firebaseUser } = useAuth();
+  const searchParams = useSearchParams();
+  const searchVal = searchParams.get('search') || '';
   const [items, setItems] = useState<ListingItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -232,7 +235,7 @@ export default function AdminStayPage() {
       {loading ? (
         <div className="flex justify-center py-20"><Loader2 className="w-6 h-6 animate-spin text-primary" /></div>
       ) : (
-        <div className="bg-white rounded-2xl border border-border overflow-hidden shadow-sm">
+        <div className="bg-white/50 rounded-2xl border border-border overflow-hidden shadow-sm">
           <table className="w-full">
             <thead>
               <tr className="bg-surface/50 border-b border-border">
@@ -245,7 +248,15 @@ export default function AdminStayPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
-              {items.map((item) => (
+              {items.filter(item => {
+                const q = searchVal.toLowerCase();
+                return (
+                  item.name.toLowerCase().includes(q) ||
+                  (item.city || '').toLowerCase().includes(q) ||
+                  (item.area || '').toLowerCase().includes(q) ||
+                  (item.contact_person_name || '').toLowerCase().includes(q)
+                );
+              }).map((item) => (
                 <tr key={item.id} className="hover:bg-surface transition-colors">
                   <td className="px-5 py-4">
                     <div>

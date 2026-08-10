@@ -83,24 +83,39 @@ export async function POST(request: Request) {
       // Template: Dear user, Your OTP login verification {#var#} This OTP is valid for {#var#} Thank you. VECTRA
       const messageText = `Dear user, Your OTP login verification ${otpCode} This OTP is valid for 5 mins Thank you. VECTRA`;
 
-      // Correct MessageWall HTTP API endpoint (from Developer > HTTP API section in panel)
-      // http://text.messagewall.in/api/smsapi?key=KEY&route=ROUTE&sender=SENDER&number=NUMBER&templateid=TEMPLATE_ID&sms=MESSAGE
+      // Correct MessageWall HTTP API endpoint (using HTTP since MessageWall doesn't support HTTPS)
       const smsUrl = `http://text.messagewall.in/api/smsapi?key=${API_KEY}&sender=${SENDER_ID}&number=${cleanedPhone}&route=2&templateid=${TEMPLATE_ID}&sms=${encodeURIComponent(messageText)}`;
 
-      const smsResponse = await fetch(smsUrl, { method: 'GET' });
-      const responseText = await smsResponse.text();
-      console.log('MessageWall raw response:', responseText);
+      let isSuccess = false;
+      let trimmed = '';
 
-      // MessageWall returns a plain string like "1234|<messageId>" on success or an error message
-      // Success is indicated by a numeric response code or a response starting with a digit
-      const trimmed = responseText.trim();
-      const isSuccess =
-        /^\d/.test(trimmed) || // starts with digit (e.g. message ID)
-        trimmed.toLowerCase().includes('success') ||
-        trimmed.toLowerCase().includes('submitted');
+      try {
+        const smsResponse = await fetch(smsUrl, { method: 'GET' });
+        const responseText = await smsResponse.text();
+        console.log('MessageWall raw response:', responseText);
+
+        // MessageWall returns a plain string like "1234|<messageId>" on success or an error message
+        // Success is indicated by a numeric response code or a response starting with a digit
+        trimmed = responseText.trim();
+        isSuccess =
+          /^\d/.test(trimmed) || // starts with digit (e.g. message ID)
+          trimmed.toLowerCase().includes('success') ||
+          trimmed.toLowerCase().includes('submitted');
+      } catch (err: any) {
+        console.error('Failed to contact MessageWall:', err.message);
+      }
 
       if (!isSuccess) {
-        console.error('MessageWall Error Response:', trimmed);
+        console.warn('--------------------------------------------------');
+        console.warn(`[SMS BLOCKED/FAILED] OTP for ${cleanedPhone} is: ${otpCode}`);
+        console.warn('--------------------------------------------------');
+
+        // In local development, if SMS gateway is blocked by firewall,
+        // let the login proceed so developers can read the OTP from console.
+        if (process.env.NODE_ENV === 'development') {
+          return NextResponse.json({ success: true, debugOtp: otpCode });
+        }
+
         return NextResponse.json({ error: trimmed || 'Failed to send OTP via MessageWall' }, { status: 500 });
       }
 
