@@ -24,17 +24,20 @@ const STAY_TYPE_ICONS: Record<string, React.ReactNode> = {
   rental: <Building2 className="w-5 h-5" />,
 };
 
-function ListingCoverImage({ name, city, mapsUrl, type, fallbackIcon }: { 
+function ListingCoverImage({ name, city, mapsUrl, imageUrl, type, fallbackIcon }: { 
   name: string; 
   city?: string; 
   mapsUrl?: string; 
-  type: string;
+  imageUrl?: string;
+  type?: string;
   fallbackIcon: React.ReactNode;
 }) {
-  const [imgSrc, setImgSrc] = useState<string | null>(
-    `/api/public/place-photo?name=${encodeURIComponent(name)}&city=${encodeURIComponent(city || '')}&mapsUrl=${encodeURIComponent(mapsUrl || '')}`
-  );
+  const imgSrc = imageUrl || (mapsUrl ? `/api/public/place-photo?name=${encodeURIComponent(name)}&city=${encodeURIComponent(city || '')}&mapsUrl=${encodeURIComponent(mapsUrl)}&v=3` : null);
   const [error, setError] = useState(false);
+
+  React.useEffect(() => {
+    setError(false);
+  }, [imgSrc]);
 
   if (error || !imgSrc) {
     return (
@@ -80,6 +83,13 @@ export default function StayPage() {
     return [...firestoreListings, ...dedupedSample];
   }, [firestoreListings]);
 
+  const sortedCities = useMemo(() => {
+    return Array.from(new Set(combinedListings.map((l) => l.city).filter(Boolean).map(c => {
+      const trimmed = c!.trim();
+      return trimmed.charAt(0).toUpperCase() + trimmed.slice(1).toLowerCase();
+    }))).sort();
+  }, [combinedListings]);
+
   const availableAreas = useMemo(() => {
     if (!city) return [];
     return CITY_AREAS[city] || [];
@@ -111,7 +121,7 @@ export default function StayPage() {
       const price = l.price_per_month || 0;
 
       if (activeType !== 'all' && type !== activeType) return false;
-      if (city && l.city !== city) return false;
+      if (city && l.city?.toLowerCase() !== city.toLowerCase()) return false;
       if (area && l.area !== area) return false;
       if (bengaliOnly && !l.bengali_friendly) return false;
       if (searchQuery && !name.toLowerCase().includes(searchQuery.toLowerCase()) && !area.toLowerCase().includes(searchQuery.toLowerCase())) return false;
@@ -199,14 +209,18 @@ export default function StayPage() {
 
           </div>
 
-          {/* ── STEP 1: City Selection ── */}
-          <div className={`mt-5 p-4 bg-gradient-to-r from-primary/5 to-accent/5 rounded-2xl border border-primary/10 ${isCityOpen ? 'relative z-50' : 'relative z-30'}`}>
-            <p className="text-xs font-semibold text-primary uppercase tracking-wider mb-3 flex items-center gap-1.5">
-              <MapPin className="w-3.5 h-3.5" /> Step 1 — Select City
-            </p>
-            <div className={`relative w-full sm:max-w-xs ${isCityOpen ? 'z-50' : ''}`}>
+          {/* Unified Filter Bar */}
+          <div className="mt-6 flex flex-col md:flex-row md:flex-wrap items-start md:items-center gap-3 relative z-30">
+            {/* Search */}
+            <div className="relative flex-1 min-w-[200px] md:max-w-xs">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
+              <input value={searchQuery} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)} placeholder="Search by name or area..." className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+            </div>
+
+            {/* City Dropdown */}
+            <div className={`relative min-w-[160px] ${isCityOpen ? 'z-50' : ''}`}>
               <button onClick={() => setIsCityOpen(!isCityOpen)} className="flex items-center justify-between w-full px-4 py-2.5 rounded-xl border border-border bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary/30">
-                <span className="truncate">{city || 'Choose a City...'}</span>
+                <span className="truncate">{city || 'All Cities'}</span>
                 <ChevronDown className={`w-4 h-4 text-text-muted transition-transform ${isCityOpen ? 'rotate-180' : ''}`} />
               </button>
               {isCityOpen && (
@@ -214,88 +228,93 @@ export default function StayPage() {
                   <div className="fixed inset-0 z-40" onClick={() => setIsCityOpen(false)} />
                   <div className="absolute top-full left-0 w-full mt-1 bg-white border border-border rounded-xl shadow-lg z-50 max-h-60 overflow-y-auto">
                     <button onClick={() => handleCityChange('')} className={`w-full text-left px-4 py-2 text-sm hover:bg-surface transition-colors ${!city ? 'bg-primary/5 font-medium text-primary' : 'text-text-primary'}`}>All Cities</button>
-                    {CITIES.map((c) => (
+                    {sortedCities.map((c) => (
                       <button key={c} onClick={() => handleCityChange(c)} className={`w-full text-left px-4 py-2 text-sm hover:bg-surface transition-colors ${city === c ? 'bg-primary/5 font-medium text-primary' : 'text-text-primary'}`}>{c}</button>
                     ))}
                   </div>
                 </>
               )}
             </div>
+
+            {/* Area Dropdown */}
+            {city && (
+              <div className={`relative min-w-[160px] ${isAreaOpen ? 'z-50' : ''}`}>
+                <button onClick={() => setIsAreaOpen(!isAreaOpen)} className="flex items-center justify-between w-full px-4 py-2.5 rounded-xl border border-border bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 animate-fade-in">
+                  <span className="truncate">{area || 'All Areas'}</span>
+                  <ChevronDown className={`w-4 h-4 text-text-muted transition-transform ${isAreaOpen ? 'rotate-180' : ''}`} />
+                </button>
+                {isAreaOpen && (
+                  <>
+                    <div className="fixed inset-0 z-40" onClick={() => setIsAreaOpen(false)} />
+                    <div className="absolute top-full left-0 w-full mt-1 bg-white border border-border rounded-xl shadow-lg z-50 max-h-48 overflow-y-auto">
+                      <button onClick={() => { setArea(''); setIsAreaOpen(false); }} className={`w-full text-left px-4 py-2 text-sm hover:bg-surface transition-colors ${!area ? 'bg-primary/5 font-medium text-primary' : 'text-text-primary'}`}>All Areas</button>
+                      {availableAreas.map((a) => (
+                        <button key={a} onClick={() => { setArea(a); setIsAreaOpen(false); }} className={`w-full text-left px-4 py-2 text-sm hover:bg-surface transition-colors ${area === a ? 'bg-primary/5 font-medium text-primary' : 'text-text-primary'}`}>{a}</button>
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
+
+            {/* Subcategory Dropdown */}
+            {city && (
+              <div className={`relative min-w-[180px] ${isSubcatOpen ? 'z-50' : ''}`}>
+                <button onClick={() => setIsSubcatOpen(!isSubcatOpen)} className="flex items-center justify-between w-full px-4 py-2.5 rounded-xl border border-border bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 animate-fade-in">
+                  <span className="truncate">
+                    {subcategory === 'hospital' ? '🏥 Hospital Nearby' :
+                     subcategory === 'college' ? '🎓 College/Uni Nearby' :
+                     subcategory === 'metro' ? '🚆 Metro/Transport' :
+                     'All Categories'}
+                  </span>
+                  <ChevronDown className={`w-4 h-4 text-text-muted transition-transform ${isSubcatOpen ? 'rotate-180' : ''}`} />
+                </button>
+                {isSubcatOpen && (
+                  <>
+                    <div className="fixed inset-0 z-40" onClick={() => setIsSubcatOpen(false)} />
+                    <div className="absolute top-full left-0 w-full mt-1 bg-white border border-border rounded-xl shadow-lg z-50">
+                      {[
+                        { value: '', label: 'All Categories' },
+                        { value: 'hospital', label: '🏥 Hospital Nearby' },
+                        { value: 'college', label: '🎓 College/Uni Nearby' },
+                        { value: 'metro', label: '🚆 Metro/Transport' },
+                      ].map((opt) => (
+                        <button key={opt.value} onClick={() => { 
+                          if (opt.value === 'metro') {
+                            window.open('https://chennai.metroroute.co.in/', '_blank');
+                          }
+                          setSubcategory(opt.value); setSelectedHospital(''); setSelectedCollege(''); setSelectedMetroRoute(''); setIsSubcatOpen(false); 
+                        }}
+                          className={`w-full text-left px-4 py-2 text-sm hover:bg-surface transition-colors ${subcategory === opt.value ? 'bg-primary/5 font-medium text-primary' : 'text-text-primary'}`}>{opt.label}</button>
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
+
+            {/* Bengali-friendly toggle */}
+            {city && (
+              <button onClick={() => setBengaliOnly(!bengaliOnly)}
+                className={`flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer animate-fade-in ${bengaliOnly ? 'bg-primary text-white shadow-md' : 'bg-white border border-border text-text-primary hover:border-primary'}`}>
+                <SlidersHorizontal className="w-3.5 h-3.5" />
+                Bengali-friendly
+              </button>
+            )}
+
+            <div className="flex items-center gap-2 w-full md:w-auto">
+              <input type="number" placeholder="Min ₹" value={minPrice} onChange={(e) => setMinPrice(e.target.value)} className="w-20 px-3 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+              <span className="text-text-muted">-</span>
+              <input type="number" placeholder="Max ₹" value={maxPrice} onChange={(e) => setMaxPrice(e.target.value)} className="w-20 px-3 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+            </div>
           </div>
 
-          {/* ── STEP 2: Area + Subcategory ── */}
-          {city && (
-            <div className={`mt-3 p-4 bg-white rounded-2xl border border-border space-y-4 animate-fade-in ${isAreaOpen || isSubcatOpen ? 'relative z-50' : 'relative z-20'}`}>
-              <div className="flex flex-col md:flex-row md:flex-wrap items-start md:items-center gap-3">
-                {/* Area Dropdown */}
-                <div className={`relative min-w-[180px] ${isAreaOpen ? 'z-50' : ''}`}>
-                  <p className="text-[10px] font-semibold text-text-muted uppercase tracking-wider mb-1">Area</p>
-                  <button onClick={() => setIsAreaOpen(!isAreaOpen)} className="flex items-center justify-between w-full px-4 py-2.5 rounded-xl border border-border bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary/30">
-                    <span className="truncate">{area || 'All Areas'}</span>
-                    <ChevronDown className={`w-4 h-4 text-text-muted transition-transform ${isAreaOpen ? 'rotate-180' : ''}`} />
-                  </button>
-                  {isAreaOpen && (
-                    <>
-                      <div className="fixed inset-0 z-40" onClick={() => setIsAreaOpen(false)} />
-                      <div className="absolute top-full left-0 w-full mt-1 bg-white border border-border rounded-xl shadow-lg z-50 max-h-48 overflow-y-auto">
-                        <button onClick={() => { setArea(''); setIsAreaOpen(false); }} className={`w-full text-left px-4 py-2 text-sm hover:bg-surface transition-colors ${!area ? 'bg-primary/5 font-medium text-primary' : 'text-text-primary'}`}>All Areas</button>
-                        {availableAreas.map((a) => (
-                          <button key={a} onClick={() => { setArea(a); setIsAreaOpen(false); }} className={`w-full text-left px-4 py-2 text-sm hover:bg-surface transition-colors ${area === a ? 'bg-primary/5 font-medium text-primary' : 'text-text-primary'}`}>{a}</button>
-                        ))}
-                      </div>
-                    </>
-                  )}
-                </div>
-
-                {/* Subcategory Dropdown */}
-                <div className={`relative min-w-[200px] ${isSubcatOpen ? 'z-50' : ''}`}>
-                  <p className="text-[10px] font-semibold text-text-muted uppercase tracking-wider mb-1">Nearby</p>
-                  <button onClick={() => setIsSubcatOpen(!isSubcatOpen)} className="flex items-center justify-between w-full px-4 py-2.5 rounded-xl border border-border bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary/30">
-                    <span className="truncate">
-                      {subcategory === 'hospital' ? '🏥 Hospital Nearby' :
-                       subcategory === 'college' ? '🎓 College/Uni Nearby' :
-                       subcategory === 'metro' ? '🚆 Metro/Transport' :
-                       'All Categories'}
-                    </span>
-                    <ChevronDown className={`w-4 h-4 text-text-muted transition-transform ${isSubcatOpen ? 'rotate-180' : ''}`} />
-                  </button>
-                  {isSubcatOpen && (
-                    <>
-                      <div className="fixed inset-0 z-40" onClick={() => setIsSubcatOpen(false)} />
-                      <div className="absolute top-full left-0 w-full mt-1 bg-white border border-border rounded-xl shadow-lg z-50">
-                        {[
-                          { value: '', label: 'All Categories' },
-                          { value: 'hospital', label: '🏥 Hospital Nearby' },
-                          { value: 'college', label: '🎓 College/Uni Nearby' },
-                          { value: 'metro', label: '🚆 Metro/Transport' },
-                        ].map((opt) => (
-                          <button key={opt.value} onClick={() => { 
-                            if (opt.value === 'metro') {
-                              window.open('https://chennai.metroroute.co.in/', '_blank');
-                            }
-                            setSubcategory(opt.value); setSelectedHospital(''); setSelectedCollege(''); setSelectedMetroRoute(''); setIsSubcatOpen(false); 
-                          }}
-                            className={`w-full text-left px-4 py-2 text-sm hover:bg-surface transition-colors ${subcategory === opt.value ? 'bg-primary/5 font-medium text-primary' : 'text-text-primary'}`}>{opt.label}</button>
-                        ))}
-                      </div>
-                    </>
-                  )}
-                </div>
-
-                {/* Bengali-friendly toggle */}
-                <div>
-                  <p className="text-[10px] font-semibold text-text-muted uppercase tracking-wider mb-1 opacity-0">Filter</p>
-                  <button onClick={() => setBengaliOnly(!bengaliOnly)}
-                    className={`flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${bengaliOnly ? 'bg-primary text-white' : 'bg-white border border-border text-text-primary hover:border-primary'}`}>
-                    <SlidersHorizontal className="w-3.5 h-3.5" />
-                    Bengali-friendly
-                  </button>
-                </div>
-              </div>
-
+          {/* Sub-Filters (Hospitals, Colleges, Metro) */}
+          {(subcategory === 'hospital' || subcategory === 'college' || subcategory === 'metro') && city && (
+            <div className="mt-4 p-4 bg-white rounded-2xl border border-border animate-fade-in relative z-20">
               {/* Hospital Names */}
               {subcategory === 'hospital' && cityHospitals.length > 0 && (
-                <div className="pt-3 border-t border-border">
+                <div>
                   <p className="text-xs font-semibold text-text-muted mb-2 flex items-center gap-1.5"><Building2 className="w-3.5 h-3.5" /> Hospitals in {city}</p>
                   <div className="flex flex-wrap gap-2">
                     <button onClick={() => setSelectedHospital('')} className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${!selectedHospital ? 'bg-red-500 text-white shadow-sm' : 'bg-red-50 text-red-700 border border-red-200 hover:bg-red-100'}`}>All Hospitals</button>
@@ -310,7 +329,7 @@ export default function StayPage() {
 
               {/* College Names */}
               {subcategory === 'college' && cityColleges.length > 0 && (
-                <div className="pt-3 border-t border-border">
+                <div>
                   <p className="text-xs font-semibold text-text-muted mb-2 flex items-center gap-1.5"><GraduationCap className="w-3.5 h-3.5" /> Colleges in {city}</p>
                   <div className="flex flex-wrap gap-2">
                     <button onClick={() => setSelectedCollege('')} className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${!selectedCollege ? 'bg-blue-500 text-white shadow-sm' : 'bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100'}`}>All Colleges</button>
@@ -325,7 +344,7 @@ export default function StayPage() {
 
               {/* Metro Routes */}
               {subcategory === 'metro' && (
-                <div className="pt-3 border-t border-border">
+                <div>
                   <div className="flex items-center justify-between mb-2">
                     <p className="text-xs font-semibold text-text-muted flex items-center gap-1.5"><Train className="w-3.5 h-3.5" /> Metro / Transport Routes</p>
                     <a href="https://chennai.metroroute.co.in/" target="_blank" rel="noopener noreferrer" className="text-[10px] bg-primary/5 text-primary px-2 py-1 rounded border border-primary/20 hover:bg-primary/10 transition-colors flex items-center gap-1">
@@ -351,19 +370,6 @@ export default function StayPage() {
               )}
             </div>
           )}
-
-          {/* Search + Price Filters */}
-          <div className="mt-4 flex flex-col md:flex-row md:flex-wrap items-start md:items-center gap-3 relative z-10">
-            <div className="relative flex-1 w-full md:min-w-[200px] md:max-w-sm">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
-              <input value={searchQuery} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)} placeholder="Search by name or area..." className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
-            </div>
-            <div className="flex items-center gap-2 w-full md:w-auto">
-              <input type="number" placeholder="Min ₹" value={minPrice} onChange={(e) => setMinPrice(e.target.value)} className="w-24 px-3 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
-              <span className="text-text-muted">-</span>
-              <input type="number" placeholder="Max ₹" value={maxPrice} onChange={(e) => setMaxPrice(e.target.value)} className="w-24 px-3 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
-            </div>
-          </div>
         </div>
       </div>
 
@@ -393,6 +399,7 @@ export default function StayPage() {
                     name={listing.name}
                     city={listing.city}
                     mapsUrl={listing.google_maps_url}
+                    imageUrl={listing.image_url}
                     type={listing.type}
                     fallbackIcon={STAY_TYPE_ICONS[listing.type] || <Home />}
                   />

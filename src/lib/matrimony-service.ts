@@ -245,21 +245,32 @@ export interface MatrimonyFilters {
 export function searchProfiles(profiles: MatrimonialProfile[], filters: MatrimonyFilters): MatrimonialProfile[] {
   let results = profiles.filter(p => p.published && (p.status === 'approved' || p.status === 'verified'));
 
-  if (filters.gender) results = results.filter(p => p.gender === filters.gender);
+  if (filters.gender) {
+    const target = filters.gender.toLowerCase();
+    results = results.filter(p => {
+      if (!p.gender) return false;
+      const pg = p.gender.toLowerCase();
+      if (target === 'male') return pg === 'male' || pg === 'groom' || pg === 'm';
+      if (target === 'female') return pg === 'female' || pg === 'bride' || pg === 'f';
+      return pg === target;
+    });
+  }
   if (filters.ageMin) results = results.filter(p => (p.age || 0) >= filters.ageMin!);
   if (filters.ageMax) results = results.filter(p => (p.age || 99) <= filters.ageMax!);
-  if (filters.city) results = results.filter(p => p.city === filters.city);
+  if (filters.city) results = results.filter(p => p.city?.toLowerCase() === filters.city!.toLowerCase());
   if (filters.education) results = results.filter(p => p.education?.toLowerCase().includes(filters.education!.toLowerCase()));
-  if (filters.maritalStatus) results = results.filter(p => p.marital_status === filters.maritalStatus);
-  if (filters.diet) results = results.filter(p => p.diet === filters.diet);
-  if (filters.religion) results = results.filter(p => p.religion === filters.religion);
+  if (filters.maritalStatus) results = results.filter(p => p.marital_status?.toLowerCase() === filters.maritalStatus!.toLowerCase());
+  if (filters.diet) results = results.filter(p => p.diet?.toLowerCase() === filters.diet!.toLowerCase());
+  if (filters.religion) results = results.filter(p => p.religion?.toLowerCase() === filters.religion!.toLowerCase());
   if (filters.searchQuery) {
     const q = filters.searchQuery.toLowerCase();
     results = results.filter(p =>
       p.full_name?.toLowerCase().includes(q) ||
       p.profile_id?.toLowerCase().includes(q) ||
       p.profession?.toLowerCase().includes(q) ||
-      p.city?.toLowerCase().includes(q)
+      p.city?.toLowerCase().includes(q) ||
+      p.gender?.toLowerCase().includes(q) ||
+      p.caste?.toLowerCase().includes(q)
     );
   }
 

@@ -10,30 +10,17 @@ import type { BengaliDoctor, Hospital } from '@/types';
 import { Search, Phone, ChevronRight, UserRound, Award, Languages, Building2, Stethoscope, Mail, ArrowLeft, ShieldAlert } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { OtpVerificationModal } from '@/components/auth/OtpVerificationModal';
+import { useAuth } from '@/lib/auth/AuthContext';
+const SAMPLE_HOSPITALS: Record<string, Hospital> = {};
 
-const SAMPLE_HOSPITALS: Record<string, Hospital> = {
-  'h1': { id: 'h1', name: 'Apollo Hospital Chennai', city: 'Chennai', area: 'Greams Road', specializations: [], is_24_7: true, has_bengali_doctor: true, images: ['/images/hospitals/apollo-chennai.jpg'], created_at: '' },
-  'h2': { id: 'h2', name: 'MGM Healthcare Chennai', city: 'Chennai', area: 'Aminjikarai', specializations: [], is_24_7: true, has_bengali_doctor: true, images: ['/images/hospitals/mgm-healthcare.jpg'], created_at: '' },
-  'h3': { id: 'h3', name: 'MIOT International Chennai', city: 'Chennai', area: 'Manapakkam', specializations: [], is_24_7: true, has_bengali_doctor: true, images: ['/images/hospitals/miot-international.jpg'], created_at: '' },
-  'h4': { id: 'h4', name: 'Fortis Malar Hospital Chennai', city: 'Chennai', area: 'Adyar', specializations: [], is_24_7: true, has_bengali_doctor: true, images: ['/images/hospitals/fortis-malar.jpg'], created_at: '' },
-  'h5': { id: 'h5', name: 'SIMS Hospital Chennai', city: 'Chennai', area: 'Vadapalani', specializations: [], is_24_7: true, has_bengali_doctor: true, images: ['/images/hospitals/sims-hospital.jpg'], created_at: '' }
-};
-
-const SAMPLE_DOCTORS: BengaliDoctor[] = [
-  { id: 'd1', doctor_name: 'Dr. Anirban Roy', specialization: 'Cardiologist', hospital_id: 'h1', experience: '15 years', languages: ['Bengali', 'English', 'Tamil'], photo: '', phone: '', email: '' },
-  { id: 'd2', doctor_name: 'Dr. Saptarshi Chatterjee', specialization: 'Neurologist', hospital_id: 'h2', experience: '12 years', languages: ['Bengali', 'English'], photo: '', phone: '', email: '' },
-  { id: 'd3', doctor_name: 'Dr. Debasish Banerjee', specialization: 'Orthopedic Surgeon', hospital_id: 'h3', experience: '20 years', languages: ['Bengali', 'English', 'Hindi'], photo: '', phone: '', email: '' },
-  { id: 'd4', doctor_name: 'Dr. Soumya Mukherjee', specialization: 'General Physician', hospital_id: 'h4', experience: '8 years', languages: ['Bengali', 'English', 'Tamil'], photo: '', phone: '', email: '' },
-  { id: 'd5', doctor_name: 'Dr. Priyanka Ghosh', specialization: 'Gynecologist', hospital_id: 'h5', experience: '10 years', languages: ['Bengali', 'English'], photo: '', phone: '', email: '' }
-];
+const SAMPLE_DOCTORS: BengaliDoctor[] = [];
 
 export default function BengaliDoctorsPage() {
   const [doctors, setDoctors] = useState<BengaliDoctor[]>([]);
   const [hospitals, setHospitals] = useState<Record<string, Hospital>>({});
   const [loading, setLoading] = useState(true);
-  const [isVerified, setIsVerified] = useState(false);
-  const [showOtpModal, setShowOtpModal] = useState(false);
+  const { firebaseUser: user } = useAuth();
+  const isVerified = !!user;
   const router = useRouter();
   
   const [search, setSearch] = useState('');
@@ -41,8 +28,6 @@ export default function BengaliDoctorsPage() {
   const [langFilter, setLangFilter] = useState('');
 
   useEffect(() => {
-    setIsVerified(false);
-
     async function loadData() {
       try {
         let docsData: BengaliDoctor[] = [];
@@ -216,8 +201,8 @@ export default function BengaliDoctorsPage() {
               <p className="text-sm text-text-muted mb-6">
                 To protect practitioner privacy and maintain security, complete a quick OTP verification to unlock doctor profiles and contact details.
               </p>
-              <Button onClick={() => setShowOtpModal(true)} variant="primary" size="lg" className="w-full font-semibold">
-                Verify via OTP to Access Directory
+              <Button onClick={() => router.push('/auth/login?redirect=/emergency/hospitals/bengali-doctors')} variant="primary" size="lg" className="w-full font-semibold">
+                Login to Access Directory
               </Button>
             </Card>
           </div>
@@ -300,17 +285,6 @@ export default function BengaliDoctorsPage() {
         )}
       </div>
 
-      <OtpVerificationModal 
-        isOpen={showOtpModal}
-        onClose={() => setShowOtpModal(false)}
-        onSuccess={() => {
-          setIsVerified(true);
-          setShowOtpModal(false);
-          if (typeof window !== 'undefined') {
-            localStorage.setItem('directory_verified', 'true');
-          }
-        }}
-      />
     </div>
   );
 }

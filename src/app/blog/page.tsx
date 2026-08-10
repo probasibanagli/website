@@ -22,6 +22,7 @@ interface BlogPost {
   published: boolean;
   status?: 'pending' | 'approved' | 'rejected';
   created_at: string;
+  image?: string;
 }
 
 export default function BlogPage() {
@@ -37,7 +38,65 @@ export default function BlogPage() {
     excerpt: '',
     content: '',
     tags: '',
+    image: '',
   });
+
+  const compressImage = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (event) => {
+        const img = new Image();
+        img.src = event.target?.result as string;
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const MAX_WIDTH = 800;
+          const MAX_HEIGHT = 600;
+          let width = img.width;
+          let height = img.height;
+
+          if (width > height) {
+            if (width > MAX_WIDTH) {
+              height *= MAX_WIDTH / width;
+              width = MAX_WIDTH;
+            }
+          } else {
+            if (height > MAX_HEIGHT) {
+              width *= MAX_HEIGHT / height;
+              height = MAX_HEIGHT;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx?.drawImage(img, 0, 0, width, height);
+          
+          resolve(canvas.toDataURL('image/jpeg', 0.7));
+        };
+        img.onerror = (error) => reject(error);
+      };
+      reader.onerror = (error) => reject(error);
+    });
+  };
+
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      setFormError('Please select an image file.');
+      return;
+    }
+
+    try {
+      const compressedBase64 = await compressImage(file);
+      setForm(prev => ({ ...prev, image: compressedBase64 }));
+      setFormError('');
+    } catch (err) {
+      setFormError('Failed to compress image.');
+    }
+  };
 
   const [formError, setFormError] = useState('');
   const [formSuccess, setFormSuccess] = useState('');
@@ -82,7 +141,7 @@ export default function BlogPage() {
       alert('You must register and verify both your Phone Number and Email ID before submitting a blog.');
       return;
     }
-    setForm({ title: '', excerpt: '', content: '', tags: '' });
+    setForm({ title: '', excerpt: '', content: '', tags: '', image: '' });
     setFormError('');
     setFormSuccess('');
     setShowModal(true);
@@ -115,6 +174,7 @@ export default function BlogPage() {
         published: false,
         status: 'pending',
         created_at: now,
+        image: form.image,
       };
 
       await setDoc(doc(db, 'blog_posts', id), newPost);
@@ -172,8 +232,13 @@ export default function BlogPage() {
             {blogs.map((post) => (
               <Link key={post.id} href={`/blog/${post.slug}`}>
                 <Card className="h-full group p-0 overflow-hidden hover:border-primary/20 transition-all hover:shadow-lg">
-                  <div className="h-48 bg-gradient-to-br from-primary-light to-accent-light flex items-center justify-center relative">
-                    <span className="text-5xl opacity-30">📜</span>
+                  <div className="h-48 bg-gradient-to-br from-primary-light to-accent-light flex items-center justify-center relative overflow-hidden">
+                    {post.image ? (
+                      /* eslint-disable-next-line @next/next/no-img-element */
+                      <img src={post.image} alt={post.title} className="w-full h-full object-cover" />
+                    ) : (
+                      <span className="text-5xl opacity-30">📜</span>
+                    )}
                   </div>
                   <div className="p-5">
                     <div className="flex flex-wrap gap-1.5 mb-3">
@@ -236,6 +301,18 @@ export default function BlogPage() {
               <div>
                 <label className="block text-xs font-semibold text-text-primary mb-1.5">Tags (Comma-separated)</label>
                 <input type="text" value={form.tags} onChange={e => setForm({ ...form, tags: e.target.value })} className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl text-sm" placeholder="e.g. student, chennai, lifestyle" />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-text-primary mb-1.5">Cover Image (Optional)</label>
+                <input type="file" accept="image/*" onChange={handleImageChange} className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl text-sm" />
+                {form.image && (
+                  <div className="mt-3 relative w-32 h-32 rounded-xl overflow-hidden border border-border">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={form.image} alt="Preview" className="w-full h-full object-cover" />
+                    <button type="button" onClick={() => setForm({ ...form, image: '' })} className="absolute top-1 right-1 p-1 bg-black/50 hover:bg-black/70 text-white rounded-full transition-colors"><X className="w-3 h-3" /></button>
+                  </div>
+                )}
               </div>
 
               <div className="pt-4 border-t border-border flex justify-end gap-3 shrink-0">

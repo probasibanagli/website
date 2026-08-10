@@ -9,7 +9,8 @@ import { canAccess } from '@/lib/permissions';
 import type { ModuleKey } from '@/types';
 import { MODULE_LABELS } from '@/types';
 import { Plus, Pencil, Trash2, X, Loader2, Shield } from 'lucide-react';
-
+import imageCompression from 'browser-image-compression';
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 interface AdminModulePageProps {
   moduleKey: ModuleKey;
   collectionName: string;
@@ -27,6 +28,33 @@ export default function AdminModulePage({ moduleKey, collectionName, columns, fo
   const [editId, setEditId] = useState<string | null>(null);
   const [formData, setFormData] = useState<Record<string, unknown>>({});
   const [saving, setSaving] = useState(false);
+  const [uploadingImages, setUploadingImages] = useState<Record<string, boolean>>({});
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, key: string) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingImages(prev => ({ ...prev, [key]: true }));
+    try {
+      const options = {
+        maxSizeMB: 1,
+        maxWidthOrHeight: 1200,
+        useWebWorker: true,
+      };
+      const compressedFile = await imageCompression(file, options);
+      const storage = getStorage();
+      const fileExt = compressedFile.name.split('.').pop() || 'jpg';
+      const storageRef = ref(storage, `admin_uploads/${moduleKey}/${Date.now()}.${fileExt}`);
+      await uploadBytes(storageRef, compressedFile);
+      const url = await getDownloadURL(storageRef);
+      setFormData(prev => ({ ...prev, [key]: url }));
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      alert('Failed to upload image.');
+    } finally {
+      setUploadingImages(prev => ({ ...prev, [key]: false }));
+    }
+  };
 
   const canView = canAccess(profile?.role || 'user', profile?.permissions, moduleKey, 'view');
   const canEdit = canAccess(profile?.role || 'user', profile?.permissions, moduleKey, 'edit');
@@ -165,6 +193,29 @@ export default function AdminModulePage({ moduleKey, collectionName, columns, fo
                       <option value="">Select {f.label}...</option>
                       {f.options.map(o => <option key={o} value={o}>{o}</option>)}
                     </select>
+                  ) : f.type === 'image' ? (
+                    <div className="space-y-2">
+                      {Boolean(formData[f.key]) && typeof formData[f.key] === 'string' && (
+                        <div className="relative w-32 h-32 rounded-xl overflow-hidden border border-border">
+                          <img src={formData[f.key] as string} alt="Preview" className="w-full h-full object-cover" />
+                          <button type="button" onClick={() => setFormData({ ...formData, [f.key]: '' })} className="absolute top-1 right-1 p-1 bg-black/50 text-white rounded-lg hover:bg-black/70 transition-colors"><X className="w-3 h-3" /></button>
+                        </div>
+                      )}
+                      <div className="relative">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => handleImageUpload(e, f.key)}
+                          disabled={uploadingImages[f.key]}
+                          className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm text-text-primary file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 transition-all cursor-pointer"
+                        />
+                        {uploadingImages[f.key] && (
+                          <div className="absolute inset-y-0 right-4 flex items-center">
+                            <Loader2 className="w-5 h-5 text-primary animate-spin" />
+                          </div>
+                        )}
+                      </div>
+                    </div>
                   ) : f.type === 'checkbox' ? (
                     <div className="flex items-center gap-3 py-2">
                       <input 

@@ -210,7 +210,9 @@ export default function RegisterPage() {
 
       setSuccess('Account created successfully! Redirecting...');
       setTimeout(() => {
-        router.push('/');
+        const params = new URLSearchParams(window.location.search);
+        const redirect = params.get('redirect') || '/';
+        window.location.href = redirect;
       }, 1500);
     } catch (err: any) {
       setError(err.message || 'Failed to create password.');
@@ -433,7 +435,7 @@ export default function RegisterPage() {
 
           <p className="text-center text-sm text-text-muted mt-6">
             Already have an account?{' '}
-            <Link href="/auth/login" className="text-primary font-medium hover:underline">Login</Link>
+            <Link href={typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('redirect') ? `/auth/login?redirect=${encodeURIComponent(new URLSearchParams(window.location.search).get('redirect')!)}` : '/auth/login'} className="text-primary font-medium hover:underline">Login</Link>
           </p>
         </Card>
       </div>

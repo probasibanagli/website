@@ -10,19 +10,42 @@ import { adminDb } from '@/lib/firebase-admin';
 
 const CACHE_TTL = 30 * 24 * 60 * 60 * 1000; // 30 days
 
-function getCacheKey(name: string, city: string): string {
+function getCacheKey(name: string, city: string, mapsUrl?: string | null): string {
   // Create a clean, alphanumeric document ID for Firestore
-  const key = `${name.toLowerCase().trim()}_${city.toLowerCase().trim()}`;
-  return key.replace(/[^a-z0-9_]/g, '_').substring(0, 100); // Limit length and sanitize
+  // Use name + city + mapsUrl as cache key to ensure uniqueness
+  // Added _v2 to invalidate old cached random images from before the fallback was disabled
+  const docId = `${name}_${city || ''}_${mapsUrl || ''}_v2`.toLowerCase().replace(/[^a-z0-9]/g, '_');
+  return docId.substring(0, 100); // Limit length and sanitize
 }
 
-// Optional: Extract place ID or better search query from Maps URL if provided
-function extractQueryFromMapsUrl(url: string | null): string | null {
+async function extractQueryFromMapsUrl(url: string | null): Promise<string | null> {
   if (!url) return null;
   try {
-    const parsed = new URL(url);
+    let finalUrl = url;
+    
+    // If it's a shortlink, resolve it first
+    if (url.includes('maps.app.goo.gl') || url.includes('goo.gl/maps')) {
+      try {
+        const res = await fetch(url, { method: 'HEAD', redirect: 'follow' });
+        finalUrl = res.url;
+      } catch (e) {
+        // Fallback to original url on fetch error
+      }
+    }
+
+    const parsed = new URL(finalUrl);
     const q = parsed.searchParams.get('q');
     if (q) return q;
+
+    // Handle /maps/place/Place+Name/...
+    const match = parsed.pathname.match(/\/maps\/place\/([^/]+)/);
+    if (match && match[1]) {
+      const placeName = decodeURIComponent(match[1].replace(/\+/g, ' '));
+      return placeName;
+    }
+    
+    // If no clear query could be extracted, return the final URL
+    return finalUrl;
   } catch (e) {
     // Ignore invalid URLs
   }
@@ -39,12 +62,12 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'Missing name parameter' }, { status: 400 });
   }
 
-  const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
+  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
   if (!apiKey || apiKey === 'mock-api-key') {
     return new NextResponse(null, { status: 204 });
   }
 
-  const cacheKey = getCacheKey(name, city || '');
+  const cacheKey = getCacheKey(name, city || '', mapsUrl);
   const cacheRef = adminDb.collection('place_photos').doc(cacheKey);
 
   try {
@@ -64,8 +87,15 @@ export async function GET(request: NextRequest) {
     }
 
     // 2. Not cached or expired — fetch from Google Places API (New)
-    const mapsQuery = extractQueryFromMapsUrl(mapsUrl);
-    const queryText = mapsQuery || (city ? `${name}, ${city}` : name);
+    const mapsQuery = await extractQueryFromMapsUrl(mapsUrl);
+    const queryText = (mapsQuery && !mapsQuery.startsWith('http') ? (city ? `${mapsQuery}, ${city}` : mapsQuery) : mapsQuery);
+    
+    // If we couldn't extract a valid query from a maps URL, don't fallback to a generic name search
+    // to prevent showing random/unrelated images.
+    if (!queryText) {
+      await cacheRef.set({ name, city: city || '', photoUrl: null, fetchedAt: Date.now() });
+      return new NextResponse(null, { status: 204 });
+    }
     
     const searchUrl = 'https://places.googleapis.com/v1/places:searchText';
     const searchRes = await fetch(searchUrl, {

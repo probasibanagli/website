@@ -16,6 +16,7 @@ export default function AdminCommunityPage() {
       formFields={[
         { key: 'name', label: 'Group Name', required: true },
         { key: 'platform', label: 'Platform', type: 'select', options: ['whatsapp', 'telegram', 'facebook', 'instagram', 'linkedin', 'website'], required: true },
+        { key: 'image_url', label: 'Cover Image', type: 'image' },
         { key: 'city', label: 'City' },
         { key: 'region', label: 'Region', type: 'select', options: ['tamil_nadu', 'india', 'all'] },
         { key: 'description', label: 'Description', type: 'textarea' },

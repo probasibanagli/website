@@ -219,7 +219,7 @@ export default function LoginPage() {
 
       const params = new URLSearchParams(window.location.search);
       const redirect = params.get('redirect') || '/';
-      router.push(redirect);
+      window.location.href = redirect;
     } catch (err: any) {
       setError(err.message || 'Login failed.');
       alert(err.message || 'Login failed.');
@@ -444,21 +444,14 @@ export default function LoginPage() {
     setError('');
     setLoading(true);
     try {
-      await verifyPhoneOtp(confirmationResult, code);
+      const { user: currentUser, profile: userProfile } = await verifyPhoneOtp(confirmationResult, code);
 
-      // Re-read profile to check status
-      const { auth, db } = await import('@/lib/firebase');
-      const { doc, getDoc } = await import('firebase/firestore');
-      const currentUser = auth.currentUser;
-      if (currentUser) {
-        const snap = await getDoc(doc(db, 'users', currentUser.uid));
-        const userProfile = snap.data();
-        if (userProfile?.is_active === false) {
-          setError('Your account is blocked.');
-          setTimeout(() => router.push('/blocked'), 1500);
-          setLoading(false);
-          return;
-        }
+      if (userProfile?.is_active === false) {
+        setError('Your account is blocked.');
+        setTimeout(() => router.push('/blocked'), 1500);
+        setLoading(false);
+        return;
+      }
 
         // If the logged-in user is an admin or superadmin, require Email verification
         if (userProfile?.role === 'admin' || userProfile?.role === 'superadmin') {
@@ -485,13 +478,12 @@ export default function LoginPage() {
           setLoading(false);
           return;
         }
-      }
 
       setSuccess('Verified successfully! Redirecting...');
       setTimeout(() => {
         const params = new URLSearchParams(window.location.search);
         const redirect = params.get('redirect') || '/';
-        router.push(redirect);
+        window.location.href = redirect;
       }, 1000);
     } catch (err: any) {
       setError(err.message || 'Verification failed.');
@@ -617,9 +609,8 @@ export default function LoginPage() {
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8">
-          <Link href="/" className="inline-flex items-center gap-2 mb-6">
+          <Link href="/" className="inline-flex items-center justify-center mb-6">
             <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-white font-bold text-xl bengali-text">প</div>
-            <span className="text-xl font-bold">Probasi<span className="text-primary">Bangali</span></span>
           </Link>
           <h1 className="text-2xl font-bold font-display text-text-primary">Welcome Back</h1>
           <p className="text-text-muted mt-1">Login to access all features</p>
