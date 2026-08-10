@@ -222,6 +222,7 @@ export default function LoginPage() {
       router.push(redirect);
     } catch (err: any) {
       setError(err.message || 'Login failed.');
+      alert(err.message || 'Login failed.');
     } finally {
       if (!superAdminVerify && !adminFirstLogin) {
         setLoading(false);
@@ -276,6 +277,7 @@ export default function LoginPage() {
       }, 1000);
     } catch (err: any) {
       setError(err.message || 'Verification failed.');
+      alert(err.message || 'Verification failed.');
       setSuperAdminOtp(['', '', '', '', '', '']);
       setSuperAdminEmailOtp(['', '', '', '', '', '']);
       superAdminOtpRefs.current[0]?.focus();
@@ -324,6 +326,7 @@ export default function LoginPage() {
       }, 1000);
     } catch (err: any) {
       setError(err.message || 'Verification failed.');
+      alert(err.message || 'Verification failed.');
       setLoading(false);
     }
   };
@@ -371,6 +374,7 @@ export default function LoginPage() {
       }, 1500);
     } catch (err: any) {
       setError(err.message || 'Failed to complete registration.');
+      alert(err.message || 'Failed to complete registration.');
       setLoading(false);
     }
   };
@@ -425,6 +429,7 @@ export default function LoginPage() {
       setTimeout(() => otpRefs.current[0]?.focus(), 100);
     } catch (err: any) {
       setError(err.message || 'Failed to send OTP.');
+      alert(err.message || 'Failed to send OTP.');
     } finally {
       setLoading(false);
     }
@@ -490,6 +495,7 @@ export default function LoginPage() {
       }, 1000);
     } catch (err: any) {
       setError(err.message || 'Verification failed.');
+      alert(err.message || 'Verification failed.');
       setOtp(['', '', '', '', '', '']);
       otpRefs.current[0]?.focus();
     } finally {
@@ -534,6 +540,7 @@ export default function LoginPage() {
       }, 1000);
     } catch (err: any) {
       setError(err.message || 'Verification failed.');
+      alert(err.message || 'Verification failed.');
       setPhoneLoginEmailOtp(['', '', '', '', '', '']);
       phoneLoginEmailOtpRefs.current[0]?.focus();
     } finally {

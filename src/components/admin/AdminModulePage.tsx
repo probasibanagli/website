@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { collection, getDocs, doc, setDoc, updateDoc, deleteDoc, query } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useAuth } from '@/lib/auth/AuthContext';
@@ -18,6 +19,8 @@ interface AdminModulePageProps {
 
 export default function AdminModulePage({ moduleKey, collectionName, columns, formFields }: AdminModulePageProps) {
   const { profile } = useAuth();
+  const searchParams = useSearchParams();
+  const searchVal = searchParams.get('search') || '';
   const [items, setItems] = useState<Record<string, unknown>[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -106,14 +109,24 @@ export default function AdminModulePage({ moduleKey, collectionName, columns, fo
       </div>
 
       {loading ? <div className="flex justify-center py-20"><Loader2 className="w-6 h-6 animate-spin text-primary" /></div> : (
-        <div className="bg-white rounded-2xl border border-border overflow-hidden shadow-sm">
+        <div className="bg-white/50 rounded-2xl border border-border overflow-hidden shadow-sm">
           <table className="w-full">
             <thead><tr className="bg-surface/50 border-b border-border">
               {columns.map(c => <th key={c.key} className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">{c.label}</th>)}
               {(canEdit || canManage) && <th className="text-right px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Actions</th>}
             </tr></thead>
             <tbody className="divide-y divide-border">
-              {items.map(item => (
+              {items.filter(item => {
+                if (!searchVal) return true;
+                const q = searchVal.toLowerCase();
+                return Object.keys(item).some(key => {
+                  const val = item[key];
+                  if (typeof val === 'string') {
+                    return val.toLowerCase().includes(q);
+                  }
+                  return false;
+                });
+              }).map(item => (
                 <tr key={item.id as string} className="hover:bg-surface transition-colors">
                   {columns.map(c => <td key={c.key} className="px-5 py-4 text-sm text-text-primary max-w-[200px] truncate">{String(item[c.key] || '—')}</td>)}
                   {(canEdit || canManage) && (

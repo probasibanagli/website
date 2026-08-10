@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { collection, getDocs, query, orderBy, doc, deleteDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useAuth } from '@/lib/auth/AuthContext';
@@ -57,6 +57,8 @@ const AVAILABLE_MODULES = [
 
 export default function AdminUsersPage() {
   const { profile, firebaseUser } = useAuth();
+  const router = useRouter();
+  const pathname = usePathname();
   const [users, setUsers] = useState<UserProfile[]>([]);
   const [activities, setActivities] = useState<any[]>([]);
   const [visitors, setVisitors] = useState<any[]>([]);
@@ -77,8 +79,7 @@ export default function AdminUsersPage() {
       setActiveTab(tabParam);
     }
   }, [tabParam]);
-  
-  const [searchTerm, setSearchTerm] = useState('');
+  const searchTerm = searchParams.get('search') || '';
   const [filterRole, setFilterRole] = useState<string>('all');
 
   // Create Admin Modal State
@@ -408,8 +409,17 @@ export default function AdminUsersPage() {
             type="text"
             placeholder={`Search ${activeTab === 'visitors' ? 'visitors by phone/email' : activeTab}...`}
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 bg-white border border-border rounded-xl text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary/20"
+            onChange={(e) => {
+              const value = e.target.value;
+              const params = new URLSearchParams(searchParams.toString());
+              if (value) {
+                params.set('search', value);
+              } else {
+                params.delete('search');
+              }
+              router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+            }}
+            className="w-full pl-10 pr-4 py-2.5 bg-white/50 border border-border rounded-xl text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary/20"
           />
         </div>
       )}
@@ -420,7 +430,7 @@ export default function AdminUsersPage() {
         <>
           {/* TAB 1: USERS */}
           {activeTab === 'users' && (
-            <div className="bg-white rounded-2xl border border-border overflow-hidden shadow-sm">
+            <div className="bg-white/50 rounded-2xl border border-border overflow-hidden shadow-sm">
               <table className="w-full">
                 <thead>
                   <tr className="bg-surface/50 border-b border-border">
@@ -494,7 +504,7 @@ export default function AdminUsersPage() {
 
           {/* TAB 2: ADMINS */}
           {activeTab === 'admins' && (
-            <div className="bg-white rounded-2xl border border-border overflow-hidden shadow-sm">
+            <div className="bg-white/50 rounded-2xl border border-border overflow-hidden shadow-sm">
               <table className="w-full">
                 <thead>
                   <tr className="bg-surface/50 border-b border-border">
@@ -582,7 +592,7 @@ export default function AdminUsersPage() {
 
           {/* TAB 3: VISITORS */}
           {activeTab === 'visitors' && (
-            <div className="bg-white rounded-2xl border border-border overflow-hidden shadow-sm">
+            <div className="bg-white/50 rounded-2xl border border-border overflow-hidden shadow-sm">
               <table className="w-full">
                 <thead>
                   <tr className="bg-surface/50 border-b border-border">
@@ -640,7 +650,7 @@ export default function AdminUsersPage() {
 
           {/* TAB 4: ACTIVITY LOGS */}
           {activeTab === 'activities' && isSuperAdmin && (
-            <div className="bg-white rounded-2xl border border-border overflow-hidden shadow-sm">
+            <div className="bg-white/50 rounded-2xl border border-border overflow-hidden shadow-sm">
               <table className="w-full">
                 <thead>
                   <tr className="bg-surface/50 border-b border-border">
