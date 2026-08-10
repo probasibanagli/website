@@ -295,8 +295,7 @@ export default function MatrimonialDashboard() {
         <h1 className="text-3xl font-bold font-display mb-8">My Matrimony Dashboard</h1>
 
         {/* Profile Card */}
-        <Card padding="lg" hover={false} className="mb-6 relative overflow-hidden">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary to-accent" />
+        <Card padding="lg" hover={false} className="mb-6">
           <div className="flex flex-col sm:flex-row items-start gap-5 pt-2">
             <ProfileCardAvatar profile={myProfile} className="w-20 h-20" />
             <div className="flex-1">

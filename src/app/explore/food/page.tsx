@@ -26,17 +26,20 @@ const FOOD_TYPE_ICONS: Record<string, React.ReactNode> = {
   delivery: <Truck className="w-5 h-5" />,
 };
 
-function ListingCoverImage({ name, city, mapsUrl, type, fallbackIcon }: { 
+function ListingCoverImage({ name, city, mapsUrl, imageUrl, type, fallbackIcon }: { 
   name: string; 
   city?: string; 
   mapsUrl?: string; 
+  imageUrl?: string;
   type?: string;
   fallbackIcon: React.ReactNode;
 }) {
-  const [imgSrc, setImgSrc] = useState<string | null>(
-    `/api/public/place-photo?name=${encodeURIComponent(name)}&city=${encodeURIComponent(city || '')}&mapsUrl=${encodeURIComponent(mapsUrl || '')}`
-  );
+  const imgSrc = imageUrl || (mapsUrl ? `/api/public/place-photo?name=${encodeURIComponent(name)}&city=${encodeURIComponent(city || '')}&mapsUrl=${encodeURIComponent(mapsUrl)}&v=3` : null);
   const [error, setError] = useState(false);
+
+  React.useEffect(() => {
+    setError(false);
+  }, [imgSrc]);
 
   if (error || !imgSrc) {
     return (
@@ -78,13 +81,18 @@ export default function FoodPage() {
     { key: 'uber_eats_url', label: 'Uber Eats', variant: 'red' },
   ] as const;
 
-  const sortedCities = useMemo(() => [...CITIES].sort((a, b) => a.localeCompare(b)), []);
-
   const combinedListings = useMemo(() => {
     const firestoreIds = new Set(firestoreListings.map((l) => l.id));
     const dedupedSample = sampleFoodListings.filter((l) => !firestoreIds.has(l.id));
     return [...firestoreListings, ...dedupedSample];
   }, [firestoreListings]);
+
+  const sortedCities = useMemo(() => {
+    return Array.from(new Set(combinedListings.map((l) => l.city).filter(Boolean).map(c => {
+      const trimmed = c!.trim();
+      return trimmed.charAt(0).toUpperCase() + trimmed.slice(1).toLowerCase();
+    }))).sort();
+  }, [combinedListings]);
 
   const availableAreas = useMemo(() => {
     if (!city) return [];
@@ -102,7 +110,7 @@ export default function FoodPage() {
   const filtered = useMemo(() => {
     return combinedListings.filter((f) => {
       if (activeType !== 'all' && f.type !== activeType) return false;
-      if (city && f.city !== city && f.type !== 'delivery partner') return false;
+      if (city && f.city?.toLowerCase() !== city.toLowerCase() && f.type !== 'delivery partner') return false;
       if (area && f.area !== area) return false;
       if (bengaliOnly && !f.bengali_friendly) return false;
       if (searchQuery && !f.name.toLowerCase().includes(searchQuery.toLowerCase())) return false;
@@ -138,17 +146,21 @@ export default function FoodPage() {
 
           </div>
 
-          {/* ── STEP 1: City Selection (Primary) ── */}
-          <div className={`mt-5 p-4 bg-gradient-to-r from-orange-50 to-amber-50 rounded-2xl border border-orange-100 ${isCityOpen ? 'relative z-50' : 'relative z-30'}`}>
-            <p className="text-xs font-semibold text-orange-600 uppercase tracking-wider mb-3 flex items-center gap-1.5">
-              <MapPin className="w-3.5 h-3.5" /> Step 1 — Select City
-            </p>
-            <div className={`relative w-full sm:max-w-xs ${isCityOpen ? 'z-50' : ''}`}>
+          {/* Unified Filter Bar */}
+          <div className="mt-6 flex flex-col sm:flex-row flex-wrap gap-3 relative z-30">
+            {/* Search */}
+            <div className="relative flex-1 min-w-[200px] max-w-sm">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
+              <input value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="Search restaurants..." className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+            </div>
+
+            {/* City Dropdown */}
+            <div className={`relative min-w-[180px] ${isCityOpen ? 'z-50' : ''}`}>
               <button
                 onClick={() => setIsCityOpen(!isCityOpen)}
                 className="flex items-center justify-between w-full px-4 py-2.5 rounded-xl border border-border bg-white text-sm focus:outline-none focus:ring-2 focus:ring-orange-200"
               >
-                <span className="truncate">{city || 'Choose a City...'}</span>
+                <span className="truncate">{city || 'All Cities'}</span>
                 <ChevronDown className={`w-4 h-4 text-text-muted transition-transform ${isCityOpen ? 'rotate-180' : ''}`} />
               </button>
 
@@ -162,7 +174,7 @@ export default function FoodPage() {
                     >
                       All Cities
                     </button>
-                    {CITIES.map((c) => (
+                    {sortedCities.map((c) => (
                       <button
                         key={c}
                         onClick={() => handleCityChange(c)}
@@ -175,69 +187,54 @@ export default function FoodPage() {
                 </>
               )}
             </div>
-          </div>
 
-          {/* ── STEP 2: Area + Bengali Friendly (visible after city selected) ── */}
-          {city && (
-            <div className={`mt-3 p-4 bg-white rounded-2xl border border-border space-y-4 animate-fade-in ${isAreaOpen ? 'relative z-50' : 'relative z-20'}`}>
-              <div className="flex flex-col md:flex-row md:flex-wrap items-start md:items-center gap-3">
-                {/* Area Dropdown */}
-                <div className={`relative min-w-[180px] ${isAreaOpen ? 'z-50' : ''}`}>
-                  <p className="text-[10px] font-semibold text-text-muted uppercase tracking-wider mb-1">Area</p>
-                  <button
-                    onClick={() => setIsAreaOpen(!isAreaOpen)}
-                    className="flex items-center justify-between w-full px-4 py-2.5 rounded-xl border border-border bg-white text-sm focus:outline-none focus:ring-2 focus:ring-orange-200"
-                  >
-                    <span className="truncate">{area || 'All Areas'}</span>
-                    <ChevronDown className={`w-4 h-4 text-text-muted transition-transform ${isAreaOpen ? 'rotate-180' : ''}`} />
-                  </button>
-                  {isAreaOpen && (
-                    <>
-                      <div className="fixed inset-0 z-40" onClick={() => setIsAreaOpen(false)} />
-                      <div className="absolute top-full left-0 w-full mt-1 bg-white border border-border rounded-xl shadow-lg z-50 max-h-48 overflow-y-auto">
+            {/* Area Dropdown */}
+            {city && (
+              <div className={`relative min-w-[180px] ${isAreaOpen ? 'z-50' : ''}`}>
+                <button
+                  onClick={() => setIsAreaOpen(!isAreaOpen)}
+                  className="flex items-center justify-between w-full px-4 py-2.5 rounded-xl border border-border bg-white text-sm focus:outline-none focus:ring-2 focus:ring-orange-200 animate-fade-in"
+                >
+                  <span className="truncate">{area || 'All Areas'}</span>
+                  <ChevronDown className={`w-4 h-4 text-text-muted transition-transform ${isAreaOpen ? 'rotate-180' : ''}`} />
+                </button>
+                {isAreaOpen && (
+                  <>
+                    <div className="fixed inset-0 z-40" onClick={() => setIsAreaOpen(false)} />
+                    <div className="absolute top-full left-0 w-full mt-1 bg-white border border-border rounded-xl shadow-lg z-50 max-h-48 overflow-y-auto">
+                      <button
+                        onClick={() => { setArea(''); setIsAreaOpen(false); }}
+                        className={`w-full text-left px-4 py-2 text-sm hover:bg-surface transition-colors ${!area ? 'bg-orange-50 font-medium text-orange-600' : 'text-text-primary'}`}
+                      >
+                        All Areas
+                      </button>
+                      {availableAreas.map((a) => (
                         <button
-                          onClick={() => { setArea(''); setIsAreaOpen(false); }}
-                          className={`w-full text-left px-4 py-2 text-sm hover:bg-surface transition-colors ${!area ? 'bg-orange-50 font-medium text-orange-600' : 'text-text-primary'}`}
+                          key={a}
+                          onClick={() => { setArea(a); setIsAreaOpen(false); }}
+                          className={`w-full text-left px-4 py-2 text-sm hover:bg-surface transition-colors ${area === a ? 'bg-orange-50 font-medium text-orange-600' : 'text-text-primary'}`}
                         >
-                          All Areas
+                          {a}
                         </button>
-                        {availableAreas.map((a) => (
-                          <button
-                            key={a}
-                            onClick={() => { setArea(a); setIsAreaOpen(false); }}
-                            className={`w-full text-left px-4 py-2 text-sm hover:bg-surface transition-colors ${area === a ? 'bg-orange-50 font-medium text-orange-600' : 'text-text-primary'}`}
-                          >
-                            {a}
-                          </button>
-                        ))}
-                      </div>
-                    </>
-                  )}
-                </div>
-
-                {/* Bengali-Friendly Toggle */}
-                <div>
-                  <p className="text-[10px] font-semibold text-text-muted uppercase tracking-wider mb-1 opacity-0">Filter</p>
-                  <button
-                    onClick={() => setBengaliOnly(!bengaliOnly)}
-                    className={`flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${
-                      bengaliOnly ? 'bg-orange-500 text-white shadow-md' : 'bg-white border border-border text-text-primary hover:border-orange-400'
-                    }`}
-                  >
-                    <SlidersHorizontal className="w-3.5 h-3.5" />
-                    🍛 Bengali Friendly
-                  </button>
-                </div>
+                      ))}
+                    </div>
+                  </>
+                )}
               </div>
-            </div>
-          )}
+            )}
 
-          {/* Search */}
-          <div className="mt-4 flex flex-wrap items-center gap-3 relative z-10">
-            <div className="relative flex-1 min-w-[200px] max-w-sm">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
-              <input value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="Search restaurants..." className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
-            </div>
+            {/* Bengali Friendly Toggle */}
+            {city && (
+              <button
+                onClick={() => setBengaliOnly(!bengaliOnly)}
+                className={`flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer animate-fade-in ${
+                  bengaliOnly ? 'bg-orange-500 text-white shadow-md' : 'bg-white border border-border text-text-primary hover:border-orange-400'
+                }`}
+              >
+                <SlidersHorizontal className="w-3.5 h-3.5" />
+                🍛 Bengali Friendly
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -253,6 +250,7 @@ export default function FoodPage() {
                   name={food.name}
                   city={food.city}
                   mapsUrl={food.google_maps_url}
+                  imageUrl={food.image_url}
                   type={food.type}
                   fallbackIcon={
                     <span className="text-5xl opacity-35 select-none">

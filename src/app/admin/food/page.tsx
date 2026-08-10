@@ -28,6 +28,7 @@ export default function AdminFoodPage() {
         { key: 'bengali_friendly', label: 'Bengali Friendly', type: 'checkbox' },
         { key: 'specialties', label: 'Specialties (comma-separated)' },
         { key: 'google_maps_url', label: 'Google Maps URL' },
+        { key: 'image_url', label: 'Image URL', type: 'image' },
         { key: 'zomato_url', label: 'Zomato URL' },
         { key: 'swiggy_url', label: 'Swiggy URL' },
         { key: 'magicpin_url', label: 'Magicpin URL' },

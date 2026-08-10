@@ -602,9 +602,8 @@ export default function LoginPage() {
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8">
-          <Link href="/" className="inline-flex items-center gap-2 mb-6">
+          <Link href="/" className="inline-flex items-center justify-center mb-6">
             <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-white font-bold text-xl bengali-text">প</div>
-            <span className="text-xl font-bold">Probasi<span className="text-primary">Bangali</span></span>
           </Link>
           <h1 className="text-2xl font-bold font-display text-text-primary">Welcome Back</h1>
           <p className="text-text-muted mt-1">Login to access all features</p>

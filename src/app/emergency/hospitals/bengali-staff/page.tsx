@@ -12,19 +12,9 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useAuth } from '@/lib/auth/AuthContext';
 
-const SAMPLE_HOSPITALS: Record<string, Hospital> = {
-  'h1': { id: 'h1', name: 'Apollo Hospital Chennai', city: 'Chennai', area: 'Greams Road', specializations: [], is_24_7: true, has_bengali_doctor: true, images: ['/images/hospitals/apollo-chennai.jpg'], created_at: '' },
-  'h2': { id: 'h2', name: 'MGM Healthcare Chennai', city: 'Chennai', area: 'Aminjikarai', specializations: [], is_24_7: true, has_bengali_doctor: true, images: ['/images/hospitals/mgm-healthcare.jpg'], created_at: '' },
-  'h3': { id: 'h3', name: 'MIOT International Chennai', city: 'Chennai', area: 'Manapakkam', specializations: [], is_24_7: true, has_bengali_doctor: true, images: ['/images/hospitals/miot-international.jpg'], created_at: '' },
-  'h4': { id: 'h4', name: 'Fortis Malar Hospital Chennai', city: 'Chennai', area: 'Adyar', specializations: [], is_24_7: true, has_bengali_doctor: true, images: ['/images/hospitals/fortis-malar.jpg'], created_at: '' },
-  'h5': { id: 'h5', name: 'SIMS Hospital Chennai', city: 'Chennai', area: 'Vadapalani', specializations: [], is_24_7: true, has_bengali_doctor: true, images: ['/images/hospitals/sims-hospital.jpg'], created_at: '' }
-};
+const SAMPLE_HOSPITALS: Record<string, Hospital> = {};
 
-const SAMPLE_STAFF: BengaliStaff[] = [
-  { id: 's1', name: 'Amit Roy', role: 'Nursing Staff', department: 'Cardiology', hospital_id: 'h1', experience: '5 years', languages: ['Bengali', 'Tamil', 'English'], photo: '', phone: '', email: '', availability: 'Day Shift', description: '' },
-  { id: 's2', name: 'Riya Das', role: 'Patient Coordinator', department: 'General', hospital_id: 'h2', experience: '3 years', languages: ['Bengali', 'English'], photo: '', phone: '', email: '', availability: '24/7 on call', description: '' },
-  { id: 's3', name: 'Sanjay Sen', role: 'Technician', department: 'Radiology', hospital_id: 'h3', experience: '8 years', languages: ['Bengali', 'Tamil', 'Hindi'], photo: '', phone: '', email: '', availability: 'Night Shift', description: '' }
-];
+const SAMPLE_STAFF: BengaliStaff[] = [];
 
 export default function BengaliStaffPage() {
   const [staffList, setStaffList] = useState<BengaliStaff[]>([]);

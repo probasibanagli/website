@@ -167,7 +167,13 @@ export default function MatrimonialPage() {
   // Stats
   const totalProfiles = allProfs.length;
   const verifiedProfiles = allProfs.filter(p => p.verified).length;
-  const citiesCount = new Set(allProfs.map(p => p.city)).size;
+  const availableCities = useMemo(() => {
+    return Array.from(new Set(allProfs.map(p => p.city).filter(Boolean).map(c => {
+      const trimmed = c!.trim();
+      return trimmed.charAt(0).toUpperCase() + trimmed.slice(1).toLowerCase();
+    }))).sort();
+  }, [allProfs]);
+  const citiesCount = availableCities.length;
 
   return (
     <div className="min-h-screen bg-surface bg-alpana">
@@ -467,7 +473,7 @@ export default function MatrimonialPage() {
                     onChange={(val) => updateFilter('city', val)}
                     options={[
                       { value: '', label: 'All Cities' },
-                      ...CITIES.map(c => ({ value: c, label: c }))
+                      ...availableCities.map(c => ({ value: c, label: c }))
                     ]}
                     placeholder="All Cities"
                     searchable={true}
@@ -540,7 +546,7 @@ export default function MatrimonialPage() {
                         onChange={(val) => updateFilter('city', val)}
                         options={[
                           { value: '', label: 'All Cities' },
-                          ...CITIES.map(c => ({ value: c, label: c }))
+                          ...availableCities.map(c => ({ value: c, label: c }))
                         ]}
                         placeholder="All Cities"
                         searchable={true}
@@ -658,8 +664,7 @@ export default function MatrimonialPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {visibleProfiles.map((profile) => (
                 <Card key={profile.id} className="group relative overflow-hidden">
-                  {/* Top accent bar */}
-                  <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary to-accent" />
+
 
                   <div className="pt-2">
                     {/* Header */}

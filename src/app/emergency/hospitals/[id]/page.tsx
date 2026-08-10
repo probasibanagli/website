@@ -13,21 +13,9 @@ import { Card } from '@/components/ui/card';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { useRouter } from 'next/navigation';
 
-const SAMPLE_HOSPITALS: Hospital[] = [
-  { id: 'h1', name: 'Apollo Hospital Chennai', city: 'Chennai', area: 'Greams Road', emergency_phone: '1066', phone: '044-28293333', is_24_7: true, has_bengali_doctor: true, main_branch: true, specializations: ['Cardiology', 'Neurology', 'Oncology'], description: 'Leading multi-specialty hospital.', images: ['/images/hospitals/apollo-chennai.jpg'], created_at: '' },
-  { id: 'h2', name: 'MGM Healthcare Chennai', city: 'Chennai', area: 'Aminjikarai', emergency_phone: '044-45688888', phone: '044-45688888', is_24_7: true, has_bengali_doctor: true, main_branch: false, specializations: ['Heart Transplant', 'Orthopedics'], description: 'State of the art healthcare.', images: ['/images/hospitals/mgm-healthcare.jpg'], created_at: '' },
-  { id: 'h3', name: 'MIOT International Chennai', city: 'Chennai', area: 'Manapakkam', emergency_phone: '105710', phone: '044-22492288', is_24_7: true, has_bengali_doctor: true, main_branch: true, specializations: ['Orthopedics', 'Trauma'], description: 'Pioneers in orthopedic care.', images: ['/images/hospitals/miot-international.jpg'], created_at: '' },
-  { id: 'h4', name: 'Fortis Malar Hospital Chennai', city: 'Chennai', area: 'Adyar', emergency_phone: '044-42892222', phone: '044-42892222', is_24_7: true, has_bengali_doctor: true, main_branch: false, specializations: ['Cardiology', 'Gynecology'], description: 'Comprehensive medical care.', images: ['/images/hospitals/fortis-malar.jpg'], created_at: '' },
-  { id: 'h5', name: 'SIMS Hospital Chennai', city: 'Chennai', area: 'Vadapalani', emergency_phone: '044-20002001', phone: '044-20002001', is_24_7: true, has_bengali_doctor: true, main_branch: false, specializations: ['Gastroenterology', 'Neurology'], description: 'Expert medical professionals.', images: ['/images/hospitals/sims-hospital.jpg'], created_at: '' }
-];
+const SAMPLE_HOSPITALS: Hospital[] = [];
 
-const SAMPLE_DOCTORS: BengaliDoctor[] = [
-  { id: 'd1', doctor_name: 'Dr. Anirban Roy', specialization: 'Cardiologist', hospital_id: 'h1', experience: '15 years', languages: ['Bengali', 'English', 'Tamil'], photo: '', phone: '', email: '' },
-  { id: 'd2', doctor_name: 'Dr. Saptarshi Chatterjee', specialization: 'Neurologist', hospital_id: 'h2', experience: '12 years', languages: ['Bengali', 'English'], photo: '', phone: '', email: '' },
-  { id: 'd3', doctor_name: 'Dr. Debasish Banerjee', specialization: 'Orthopedic Surgeon', hospital_id: 'h3', experience: '20 years', languages: ['Bengali', 'English', 'Hindi'], photo: '', phone: '', email: '' },
-  { id: 'd4', doctor_name: 'Dr. Soumya Mukherjee', specialization: 'General Physician', hospital_id: 'h4', experience: '8 years', languages: ['Bengali', 'English', 'Tamil'], photo: '', phone: '', email: '' },
-  { id: 'd5', doctor_name: 'Dr. Priyanka Ghosh', specialization: 'Gynecologist', hospital_id: 'h5', experience: '10 years', languages: ['Bengali', 'English'], photo: '', phone: '', email: '' }
-];
+const SAMPLE_DOCTORS: BengaliDoctor[] = [];
 
 export default function HospitalDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = React.use(params);

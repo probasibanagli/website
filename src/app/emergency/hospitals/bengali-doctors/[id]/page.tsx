@@ -35,6 +35,8 @@ const TwitterIcon = ({ className }: { className?: string }) => (
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useAuth } from '@/lib/auth/AuthContext';
+import { OtpVerificationModal } from '@/components/auth/OtpVerificationModal';
+
 export default function DoctorDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = React.use(params);
   const id = resolvedParams.id;
@@ -42,10 +44,16 @@ export default function DoctorDetailsPage({ params }: { params: Promise<{ id: st
   const [doctor, setDoctor] = useState<BengaliDoctor | null>(null);
   const [associatedHospitals, setAssociatedHospitals] = useState<Hospital[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showOtpModal, setShowOtpModal] = useState(false);
+  const [isVerified, setIsVerified] = useState(false);
   const { firebaseUser: user } = useAuth();
   const router = useRouter();
   
-  const isVerified = !!user;
+  useEffect(() => {
+    if (user) {
+      setIsVerified(true);
+    }
+  }, [user]);
 
   useEffect(() => {
     async function loadDoctorAndCheckOtp() {

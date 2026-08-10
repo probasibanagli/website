@@ -11,21 +11,9 @@ import { Search, Phone, ChevronRight, UserRound, Award, Languages, Building2, St
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useAuth } from '@/lib/auth/AuthContext';
-const SAMPLE_HOSPITALS: Record<string, Hospital> = {
-  'h1': { id: 'h1', name: 'Apollo Hospital Chennai', city: 'Chennai', area: 'Greams Road', specializations: [], is_24_7: true, has_bengali_doctor: true, images: ['/images/hospitals/apollo-chennai.jpg'], created_at: '' },
-  'h2': { id: 'h2', name: 'MGM Healthcare Chennai', city: 'Chennai', area: 'Aminjikarai', specializations: [], is_24_7: true, has_bengali_doctor: true, images: ['/images/hospitals/mgm-healthcare.jpg'], created_at: '' },
-  'h3': { id: 'h3', name: 'MIOT International Chennai', city: 'Chennai', area: 'Manapakkam', specializations: [], is_24_7: true, has_bengali_doctor: true, images: ['/images/hospitals/miot-international.jpg'], created_at: '' },
-  'h4': { id: 'h4', name: 'Fortis Malar Hospital Chennai', city: 'Chennai', area: 'Adyar', specializations: [], is_24_7: true, has_bengali_doctor: true, images: ['/images/hospitals/fortis-malar.jpg'], created_at: '' },
-  'h5': { id: 'h5', name: 'SIMS Hospital Chennai', city: 'Chennai', area: 'Vadapalani', specializations: [], is_24_7: true, has_bengali_doctor: true, images: ['/images/hospitals/sims-hospital.jpg'], created_at: '' }
-};
+const SAMPLE_HOSPITALS: Record<string, Hospital> = {};
 
-const SAMPLE_DOCTORS: BengaliDoctor[] = [
-  { id: 'd1', doctor_name: 'Dr. Anirban Roy', specialization: 'Cardiologist', hospital_id: 'h1', experience: '15 years', languages: ['Bengali', 'English', 'Tamil'], photo: '', phone: '', email: '' },
-  { id: 'd2', doctor_name: 'Dr. Saptarshi Chatterjee', specialization: 'Neurologist', hospital_id: 'h2', experience: '12 years', languages: ['Bengali', 'English'], photo: '', phone: '', email: '' },
-  { id: 'd3', doctor_name: 'Dr. Debasish Banerjee', specialization: 'Orthopedic Surgeon', hospital_id: 'h3', experience: '20 years', languages: ['Bengali', 'English', 'Hindi'], photo: '', phone: '', email: '' },
-  { id: 'd4', doctor_name: 'Dr. Soumya Mukherjee', specialization: 'General Physician', hospital_id: 'h4', experience: '8 years', languages: ['Bengali', 'English', 'Tamil'], photo: '', phone: '', email: '' },
-  { id: 'd5', doctor_name: 'Dr. Priyanka Ghosh', specialization: 'Gynecologist', hospital_id: 'h5', experience: '10 years', languages: ['Bengali', 'English'], photo: '', phone: '', email: '' }
-];
+const SAMPLE_DOCTORS: BengaliDoctor[] = [];
 
 export default function BengaliDoctorsPage() {
   const [doctors, setDoctors] = useState<BengaliDoctor[]>([]);

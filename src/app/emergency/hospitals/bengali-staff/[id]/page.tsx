@@ -11,6 +11,7 @@ import { Phone, Mail, ArrowLeft, Building2, Users, Award, Languages, ShieldAlert
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useAuth } from '@/lib/auth/AuthContext';
+import { OtpVerificationModal } from '@/components/auth/OtpVerificationModal';
 
 export default function StaffDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = React.use(params);
@@ -19,10 +20,16 @@ export default function StaffDetailsPage({ params }: { params: Promise<{ id: str
   const [staff, setStaff] = useState<BengaliStaff | null>(null);
   const [hospital, setHospital] = useState<Hospital | null>(null);
   const [loading, setLoading] = useState(true);
+  const [showOtpModal, setShowOtpModal] = useState(false);
+  const [isVerified, setIsVerified] = useState(false);
   const { firebaseUser: user } = useAuth();
   const router = useRouter();
-
-  const isVerified = !!user;
+  
+  useEffect(() => {
+    if (user) {
+      setIsVerified(true);
+    }
+  }, [user]);
 
   useEffect(() => {
     async function loadStaffAndCheckOtp() {

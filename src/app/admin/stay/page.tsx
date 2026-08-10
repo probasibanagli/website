@@ -6,6 +6,7 @@ import { db } from '@/lib/firebase';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { canAccess } from '@/lib/permissions';
 import { Plus, Pencil, Trash2, X, Loader2, Shield, Phone, MessageSquare, Mail, Globe, MapPin, Hospital, HelpCircle } from 'lucide-react';
+import ImageUpload from '@/components/admin/ImageUpload';
 
 interface ListingItem {
   id: string;
@@ -24,6 +25,8 @@ interface ListingItem {
   price_daily?: number;
   price_monthly?: number;
   website_link?: string;
+  image_url?: string;
+  google_maps_url?: string;
   nearby_hospital?: string;
   landmark?: string;
   created_at?: string;
@@ -54,6 +57,8 @@ export default function AdminStayPage() {
     price_daily: 0,
     price_monthly: 0,
     website_link: '',
+    image_url: '',
+    google_maps_url: '',
     nearby_hospital: '',
     landmark: '',
   });
@@ -94,6 +99,8 @@ export default function AdminStayPage() {
       price_daily: 0,
       price_monthly: 0,
       website_link: '',
+      image_url: '',
+      google_maps_url: '',
       nearby_hospital: '',
       landmark: '',
     });
@@ -397,7 +404,30 @@ export default function AdminStayPage() {
                 </div>
               </div>
 
-              {/* Location Details */}
+                {/* Media & Links */}
+                <div className="space-y-4 pt-4 border-t border-border">
+                  <h4 className="font-bold text-sm text-primary uppercase tracking-wider">Media & Links</h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-semibold text-text-primary mb-1.5">Image URL (Optional)</label>
+                      <ImageUpload 
+                        value={formData.image_url || ''} 
+                        onChange={(url) => setFormData({ ...formData, image_url: url })}
+                        folder="admin_uploads/stay"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-text-primary mb-1.5">Google Maps Link (Optional)</label>
+                      <input type="url" value={formData.google_maps_url || ''} onChange={e => setFormData({ ...formData, google_maps_url: e.target.value })} className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl text-sm" placeholder="https://maps.app.goo.gl/..." />
+                    </div>
+                    <div className="sm:col-span-2">
+                      <label className="block text-xs font-semibold text-text-primary mb-1.5">Website Link (Optional)</label>
+                      <input type="url" value={formData.website_link || ''} onChange={e => setFormData({ ...formData, website_link: e.target.value })} className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl text-sm" placeholder="https://... (Website or Booking Link)" />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Additional Details */}
               <div className="space-y-4 pt-4 border-t border-border">
                 <h4 className="font-bold text-sm text-green-600 uppercase tracking-wider">Location & Surroundings</h4>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
