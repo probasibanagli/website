@@ -11,7 +11,6 @@ import { Phone, Mail, ArrowLeft, Building2, Users, Award, Languages, ShieldAlert
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useAuth } from '@/lib/auth/AuthContext';
-import { OtpVerificationModal } from '@/components/auth/OtpVerificationModal';
 
 export default function StaffDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = React.use(params);
@@ -20,10 +19,10 @@ export default function StaffDetailsPage({ params }: { params: Promise<{ id: str
   const [staff, setStaff] = useState<BengaliStaff | null>(null);
   const [hospital, setHospital] = useState<Hospital | null>(null);
   const [loading, setLoading] = useState(true);
-  const [isVerified, setIsVerified] = useState(false);
-  const [showOtpModal, setShowOtpModal] = useState(false);
   const { firebaseUser: user } = useAuth();
   const router = useRouter();
+
+  const isVerified = !!user;
 
   useEffect(() => {
     async function loadStaffAndCheckOtp() {
@@ -50,8 +49,6 @@ export default function StaffDetailsPage({ params }: { params: Promise<{ id: str
 
         if (d) {
           setStaff(d);
-          
-          setIsVerified(false);
           
           // Fetch hospital
           if (d.hospital_id) {
@@ -130,23 +127,11 @@ export default function StaffDetailsPage({ params }: { params: Promise<{ id: str
             <p className="text-sm text-text-muted mb-6">
               Staff profile details and contact information are protected. Please complete a quick OTP verification to unlock full profile details.
             </p>
-            <Button onClick={() => setShowOtpModal(true)} variant="primary" size="lg" className="w-full font-semibold">
-              Verify via OTP to View Profile
+            <Button onClick={() => router.push(`/auth/login?redirect=/emergency/hospitals/bengali-staff/${id}`)} variant="primary" size="lg" className="w-full font-semibold">
+              Login to View Profile
             </Button>
           </Card>
         </div>
-
-        <OtpVerificationModal 
-          isOpen={showOtpModal}
-          onClose={() => setShowOtpModal(false)}
-          onSuccess={() => {
-            setIsVerified(true);
-            setShowOtpModal(false);
-            if (typeof window !== 'undefined') {
-              localStorage.setItem('directory_verified', 'true');
-            }
-          }}
-        />
       </div>
     );
   }

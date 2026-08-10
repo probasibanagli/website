@@ -10,8 +10,7 @@ import type { BengaliDoctor, Hospital } from '@/types';
 import { Search, Phone, ChevronRight, UserRound, Award, Languages, Building2, Stethoscope, Mail, ArrowLeft, ShieldAlert } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { OtpVerificationModal } from '@/components/auth/OtpVerificationModal';
-
+import { useAuth } from '@/lib/auth/AuthContext';
 const SAMPLE_HOSPITALS: Record<string, Hospital> = {
   'h1': { id: 'h1', name: 'Apollo Hospital Chennai', city: 'Chennai', area: 'Greams Road', specializations: [], is_24_7: true, has_bengali_doctor: true, images: ['/images/hospitals/apollo-chennai.jpg'], created_at: '' },
   'h2': { id: 'h2', name: 'MGM Healthcare Chennai', city: 'Chennai', area: 'Aminjikarai', specializations: [], is_24_7: true, has_bengali_doctor: true, images: ['/images/hospitals/mgm-healthcare.jpg'], created_at: '' },
@@ -32,8 +31,8 @@ export default function BengaliDoctorsPage() {
   const [doctors, setDoctors] = useState<BengaliDoctor[]>([]);
   const [hospitals, setHospitals] = useState<Record<string, Hospital>>({});
   const [loading, setLoading] = useState(true);
-  const [isVerified, setIsVerified] = useState(false);
-  const [showOtpModal, setShowOtpModal] = useState(false);
+  const { firebaseUser: user } = useAuth();
+  const isVerified = !!user;
   const router = useRouter();
   
   const [search, setSearch] = useState('');
@@ -41,8 +40,6 @@ export default function BengaliDoctorsPage() {
   const [langFilter, setLangFilter] = useState('');
 
   useEffect(() => {
-    setIsVerified(false);
-
     async function loadData() {
       try {
         let docsData: BengaliDoctor[] = [];
@@ -216,8 +213,8 @@ export default function BengaliDoctorsPage() {
               <p className="text-sm text-text-muted mb-6">
                 To protect practitioner privacy and maintain security, complete a quick OTP verification to unlock doctor profiles and contact details.
               </p>
-              <Button onClick={() => setShowOtpModal(true)} variant="primary" size="lg" className="w-full font-semibold">
-                Verify via OTP to Access Directory
+              <Button onClick={() => router.push('/auth/login?redirect=/emergency/hospitals/bengali-doctors')} variant="primary" size="lg" className="w-full font-semibold">
+                Login to Access Directory
               </Button>
             </Card>
           </div>
@@ -300,17 +297,6 @@ export default function BengaliDoctorsPage() {
         )}
       </div>
 
-      <OtpVerificationModal 
-        isOpen={showOtpModal}
-        onClose={() => setShowOtpModal(false)}
-        onSuccess={() => {
-          setIsVerified(true);
-          setShowOtpModal(false);
-          if (typeof window !== 'undefined') {
-            localStorage.setItem('directory_verified', 'true');
-          }
-        }}
-      />
     </div>
   );
 }

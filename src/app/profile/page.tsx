@@ -227,7 +227,7 @@ export default function ProfilePage() {
               <div>
                 <h2 className="text-xl font-bold">Guest User</h2>
                 <p className="text-sm text-text-muted">Please login to view your profile</p>
-                <Link href="/auth/login" className="mt-3 inline-block">
+                <Link href="/auth/login?redirect=/profile" className="mt-3 inline-block">
                   <Button variant="primary" size="sm">Login to Continue</Button>
                 </Link>
               </div>

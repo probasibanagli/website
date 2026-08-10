@@ -180,12 +180,12 @@ export default function MatrimonialDashboard() {
                 Please create an account and verify both your email and phone number to view the matrimonial dashboard.
               </p>
               <div className="flex flex-col gap-3">
-                <Link href="/auth/register">
+                <Link href="/auth/register?redirect=/community/matrimonial/dashboard">
                   <Button variant="primary" size="lg" className="w-full flex items-center justify-center gap-2">
                     <UserPlus className="w-4 h-4" /> Sign Up Now
                   </Button>
                 </Link>
-                <Link href="/auth/login">
+                <Link href="/auth/login?redirect=/community/matrimonial/dashboard">
                   <Button variant="outline" size="lg" className="w-full">
                     Login to Account
                   </Button>

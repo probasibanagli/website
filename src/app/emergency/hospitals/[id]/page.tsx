@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/card';
 import { useAuth } from '@/lib/auth/AuthContext';
-import { OtpVerificationModal } from '@/components/auth/OtpVerificationModal';
+import { useRouter } from 'next/navigation';
 
 const SAMPLE_HOSPITALS: Hospital[] = [
   { id: 'h1', name: 'Apollo Hospital Chennai', city: 'Chennai', area: 'Greams Road', emergency_phone: '1066', phone: '044-28293333', is_24_7: true, has_bengali_doctor: true, main_branch: true, specializations: ['Cardiology', 'Neurology', 'Oncology'], description: 'Leading multi-specialty hospital.', images: ['/images/hospitals/apollo-chennai.jpg'], created_at: '' },
@@ -38,13 +38,15 @@ export default function HospitalDetailsPage({ params }: { params: Promise<{ id: 
   const [loading, setLoading] = useState(true);
   const [activeImage, setActiveImage] = useState(0);
   const [activeTab, setActiveTab] = useState<'doctors' | 'staff'>('doctors');
-  const [isVerified, setIsVerified] = useState(false);
-  const [showOtpModal, setShowOtpModal] = useState(false);
+  const { firebaseUser: user } = useAuth();
+  const router = useRouter();
   const [doctorSearch, setDoctorSearch] = useState('');
   const [staffSearch, setStaffSearch] = useState('');
 
+  const isVerified = !!user;
+
   useEffect(() => {
-    setIsVerified(false);
+    // keeping empty for now to avoid refactoring hooks below
   }, []);
 
   const canViewDoctors = isVerified;
@@ -371,7 +373,7 @@ export default function HospitalDetailsPage({ params }: { params: Promise<{ id: 
                     <p className="text-text-muted mb-6 max-w-md mx-auto">
                       For privacy reasons, doctor and staff details are only visible to verified users. Please verify your phone number and email.
                     </p>
-                    <Button onClick={() => setShowOtpModal(true)} variant="primary" className="shadow-md cursor-pointer">
+                    <Button onClick={() => router.push(`/auth/login?redirect=/emergency/hospitals/${id}`)} variant="primary" className="shadow-md cursor-pointer">
                       Verify Now to View {activeTab === 'doctors' ? 'Doctors' : 'Staff'}
                     </Button>
                   </div>
@@ -520,15 +522,6 @@ export default function HospitalDetailsPage({ params }: { params: Promise<{ id: 
           </div>
         </div>
       </div>
-
-      <OtpVerificationModal 
-        isOpen={showOtpModal} 
-        onClose={() => setShowOtpModal(false)} 
-        onSuccess={() => {
-          setIsVerified(true);
-          setShowOtpModal(false);
-        }} 
-      />
     </div>
   );
 }

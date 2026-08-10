@@ -219,7 +219,7 @@ export default function LoginPage() {
 
       const params = new URLSearchParams(window.location.search);
       const redirect = params.get('redirect') || '/';
-      router.push(redirect);
+      window.location.href = redirect;
     } catch (err: any) {
       setError(err.message || 'Login failed.');
     } finally {
@@ -439,21 +439,14 @@ export default function LoginPage() {
     setError('');
     setLoading(true);
     try {
-      await verifyPhoneOtp(confirmationResult, code);
+      const { user: currentUser, profile: userProfile } = await verifyPhoneOtp(confirmationResult, code);
 
-      // Re-read profile to check status
-      const { auth, db } = await import('@/lib/firebase');
-      const { doc, getDoc } = await import('firebase/firestore');
-      const currentUser = auth.currentUser;
-      if (currentUser) {
-        const snap = await getDoc(doc(db, 'users', currentUser.uid));
-        const userProfile = snap.data();
-        if (userProfile?.is_active === false) {
-          setError('Your account is blocked.');
-          setTimeout(() => router.push('/blocked'), 1500);
-          setLoading(false);
-          return;
-        }
+      if (userProfile?.is_active === false) {
+        setError('Your account is blocked.');
+        setTimeout(() => router.push('/blocked'), 1500);
+        setLoading(false);
+        return;
+      }
 
         // If the logged-in user is an admin or superadmin, require Email verification
         if (userProfile?.role === 'admin' || userProfile?.role === 'superadmin') {
@@ -480,13 +473,12 @@ export default function LoginPage() {
           setLoading(false);
           return;
         }
-      }
 
       setSuccess('Verified successfully! Redirecting...');
       setTimeout(() => {
         const params = new URLSearchParams(window.location.search);
         const redirect = params.get('redirect') || '/';
-        router.push(redirect);
+        window.location.href = redirect;
       }, 1000);
     } catch (err: any) {
       setError(err.message || 'Verification failed.');

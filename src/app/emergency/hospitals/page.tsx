@@ -12,8 +12,8 @@ import { db } from '@/lib/firebase';
 import { collection, getDocs } from 'firebase/firestore';
 import { COLLECTIONS } from '@/lib/firestore/collections';
 import type { Hospital, BengaliDoctor, BengaliStaff } from '@/types';
-import { OtpVerificationModal } from '@/components/auth/OtpVerificationModal';
-
+import { useAuth } from '@/lib/auth/AuthContext';
+import { useRouter } from 'next/navigation';
 const PREDEFINED_SPECIALIZATIONS = [
   'Cardiology',
   'Neurology',
@@ -85,6 +85,8 @@ function ListingCoverImage({ name, city, mapsUrl, fallbackIcon }: {
 }
 
 export default function EmergencyHospitalsPage() {
+  const { firebaseUser: user } = useAuth();
+  const router = useRouter();
   const [searchTab, setSearchTab] = useState<'hospitals' | 'doctors' | 'staff'>('hospitals');
   
   // State lists
@@ -101,13 +103,11 @@ export default function EmergencyHospitalsPage() {
   const [departmentFilter, setDepartmentFilter] = useState('');
 
   // OTP Gating
-  const [isVerified, setIsVerified] = useState(false);
-  const [showOtpModal, setShowOtpModal] = useState(false);
-  const [doctorToVerify, setDoctorToVerify] = useState<string | undefined>(undefined);
+  const isVerified = !!user;
 
   useEffect(() => {
-    setIsVerified(false);
     
+
     const fetchData = async () => {
       try {
         let hData: Hospital[] = [];
@@ -173,16 +173,7 @@ export default function EmergencyHospitalsPage() {
   }, []);
 
   const triggerVerification = (doctorId?: string) => {
-    setDoctorToVerify(doctorId);
-    setShowOtpModal(true);
-  };
-
-  const handleVerificationSuccess = () => {
-    setIsVerified(true);
-    setShowOtpModal(false);
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('directory_verified', 'true');
-    }
+    router.push('/auth/login?redirect=/emergency/hospitals');
   };
 
   // ── FILTER LOGIC ──
@@ -699,14 +690,6 @@ export default function EmergencyHospitalsPage() {
           </>
         )}
       </div>
-
-      {/* Otp Verification Modal */}
-      <OtpVerificationModal
-        isOpen={showOtpModal}
-        onClose={() => { setShowOtpModal(false); setDoctorToVerify(undefined); }}
-        onSuccess={handleVerificationSuccess}
-        doctorId={doctorToVerify}
-      />
     </div>
   );
 }
