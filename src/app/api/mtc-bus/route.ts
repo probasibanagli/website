@@ -121,12 +121,38 @@ export async function GET(request: Request) {
 
     // 1. Autocomplete Search
     if (autocomplete) {
+      const rawQ = autocomplete.toLowerCase().trim();
       const q = norm(autocomplete);
-      if (!q) {
+      if (!rawQ && !q) {
         return NextResponse.json({ stops: [] });
       }
-      // Return top 8 matches matching the query
-      const matches = stops.filter(s => norm(s).includes(q)).slice(0, 8);
+
+      const startsWithMatches: string[] = [];
+      const wordStartsWithMatches: string[] = [];
+      const containsMatches: string[] = [];
+
+      for (const stop of stops) {
+        const lowerStop = stop.toLowerCase().trim();
+        const normStop = norm(stop);
+
+        if (lowerStop.startsWith(rawQ) || normStop.startsWith(q)) {
+          startsWithMatches.push(stop);
+        } else {
+          // Check if any individual word in stop name starts with typed query
+          const words = lowerStop.split(/[\s,/-]+/);
+          if (words.some(w => w.startsWith(rawQ))) {
+            wordStartsWithMatches.push(stop);
+          } else if (lowerStop.includes(rawQ) || normStop.includes(q)) {
+            containsMatches.push(stop);
+          }
+        }
+      }
+
+      startsWithMatches.sort((a, b) => a.localeCompare(b));
+      wordStartsWithMatches.sort((a, b) => a.localeCompare(b));
+      containsMatches.sort((a, b) => a.localeCompare(b));
+
+      const matches = [...startsWithMatches, ...wordStartsWithMatches, ...containsMatches].slice(0, 25);
       return NextResponse.json({ stops: matches });
     }
 
