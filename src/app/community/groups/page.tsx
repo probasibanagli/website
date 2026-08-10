@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { Users, ExternalLink, Search, Globe, MapPin, ChevronDown } from 'lucide-react';
+import { Users, ExternalLink, Search, Globe, MapPin, ChevronDown, Camera, Briefcase, MessageCircle, Send, Building, Map, Globe2 } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -12,18 +12,18 @@ import { CommunityGroup } from '@/types';
 
 /* ── Platform config ── */
 const PLATFORMS = [
-  { key: 'instagram', label: 'Instagram', icon: '📷', color: 'bg-gradient-to-br from-purple-500 via-pink-500 to-orange-400', textColor: 'text-white', ringColor: 'ring-pink-300', badgeColor: 'bg-pink-100 text-pink-700' },
-  { key: 'facebook', label: 'Facebook', icon: '👤', color: 'bg-gradient-to-br from-blue-600 to-blue-500', textColor: 'text-white', ringColor: 'ring-blue-300', badgeColor: 'bg-indigo-100 text-indigo-700' },
-  { key: 'linkedin', label: 'LinkedIn', icon: '💼', color: 'bg-gradient-to-br from-blue-700 to-sky-600', textColor: 'text-white', ringColor: 'ring-sky-300', badgeColor: 'bg-sky-100 text-sky-700' },
-  { key: 'website', label: 'Website', icon: '🌐', color: 'bg-gradient-to-br from-emerald-500 to-teal-500', textColor: 'text-white', ringColor: 'ring-teal-300', badgeColor: 'bg-teal-100 text-teal-700' },
-  { key: 'whatsapp', label: 'WhatsApp', icon: '💬', color: 'bg-gradient-to-br from-green-500 to-green-600', textColor: 'text-white', ringColor: 'ring-green-300', badgeColor: 'bg-green-100 text-green-700' },
-  { key: 'telegram', label: 'Telegram', icon: '✈️', color: 'bg-gradient-to-br from-sky-400 to-blue-500', textColor: 'text-white', ringColor: 'ring-sky-300', badgeColor: 'bg-blue-100 text-blue-700' },
+  { key: 'instagram', label: 'Instagram', icon: <Camera className="w-4 h-4" />, color: 'bg-gradient-to-br from-purple-500 via-pink-500 to-orange-400', textColor: 'text-white', ringColor: 'ring-pink-300', badgeColor: 'bg-pink-100 text-pink-700' },
+  { key: 'facebook', label: 'Facebook', icon: <Users className="w-4 h-4" />, color: 'bg-gradient-to-br from-blue-600 to-blue-500', textColor: 'text-white', ringColor: 'ring-blue-300', badgeColor: 'bg-indigo-100 text-indigo-700' },
+  { key: 'linkedin', label: 'LinkedIn', icon: <Briefcase className="w-4 h-4" />, color: 'bg-gradient-to-br from-blue-700 to-sky-600', textColor: 'text-white', ringColor: 'ring-sky-300', badgeColor: 'bg-sky-100 text-sky-700' },
+  { key: 'website', label: 'Website', icon: <Globe className="w-4 h-4" />, color: 'bg-gradient-to-br from-emerald-500 to-teal-500', textColor: 'text-white', ringColor: 'ring-teal-300', badgeColor: 'bg-teal-100 text-teal-700' },
+  { key: 'whatsapp', label: 'WhatsApp', icon: <MessageCircle className="w-4 h-4" />, color: 'bg-gradient-to-br from-green-500 to-green-600', textColor: 'text-white', ringColor: 'ring-green-300', badgeColor: 'bg-green-100 text-green-700' },
+  { key: 'telegram', label: 'Telegram', icon: <Send className="w-4 h-4" />, color: 'bg-gradient-to-br from-sky-400 to-blue-500', textColor: 'text-white', ringColor: 'ring-sky-300', badgeColor: 'bg-blue-100 text-blue-700' },
 ];
 
 const REGIONS = [
-  { key: 'tamil_nadu', label: 'Tamil Nadu', icon: '🏛️' },
-  { key: 'india', label: 'India', icon: '🇮🇳' },
-  { key: 'all', label: 'All / Worldwide', icon: '🌍' },
+  { key: 'tamil_nadu', label: 'Tamil Nadu', icon: <Building className="w-3.5 h-3.5" /> },
+  { key: 'india', label: 'India', icon: <Map className="w-3.5 h-3.5" /> },
+  { key: 'all', label: 'Global / All', icon: <Globe2 className="w-3.5 h-3.5" /> },
 ];
 
 function getPlatformConfig(key: string) {
@@ -168,7 +168,7 @@ export default function GroupsPage() {
                     <img src={group.image_url} alt={group.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                   ) : (
                     <div className={`w-full h-full ${pConfig.color} opacity-10 flex items-center justify-center group-hover:scale-105 transition-transform duration-500`}>
-                      <span className="text-7xl opacity-30">{pConfig.icon}</span>
+                      <span className="opacity-30 scale-[3] text-primary">{pConfig.icon}</span>
                     </div>
                   )}
                   {/* Platform Badge */}
@@ -187,8 +187,9 @@ export default function GroupsPage() {
                   <div className="flex items-center gap-2 mt-3 flex-wrap">
                     {group.city && <span className="text-xs text-text-muted flex items-center gap-1 font-medium bg-surface px-2.5 py-1 rounded-md border border-border/50"><MapPin className="w-3.5 h-3.5 text-primary" />{group.city}</span>}
                     {group.region && (
-                      <span className="text-[10px] px-2.5 py-1 rounded-md bg-surface border border-border/50 text-text-muted font-bold uppercase tracking-wider flex items-center gap-1">
-                        {group.region === 'tamil_nadu' ? '🏛️ TN' : group.region === 'india' ? '🇮🇳 India' : '🌍 Global'}
+                      <span className="text-[10px] px-2.5 py-1 rounded-md bg-surface border border-border/50 text-text-muted font-bold uppercase tracking-wider flex items-center gap-1.5">
+                        {REGIONS.find(r => r.key === group.region)?.icon}
+                        {group.region === 'tamil_nadu' ? 'TN' : group.region === 'india' ? 'India' : 'Global'}
                       </span>
                     )}
                   </div>
@@ -214,7 +215,7 @@ export default function GroupsPage() {
 
         {filtered.length === 0 && (
           <div className="text-center py-20">
-            <p className="text-5xl mb-4">👥</p>
+            <Users className="w-12 h-12 mx-auto text-text-muted mb-4 opacity-50" />
             <h3 className="text-xl font-bold mb-2">No groups found</h3>
             <p className="text-text-muted">Try selecting a different platform or region.</p>
           </div>
