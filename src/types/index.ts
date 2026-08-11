@@ -15,7 +15,8 @@ export type ModuleKey =
   | 'users'
   | 'matrimony'
   | 'blood_bank'
-  | 'ambulance';
+  | 'ambulance'
+  | 'government_services';
 
 export type ModulePermissions = Record<ModuleKey, PermissionLevel>;
 
@@ -51,7 +52,26 @@ export const MODULE_LABELS: Record<ModuleKey, string> = {
   matrimony: 'Matrimonial',
   blood_bank: 'Blood Banks',
   ambulance: 'Ambulance Directory',
+  government_services: 'Government Services',
 };
+
+/* ──────────────── Government Service Data Model ──────────────── */
+
+export interface GovernmentServiceItem {
+  id: string;
+  title: string;
+  category: 'identity' | 'civic' | 'welfare' | 'transport' | 'police' | 'passport' | 'other';
+  description: string;
+  official_url?: string;
+  online_portal_name?: string;
+  offline_centres?: string[];
+  documents_required?: string[];
+  fees?: string;
+  processing_time?: string;
+  is_active: boolean;
+  created_at?: string;
+  updated_at?: string;
+}
 
 /* ──────────────── Data Models ──────────────── */
 
@@ -306,6 +326,8 @@ export interface MatrimonialProfile {
 
   // Partner Preferences
   partner_preference?: string;
+  pref_age_range?: string;
+  pref_height_range?: string;
   pref_age_min?: number;
   pref_age_max?: number;
   pref_height_min?: string;
@@ -325,6 +347,7 @@ export interface MatrimonialProfile {
 
   // Photos & Videos
   profile_photo?: string;
+  profile_picture_index?: number;
   photos?: string[];
   video?: string;
 

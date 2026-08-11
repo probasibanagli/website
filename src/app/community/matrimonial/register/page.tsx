@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import {
-  ArrowLeft, ArrowRight, User, Users, GraduationCap, Heart, Camera,
+  ArrowLeft, ArrowRight, User, Users, GraduationCap, Heart, Camera, Star,
   Briefcase, CheckCircle, BookOpen, Sparkles, Shield, Save, Video, Trash2, AlertTriangle, MapPin, Info, Lock, Mail, Phone, AlertCircle as AlertCircleIcon, UserPlus, Sliders
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -17,7 +17,8 @@ import {
   CITIES, HEIGHTS, MARITAL_STATUSES, COMPLEXIONS, FAMILY_TYPES, FAMILY_VALUES, FAMILY_STATUS,
   DIET_TYPES, EDUCATION_LEVELS, INCOME_RANGES, CASTE_MAPPING, WEST_BENGAL_DISTRICTS,
   SMOKING_HABITS, DRINKING_HABITS, MANGLIK_OPTIONS, HOBBIES_LIST, RELIGIONS, BLOOD_GROUPS, NAKSHATRAS, SUBCASTE_MAPPING, RAASIS, RAASI_NAKSHATRAS_MAPPING,
-  FIELDS_OF_STUDY, INSTITUTIONS, PROFESSIONS, COMPANIES, WORK_CITIES,
+  FIELDS_OF_STUDY, INSTITUTIONS, PROFESSIONS, COMPANIES, WORK_CITIES, GOTRAS, PARENT_OCCUPATIONS, ALL_CASTES, ALL_SUBCASTES, NATIVE_CITIES,
+  AGE_RANGES, HEIGHT_RANGES, parseAgeRange, parseHeightRange,
 } from '@/lib/constants';
 import { saveMyProfile, generateProfileId, getMyProfile, storeMedia, getMedia } from '@/lib/matrimony-service';
 import type { MatrimonialProfile } from '@/types';
@@ -50,9 +51,10 @@ const initialFormData: FormData = {
   siblings: '', family_type: '', family_values: '', family_status: '',
   education: '', field_of_study: '', institution: '', profession: '', company: '',
   annual_income: '', work_city: '',
-  religion: 'Hindu', caste: 'Bengali', sub_caste: '', gotra: '', manglik: '',
+  religion: '', caste: '', sub_caste: '', gotra: '', manglik: '',
   diet: '', smoking: '', drinking: '',
   about_me: '', partner_preference: '',
+  pref_age_range: '', pref_height_range: '',
   pref_age_min: '', pref_age_max: '', pref_height_min: '', pref_height_max: '',
   pref_education: '', pref_profession: '', pref_city: '', pref_income_min: '',
   pref_diet: '', pref_marital_status: '',
@@ -96,7 +98,7 @@ const FormSelect = ({ label, field, options, required, formData, errors, updateF
 
   return (
     <div className="space-y-1.5 w-full">
-      <AutocompleteSelect
+      <CustomSelect
         label={label}
         value={selectValue}
         onChange={(val) => {
@@ -112,7 +114,7 @@ const FormSelect = ({ label, field, options, required, formData, errors, updateF
         placeholder={`Select ${label}`}
         required={required}
         error={errors[field]}
-        allowCustom={true}
+        searchable={false}
       />
 
       {isCustomMode && (
@@ -285,6 +287,7 @@ export default function MatrimonialRegisterPage() {
     return `user-${Date.now()}`;
   });
   const [photoPreviews, setPhotoPreviews] = useState<(string | null)[]>([null, null, null, null, null]);
+  const [profilePictureIndex, setProfilePictureIndex] = useState<number>(0);
   const [videoPreview, setVideoPreview] = useState<string | null>(null);
   const [uploadError, setUploadError] = useState('');
 
@@ -377,16 +380,23 @@ export default function MatrimonialRegisterPage() {
     
     try {
       const url = await storeMedia(`profile_${realId}_photo_${index}`, file);
+      if (!url) {
+        setUploadError('Failed to process photo file.');
+        return;
+      }
       
       setPhotoPreviews(prev => {
         const next = [...prev];
         next[index] = url;
+        if (prev.every(p => p === null)) {
+          setProfilePictureIndex(index);
+        }
         return next;
       });
       
       setFormData(prev => {
         const nextPhotos = [...((prev.photos as string[]) || [])];
-        nextPhotos[index] = `profile_${realId}_photo_${index}`;
+        nextPhotos[index] = url;
         return { ...prev, photos: nextPhotos };
       });
       
@@ -401,6 +411,10 @@ export default function MatrimonialRegisterPage() {
     setPhotoPreviews(prev => {
       const next = [...prev];
       next[index] = null;
+      if (profilePictureIndex === index) {
+        const nextIdx = next.findIndex(p => p !== null);
+        setProfilePictureIndex(nextIdx !== -1 ? nextIdx : 0);
+      }
       return next;
     });
     
@@ -448,7 +462,7 @@ export default function MatrimonialRegisterPage() {
 
       const url = await storeMedia(`profile_${realId}_video`, file);
       setVideoPreview(url);
-      setFormData(prev => ({ ...prev, video: `profile_${realId}_video` }));
+      setFormData(prev => ({ ...prev, video: url }));
       setUploadError('');
     } catch (err) {
       console.error(err);
@@ -531,6 +545,9 @@ export default function MatrimonialRegisterPage() {
     const id = await generateProfileId();
     const now = new Date().toISOString();
 
+    const parsedAge = parseAgeRange(formData.pref_age_range as string);
+    const parsedHeight = parseHeightRange(formData.pref_height_range as string);
+
     const profile: MatrimonialProfile = {
       id: realId,
       user_id: firebaseUser ? firebaseUser.uid : `local-${Date.now()}`,
@@ -576,11 +593,13 @@ export default function MatrimonialRegisterPage() {
       drinking: formData.drinking as string,
       hobbies: selectedHobbies,
       about_me: formData.about_me as string,
-      partner_preference: formData.partner_preference as string,
-      pref_age_min: formData.pref_age_min ? Number(formData.pref_age_min) : undefined,
-      pref_age_max: formData.pref_age_max ? Number(formData.pref_age_max) : undefined,
-      pref_height_min: formData.pref_height_min as string,
-      pref_height_max: formData.pref_height_max as string,
+      partner_preference: (formData.partner_preference as string) || '',
+      pref_age_range: (formData.pref_age_range as string) || '',
+      pref_height_range: (formData.pref_height_range as string) || '',
+      pref_age_min: parsedAge.min || (formData.pref_age_min ? Number(formData.pref_age_min) : undefined),
+      pref_age_max: parsedAge.max || (formData.pref_age_max ? Number(formData.pref_age_max) : undefined),
+      pref_height_min: parsedHeight.min || (formData.pref_height_min as string) || undefined,
+      pref_height_max: parsedHeight.max || (formData.pref_height_max as string) || undefined,
       pref_education: formData.pref_education as string,
       pref_profession: formData.pref_profession as string,
       pref_city: formData.pref_city as string,
@@ -591,6 +610,8 @@ export default function MatrimonialRegisterPage() {
       email: formData.email as string,
       whatsapp: '',
       social_handle: formData.social_handle as string,
+      profile_picture_index: profilePictureIndex,
+      profile_photo: ((formData.photos as string[]) || [])[profilePictureIndex] || ((formData.photos as string[]) || []).find(p => p && p !== '') || '',
       photos: (formData.photos as string[]) || [],
       video: (formData.video as string) || '',
       verified: false,
@@ -944,35 +965,31 @@ export default function MatrimonialRegisterPage() {
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <FormSelect formData={formData} errors={errors} updateField={updateField} label="Religion" field="religion" options={RELIGIONS} required />
-                  {formData.religion && (
-                    <FormSelect 
-                      formData={formData} 
-                      errors={errors} 
-                      updateField={updateField} 
-                      label="Caste" 
-                      field="caste" 
-                      options={CASTE_MAPPING[formData.religion as string] || []} 
-                      required 
-                    />
-                  )}
+                  <FormSelect 
+                    formData={formData} 
+                    errors={errors} 
+                    updateField={updateField} 
+                    label="Caste" 
+                    field="caste" 
+                    options={formData.religion && CASTE_MAPPING[formData.religion as string] ? CASTE_MAPPING[formData.religion as string] : ALL_CASTES} 
+                    required 
+                  />
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {formData.caste && (
-                    <FormSelect 
-                      formData={formData} 
-                      errors={errors} 
-                      updateField={updateField} 
-                      label="Sub-Caste" 
-                      field="sub_caste" 
-                      options={SUBCASTE_MAPPING[formData.caste as string] || []} 
-                      required 
-                    />
-                  )}
+                  <FormSelect 
+                    formData={formData} 
+                    errors={errors} 
+                    updateField={updateField} 
+                    label="Sub-Caste" 
+                    field="sub_caste" 
+                    options={formData.caste && SUBCASTE_MAPPING[formData.caste as string] ? SUBCASTE_MAPPING[formData.caste as string] : ALL_SUBCASTES} 
+                    required 
+                  />
                   <FormSelect formData={formData} errors={errors} updateField={updateField} label="Manglik status" field="manglik" options={MANGLIK_OPTIONS} />
                 </div>
                 {formData.religion === 'Hindu' && (
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 rounded-xl bg-orange-50/30 border border-orange-100/50 animate-fade-in">
-                    <FormInput formData={formData} errors={errors} updateField={updateField} label="Gotra" field="gotra" placeholder="e.g. Kashyap" />
+                    <FormSelect formData={formData} errors={errors} updateField={updateField} label="Gotra" field="gotra" options={GOTRAS} />
                     <FormSelect formData={formData} errors={errors} updateField={updateField} label="Raasi (Zodiac Sign)" field="raasi" options={RAASIS} />
                     {formData.raasi && (
                       <FormSelect 
@@ -1004,7 +1021,7 @@ export default function MatrimonialRegisterPage() {
                   </h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <FormSelect formData={formData} errors={errors} updateField={updateField} label="Current City (Tamil Nadu)" field="city" options={CITIES} required />
-                    <FormSelect formData={formData} errors={errors} updateField={updateField} label="Native District (West Bengal)" field="native_district" options={WEST_BENGAL_DISTRICTS} required />
+                    <FormSelect formData={formData} errors={errors} updateField={updateField} label="Native City" field="native_district" options={NATIVE_CITIES} required />
                   </div>
                 </div>
 
@@ -1015,11 +1032,11 @@ export default function MatrimonialRegisterPage() {
                   </h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <FormInput formData={formData} errors={errors} updateField={updateField} label="Father's Name" field="father_name" placeholder="Enter father's name" />
-                    <FormInput formData={formData} errors={errors} updateField={updateField} label="Father's Occupation" field="father_occupation" placeholder="e.g. Business, Retired" />
+                    <FormSelect formData={formData} errors={errors} updateField={updateField} label="Father's Occupation" field="father_occupation" options={PARENT_OCCUPATIONS} />
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <FormInput formData={formData} errors={errors} updateField={updateField} label="Mother's Name" field="mother_name" placeholder="Enter mother's name" />
-                    <FormInput formData={formData} errors={errors} updateField={updateField} label="Mother's Occupation" field="mother_occupation" placeholder="e.g. Homemaker, Teacher" />
+                    <FormSelect formData={formData} errors={errors} updateField={updateField} label="Mother's Occupation" field="mother_occupation" options={PARENT_OCCUPATIONS} />
                   </div>
                   <FormInput formData={formData} errors={errors} updateField={updateField} label="Siblings" field="siblings" placeholder="e.g. 1 Elder Brother (Married), 1 Younger Sister" />
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -1113,15 +1130,40 @@ export default function MatrimonialRegisterPage() {
                 {/* Upload Section */}
                 <div className="space-y-4">
                   <div>
-                    <h3 className="text-sm font-semibold text-text-primary mb-2">Upload Photos (Up to 5)</h3>
+                    <h3 className="text-sm font-semibold text-text-primary mb-1">Upload Photos (Up to 5)</h3>
+                    <p className="text-xs text-text-muted mb-3 flex items-center gap-1.5">
+                      <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500 shrink-0" />
+                      Select your preferred photo as the main <strong>Profile Picture</strong> for this profile.
+                    </p>
                     <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
                       {Array.from({ length: 5 }).map((_, i) => {
                         const preview = photoPreviews[i];
+                        const isMain = profilePictureIndex === i && preview !== null;
                         return (
-                          <div key={i} className="aspect-square bg-surface border border-border rounded-xl flex flex-col items-center justify-center relative overflow-hidden group">
+                          <div
+                            key={i}
+                            className={`aspect-square bg-surface border rounded-xl flex flex-col items-center justify-center relative overflow-hidden group transition-all ${
+                              isMain ? 'ring-2 ring-amber-500 border-amber-400 shadow-md' : 'border-border'
+                            }`}
+                          >
                             {preview ? (
                               <>
                                 <img src={preview} alt={`Preview ${i + 1}`} className="w-full h-full object-cover" />
+
+                                {isMain ? (
+                                  <div className="absolute top-1.5 left-1.5 bg-amber-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-md">
+                                    <Star className="w-2.5 h-2.5 fill-white" /> Main Pic
+                                  </div>
+                                ) : (
+                                  <button
+                                    type="button"
+                                    onClick={() => setProfilePictureIndex(i)}
+                                    className="absolute bottom-1.5 left-1/2 -translate-x-1/2 bg-black/75 hover:bg-amber-500 text-white text-[9px] font-medium px-2 py-0.5 rounded-full transition-all flex items-center gap-1 shadow-sm whitespace-nowrap opacity-90 hover:opacity-100 cursor-pointer"
+                                  >
+                                    <Star className="w-2.5 h-2.5" /> Make Main
+                                  </button>
+                                )}
+
                                 <button
                                   type="button"
                                   onClick={() => handlePhotoRemove(i)}
@@ -1221,14 +1263,8 @@ export default function MatrimonialRegisterPage() {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="grid grid-cols-2 gap-2">
-                    <FormSelect formData={formData} errors={errors} updateField={updateField} label="Partner Min Age" field="pref_age_min" options={Array.from({ length: 43 }, (_, i) => String(i + 18))} />
-                    <FormSelect formData={formData} errors={errors} updateField={updateField} label="Partner Max Age" field="pref_age_max" options={Array.from({ length: 43 }, (_, i) => String(i + 18))} />
-                  </div>
-                  <div className="grid grid-cols-2 gap-2">
-                    <FormSelect formData={formData} errors={errors} updateField={updateField} label="Partner Min Height" field="pref_height_min" options={HEIGHTS} />
-                    <FormSelect formData={formData} errors={errors} updateField={updateField} label="Partner Max Height" field="pref_height_max" options={HEIGHTS} />
-                  </div>
+                  <FormSelect formData={formData} errors={errors} updateField={updateField} label="Partner Expected Age Range" field="pref_age_range" options={AGE_RANGES} />
+                  <FormSelect formData={formData} errors={errors} updateField={updateField} label="Partner Expected Height Range" field="pref_height_range" options={HEIGHT_RANGES} />
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -1239,7 +1275,7 @@ export default function MatrimonialRegisterPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <FormSelect formData={formData} errors={errors} updateField={updateField} label="Partner Highest Education" field="pref_education" options={EDUCATION_LEVELS} />
                   <FormSelect formData={formData} errors={errors} updateField={updateField} label="Partner Expected Profession" field="pref_profession" options={PROFESSIONS} />
-                  <FormSelect formData={formData} errors={errors} updateField={updateField} label="Partner Preferred City (TN)" field="pref_city" options={CITIES} />
+                  <FormSelect formData={formData} errors={errors} updateField={updateField} label="Partner Preferred Work City" field="pref_city" options={WORK_CITIES} />
                 </div>
 
                 <div className="space-y-1.5">

@@ -127,9 +127,13 @@ export default function MatrimonialDetailPage() {
           if (!mounted) return;
           setPhotoPreviews(previews);
 
-          const firstPhotoIdx = previews.findIndex(url => url !== null);
-          if (firstPhotoIdx !== -1) {
-            setActivePhotoIndex(firstPhotoIdx);
+          const primaryIdx = (p.profile_picture_index !== undefined && previews[p.profile_picture_index])
+            ? p.profile_picture_index
+            : (p.profile_photo && p.photos ? p.photos.findIndex(k => k === p.profile_photo) : -1);
+          
+          const defaultIdx = primaryIdx !== -1 && previews[primaryIdx] ? primaryIdx : previews.findIndex(url => url !== null);
+          if (defaultIdx !== -1) {
+            setActivePhotoIndex(defaultIdx);
           }
 
           if (p.video) {
@@ -533,7 +537,7 @@ export default function MatrimonialDetailPage() {
                 <InfoRow icon={User} label="Marital Status" value={profile.marital_status} />
                 <InfoRow icon={User} label="Mother Tongue" value={profile.mother_tongue} />
                 <InfoRow icon={MapPin} label="Current City" value={profile.city} />
-                <InfoRow icon={MapPin} label="Native District (WB)" value={profile.native_district} />
+                <InfoRow icon={MapPin} label="Native City" value={profile.native_district} />
               </div>
             </SectionCard>
 

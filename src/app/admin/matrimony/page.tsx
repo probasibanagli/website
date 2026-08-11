@@ -13,7 +13,10 @@ import {
   Video, 
   ExternalLink,
   ChevronRight,
-  Info
+  Info,
+  ShieldAlert,
+  SlidersHorizontal,
+  Star
 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -324,14 +327,24 @@ export default function MatrimonialAdminPage() {
                   {/* Photo list */}
                   <div className="md:col-span-2 grid grid-cols-5 gap-2">
                     {Array.from({ length: 5 }).map((_, i) => {
-                      const photoKey = `profile_${selectedProfile.id}_photo_${i}`;
-                      const photoUrl = mediaUrls[photoKey];
+                      const photoItem = selectedProfile.photos?.[i];
+                      const photoUrl = photoItem
+                        ? (photoItem.startsWith('http') || photoItem.startsWith('data:')
+                            ? photoItem
+                            : (mediaUrls[photoItem] || mediaUrls[`profile_${selectedProfile.id}_photo_${i}`]))
+                        : (mediaUrls[`profile_${selectedProfile.id}_photo_${i}`] || null);
                       
+                      const isMain = selectedProfile.profile_picture_index === i || (selectedProfile.profile_photo && photoItem === selectedProfile.profile_photo);
                       return (
-                        <div key={i} className="aspect-square bg-surface border border-border rounded-xl flex items-center justify-center relative overflow-hidden group">
+                        <div key={i} className={`aspect-square bg-surface border rounded-xl flex items-center justify-center relative overflow-hidden group ${isMain ? 'ring-2 ring-amber-500 border-amber-400' : 'border-border'}`}>
                           {photoUrl ? (
                             <>
                               <img src={photoUrl} alt={`Photo ${i+1}`} className="w-full h-full object-cover" />
+                              {isMain && (
+                                <div className="absolute top-1 left-1 bg-amber-500 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full flex items-center gap-0.5 shadow">
+                                  <Star className="w-2 h-2 fill-white" /> Main
+                                </div>
+                              )}
                               <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all">
                                 <a href={photoUrl} target="_blank" rel="noopener noreferrer" className="p-1 rounded bg-white text-text-primary hover:text-pink-500">
                                   <ExternalLink className="w-3 h-3" />
@@ -351,25 +364,37 @@ export default function MatrimonialAdminPage() {
 
                   {/* Video component */}
                   <div className="md:col-span-1 border border-border rounded-xl bg-surface p-3 flex flex-col justify-center items-center aspect-video md:aspect-auto">
-                    {mediaUrls[`profile_${selectedProfile.id}_video`] ? (
-                      <div className="w-full h-full flex flex-col justify-between">
-                        <div className="flex-1 w-full bg-black rounded-lg overflow-hidden flex items-center justify-center">
-                          <video 
-                            src={mediaUrls[`profile_${selectedProfile.id}_video`]} 
-                            controls 
-                            className="w-full h-full max-h-40 object-contain"
-                          />
+                    {(() => {
+                      const videoItem = selectedProfile.video;
+                      const videoUrl = videoItem
+                        ? (videoItem.startsWith('http') || videoItem.startsWith('data:')
+                            ? videoItem
+                            : (mediaUrls[videoItem] || mediaUrls[`profile_${selectedProfile.id}_video`]))
+                        : (mediaUrls[`profile_${selectedProfile.id}_video`] || null);
+
+                      if (videoUrl) {
+                        return (
+                          <div className="w-full h-full flex flex-col justify-between">
+                            <div className="flex-1 w-full bg-black rounded-lg overflow-hidden flex items-center justify-center">
+                              <video 
+                                src={videoUrl} 
+                                controls 
+                                className="w-full h-full max-h-40 object-contain"
+                              />
+                            </div>
+                            <p className="text-[10px] text-text-muted text-center mt-2 font-medium flex items-center justify-center gap-1">
+                              <Video className="w-3 h-3 text-pink-500" /> Video Uploaded
+                            </p>
+                          </div>
+                        );
+                      }
+                      return (
+                        <div className="text-center text-text-muted py-4">
+                          <Video className="w-6 h-6 mx-auto mb-2 opacity-40" />
+                          <p className="text-[10px] font-semibold">No Video Uploaded</p>
                         </div>
-                        <p className="text-[10px] text-text-muted text-center mt-2 font-medium flex items-center justify-center gap-1">
-                          <Video className="w-3 h-3 text-pink-500" /> Video Uploaded
-                        </p>
-                      </div>
-                    ) : (
-                      <div className="text-center text-text-muted py-4">
-                        <Video className="w-6 h-6 mx-auto mb-2 opacity-40" />
-                        <p className="text-[10px] font-semibold">No Video Uploaded</p>
-                      </div>
-                    )}
+                      );
+                    })()}
                   </div>
                 </div>
               </div>
@@ -385,7 +410,7 @@ export default function MatrimonialAdminPage() {
                     ['Name', selectedProfile.full_name], ['Gender', selectedProfile.gender], ['DOB', selectedProfile.date_of_birth],
                     ['Age', selectedProfile.age ? `${selectedProfile.age} yrs` : null], ['Height', selectedProfile.height], ['Weight', selectedProfile.weight ? `${selectedProfile.weight} kg` : null],
                     ['Complexion', selectedProfile.complexion], ['Blood Group', selectedProfile.blood_group],
-                    ['City', selectedProfile.city], ['Native', selectedProfile.native_district], ['Marital Status', selectedProfile.marital_status],
+                    ['City', selectedProfile.city], ['Native City', selectedProfile.native_district], ['Marital Status', selectedProfile.marital_status],
                     ['Physical Disability', selectedProfile.physical_disability]
                   ]},
                   { title: 'Contact & Family', items: [

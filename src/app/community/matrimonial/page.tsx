@@ -23,18 +23,16 @@ function ProfileCardAvatar({ profile, className = "w-16 h-16" }: { profile: any;
 
   useEffect(() => {
     const loadAvatar = async () => {
-      if (profile.photos && Array.isArray(profile.photos)) {
-        const key = profile.photos.find((k: string) => k);
-        if (key) {
-          const url = await getMedia(key);
-          if (url) {
-            setPhotoUrl(url);
-          }
+      const mainPhotoKey = profile.profile_photo || (profile.photos && Array.isArray(profile.photos) ? (profile.photos[profile.profile_picture_index || 0] || profile.photos.find((k: string) => k)) : null);
+      if (mainPhotoKey) {
+        const url = await getMedia(mainPhotoKey);
+        if (url) {
+          setPhotoUrl(url);
         }
       }
     };
     loadAvatar();
-  }, [profile.photos]);
+  }, [profile.profile_photo, profile.profile_picture_index, profile.photos]);
 
   if (photoUrl) {
     return (
