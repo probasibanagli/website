@@ -77,11 +77,22 @@ const FormSelect = ({ label, field, options, required, formData, errors, updateF
   const selectOptions = hasOther ? options : [...options, 'Other'];
   const otherValue = options.includes('Others') ? 'Others' : 'Other';
 
-  const isCustom = !!(
-    formData[field] === 'Other' ||
-    formData[field] === 'Others'
-  );
-  const selectValue = isCustom ? otherValue : ((formData[field] as string) || '');
+  const currentValue = (formData[field] as string) || '';
+  const isPresetOption = options.includes(currentValue);
+
+  const [isCustomMode, setIsCustomMode] = useState(() => {
+    return currentValue === 'Other' || currentValue === 'Others' || (!isPresetOption && currentValue !== '');
+  });
+
+  useEffect(() => {
+    if (currentValue === 'Other' || currentValue === 'Others') {
+      setIsCustomMode(true);
+    } else if (isPresetOption && currentValue !== '') {
+      setIsCustomMode(false);
+    }
+  }, [currentValue, isPresetOption]);
+
+  const selectValue = isCustomMode ? otherValue : currentValue;
 
   return (
     <div className="space-y-1.5 w-full">
@@ -89,10 +100,11 @@ const FormSelect = ({ label, field, options, required, formData, errors, updateF
         label={label}
         value={selectValue}
         onChange={(val) => {
-          // If selecting otherValue, reset the custom input
           if (val === otherValue) {
+            setIsCustomMode(true);
             updateField(field, otherValue);
           } else {
+            setIsCustomMode(false);
             updateField(field, val);
           }
         }}
@@ -103,12 +115,11 @@ const FormSelect = ({ label, field, options, required, formData, errors, updateF
         allowCustom={true}
       />
 
-      {isCustom && (
+      {isCustomMode && (
         <div className="relative animate-fade-in">
           <input
             type="text"
-            autoFocus
-            value={formData[field] === otherValue ? '' : (formData[field] as string || '')}
+            value={currentValue === otherValue ? '' : currentValue}
             onChange={(e) => {
               const val = e.target.value;
               updateField(field, val === '' ? otherValue : val);
