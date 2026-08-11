@@ -203,6 +203,8 @@ export interface BloodBank {
   available_groups: string[];
   google_maps_url?: string;
   website?: string;
+  coordinator_name?: string;
+  whatsapp_url?: string;
   lat?: number;
   lng?: number;
   image_url?: string;
@@ -217,6 +219,10 @@ export interface Ambulance {
   google_maps_url?: string;
   website?: string;
   image_url?: string;
+  unit_type?: string;
+  eta?: string;
+  equipment?: string;
+  base_rate?: string;
   created_at?: string;
   updated_at?: string;
 }
@@ -357,6 +363,7 @@ export interface College {
   lat?: number;
   lng?: number;
   ranking?: number;
+  image_url?: string;
   bengali_forums?: BengaliForum[];
   staff_contacts?: CollegeStaffContact[];
 }

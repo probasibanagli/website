@@ -171,7 +171,7 @@ export function Navbar() {
               </div>
 
               <Link href="/emergency/ambulance">
-                <Button variant="danger" size="sm" className="hidden sm:inline-flex animate-pulse-glow">
+                <Button variant="danger" size="sm" className="hidden sm:inline-flex animate-pulse-glow bg-[#B81D18] hover:bg-[#9E1814] text-white">
                   <Phone className="w-3.5 h-3.5" />
                   <T>Emergency</T>
                 </Button>

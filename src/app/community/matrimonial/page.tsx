@@ -5,7 +5,7 @@ import Link from 'next/link';
 import {
   Search, MapPin, GraduationCap, Briefcase, CheckCircle2, Lock, Heart,
   SlidersHorizontal, X, ChevronDown, Users, Star, ArrowUpDown, Ruler,
-  Utensils, User, UserPlus, AlertCircle, Mail, Phone, ArrowRight,
+  Utensils, User, UserPlus, AlertCircle, Mail, Phone, ArrowRight, Banknote, Building
 } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/card';
@@ -663,91 +663,139 @@ export default function MatrimonialPage() {
             {/* Profile Cards Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {visibleProfiles.map((profile) => (
-                <Card key={profile.id} className="group relative overflow-hidden">
+                <Card key={profile.id} padding="none" className="rounded-[24px] overflow-hidden group flex flex-col justify-between hover:shadow-lg transition-all border border-gray-100 shadow-[0_4px_25px_-4px_rgba(0,0,0,0.05)] bg-white relative">
+                  <div>
+                    {/* Header Background & Centered Avatar */}
+                    <div className="pt-6 pb-3 flex flex-col items-center justify-center bg-gradient-to-b from-[#FFF5F2] to-white relative">
+                      <div className="relative">
+                        <ProfileCardAvatar profile={profile} className="w-16 h-16 shadow-md rounded-[16px]" />
+                        {profile.verified && (
+                          <div className="absolute -bottom-1 -right-1 bg-[#0A6C4A] text-white rounded-full p-0.5 border-2 border-white shadow-sm flex items-center justify-center">
+                            <CheckCircle2 className="w-3.5 h-3.5 fill-white text-[#0A6C4A]" />
+                          </div>
+                        )}
+                      </div>
+                      
+                      {/* Name */}
+                      <h3 className="text-lg font-bold text-gray-900 mt-3 font-display text-center leading-tight">
+                        {profile.full_name}
+                      </h3>
 
+                      {/* Subtitle details */}
+                      <div className="flex items-center justify-center gap-1.5 mt-1.5 flex-wrap text-xs text-text-muted">
+                        <span className="bg-[#FFF0EB] text-[#A63A13] font-bold text-[10px] px-2 py-0.5 rounded border border-[#FBE0D6]">
+                          {profile.profile_id}
+                        </span>
+                        <span>•</span>
+                        <span>{profile.age} yrs</span>
+                        {profile.height && (
+                          <>
+                            <span>•</span>
+                            <span>{profile.height}</span>
+                          </>
+                        )}
+                        <span>•</span>
+                        <span>{profile.city}</span>
+                      </div>
 
-                  <div className="pt-2">
-                    {/* Header */}
-                    <div className="flex items-start gap-4">
-                      <ProfileCardAvatar profile={profile} />
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-1.5">
-                          <h3 className="text-lg font-bold text-text-primary truncate">{profile.full_name}</h3>
-                          {profile.verified && <CheckCircle2 className="w-4 h-4 text-accent shrink-0" />}
+                      {/* Info Tags Row */}
+                      <div className="flex flex-wrap items-center justify-center gap-1 mt-3 px-3">
+                        {profile.marital_status && (
+                          <span className="text-[10px] font-semibold text-text-primary bg-surface border border-border px-2.5 py-1 rounded-full">
+                            {profile.marital_status}
+                          </span>
+                        )}
+                        {profile.complexion && (
+                          <span className="text-[10px] font-semibold text-text-primary bg-surface border border-border px-2.5 py-1 rounded-full">
+                            {profile.complexion}
+                          </span>
+                        )}
+                        {profile.diet && (
+                          <span className="text-[10px] font-semibold text-text-primary bg-surface border border-border px-2.5 py-1 rounded-full">
+                            {profile.diet}
+                          </span>
+                        )}
+                        {profile.religion && (
+                          <span className="text-[10px] font-semibold text-text-primary bg-surface border border-border px-2.5 py-1 rounded-full">
+                            {profile.religion}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* 2x2 Details Grid */}
+                    <div className="grid grid-cols-2 gap-y-4 gap-x-3 p-4.5 border-t border-gray-50">
+                      {/* Education Column */}
+                      <div className="flex items-start gap-2.5">
+                        <div className="w-8 h-8 flex items-center justify-center rounded-full bg-[#FFF0EB] text-[#A63A13] shrink-0">
+                          <GraduationCap className="w-4 h-4" />
                         </div>
-                        <p className="text-sm text-text-muted">
-                          {profile.age} yrs{profile.height ? ` • ${profile.height}` : ''} • {profile.city}
-                        </p>
-                        <p className="text-xs text-primary font-medium mt-0.5">{profile.profile_id}</p>
-                      </div>
-                    </div>
-
-                    {/* Info pills */}
-                    <div className="mt-4 flex flex-wrap gap-1.5">
-                      {profile.marital_status && (
-                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-surface text-text-muted border border-border">
-                          <User className="w-3 h-3 mr-1" />{profile.marital_status}
-                        </span>
-                      )}
-                      {profile.complexion && (
-                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-surface text-text-muted border border-border">
-                          {profile.complexion}
-                        </span>
-                      )}
-                      {profile.diet && (
-                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-surface text-text-muted border border-border">
-                          <Utensils className="w-3 h-3 mr-1" />{profile.diet}
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Details */}
-                    <div className="mt-3 space-y-1.5">
-                      <div className="flex items-center gap-2 text-sm text-text-muted">
-                        <GraduationCap className="w-4 h-4 flex-shrink-0 text-primary/70" />
-                        <span className="truncate">{profile.education}{profile.institution ? ` — ${profile.institution}` : ''}</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-sm text-text-muted">
-                        <Briefcase className="w-4 h-4 flex-shrink-0 text-primary/70" />
-                        <span className="truncate">{profile.profession}{profile.company ? ` at ${profile.company}` : ''}</span>
-                      </div>
-                      {profile.annual_income && profile.annual_income !== 'Not Disclosed' && (
-                        <div className="flex items-center gap-2 text-sm text-text-muted">
-                          <span className="w-4 h-4 flex-shrink-0 text-center text-primary/70 text-xs font-bold">₹</span>
-                          <span>{profile.annual_income}</span>
+                        <div className="min-w-0">
+                          <p className="text-[9px] text-[#8F9BB3] uppercase tracking-wider font-extrabold">Education</p>
+                          <p className="text-xs font-bold text-gray-900 leading-tight mt-0.5 truncate">{profile.education}</p>
+                          {profile.institution && <p className="text-[10px] text-[#8F9BB3] mt-0.5 truncate">{profile.institution}</p>}
                         </div>
-                      )}
-                      <div className="flex items-center gap-2 text-sm text-text-muted">
-                        <MapPin className="w-4 h-4 flex-shrink-0 text-primary/70" />
-                        <span>From {profile.native_district}, West Bengal</span>
+                      </div>
+
+                      {/* Profession Column */}
+                      <div className="flex items-start gap-2.5">
+                        <div className="w-8 h-8 flex items-center justify-center rounded-full bg-[#FFF0EB] text-[#A63A13] shrink-0">
+                          <Briefcase className="w-4 h-4" />
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-[9px] text-[#8F9BB3] uppercase tracking-wider font-extrabold">Profession</p>
+                          <p className="text-xs font-bold text-gray-900 leading-tight mt-0.5 truncate">{profile.profession}</p>
+                          {profile.company && <p className="text-[10px] text-[#8F9BB3] mt-0.5 truncate">{profile.company}</p>}
+                        </div>
+                      </div>
+
+                      {/* Income Column */}
+                      <div className="flex items-start gap-2.5">
+                        <div className="w-8 h-8 flex items-center justify-center rounded-full bg-[#FFF0EB] text-[#A63A13] shrink-0">
+                          <Banknote className="w-4 h-4" />
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-[9px] text-[#8F9BB3] uppercase tracking-wider font-extrabold">Income</p>
+                          <p className="text-xs font-bold text-gray-900 leading-tight mt-0.5 truncate">
+                            {profile.annual_income && profile.annual_income !== 'Not Disclosed' ? profile.annual_income : 'Not Disclosed'}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Hometown Column */}
+                      <div className="flex items-start gap-2.5">
+                        <div className="w-8 h-8 flex items-center justify-center rounded-full bg-[#FFF0EB] text-[#A63A13] shrink-0">
+                          <Building className="w-4 h-4" />
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-[9px] text-[#8F9BB3] uppercase tracking-wider font-extrabold">Hometown</p>
+                          <p className="text-xs font-bold text-gray-900 leading-tight mt-0.5 truncate">{profile.native_district || 'Kolkata'}</p>
+                          <p className="text-[10px] text-[#8F9BB3] mt-0.5 truncate">West Bengal</p>
+                        </div>
                       </div>
                     </div>
 
-                    {/* About excerpt */}
+                    {/* About me excerpt */}
                     {profile.about_me && (
-                      <p className="mt-3 text-sm text-text-muted italic line-clamp-2 border-l-2 border-primary/20 pl-3">
-                        &ldquo;{profile.about_me}&rdquo;
-                      </p>
-                    )}
-
-                    {/* Footer */}
-                    <div className="mt-4 pt-4 border-t border-border flex items-center justify-between">
-                      <div className="flex gap-1.5">
-                        {profile.verified && <Badge variant="verified">✓ Verified</Badge>}
-                        {!profile.verified && <Badge variant="amber">Pending</Badge>}
-                        {profile.religion && <Badge variant="default">{profile.religion}</Badge>}
+                      <div className="px-4.5 pb-4.5 pt-0">
+                        <p className="text-[11px] text-text-muted italic line-clamp-2 border-l-2 border-primary/20 pl-2.5">
+                          &ldquo;{profile.about_me}&rdquo;
+                        </p>
                       </div>
-                      <Link href={`/community/matrimonial/${profile.id}`}>
-                        <Button variant="primary" size="sm">View Profile</Button>
-                      </Link>
-                    </div>
+                    )}
+                  </div>
 
-                    {/* Privacy note */}
-                    <div className="mt-3 text-center">
-                      <p className="text-[11px] text-text-muted flex items-center justify-center gap-1">
-                        <Lock className="w-3 h-3" /> Express interest to exchange details via email
-                      </p>
-                    </div>
+                  {/* Terracotta Footer Panel */}
+                  <div className="bg-[#FFF0EB]/50 border-t border-dashed border-[#FBE0D6]/60 p-4.5 pt-3 pb-4 flex flex-col justify-between">
+                    <p className="text-[10px] text-text-muted flex items-center justify-center gap-1 font-medium">
+                      <Lock className="w-3 h-3 text-[#A63A13]" /> Express interest to exchange details via email
+                    </p>
+                    <Link href={`/community/matrimonial/${profile.id}`} className="mt-2.5 block w-full">
+                      <button className="w-full bg-[#d85a30] hover:bg-[#c24f28] text-white font-bold py-2.5 px-4 rounded-xl text-sm flex items-center justify-center gap-2 shadow-sm transition-all active:scale-[0.98]">
+                        <span>View Profile</span>
+                        <ArrowRight className="w-4 h-4" />
+                      </button>
+                    </Link>
                   </div>
                 </Card>
               ))}

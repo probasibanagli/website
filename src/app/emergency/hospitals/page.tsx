@@ -248,12 +248,12 @@ export default function EmergencyHospitalsPage() {
               
               <div className="mt-8 flex flex-wrap gap-4">
                 <a href="tel:108">
-                  <Button variant="danger" size="lg" className="shadow-lg shadow-red-500/20 font-semibold h-12 px-6">
+                  <Button variant="danger" size="lg" className="font-semibold h-12 px-6 bg-[#B81D18]">
                     <Phone className="w-5 h-5 mr-2" /> Quick Call (108)
                   </Button>
                 </a>
                 <Link href="/emergency/ambulance">
-                  <Button variant="outline" size="lg" className="border-red-200 text-red-600 hover:bg-red-50/50 h-12 px-6">
+                  <Button variant="outline" size="lg" className="border-[#B81D18] text-[#B81D18] hover:bg-red-50/50 h-12 px-6">
                     <Ambulance className="w-5 h-5 mr-2" /> Ambulance services
                   </Button>
                 </Link>

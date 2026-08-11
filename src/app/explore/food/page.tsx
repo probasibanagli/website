@@ -339,7 +339,7 @@ export default function FoodPage() {
 
                 <div className="w-full mt-5 px-1">
                   <a href={orderUrl} target={orderUrl.startsWith('http') ? '_blank' : undefined} rel="noopener noreferrer" className="block w-full">
-                    <button className="w-full bg-[#A63A13] hover:bg-[#8F310F] text-white font-bold py-3 px-4 rounded-[12px] flex items-center justify-center gap-2 text-sm transition-all shadow-sm active:scale-[0.98]">
+                    <button className="w-full bg-[#d85a30] hover:bg-[#c24f28] text-white font-bold py-3 px-4 rounded-[12px] flex items-center justify-center gap-2 text-sm transition-all shadow-sm active:scale-[0.98]">
                       <Utensils className="w-4 h-4" />
                       Order Now
                     </button>

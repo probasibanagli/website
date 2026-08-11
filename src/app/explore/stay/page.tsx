@@ -469,7 +469,7 @@ export default function StayPage() {
                   <div className="flex items-center justify-between mt-6 pt-5 border-t border-gray-100">
                     <div className="flex items-center gap-2">
                       <Link href={`/explore/stay/${listing.id}`}>
-                        <button className="bg-[#D35400] hover:bg-[#b84a00] text-white font-bold px-5 py-2.5 rounded-[12px] transition-colors text-sm shadow-sm">
+                        <button className="bg-[#d85a30] hover:bg-[#b84a00] text-white font-bold px-5 py-2.5 rounded-[12px] transition-colors text-sm shadow-sm">
                           Book Visit
                         </button>
                       </Link>

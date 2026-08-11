@@ -239,14 +239,14 @@ export default function GroupsPage() {
                    {/* Side-by-Side Action Buttons */}
                    <div className="flex items-center gap-3 mt-6 pt-4 border-t border-gray-100">
                      <a href={link} target="_blank" rel="noopener noreferrer" className="flex-1">
-                       <button className="w-full bg-[#A63A13] hover:bg-[#8F310F] text-white font-bold py-2.5 px-4 rounded-xl text-sm flex items-center justify-center gap-1.5 shadow-sm transition-all active:scale-[0.98]">
+                       <button className="w-full bg-[#d85a30] hover:bg-[#c24f28] text-white font-bold py-2.5 px-4 rounded-xl text-sm flex items-center justify-center gap-1.5 shadow-sm transition-all active:scale-[0.98]">
                          <span>Join Group</span>
                          <ArrowRight className="w-4 h-4" />
                        </button>
                      </a>
                      
                      <a href={secondaryHref} target="_blank" rel="noopener noreferrer" className="flex-1">
-                       <button className="w-full bg-white hover:bg-slate-50 border border-[#E4E9F2] text-[#A63A13] font-bold py-2.5 px-4 rounded-xl text-sm flex items-center justify-center gap-1.5 shadow-sm transition-all active:scale-[0.98]">
+                       <button className="w-full bg-white hover:bg-slate-50 border border-[#E4E9F2] text-[#d85a30] font-bold py-2.5 px-4 rounded-xl text-sm flex items-center justify-center gap-1.5 shadow-sm transition-all active:scale-[0.98]">
                          {secondaryIcon}
                          <span>{secondaryLabel}</span>
                        </button>
