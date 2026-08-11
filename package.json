@@ -2,6 +2,9 @@
   "name": "probasibangali-root",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": "24.x"
+  },
   "scripts": {
     "dev": "cd \"Downloads/website-main (3)/website-main\" && npm run dev",
     "build": "cd \"Downloads/website-main (3)/website-main\" && npm install && npm run build",
