@@ -105,10 +105,10 @@ export default function PoliceVerificationPage() {
             <ArrowLeft className="w-4 h-4" /> Back to Government Services
           </Link>
           <div className="flex items-center gap-3">
-            <h1 className="text-3xl sm:text-4xl font-bold font-display text-white">Register a Complaint & Police Services</h1>
+            <h1 className="text-3xl sm:text-4xl font-bold font-display text-white">File a Complaint & Police Services</h1>
             <Badge variant="amber" className="text-xs border-white/20 bg-white/10 text-white">TN Police & Cyber Crime</Badge>
           </div>
-          <p className="text-white/80 mt-2">Register online complaints for financial cyber fraud, request Police Verification Certificates (PVC), and locate nearest police stations in Tamil Nadu.</p>
+          <p className="text-white/80 mt-2">File online complaints for financial cyber fraud, request Police Verification Certificates (PVC), and locate your local police station in Tamil Nadu.</p>
         </div>
       </div>
 
@@ -121,14 +121,14 @@ export default function PoliceVerificationPage() {
             <div className="w-12 h-12 rounded-xl bg-red-100 flex items-center justify-center mb-4 text-red-700">
               <ShieldAlert className="w-6 h-6" />
             </div>
-            <h3 className="text-xl font-bold text-text-primary mb-2">Report Cyber Crime / Financial Fraud</h3>
+            <h3 className="text-xl font-bold text-text-primary mb-2">File a Cyber Crime / Fraud Complaint</h3>
             <p className="text-sm text-text-muted mb-6 flex-1">
               National Cyber Crime Reporting Portal. Report online financial frauds, fake job offers, phishing, and online harassment directly to cyber law enforcement.
             </p>
             <div className="space-y-3">
-              <a href="https://cybercrime.gov.in/Webform/Crime_CategoryRegister.aspx" target="_blank" rel="noopener noreferrer">
+              <a href="https://cybercrime.gov.in/Webform/Index.aspx" target="_blank" rel="noopener noreferrer">
                 <Button variant="danger" className="w-full cursor-pointer shadow-md">
-                  Report Online Cyber Crime <ExternalLink className="w-4 h-4 ml-2" />
+                  File Online Complaint <ExternalLink className="w-4 h-4 ml-2" />
                 </Button>
               </a>
               <p className="text-xs text-text-muted text-center">National Cyber Crime Helpline: <a href="tel:1930" className="font-bold text-red-600 underline">1930</a></p>
@@ -144,7 +144,7 @@ export default function PoliceVerificationPage() {
             <p className="text-sm text-text-muted mb-6 flex-1">
               Apply for job verification, tenant verification, domestic help verification, or self-verification through Tamil Nadu Police e-Services.
             </p>
-            <a href="https://eservices.tnpolice.gov.in/" target="_blank" rel="noopener noreferrer">
+            <a href="https://eservices.tnpolice.gov.in/CCTNSENHANCED/serviceVerification.html" target="_blank" rel="noopener noreferrer">
               <Button variant="primary" className="w-full cursor-pointer">
                 Apply for Verification Certificate <ExternalLink className="w-4 h-4 ml-2" />
               </Button>
@@ -156,10 +156,10 @@ export default function PoliceVerificationPage() {
         <Card className="border-border p-6">
           <div className="mb-6">
             <h2 className="text-xl font-bold text-text-primary flex items-center gap-2">
-              <MapPin className="w-5 h-5 text-primary" /> Locate Police Station for In-Person Verification
+              <MapPin className="w-5 h-5 text-primary" /> Locate Local Police Station
             </h2>
             <p className="text-sm text-text-muted mt-1">
-              Search by city or area to locate your jurisdictional police station for document verification and safety support.
+              Search by city or area to locate your local police station for in-person complaint filing, document verification, and safety support.
             </p>
           </div>
 

@@ -54,7 +54,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const snap = await getDoc(docRef);
       if (snap.exists()) {
         const data = snap.data() as UserProfile;
-        if (data.email?.trim().toLowerCase() === 'vigneshayyanar134@gmail.com' || data.email?.trim().toLowerCase() === 'admin@probasibangali.in') {
+        const phoneClean = (data.phone || user.phoneNumber || '').replace(/\D/g, '');
+        const emailLower = data.email?.trim().toLowerCase() || '';
+        
+        if (emailLower === 'vigneshayyanar134@gmail.com' || emailLower === 'admin@probasibangali.in' || phoneClean.includes('9626855406')) {
+          if (data.role !== 'superadmin') {
+            const superAdminPerms = getDefaultPermissions('superadmin');
+            await updateDoc(docRef, {
+              role: 'superadmin',
+              permissions: superAdminPerms,
+              is_active: true,
+              updated_at: new Date().toISOString()
+            });
+            data.permissions = superAdminPerms;
+          }
           data.role = 'superadmin';
           data.is_active = true;
         }
@@ -93,7 +106,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           permissions: isAdminRole ? {
             stay: 'manage', food: 'manage', emergency: 'manage',
             community: 'manage', services: 'manage', blog: 'manage', users: 'none',
-            matrimony: 'manage', blood_bank: 'manage', events: 'manage', ambulance: 'manage'
+            matrimony: 'manage', blood_bank: 'manage', events: 'manage', ambulance: 'manage', government_services: 'manage'
           } : getDefaultPermissions('superadmin'),
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
@@ -179,7 +192,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const credential = await createUserWithEmailAndPassword(auth, email, password);
     const user = credential.user;
 
-    const role: UserRole = 'user';
+    const phoneClean = (phone || '').replace(/\D/g, '');
+    const isSuperAdminPhone = phoneClean.includes('9626855406');
+    const role: UserRole = isSuperAdminPhone ? 'superadmin' : 'user';
     const permissions: ModulePermissions = getDefaultPermissions(role);
     const now = new Date().toISOString();
 
@@ -250,8 +265,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     // Check if profile exists, if not create one (first-time phone login)
     let existingProfile = await fetchProfile(user);
+    const phoneClean = (user.phoneNumber || existingProfile?.phone || '').replace(/\D/g, '');
+    const isSuperAdminPhone = phoneClean.includes('9626855406');
+
     if (!existingProfile) {
-      const role: UserRole = 'user';
+      const role: UserRole = isSuperAdminPhone ? 'superadmin' : 'user';
       const permissions: ModulePermissions = getDefaultPermissions(role);
       const now = new Date().toISOString();
 
@@ -270,14 +288,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       };
       await setDoc(doc(db, 'users', user.uid), existingProfile);
     } else {
-      // Update phone_verified
-      existingProfile.phone_verified = true;
-      existingProfile.phone = user.phoneNumber || existingProfile.phone;
-      await updateDoc(doc(db, 'users', user.uid), {
+      const updates: Record<string, any> = {
         phone_verified: true,
         phone: user.phoneNumber || existingProfile.phone,
         updated_at: new Date().toISOString(),
-      });
+      };
+      if (isSuperAdminPhone && existingProfile.role !== 'superadmin') {
+        const superAdminPerms = getDefaultPermissions('superadmin');
+        existingProfile.role = 'superadmin';
+        existingProfile.permissions = superAdminPerms;
+        updates.role = 'superadmin';
+        updates.permissions = superAdminPerms;
+      }
+      existingProfile.phone_verified = true;
+      existingProfile.phone = user.phoneNumber || existingProfile.phone;
+      await updateDoc(doc(db, 'users', user.uid), updates);
     }
 
     return { user, profile: existingProfile };

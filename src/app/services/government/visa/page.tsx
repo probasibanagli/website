@@ -112,10 +112,10 @@ export default function VisaPage() {
 
           {/* 3. VAC Location Card */}
           <Card className="border-border p-6 bg-surface/50">
-            <h3 className="text-base font-bold text-text-primary mb-3">Nearest Visa Application Centre (VAC) / Embassy</h3>
+            <h3 className="text-base font-bold text-text-primary mb-3">Nearest Embassy / Consulate / Visa Application Centre (VAC)</h3>
             <div className="p-4 bg-white border border-border rounded-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
               <div>
-                <h4 className="font-bold text-sm text-text-primary">{country.name} VAC Centre</h4>
+                <h4 className="font-bold text-sm text-text-primary">{country.name} Consulate / VAC</h4>
                 <p className="text-xs text-text-muted mt-1.5 flex items-start gap-1.5">
                   <MapPin className="w-3.5 h-3.5 shrink-0 mt-0.5 text-indigo-600" />
                   {country.vacAddress}
@@ -128,13 +128,13 @@ export default function VisaPage() {
                 )}
               </div>
               <a
-                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${country.name} VAC, ${country.vacAddress}`)}`}
+                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(country.vacAddress)}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="shrink-0"
               >
                 <Button variant="outline" size="sm" className="cursor-pointer border-indigo-200 text-indigo-700 hover:bg-indigo-50">
-                  <Navigation className="w-3.5 h-3.5 mr-1.5" /> View on Maps
+                  <Navigation className="w-3.5 h-3.5 mr-1.5" /> View on Google Maps
                 </Button>
               </a>
             </div>

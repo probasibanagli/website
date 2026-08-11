@@ -232,39 +232,19 @@ export const TREATMENT_TYPES = [
 ] as const;
 
 export const GOVT_SERVICES = [
-  { id: 'ration-card', title: 'Ration Card (PDS)', description: 'Apply for or update your ration card for subsidized food grains.', category: 'Ration card', url: 'https://www.tnpds.gov.in/pages/registercard/register-card.xhtml', icon: 'Home01' },
-  { id: 'aadhaar', title: 'Aadhaar Update / Enrolment', description: 'Update your Aadhaar address or biometrics at nearest centre.', category: 'Aadhaar', url: 'https://myaadhaar.uidai.gov.in/address-update', icon: 'User01' },
-  { id: 'biometrics', title: 'Aadhaar Biometric Services', description: 'Lock or unlock your Aadhaar biometrics online for enhanced security.', category: 'Aadhaar', url: 'https://myaadhaar.uidai.gov.in/lock-unlock-aadhaar', icon: 'Shield01' },
-  { id: 'driving-licence', title: 'Driving Licence (TN)', description: 'Apply or renew your driving licence in Tamil Nadu.', category: 'Transport', url: 'https://sarathi.parivahan.gov.in/sarathiservice/stateSelection.do', icon: 'Car01' },
-  { id: 'ayushman-bharat', title: 'Ayushman Bharat', description: 'Government health insurance covering ₹5 lakh per year per family.', category: 'Health schemes', url: '/services/government/ayushman-bharat', icon: 'MedicalCross' },
-  { id: 'mgnregs', title: 'MGNREGS Job Card', description: 'Register for 100 days guaranteed employment scheme.', category: 'Employment', url: 'https://nrega.nic.in/netnrega/statepage.aspx?Page=C&Action=A', icon: 'Users01' },
-  { id: 'tn-e-seva', title: 'TN e-Seva Portal', description: 'One-stop portal for various Tamil Nadu government services.', category: 'Government', url: 'https://www.tnesevai.tn.gov.in/Citizen/Registration.aspx', icon: 'Building01' },
-  { id: 'passport', title: 'Passport Seva', description: 'Apply for a new passport or renew existing one.', category: 'Travel', url: '/services/government/passport', icon: 'Map01' },
-  { id: 'visa', title: 'Visa Services', description: 'Apply for an Indian Visa, e-Visa, or check application status online.', category: 'Travel', url: 'https://indianvisaonline.gov.in/evisa/tvoa.html', icon: 'Globe01' },
-  { id: 'voter-id', title: 'Voter ID (EPIC)', description: 'Register as a voter or update your electoral details.', category: 'Election', url: '/services/government/voter-id', icon: 'UserCheck01' },
-  { id: 'police-verification', title: 'Police Verification (Cyber Crime)', description: 'Direct link to the Cyber Crime Portal for police verification, reporting cyber fraud and safety checks.', category: 'Safety', url: 'https://eservices.tnpolice.gov.in/', icon: 'Shield01' },
-  { id: 'ration-card', title: 'Ration Card (PDS)', description: 'Apply for or update your ration card for subsidized food grains.', category: 'Ration card', url: 'https://www.tnpds.gov.in/', icon: 'Home01' },
-  { id: 'aadhaar', title: 'Aadhaar Update / Enrolment', description: 'Update your Aadhaar address or biometrics at nearest centre.', category: 'Aadhaar', url: 'https://uidai.gov.in/', icon: 'User01' },
-  { id: 'driving-licence', title: 'Driving Licence (TN)', description: 'Apply or renew your driving licence in Tamil Nadu.', category: 'Transport', url: 'https://parivahan.gov.in/', icon: 'Car01' },
-  { id: 'ayushman-bharat', title: 'Ayushman Bharat', description: 'Government health insurance covering ₹5 lakh per year per family.', category: 'Health schemes', url: 'https://pmjay.gov.in/', icon: 'MedicalCross' },
-  { id: 'mgnregs', title: 'MGNREGS Job Card', description: 'Register for 100 days guaranteed employment scheme.', category: 'Employment', url: 'https://nrega.nic.in/', icon: 'Users01' },
-  { id: 'tn-e-seva', title: 'TN e-Seva Portal', description: 'One-stop portal for various Tamil Nadu government services.', category: 'Government', url: 'https://www.tnesevai.tn.gov.in/', icon: 'Building01' },
-  { id: 'passport', title: 'Passport Seva', description: 'Apply for a new passport or renew existing one.', category: 'Travel', url: 'https://passportindia.gov.in/', icon: 'Map01' },
-  { id: 'voter-id', title: 'Voter ID (EPIC)', description: 'Register as a voter or update your electoral details.', category: 'Election', url: 'https://voters.eci.gov.in/', icon: 'UserCheck01' },
-  { id: 'police-verification', title: 'Police Verification (Tenants)', description: 'Mandatory police verification for tenants and migrants in Tamil Nadu.', category: 'Safety', url: 'https://eservices.tnpolice.gov.in/', icon: 'Shield01' },
-  { id: 'ration-card', title: 'Ration Card (PDS)', description: 'Apply for or update your ration card for subsidized food grains.', category: 'Ration card', url: '/services/government/ration-card', icon: 'Home01' },
-  { id: 'aadhaar', title: 'Aadhaar Update / Enrolment', description: 'Update your Aadhaar address or biometrics at nearest centre.', category: 'Aadhaar', url: '/services/government/aadhaar', icon: 'User01' },
+  { id: 'aadhaar', title: 'Aadhaar Update / Enrolment', description: 'Update your Aadhaar address, mobile number, or biometrics at nearest centre.', category: 'Aadhaar', url: '/services/government/aadhaar', icon: 'User01' },
   { id: 'biometrics', title: 'Aadhaar Biometric Services', description: 'Lock or unlock your Aadhaar biometrics online for enhanced security.', category: 'Aadhaar', url: '/services/government/biometrics', icon: 'Shield01' },
-  { id: 'driving-licence', title: 'Driving Licence (TN)', description: 'Apply or renew your driving licence in Tamil Nadu.', category: 'Transport', url: '/services/government/driving-licence', icon: 'Car01' },
-  { id: 'ayushman-bharat', title: 'Ayushman Bharat', description: 'Government health insurance covering ₹5 lakh per year per family.', category: 'Health schemes', url: '/services/government/ayushman-bharat', icon: 'MedicalCross' },
-  { id: 'mgnregs', title: 'MGNREGS Job Card', description: 'Register for 100 days guaranteed employment scheme.', category: 'Employment', url: 'https://nrega.nic.in/netnrega/statepage.aspx?Page=C&Action=A', icon: 'Users01' },
-  { id: 'tn-e-seva', title: 'TN e-Seva Portal', description: 'One-stop portal for various Tamil Nadu government services.', category: 'Government', url: 'https://www.tnesevai.tn.gov.in/Citizen/Registration.aspx', icon: 'Building01' },
-  { id: 'passport', title: 'Passport Seva', description: 'Apply for a new passport or renew existing one.', category: 'Travel', url: '/services/government/passport', icon: 'Map01' },
-  { id: 'visa', title: 'Visa Services', description: 'Apply for an Indian Visa, e-Visa, or check application status online.', category: 'Travel', url: '/services/government/visa', icon: 'Globe01' },
-  { id: 'voter-id', title: 'Voter ID (EPIC)', description: 'Register as a voter or update your electoral details.', category: 'Election', url: '/services/government/voter-id', icon: 'UserCheck01' },
-  { id: 'police-verification', title: 'Register a Complaint (Police & Cyber Crime)', description: 'Direct link to the Cyber Crime Portal to register complaints, report cyber fraud, request police verification and safety checks.', category: 'Safety', url: '/services/government/police-verification', icon: 'Shield01' },
-  { id: 'labour-registration', title: 'TN Labour Registration', description: 'Register as a migrant worker with the Tamil Nadu Labour Department.', category: 'Employment', url: 'https://labour.tn.gov.in/', icon: 'Users01' },
-  { id: 'scholarships', title: 'Scholarship Schemes', description: 'Central and state scholarship schemes for students from economically weaker sections.', category: 'Education', url: 'https://scholarships.gov.in/', icon: 'GraduationHat01' },
+  { id: 'passport', title: 'Passport Seva', description: 'Apply for a new passport, Tatkaal application, or renew existing passport.', category: 'Travel', url: '/services/government/passport', icon: 'Map01' },
+  { id: 'visa', title: 'Visa Services', description: 'Apply for international visas, check application status, and view VAC details.', category: 'Travel', url: '/services/government/visa', icon: 'Globe01' },
+  { id: 'voter-id', title: 'Voter ID (EPIC)', description: 'Register as a voter, apply for Form 6/8, or update electoral details.', category: 'Election', url: '/services/government/voter-id', icon: 'UserCheck01' },
+  { id: 'police-verification', title: 'File a Complaint', description: 'Report cyber crime/fraud, request police verification certificate (PVC), and locate local police stations.', category: 'Safety', url: '/services/government/police-verification', icon: 'Shield01' },
+  { id: 'ration-card', title: 'Smart Ration Card (TNPDS)', description: 'Apply for or update your Smart Ration Card for subsidized food grains and essential commodities.', category: 'Ration Card', url: '/services/government/ration-card', icon: 'Home01' },
+  { id: 'driving-licence', title: 'Driving Licence & RTO (Parivahan)', description: 'Apply or renew your driving licence, LLR booking, and vehicle registration in Tamil Nadu.', category: 'Transport', url: '/services/government/driving-licence', icon: 'Car01' },
+  { id: 'ayushman-bharat', title: 'Ayushman Bharat & CMCHIS', description: 'Government health insurance covering ₹5 lakh per year per family for empanelled hospitals.', category: 'Health Schemes', url: '/services/government/ayushman-bharat', icon: 'MedicalCross' },
+  { id: 'mgnregs', title: 'MGNREGS Job Card', description: 'Register for 100 days guaranteed employment scheme under MGNREGA.', category: 'Employment', url: 'https://nrega.nic.in/netnrega/statepage.aspx?Page=C&Action=A', icon: 'Users01' },
+  { id: 'tn-e-seva', title: 'Arasu e-Seva Portal (TNeGA)', description: 'One-stop portal for all Tamil Nadu e-Governance certificates and community services.', category: 'Government', url: 'https://www.tnesevai.tn.gov.in/Citizen/Registration.aspx', icon: 'Building01' },
+  { id: 'labour-registration', title: 'TN Labour Registration', description: 'Register as an unorganized or migrant worker with the Tamil Nadu Labour Department.', category: 'Employment', url: 'https://labour.tn.gov.in/', icon: 'Users01' },
+  { id: 'scholarships', title: 'National Scholarship Portal', description: 'Central and state scholarship schemes for students from pre-matric to higher education.', category: 'Education', url: 'https://scholarships.gov.in/', icon: 'GraduationHat01' },
 ];
 
 /* ──────────────── Government Service Centres Data ──────────────── */
@@ -316,64 +296,64 @@ export const VISA_COUNTRIES = [
   {
     name: 'United States', code: 'US',
     visaPortalUrl: 'https://ceac.state.gov/genniv/',
-    vacAddress: 'VFS Global, No. 10, Haddows Road, Nungambakkam, Chennai - 600006',
-    vacPhone: '044-4253 5000',
+    vacAddress: 'US Consulate General, 220 Anna Salai, Gemini Circle, Gopalapuram, Chennai - 600006',
+    vacPhone: '044-2811 2000',
     applicationProcess: ['Fill DS-160 form online at ceac.state.gov', 'Pay visa fee ($185 for B1/B2) at designated bank', 'Schedule appointment at ustraveldocs.com', 'Attend visa interview at US Consulate, Chennai', 'Wait for passport to be returned with visa stamp'],
-    biometricProcess: ['Biometrics collected at US Consulate during interview', 'Fingerprint scan (10 fingers) and digital photo taken', 'No separate biometric appointment required'],
+    biometricProcess: ['Biometrics collected at US VAC (Good Shepherd Square / Gemini)', 'Fingerprint scan (10 fingers) and digital photo taken', 'Appointment mandatory prior to interview'],
   },
   {
     name: 'United Kingdom', code: 'GB',
     visaPortalUrl: 'https://www.gov.uk/apply-to-come-to-the-uk',
-    vacAddress: 'VFS Global UK VAC, Shafee Mohammed Road, Nungambakkam, Chennai - 600034',
-    vacPhone: '044-6631 3334',
+    vacAddress: 'VFS Global UK VAC, 2nd Floor, Ramee Mall, 365 Anna Salai, Teynampet, Chennai - 600018',
+    vacPhone: '022-6786 6002',
     applicationProcess: ['Apply online at gov.uk/apply-to-come-to-the-uk', 'Pay visa fee (£100-£363 depending on type)', 'Upload supporting documents online', 'Book biometric appointment at VFS', 'Wait 15-20 working days for decision'],
     biometricProcess: ['Book appointment at VFS Global Chennai', 'Visit VFS centre with appointment confirmation', 'Fingerprints and photograph captured', 'Submit passport at VFS centre'],
   },
   {
     name: 'Canada', code: 'CA',
     visaPortalUrl: 'https://www.canada.ca/en/immigration-refugees-citizenship/services/visit-canada.html',
-    vacAddress: 'VFS Global Canada VAC, No. 10, Haddows Road, Nungambakkam, Chennai - 600006',
-    vacPhone: '044-4253 5000',
+    vacAddress: 'VFS Canada Visa Biometrics Collection, 2nd Floor, Ramee Mall, 365 Anna Salai, Teynampet, Chennai - 600018',
+    vacPhone: '022-6786 6002',
     applicationProcess: ['Create account on IRCC portal', 'Fill application form and pay fee (CAD $100)', 'Upload documents (passport, photo, financials, travel history)', 'Submit biometrics at VFS Global', 'Wait 30-60 days for processing'],
     biometricProcess: ['Pay biometric fee (CAD $85) during application', 'Book biometric appointment at VFS Global Chennai', 'Visit centre with appointment letter and passport', 'Fingerprints and photo captured digitally'],
   },
   {
     name: 'Australia', code: 'AU',
     visaPortalUrl: 'https://immi.homeaffairs.gov.au/',
-    vacAddress: 'VFS Global Australia VAC, New No. 10, Haddows Road, Nungambakkam, Chennai - 600006',
-    vacPhone: '044-4253 5000',
+    vacAddress: 'VFS Global Australia VAC, 2nd Floor, Ramee Mall, 365 Anna Salai, Teynampet, Chennai - 600018',
+    vacPhone: '022-6786 6002',
     applicationProcess: ['Apply online at immi.homeaffairs.gov.au', 'Pay visa fee (AUD $190 for visitor visa)', 'Upload all supporting documents', 'Attend biometric collection at VFS', 'Wait 20-30 days for decision (typically grant by email)'],
     biometricProcess: ['Biometric instruction letter received after applying', 'Book appointment at VFS Global Chennai', 'Visit with appointment letter and passport', 'Fingerprints and photo captured'],
   },
   {
     name: 'Germany / Schengen', code: 'DE',
     visaPortalUrl: 'https://videx.diplo.de/',
-    vacAddress: 'VFS Global Germany VAC, Khader Nawaz Khan Road, Nungambakkam, Chennai - 600006',
-    vacPhone: '044-4253 5000',
+    vacAddress: 'VFS Global Germany VAC, 2nd Floor, Ramee Mall, 365 Anna Salai, Teynampet, Chennai - 600018',
+    vacPhone: '022-6786 6002',
     applicationProcess: ['Fill Videx application form online', 'Book appointment at VFS Global website', 'Pay visa fee (€80 for short stay)', 'Submit application with documents at VFS', 'Attend interview if required at German Consulate'],
     biometricProcess: ['Biometrics collected at VFS Global during submission', 'Fingerprints (10 fingers) and digital photo taken', 'Valid for 59 months — re-use for subsequent applications', 'No separate appointment needed'],
   },
   {
     name: 'Singapore', code: 'SG',
     visaPortalUrl: 'https://eservices.ica.gov.sg/esvclandingpage/save',
-    vacAddress: 'VFS Global Singapore VAC, No. 10, Haddows Road, Nungambakkam, Chennai - 600006',
-    vacPhone: '044-4253 5000',
+    vacAddress: 'Consulate-General of Singapore, No. 17, SATVAM, Bishop Wallers Avenue East, CIT Colony, Mylapore, Chennai - 600004',
+    vacPhone: '044-2815 8217',
     applicationProcess: ['Obtain a local contact / authorised visa agent in Singapore', 'Submit application through ICA SAVE portal', 'Pay visa fee (SGD $30)', 'Upload documents (passport copy, photo, itinerary, financials)', 'E-visa approval emailed in 3-5 working days'],
     biometricProcess: ['No biometric appointment required for Singapore visa', 'Visa is processed electronically', 'E-visa letter received by email upon approval'],
   },
   {
     name: 'UAE (Dubai)', code: 'AE',
     visaPortalUrl: 'https://smartservices.icp.gov.ae/echannels/web/client/default.html',
-    vacAddress: 'VFS Global UAE VAC, Khader Nawaz Khan Road, Nungambakkam, Chennai - 600006',
-    vacPhone: '044-4253 5000',
+    vacAddress: 'VFS Global UAE Visa Centre, 2nd Floor, Ramee Mall, 365 Anna Salai, Teynampet, Chennai - 600018',
+    vacPhone: '022-6786 6002',
     applicationProcess: ['Apply through UAE ICP Smart Services portal or sponsor in UAE', 'Upload passport copy, photo, and flight tickets', 'Pay visa fee (AED 100-300 depending on duration)', 'E-visa emailed within 3-5 working days', 'Print e-visa and carry during travel'],
     biometricProcess: ['No biometric appointment required for UAE tourist visa', 'Biometrics captured at UAE airport upon arrival', 'Eye scan and fingerprints taken at immigration'],
   },
   {
     name: 'France / Schengen', code: 'FR',
     visaPortalUrl: 'https://france-visas.gouv.fr/',
-    vacAddress: 'VFS Global France VAC, Khader Nawaz Khan Road, Nungambakkam, Chennai - 600006',
-    vacPhone: '044-4253 5000',
+    vacAddress: 'VFS Global France VAC, 2nd Floor, Ramee Mall, 365 Anna Salai, Teynampet, Chennai - 600018',
+    vacPhone: '022-6786 6002',
     applicationProcess: ['Create account on france-visas.gouv.fr', 'Fill application form and download it', 'Book appointment at VFS Global Chennai', 'Submit documents and pay fee (€80) at VFS', 'Wait 15 working days for decision'],
     biometricProcess: ['Biometrics collected at VFS Global during submission', 'Fingerprints and digital photo captured', 'Valid for 59 months for Schengen area', 'First-time applicants must appear in person'],
   },
@@ -388,10 +368,10 @@ export const VISA_COUNTRIES = [
   {
     name: 'South Korea', code: 'KR',
     visaPortalUrl: 'https://www.visa.go.kr/openPage.do?MENU_ID=10101',
-    vacAddress: 'VFS Global Korea VAC, No. 10, Haddows Road, Nungambakkam, Chennai - 600006',
-    vacPhone: '044-4253 5000',
+    vacAddress: 'VFS Global Korea VAC, 2nd Floor, Ramee Mall, 365 Anna Salai, Teynampet, Chennai - 600018',
+    vacPhone: '022-6786 6002',
     applicationProcess: ['Apply online at visa.go.kr or fill paper form', 'Book appointment at VFS Global Chennai', 'Submit documents and pay fee at VFS', 'Processing takes 7-10 working days', 'Collect passport with visa from VFS'],
-    biometricProcess: ['Biometrics collected at VFS Global Chennai', 'Fingerprints and photo captured during submission', 'No separate biometric appointment needed'],
+    biometricProcess: ['Biometrics collected at VFS Global Ramee Mall Chennai', 'Fingerprints and photo captured during submission', 'No separate biometric appointment needed'],
   },
 ];
 
@@ -484,6 +464,49 @@ export const HEIGHTS = [
   "6'0\"", "6'1\"", "6'2\"", "6'3\"", "6'4\"", "6'5\"", "6'6\"",
 ] as const;
 
+export const AGE_RANGES = [
+  '18 - 25 yrs',
+  '21 - 28 yrs',
+  '25 - 32 yrs',
+  '28 - 35 yrs',
+  '30 - 40 yrs',
+  '35 - 45 yrs',
+  '40 - 50 yrs',
+  '50+ yrs',
+  'Other',
+] as const;
+
+export const HEIGHT_RANGES = [
+  "4'6\" - 5'2\"",
+  "5'0\" - 5'6\"",
+  "5'2\" - 5'8\"",
+  "5'4\" - 5'10\"",
+  "5'6\" - 6'0\"",
+  "5'8\" - 6'2\"",
+  "6'0\"+",
+  'Other',
+] as const;
+
+export function parseAgeRange(rangeStr: string | undefined): { min?: number; max?: number } {
+  if (!rangeStr || rangeStr === 'Other') return {};
+  if (rangeStr.includes('50+')) return { min: 50, max: 75 };
+  const match = rangeStr.match(/(\d+)\s*-\s*(\d+)/);
+  if (match) {
+    return { min: parseInt(match[1], 10), max: parseInt(match[2], 10) };
+  }
+  return {};
+}
+
+export function parseHeightRange(rangeStr: string | undefined): { min?: string; max?: string } {
+  if (!rangeStr || rangeStr === 'Other') return {};
+  if (rangeStr.includes('6\'0"+') || rangeStr.includes('6\'0" +')) return { min: "6'0\"", max: "6'6\"" };
+  const parts = rangeStr.split('-').map(s => s.trim());
+  if (parts.length === 2) {
+    return { min: parts[0], max: parts[1] };
+  }
+  return {};
+}
+
 export const MARITAL_STATUSES = ['Never Married', 'Divorced', 'Widowed', 'Awaiting Divorce'] as const;
 
 export const COMPLEXIONS = ['Very Fair', 'Fair', 'Wheatish', 'Wheatish Brown', 'Dark'] as const;
@@ -495,6 +518,7 @@ export const FAMILY_STATUS = ['Middle Class', 'Upper Middle Class', 'Rich', 'Aff
 export const DIET_TYPES = ['Vegetarian', 'Non-Vegetarian', 'Eggetarian', 'Vegan'] as const;
 
 export const EDUCATION_LEVELS = [
+  'Undergraduate', 'Graduate', 'Postgraduate',
   'High School', '12th Pass', 'Diploma', 'Bachelor\'s (B.A/B.Sc/B.Com)',
   'B.Tech / B.E.', 'BBA / BCA', 'MBBS', 'BDS', 'B.Pharm',
   'Master\'s (M.A/M.Sc/M.Com)', 'M.Tech / M.E.', 'MBA', 'MD / MS',
@@ -522,6 +546,18 @@ export const WEST_BENGAL_DISTRICTS = [
   'Darjeeling', 'Kalimpong', 'Jalpaiguri', 'Alipurduar', 'Cooch Behar',
   'Siliguri', 'Durgapur', 'Asansol', 'Other',
 ] as const;
+
+export const NATIVE_CITIES = [
+  'Kolkata', 'Siliguri', 'Durgapur', 'Asansol', 'Howrah', 'Kharagpur',
+  'Burdwan', 'Baharampur', 'Malda', 'Darjeeling', 'Jalpaiguri', 'Cooch Behar',
+  'Chennai', 'Bengaluru', 'Mumbai', 'Delhi NCR', 'Hyderabad', 'Pune',
+  'Patna', 'Ranchi', 'Bhubaneswar', 'Guwahati', 'Agartala', 'Shillong',
+  'Lucknow', 'Jaipur', 'Ahmedabad', 'Surat', 'Vadodara', 'Indore',
+  'Bhopal', 'Nagpur', 'Chandigarh', 'Dehradun', 'Coimbatore', 'Madurai',
+  'Trichy', 'Salem', 'Other',
+] as const;
+
+export const MAJOR_INDIAN_CITIES = NATIVE_CITIES;
 
 export const SMOKING_HABITS = ['No', 'Occasionally', 'Yes'] as const;
 export const DRINKING_HABITS = ['No', 'Socially', 'Occasionally', 'Yes'] as const;
@@ -648,6 +684,14 @@ export const SUBCASTE_MAPPING: Record<string, readonly string[]> = {
   // Fallbacks / Other
   Other: ['Other']
 } as const;
+
+export const ALL_CASTES: readonly string[] = Array.from(
+  new Set(Object.values(CASTE_MAPPING).flat())
+);
+
+export const ALL_SUBCASTES: readonly string[] = Array.from(
+  new Set(Object.values(SUBCASTE_MAPPING).flat())
+);
 
 export const RAASIS = [
   'Mesha (Aries)',
@@ -809,3 +853,80 @@ export const ESEVA_CENTRES = [
   // Salem
   { id: 12, name: 'e-Seva Centre, Salem Corporation', address: 'Salem Corporation Office, Salem', type: 'Arasu e-Seva', city: 'Salem', phone: '1100 (Toll Free)' },
 ];
+
+export const GOTRAS = [
+  'Bhr̥gu (Jamadagni)',
+  'Bhārgava',
+  'Cyāvana',
+  'Aurva',
+  'Jāmadagnya',
+  'Vātsa',
+  'Kevala Bhr̥gu',
+  'Daivodāsa',
+  'Vainya',
+  'Pārtha',
+  'Śaunaka',
+  'Gārtsamada',
+  'Gautama',
+  'Āṅgirasa',
+  'Kākṣīvata',
+  'Dairghatamasa',
+  'Auśanasa',
+  'Bharadvāja',
+  'Bārhaspatya',
+  'Bhāradvāja',
+  'Gārgya',
+  'Kevala Aṅgiras',
+  'Āmbarīṣa',
+  'Māndhātra',
+  'Kautsa',
+  'Kāṇva',
+  'Maudgalya',
+  'Sāṁkr̥tya',
+  'Śāktya',
+  'Atri',
+  'Ātreya',
+  'Viśvāmitra',
+  'Vaiśvāmitra',
+  'Daivarāta',
+  'Mādhucchandasa',
+  'Kauśika',
+  'Gāthina',
+  'Aindra',
+  'Kaśyapa',
+  'Kāśyapa',
+  'Āvatsāra',
+  'Āsita',
+  'Śāṇḍila',
+  'Daivala',
+  'Vasiṣṭha',
+  'Vāsiṣṭha',
+  'Maitrāvaruṇa',
+  'Aupamanyava',
+  'Pārāśarya',
+  'Agastya',
+  'Āgastya',
+  'Other',
+] as const;
+
+export const PARENT_OCCUPATIONS = [
+  'Business / Entrepreneur',
+  'Government Service / PSU',
+  'Private Sector Service',
+  'Retired',
+  'Homemaker / Housewife',
+  'Teacher / Professor / Academic',
+  'Doctor / Healthcare Professional',
+  'Software / IT Professional',
+  'Civil Servant / Administrative',
+  'Defense / Police / Armed Forces',
+  'Lawyer / Legal Consultant',
+  'Chartered Accountant / Financial Professional',
+  'Banker / Financial Sector',
+  'Real Estate / Construction',
+  'Agriculture / Farming',
+  'Merchant Navy / Aviation',
+  'Passed Away / Late',
+  'Other',
+] as const;
+
