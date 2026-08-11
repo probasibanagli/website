@@ -125,6 +125,30 @@ export const sampleHospitals: Hospital[] = [
     main_branch: true,
     category: 'Private',
     status: 'Active'
+  },
+  {
+    id: 'hosp-adyar',
+    name: 'Adyar Cancer Institute',
+    city: 'Chennai',
+    state: 'Tamil Nadu',
+    district: 'Chennai',
+    area: 'Adyar',
+    address: 'W Canal Bank Rd, Gandhi Nagar, Adyar, Chennai, Tamil Nadu 600020',
+    phone: '044-24911526',
+    emergency_phone: '044-24910754',
+    specializations: ['Oncology', 'Emergency Medicine'],
+    is_24_7: true,
+    has_bengali_doctor: true,
+    has_bengali_staff: true,
+    google_maps_url: 'https://maps.google.com/?q=Adyar+Cancer+Institute+Chennai',
+    image_url: 'https://images.unsplash.com/photo-1538108149393-fbbd81895907?w=800&auto=format&fit=crop&q=80',
+    created_at: '2026-07-08T18:05:51.477Z',
+    website: 'https://cancerinstitutewia.in',
+    email: 'info@cancerinstitutewia.in',
+    description: 'Premier government-aided oncology institute offering free and subsidized treatment.',
+    main_branch: true,
+    category: 'Government',
+    status: 'Active'
   }
 ];
 
