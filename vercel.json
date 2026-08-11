@@ -1,0 +1,4 @@
+{
+  "buildCommand": "cd \"Downloads/website-main (3)/website-main\" && npm run build",
+  "outputDirectory": "Downloads/website-main (3)/website-main/.next"
+}
