@@ -21,6 +21,7 @@ interface BlogPost {
   published: boolean;
   status?: 'pending' | 'approved' | 'rejected';
   created_at: string;
+  image?: string;
 }
 
 export default function AdminBlogPage() {
@@ -306,6 +307,13 @@ export default function AdminBlogPage() {
                   <span className="flex items-center gap-1"><Calendar className="w-3.5 h-3.5" /> Submitted on {new Date(previewPost.created_at).toLocaleString('en-IN')}</span>
                 </div>
               </div>
+
+              {previewPost.image && (
+                <div className="w-full h-64 sm:h-80 rounded-2xl overflow-hidden border border-border">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={previewPost.image} alt={previewPost.title} className="w-full h-full object-cover" />
+                </div>
+              )}
 
               {previewPost.tags.length > 0 && (
                 <div className="flex flex-wrap gap-1.5">

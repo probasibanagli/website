@@ -12,7 +12,8 @@ const WHITELISTED_COLLECTIONS = new Set([
   'blood_banks',
   'colleges',
   'events',
-  'travel_info'
+  'travel_info',
+  'ambulances'
 ]);
 
 export async function GET(request: Request) {

@@ -33,7 +33,7 @@ interface AuthContextType extends AuthState {
   refreshProfile: () => Promise<void>;
   triggerMfaSuccess: () => Promise<void>;
   sendPhoneOtp: (phoneNumber: string, recaptchaContainerId: string, flow?: 'login' | 'register') => Promise<ConfirmationResult>;
-  verifyPhoneOtp: (confirmationResult: ConfirmationResult, otp: string) => Promise<void>;
+  verifyPhoneOtp: (confirmationResult: ConfirmationResult, otp: string) => Promise<{ user: FirebaseUser, profile: UserProfile }>;
   sendVerificationEmail: () => Promise<void>;
   linkPhoneToAccount: (phoneNumber: string, recaptchaContainerId: string) => Promise<ConfirmationResult>;
   confirmLinkPhone: (confirmationResult: ConfirmationResult, otp: string) => Promise<void>;
@@ -239,18 +239,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } as unknown as ConfirmationResult;
   };
 
-  const verifyPhoneOtp = async (confirmationResult: ConfirmationResult, otp: string): Promise<void> => {
+  const verifyPhoneOtp = async (confirmationResult: ConfirmationResult, otp: string): Promise<{ user: FirebaseUser, profile: UserProfile }> => {
     const result = await confirmationResult.confirm(otp);
     const user = result.user;
 
     // Check if profile exists, if not create one (first-time phone login)
-    const existingProfile = await fetchProfile(user);
+    let existingProfile = await fetchProfile(user);
     if (!existingProfile) {
       const role: UserRole = 'user';
       const permissions: ModulePermissions = getDefaultPermissions(role);
       const now = new Date().toISOString();
 
-      const profile: UserProfile = {
+      existingProfile = {
         uid: user.uid,
         email: user.email || '',
         phone: user.phoneNumber || '',
@@ -263,15 +263,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         phone_verified: true,
         email_verified: false,
       };
-      await setDoc(doc(db, 'users', user.uid), profile);
+      await setDoc(doc(db, 'users', user.uid), existingProfile);
     } else {
       // Update phone_verified
+      existingProfile.phone_verified = true;
+      existingProfile.phone = user.phoneNumber || existingProfile.phone;
       await updateDoc(doc(db, 'users', user.uid), {
         phone_verified: true,
         phone: user.phoneNumber || existingProfile.phone,
         updated_at: new Date().toISOString(),
       });
     }
+
+    return { user, profile: existingProfile };
   };
 
   /* ── Link Phone to Existing Account ── */

@@ -60,7 +60,7 @@ export function Footer() {
               <li><Link href="/services/college" className="text-sm text-gray-300 hover:text-primary transition-colors"><T>College Finder</T></Link></li>
               <li><Link href="/services/government" className="text-sm text-gray-300 hover:text-primary transition-colors"><T>Government Services</T></Link></li>
               <li><Link href="/emergency/ambulance" className="text-sm text-gray-300 hover:text-primary transition-colors"><T>Emergency SOS</T></Link></li>
-              <li><Link href="/auth/login" className="text-sm text-gray-300 hover:text-primary transition-colors"><T>Login / Register</T></Link></li>
+              <li><Link href={`/auth/login${pathname && pathname !== '/' ? `?redirect=${encodeURIComponent(pathname)}` : ''}`} className="text-sm text-gray-300 hover:text-primary transition-colors"><T>Login / Register</T></Link></li>
             </ul>
           </div>
         </div>

@@ -7,20 +7,24 @@ import { MapPin, Phone, MessageCircle, ArrowLeft, CheckCircle2, Bed, Users, Indi
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/card';
-import { sampleListings } from '@/data/sample-data';
+import { sampleListings, sampleStayListings } from '@/data/sample-data';
 import { formatPrice, getWhatsAppUrl } from '@/lib/utils';
+import { useFirestore } from '@/lib/hooks/useFirestore';
 
-function ListingCoverImage({ name, city, mapsUrl, type, fallbackIcon }: { 
+function ListingCoverImage({ name, city, mapsUrl, imageUrl, type, fallbackIcon }: { 
   name: string; 
   city?: string; 
   mapsUrl?: string; 
+  imageUrl?: string;
   type: string;
   fallbackIcon: React.ReactNode;
 }) {
-  const [imgSrc, setImgSrc] = useState<string | null>(
-    `/api/public/place-photo?name=${encodeURIComponent(name)}&city=${encodeURIComponent(city || '')}&mapsUrl=${encodeURIComponent(mapsUrl || '')}`
-  );
+  const imgSrc = imageUrl || (mapsUrl ? `/api/public/place-photo?name=${encodeURIComponent(name)}&city=${encodeURIComponent(city || '')}&mapsUrl=${encodeURIComponent(mapsUrl)}&v=3` : null);
   const [error, setError] = useState(false);
+
+  React.useEffect(() => {
+    setError(false);
+  }, [imgSrc]);
 
   if (error || !imgSrc) {
     return (
@@ -45,7 +49,23 @@ function ListingCoverImage({ name, city, mapsUrl, type, fallbackIcon }: {
 
 export default function StayDetailPage() {
   const params = useParams();
-  const listing = sampleListings.find((l) => l.id === params.id);
+  const { data: firestoreListings, loading } = useFirestore('listings');
+  
+  const combinedListings = React.useMemo(() => {
+    const firestoreIds = new Set(firestoreListings.map((l: any) => l.id));
+    const dedupedSample = sampleStayListings.filter((l: any) => !firestoreIds.has(l.id));
+    return [...firestoreListings, ...dedupedSample];
+  }, [firestoreListings]);
+
+  const listing: any = combinedListings.find((l: any) => l.id === params.id);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
 
   if (!listing) {
     return (
@@ -72,6 +92,7 @@ export default function StayDetailPage() {
             name={listing.name}
             city={listing.city}
             mapsUrl={listing.google_maps_url}
+            imageUrl={listing.image_url}
             type={listing.type}
             fallbackIcon={<Home className="w-16 h-16" />}
           />
@@ -109,7 +130,7 @@ export default function StayDetailPage() {
             <Card>
               <h3 className="text-lg font-bold mb-3">Amenities</h3>
               <div className="flex flex-wrap gap-2">
-                {(listing.amenities || []).map((a) => (
+                {(listing.amenities || []).map((a: string) => (
                   <Badge key={a} variant="teal">{a}</Badge>
                 ))}
                 {listing.bengali_food && <Badge variant="bengali">🍛 Bengali Food Available</Badge>}

@@ -12,6 +12,10 @@ import { useAuth } from '@/lib/auth/AuthContext';
 import { getAccessibleModules } from '@/lib/permissions';
 import type { ModuleKey } from '@/types';
 import { MODULE_LABELS } from '@/types';
+import { AdminSidebar } from '@/components/admin/AdminSidebar';
+import { AdminHeader } from '@/components/admin/AdminHeader';
+
+
 
 const moduleIcons: Record<ModuleKey, React.ReactNode> = {
   stay: <Home className="w-4 h-4" />,
@@ -87,7 +91,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       .map((mod) => ({
         key: mod,
         label: MODULE_LABELS[mod],
-        href: `/admin/${mod}`,
+        href: `/admin/${mod === 'blood_bank' ? 'blood-bank' : mod}`,
         icon: moduleIcons[mod],
       })),
   ];
@@ -98,100 +102,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     router.push('/');
   };
 
-  const SidebarContent = () => (
-    <>
-      {/* Logo area */}
-      <div className="p-5 border-b border-border">
-        <Link href="/admin" className="flex items-center gap-3">
-          <div className="w-9 h-9 bg-primary rounded-xl flex items-center justify-center text-white font-bold text-sm">
-            PB
-          </div>
-          <div>
-            <h2 className="text-sm font-bold text-text-primary">ProbasiBangali</h2>
-            <p className="text-[10px] text-text-muted font-medium uppercase tracking-wider">Admin Panel</p>
-          </div>
-        </Link>
-      </div>
-
-      {/* User card */}
-      <div className="p-4 mx-3 mt-4 rounded-xl bg-surface border border-border">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-full bg-primary flex items-center justify-center text-white text-sm font-bold shrink-0">
-            {profile.full_name?.charAt(0).toUpperCase()}
-          </div>
-          <div className="min-w-0">
-            <p className="text-sm font-semibold text-text-primary truncate">{profile.full_name}</p>
-            <div className="flex items-center gap-1.5">
-              {isSuperAdmin && <Crown className="w-3 h-3 text-amber-500" />}
-              <span className="text-[10px] font-medium text-text-muted uppercase tracking-wider">
-                {isSuperAdmin ? 'Super Admin' : 'Admin'}
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Nav items */}
-      <nav className="flex-1 p-3 space-y-0.5 mt-2 overflow-y-auto">
-        {sidebarItems.map((item) => {
-          let isActive = false;
-          if (item.href.startsWith('/admin/users')) {
-            const itemUrl = new URL(item.href, 'http://localhost');
-            const itemTab = itemUrl.searchParams.get('tab');
-            const currentTab = searchParams.get('tab') || 'users'; // default is users
-            isActive = pathname.startsWith('/admin/users') && itemTab === currentTab;
-          } else {
-            isActive = item.href === '/admin'
-              ? pathname === '/admin'
-              : pathname.startsWith(item.href);
-          }
-
-          return (
-            <Link
-              key={item.key}
-              href={item.href}
-              onClick={() => setSidebarOpen(false)}
-              className={`
-                flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all
-                ${isActive
-                  ? 'bg-primary/10 text-primary border border-primary/20'
-                  : 'text-text-muted hover:text-primary hover:bg-surface border border-transparent'
-                }
-              `}
-            >
-              {item.icon}
-              <span className="flex-1">{item.label}</span>
-              {isActive && <ChevronRight className="w-3.5 h-3.5" />}
-            </Link>
-          );
-        })}
-      </nav>
-
-      {/* Bottom */}
-      <div className="p-3 border-t border-border space-y-1">
-        <Link
-          href="/"
-          className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-text-muted hover:text-primary hover:bg-surface transition-all"
-        >
-          <Home className="w-4 h-4" />
-          Back to Website
-        </Link>
-        <button
-          onClick={handleLogout}
-          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-red-500 hover:bg-red-50 transition-all cursor-pointer"
-        >
-          <LogOut className="w-4 h-4" />
-          Logout
-        </button>
-      </div>
-    </>
-  );
-
   return (
-    <div className="min-h-screen bg-surface flex">
+    <div className="min-h-screen bg-[#FAF0EC]/40 flex">
       {/* Desktop Sidebar */}
-      <aside className="hidden lg:flex lg:w-64 lg:flex-col bg-white border-r border-border fixed inset-y-0 z-40">
-        <SidebarContent />
+      <aside className="hidden lg:flex lg:w-64 lg:flex-col fixed inset-y-0 z-40">
+        <AdminSidebar
+          sidebarItems={sidebarItems}
+          profile={profile}
+          isSuperAdmin={isSuperAdmin}
+          onClose={() => setSidebarOpen(false)}
+          onLogout={handleLogout}
+        />
       </aside>
 
       {/* Mobile sidebar overlay */}
@@ -199,29 +120,24 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <div className="fixed inset-0 z-50">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setSidebarOpen(false)} />
           <aside className="absolute left-0 top-0 bottom-0 w-72 bg-white flex flex-col animate-slide-up">
-            <SidebarContent />
+            <AdminSidebar
+              sidebarItems={sidebarItems}
+              profile={profile}
+              isSuperAdmin={isSuperAdmin}
+              onClose={() => setSidebarOpen(false)}
+              onLogout={handleLogout}
+            />
           </aside>
         </div>
       )}
 
       {/* Main content */}
       <div className="flex-1 lg:ml-64">
-        {/* Top bar */}
-        <header className="sticky top-0 z-30 h-14 bg-white/80 backdrop-blur-xl border-b border-border flex items-center px-4 lg:px-6 gap-4">
-          <button
-            onClick={() => setSidebarOpen(true)}
-            className="lg:hidden p-2 rounded-xl text-text-muted hover:text-primary hover:bg-surface transition-colors cursor-pointer"
-          >
-            <Menu className="w-5 h-5" />
-          </button>
-          <div className="flex-1" />
-          <Link
-            href="/"
-            className="text-xs font-medium text-text-muted hover:text-primary transition-colors"
-          >
-            ← Back to site
-          </Link>
-        </header>
+        {/* Header (Search, Notifications & Profile) */}
+        <AdminHeader
+          profile={profile}
+          onMenuClick={() => setSidebarOpen(true)}
+        />
 
         {/* Page content */}
         <main className="p-4 lg:p-6">

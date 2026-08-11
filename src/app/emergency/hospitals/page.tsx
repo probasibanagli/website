@@ -12,8 +12,8 @@ import { db } from '@/lib/firebase';
 import { collection, getDocs } from 'firebase/firestore';
 import { COLLECTIONS } from '@/lib/firestore/collections';
 import type { Hospital, BengaliDoctor, BengaliStaff } from '@/types';
-import { OtpVerificationModal } from '@/components/auth/OtpVerificationModal';
-
+import { useAuth } from '@/lib/auth/AuthContext';
+import { useRouter } from 'next/navigation';
 const PREDEFINED_SPECIALIZATIONS = [
   'Cardiology',
   'Neurology',
@@ -38,30 +38,23 @@ const PREDEFINED_DEPARTMENTS = [
   'Security'
 ];
 
-const SAMPLE_DOCTORS: BengaliDoctor[] = [
-  { id: 'd1', doctor_name: 'Dr. Anirban Roy', specialization: 'Cardiology', hospital_ids: ['h1', 'h2'], experience: '15 years', qualifications: ['MBBS', 'MD (Cardiology)'], languages: ['Bengali', 'English', 'Tamil'], photo: '', phone: '9876543210', email: 'anirban.roy@example.com', consultation_timings: 'Mon-Fri 10:00 AM - 1:00 PM', otp_required: true },
-  { id: 'd2', doctor_name: 'Dr. Saptarshi Chatterjee', specialization: 'Neurology', hospital_ids: ['h2'], experience: '12 years', qualifications: ['MBBS', 'DM (Neurology)'], languages: ['Bengali', 'English'], photo: '', phone: '8765432109', email: 's.chatterjee@example.com', consultation_timings: 'Tue-Sat 2:00 PM - 5:00 PM', otp_required: true },
-  { id: 'd3', doctor_name: 'Dr. Debasish Banerjee', specialization: 'Orthopedics', hospital_ids: ['h3', 'h4'], experience: '20 years', qualifications: ['MBBS', 'MS (Orthopedics)'], languages: ['Bengali', 'English', 'Hindi'], photo: '', phone: '7654321098', email: 'debasish.b@example.com', consultation_timings: 'Mon-Wed-Fri 4:00 PM - 7:00 PM', otp_required: true },
-  { id: 'd4', doctor_name: 'Dr. Soumya Mukherjee', specialization: 'Pediatrics', hospital_ids: ['h4'], experience: '8 years', qualifications: ['MBBS', 'MD (Pediatrics)'], languages: ['Bengali', 'English', 'Tamil'], photo: '', phone: '6543210987', email: 'soumya.m@example.com', consultation_timings: 'Daily 9:00 AM - 11:00 AM', otp_required: false },
-  { id: 'd5', doctor_name: 'Dr. Priyanka Ghosh', specialization: 'Oncology', hospital_ids: ['h5'], experience: '10 years', qualifications: ['MBBS', 'DNB (Oncology)'], languages: ['Bengali', 'English'], photo: '', phone: '5432109876', email: 'priyanka.ghosh@example.com', consultation_timings: 'Thu-Sat 10:00 AM - 12:00 PM', otp_required: true }
-];
+const SAMPLE_DOCTORS: BengaliDoctor[] = [];
 
-const SAMPLE_STAFF: BengaliStaff[] = [
-  { id: 's1', name: 'Amit Roy', role: 'Nurse Coordinator', department: 'ICU', hospital_id: 'h1', experience: '5 years', languages: ['Bengali', 'Tamil', 'English'], photo: '', phone: '9000100010', email: 'amit.roy@example.com', availability: 'Day Shift', description: 'Assists patients in Bengali.' },
-  { id: 's2', name: 'Riya Das', role: 'Helpdesk Executive', department: 'Reception', hospital_id: 'h2', experience: '3 years', languages: ['Bengali', 'English'], photo: '', phone: '9000200020', email: 'riya.das@example.com', availability: 'Mon-Sat 9AM-5PM', description: 'Assists with admission and translation.' },
-  { id: 's3', name: 'Sanjay Sen', role: 'Radiology Technician', department: 'Radiology', hospital_id: 'h3', experience: '8 years', languages: ['Bengali', 'Tamil', 'Hindi'], photo: '', phone: '9000300030', email: 'sanjay.sen@example.com', availability: '24/7 on call', description: 'Available for scanning translation.' }
-];
+const SAMPLE_STAFF: BengaliStaff[] = [];
 
-function ListingCoverImage({ name, city, mapsUrl, fallbackIcon }: { 
+function ListingCoverImage({ name, city, mapsUrl, imageUrl, fallbackIcon }: { 
   name: string; 
   city?: string; 
   mapsUrl?: string; 
+  imageUrl?: string;
   fallbackIcon: React.ReactNode;
 }) {
-  const [imgSrc, setImgSrc] = useState<string | null>(
-    `/api/public/place-photo?name=${encodeURIComponent(name)}&city=${encodeURIComponent(city || '')}&mapsUrl=${encodeURIComponent(mapsUrl || '')}`
-  );
+  const imgSrc = imageUrl || (mapsUrl ? `/api/public/place-photo?name=${encodeURIComponent(name)}&city=${encodeURIComponent(city || '')}&mapsUrl=${encodeURIComponent(mapsUrl)}&v=3` : null);
   const [error, setError] = useState(false);
+
+  React.useEffect(() => {
+    setError(false);
+  }, [imgSrc]);
 
   if (error || !imgSrc) {
     return (
@@ -85,6 +78,8 @@ function ListingCoverImage({ name, city, mapsUrl, fallbackIcon }: {
 }
 
 export default function EmergencyHospitalsPage() {
+  const { firebaseUser: user } = useAuth();
+  const router = useRouter();
   const [searchTab, setSearchTab] = useState<'hospitals' | 'doctors' | 'staff'>('hospitals');
   
   // State lists
@@ -101,13 +96,11 @@ export default function EmergencyHospitalsPage() {
   const [departmentFilter, setDepartmentFilter] = useState('');
 
   // OTP Gating
-  const [isVerified, setIsVerified] = useState(false);
-  const [showOtpModal, setShowOtpModal] = useState(false);
-  const [doctorToVerify, setDoctorToVerify] = useState<string | undefined>(undefined);
+  const isVerified = !!user;
 
   useEffect(() => {
-    setIsVerified(false);
     
+
     const fetchData = async () => {
       try {
         let hData: Hospital[] = [];
@@ -173,16 +166,7 @@ export default function EmergencyHospitalsPage() {
   }, []);
 
   const triggerVerification = (doctorId?: string) => {
-    setDoctorToVerify(doctorId);
-    setShowOtpModal(true);
-  };
-
-  const handleVerificationSuccess = () => {
-    setIsVerified(true);
-    setShowOtpModal(false);
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('directory_verified', 'true');
-    }
+    router.push('/auth/login?redirect=/emergency/hospitals');
   };
 
   // ── FILTER LOGIC ──
@@ -428,11 +412,12 @@ export default function EmergencyHospitalsPage() {
                   {filteredHospitals.map((hospital) => (
                     <Card key={hospital.id} padding="none" className="overflow-hidden group flex flex-col h-full bg-white border border-border hover:border-primary/20 hover:shadow-lg transition-all duration-300">
                       <div className="relative h-44 bg-gradient-to-br from-red-50 to-orange-50 overflow-hidden">
-                        <ListingCoverImage
-                          name={hospital.name}
-                          city={hospital.city}
-                          mapsUrl={hospital.google_maps_url}
-                          fallbackIcon={<Stethoscope className="w-8 h-8 text-red-500" />}
+                        <ListingCoverImage 
+                          name={hospital.name} 
+                          city={hospital.city} 
+                          mapsUrl={hospital.google_maps_url} 
+                          imageUrl={hospital.image_url}
+                          fallbackIcon={<Building2 className="w-8 h-8" />}
                         />
                         <div className="absolute top-3 left-3 flex flex-wrap gap-1.5">
                           {hospital.category && (
@@ -699,14 +684,6 @@ export default function EmergencyHospitalsPage() {
           </>
         )}
       </div>
-
-      {/* Otp Verification Modal */}
-      <OtpVerificationModal
-        isOpen={showOtpModal}
-        onClose={() => { setShowOtpModal(false); setDoctorToVerify(undefined); }}
-        onSuccess={handleVerificationSuccess}
-        doctorId={doctorToVerify}
-      />
     </div>
   );
 }

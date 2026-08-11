@@ -180,12 +180,12 @@ export default function MatrimonialDashboard() {
                 Please create an account and verify both your email and phone number to view the matrimonial dashboard.
               </p>
               <div className="flex flex-col gap-3">
-                <Link href="/auth/register">
+                <Link href="/auth/register?redirect=/community/matrimonial/dashboard">
                   <Button variant="primary" size="lg" className="w-full flex items-center justify-center gap-2">
                     <UserPlus className="w-4 h-4" /> Sign Up Now
                   </Button>
                 </Link>
-                <Link href="/auth/login">
+                <Link href="/auth/login?redirect=/community/matrimonial/dashboard">
                   <Button variant="outline" size="lg" className="w-full">
                     Login to Account
                   </Button>
@@ -295,8 +295,7 @@ export default function MatrimonialDashboard() {
         <h1 className="text-3xl font-bold font-display mb-8">My Matrimony Dashboard</h1>
 
         {/* Profile Card */}
-        <Card padding="lg" hover={false} className="mb-6 relative overflow-hidden">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary to-accent" />
+        <Card padding="lg" hover={false} className="mb-6">
           <div className="flex flex-col sm:flex-row items-start gap-5 pt-2">
             <ProfileCardAvatar profile={myProfile} className="w-20 h-20" />
             <div className="flex-1">

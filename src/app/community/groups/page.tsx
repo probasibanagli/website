@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { Users, ExternalLink, Search, Globe, MapPin, ChevronDown } from 'lucide-react';
+import { Users, ExternalLink, Search, Globe, MapPin, ChevronDown, Camera, Briefcase, MessageCircle, Send, Building, Map, Globe2 } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -12,18 +12,18 @@ import { CommunityGroup } from '@/types';
 
 /* ── Platform config ── */
 const PLATFORMS = [
-  { key: 'instagram', label: 'Instagram', icon: '📷', color: 'bg-gradient-to-br from-purple-500 via-pink-500 to-orange-400', textColor: 'text-white', ringColor: 'ring-pink-300', badgeColor: 'bg-pink-100 text-pink-700' },
-  { key: 'facebook', label: 'Facebook', icon: '👤', color: 'bg-gradient-to-br from-blue-600 to-blue-500', textColor: 'text-white', ringColor: 'ring-blue-300', badgeColor: 'bg-indigo-100 text-indigo-700' },
-  { key: 'linkedin', label: 'LinkedIn', icon: '💼', color: 'bg-gradient-to-br from-blue-700 to-sky-600', textColor: 'text-white', ringColor: 'ring-sky-300', badgeColor: 'bg-sky-100 text-sky-700' },
-  { key: 'website', label: 'Website', icon: '🌐', color: 'bg-gradient-to-br from-emerald-500 to-teal-500', textColor: 'text-white', ringColor: 'ring-teal-300', badgeColor: 'bg-teal-100 text-teal-700' },
-  { key: 'whatsapp', label: 'WhatsApp', icon: '💬', color: 'bg-gradient-to-br from-green-500 to-green-600', textColor: 'text-white', ringColor: 'ring-green-300', badgeColor: 'bg-green-100 text-green-700' },
-  { key: 'telegram', label: 'Telegram', icon: '✈️', color: 'bg-gradient-to-br from-sky-400 to-blue-500', textColor: 'text-white', ringColor: 'ring-sky-300', badgeColor: 'bg-blue-100 text-blue-700' },
+  { key: 'instagram', label: 'Instagram', icon: <Camera className="w-4 h-4" />, color: 'bg-gradient-to-br from-purple-500 via-pink-500 to-orange-400', textColor: 'text-white', ringColor: 'ring-pink-300', badgeColor: 'bg-pink-100 text-pink-700' },
+  { key: 'facebook', label: 'Facebook', icon: <Users className="w-4 h-4" />, color: 'bg-gradient-to-br from-blue-600 to-blue-500', textColor: 'text-white', ringColor: 'ring-blue-300', badgeColor: 'bg-indigo-100 text-indigo-700' },
+  { key: 'linkedin', label: 'LinkedIn', icon: <Briefcase className="w-4 h-4" />, color: 'bg-gradient-to-br from-blue-700 to-sky-600', textColor: 'text-white', ringColor: 'ring-sky-300', badgeColor: 'bg-sky-100 text-sky-700' },
+  { key: 'website', label: 'Website', icon: <Globe className="w-4 h-4" />, color: 'bg-gradient-to-br from-emerald-500 to-teal-500', textColor: 'text-white', ringColor: 'ring-teal-300', badgeColor: 'bg-teal-100 text-teal-700' },
+  { key: 'whatsapp', label: 'WhatsApp', icon: <MessageCircle className="w-4 h-4" />, color: 'bg-gradient-to-br from-green-500 to-green-600', textColor: 'text-white', ringColor: 'ring-green-300', badgeColor: 'bg-green-100 text-green-700' },
+  { key: 'telegram', label: 'Telegram', icon: <Send className="w-4 h-4" />, color: 'bg-gradient-to-br from-sky-400 to-blue-500', textColor: 'text-white', ringColor: 'ring-sky-300', badgeColor: 'bg-blue-100 text-blue-700' },
 ];
 
 const REGIONS = [
-  { key: 'tamil_nadu', label: 'Tamil Nadu', icon: '🏛️' },
-  { key: 'india', label: 'India', icon: '🇮🇳' },
-  { key: 'all', label: 'All / Worldwide', icon: '🌍' },
+  { key: 'tamil_nadu', label: 'Tamil Nadu', icon: <Building className="w-3.5 h-3.5" /> },
+  { key: 'india', label: 'India', icon: <Map className="w-3.5 h-3.5" /> },
+  { key: 'all', label: 'Global / All', icon: <Globe2 className="w-3.5 h-3.5" /> },
 ];
 
 function getPlatformConfig(key: string) {
@@ -87,72 +87,61 @@ export default function GroupsPage() {
           <h1 className="text-3xl sm:text-4xl font-bold font-display text-text-primary">Community Groups</h1>
           <p className="mt-2 text-text-muted">Connect with Bengali communities across Tamil Nadu, India, and worldwide.</p>
 
-          {/* ── STEP 1: Platform Selection ── */}
-          <div className="mt-6 p-5 bg-gradient-to-r from-primary/5 to-accent/5 rounded-2xl border border-primary/10">
-            <p className="text-xs font-semibold text-primary uppercase tracking-wider mb-3 flex items-center gap-1.5">
-              <Globe className="w-3.5 h-3.5" /> Step 1 — Choose Platform
-            </p>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+          {/* ── Filters ── */}
+          <div className="mt-6 flex flex-col gap-4">
+            {/* Platforms */}
+            <div className="flex flex-wrap gap-2">
               {PLATFORMS.map((p) => (
                 <button
                   key={p.key}
                   onClick={() => handlePlatformChange(p.key)}
-                  className={`relative flex flex-col items-center gap-2 px-4 py-4 rounded-2xl text-sm font-semibold transition-all cursor-pointer border-2 ${
+                  className={`relative flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold transition-all cursor-pointer border ${
                     selectedPlatform === p.key
-                      ? `${p.color} ${p.textColor} border-transparent shadow-lg scale-[1.03] ring-2 ${p.ringColor}`
-                      : 'bg-white text-text-primary border-border hover:border-primary/40 hover:shadow-md'
+                      ? `${p.color} ${p.textColor} border-transparent shadow-sm ring-1 ring-offset-1 ring-offset-surface ${p.ringColor}`
+                      : 'bg-white text-text-primary border-border hover:border-primary/40'
                   }`}
                 >
-                  <span className="text-2xl">{p.icon}</span>
+                  <span className="text-lg">{p.icon}</span>
                   <span>{p.label}</span>
-                  {selectedPlatform === p.key && (
-                    <div className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-white rounded-full shadow flex items-center justify-center text-[10px]">✓</div>
-                  )}
                 </button>
               ))}
             </div>
-          </div>
 
-          {/* ── STEP 2: Region Scope (shown after platform selected) ── */}
-          {selectedPlatform && (
-            <div className="mt-3 p-5 bg-white rounded-2xl border border-border animate-fade-in">
-              <p className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-3 flex items-center gap-1.5">
-                <MapPin className="w-3.5 h-3.5" /> Step 2 — Select Region
-              </p>
-              <div className="flex flex-wrap gap-3">
-                <button
-                  onClick={() => setSelectedRegion('')}
-                  className={`px-5 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${
-                    !selectedRegion
-                      ? 'bg-primary text-white shadow-md'
-                      : 'bg-surface text-text-primary border border-border hover:border-primary'
-                  }`}
-                >
-                  All Regions
-                </button>
-                {REGIONS.map((r) => (
+            {/* Regions & Search */}
+            {selectedPlatform && (
+              <div className="flex flex-col md:flex-row flex-wrap items-start md:items-center gap-3 animate-fade-in relative z-20">
+                <div className="relative flex-1 min-w-[200px] max-w-sm">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
+                  <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search groups..." className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+                </div>
+                
+                <div className="flex flex-wrap gap-2">
                   <button
-                    key={r.key}
-                    onClick={() => setSelectedRegion(r.key === selectedRegion ? '' : r.key)}
-                    className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${
-                      selectedRegion === r.key
-                        ? 'bg-primary text-white shadow-md'
-                        : 'bg-surface text-text-primary border border-border hover:border-primary'
+                    onClick={() => setSelectedRegion('')}
+                    className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${
+                      !selectedRegion
+                        ? 'bg-primary text-white shadow-sm'
+                        : 'bg-white text-text-primary border border-border hover:border-primary'
                     }`}
                   >
-                    <span>{r.icon}</span> {r.label}
+                    All Regions
                   </button>
-                ))}
+                  {REGIONS.map((r) => (
+                    <button
+                      key={r.key}
+                      onClick={() => setSelectedRegion(r.key === selectedRegion ? '' : r.key)}
+                      className={`flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${
+                        selectedRegion === r.key
+                          ? 'bg-primary text-white shadow-sm'
+                          : 'bg-white text-text-primary border border-border hover:border-primary'
+                      }`}
+                    >
+                      <span>{r.icon}</span> {r.label}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
-          )}
-
-          {/* Search */}
-          <div className="mt-4">
-            <div className="relative max-w-sm">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
-              <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search groups..." className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
-            </div>
+            )}
           </div>
         </div>
       </div>
@@ -172,35 +161,50 @@ export default function GroupsPage() {
             const buttonLabel = getPlatformButtonLabel(group.platform || 'whatsapp');
 
             return (
-              <Card key={group.id} className="group overflow-hidden">
-                {/* Platform color strip */}
-                <div className={`h-1.5 -mx-6 -mt-6 mb-4 ${pConfig.color}`} />
-
-                <div className="flex items-start gap-4">
-                  <div className={`w-12 h-12 rounded-xl ${pConfig.badgeColor} flex items-center justify-center text-xl shrink-0`}>
-                    {pConfig.icon}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="text-lg font-bold text-text-primary group-hover:text-primary transition-colors">{group.name}</h3>
-                    <div className="flex items-center gap-2 mt-1 flex-wrap">
-                      <Badge variant={group.platform === 'whatsapp' ? 'teal' : group.platform === 'instagram' ? 'bengali' : 'default'}>
-                        {pConfig.label}
-                      </Badge>
-                      {group.city && <span className="text-xs text-text-muted flex items-center gap-1"><MapPin className="w-3 h-3" />{group.city}</span>}
-                      {group.region && (
-                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-surface text-text-muted font-medium uppercase tracking-wider">
-                          {group.region === 'tamil_nadu' ? '🏛️ TN' : group.region === 'india' ? '🇮🇳 India' : '🌍 Global'}
-                        </span>
-                      )}
+              <Card key={group.id} className="group overflow-hidden flex flex-col h-full hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-border/50 bg-white/80 backdrop-blur-sm">
+                {/* Image Banner */}
+                <div className="relative h-48 -mx-6 -mt-6 mb-5 bg-surface overflow-hidden">
+                  {group.image_url ? (
+                    <img src={group.image_url} alt={group.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  ) : (
+                    <div className={`w-full h-full ${pConfig.color} opacity-10 flex items-center justify-center group-hover:scale-105 transition-transform duration-500`}>
+                      <span className="opacity-30 scale-[3] text-primary">{pConfig.icon}</span>
                     </div>
+                  )}
+                  {/* Platform Badge */}
+                  <div className="absolute top-4 right-4 shadow-sm">
+                    <Badge variant={group.platform === 'whatsapp' ? 'teal' : group.platform === 'instagram' ? 'bengali' : 'default'} className="backdrop-blur-md bg-white/95 border-white/20 text-xs py-1">
+                      <span className="mr-1.5 text-sm">{pConfig.icon}</span> {pConfig.label}
+                    </Badge>
                   </div>
+                  {/* Gradient Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
                 </div>
-                <p className="text-sm text-text-muted mt-3 leading-relaxed">{group.description}</p>
 
-                <div className="flex items-center justify-end mt-4 pt-4 border-t border-border">
+                <div className="flex-1 flex flex-col px-1">
+                  <h3 className="text-xl font-bold font-display text-text-primary group-hover:text-primary transition-colors line-clamp-2 leading-tight">{group.name}</h3>
+                  
+                  <div className="flex items-center gap-2 mt-3 flex-wrap">
+                    {group.city && <span className="text-xs text-text-muted flex items-center gap-1 font-medium bg-surface px-2.5 py-1 rounded-md border border-border/50"><MapPin className="w-3.5 h-3.5 text-primary" />{group.city}</span>}
+                    {group.region && (
+                      <span className="text-[10px] px-2.5 py-1 rounded-md bg-surface border border-border/50 text-text-muted font-bold uppercase tracking-wider flex items-center gap-1.5">
+                        {REGIONS.find(r => r.key === group.region)?.icon}
+                        {group.region === 'tamil_nadu' ? 'TN' : group.region === 'india' ? 'India' : 'Global'}
+                      </span>
+                    )}
+                  </div>
+                  
+                  <p className="text-sm text-text-muted mt-4 leading-relaxed line-clamp-3 flex-1">{group.description}</p>
+                </div>
+
+                <div className="flex items-center justify-between mt-6 pt-4 border-t border-border/50 px-1">
+                  <div className="flex items-center gap-1.5 text-text-muted text-xs font-medium">
+                     <Users className="w-4 h-4 text-primary" />
+                     <span>Join Community</span>
+                  </div>
                   <a href={link} target="_blank" rel="noopener noreferrer">
-                    <Button variant="primary" size="sm">
-                      {buttonLabel} <ExternalLink className="w-3.5 h-3.5" />
+                    <Button variant="primary" size="sm" className="shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 transition-all font-semibold px-4 rounded-xl">
+                      {buttonLabel} <ExternalLink className="w-3.5 h-3.5 ml-1.5" />
                     </Button>
                   </a>
                 </div>
@@ -211,7 +215,7 @@ export default function GroupsPage() {
 
         {filtered.length === 0 && (
           <div className="text-center py-20">
-            <p className="text-5xl mb-4">👥</p>
+            <Users className="w-12 h-12 mx-auto text-text-muted mb-4 opacity-50" />
             <h3 className="text-xl font-bold mb-2">No groups found</h3>
             <p className="text-text-muted">Try selecting a different platform or region.</p>
           </div>

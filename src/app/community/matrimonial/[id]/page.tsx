@@ -413,7 +413,6 @@ export default function MatrimonialDetailPage() {
           <div className="lg:col-span-2 space-y-6">
             {/* Profile Header Card */}
             <Card padding="lg" hover={false} className="relative overflow-hidden border border-primary/10">
-              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary to-accent" />
               
               {photoPreviews.some(photo => photo !== null) ? (
                 <div className="flex flex-col md:flex-row gap-6 pt-2">
@@ -674,7 +673,6 @@ export default function MatrimonialDetailPage() {
             {/* Match Percentage Card */}
             {matchResult && matchResult.percentage > 0 && (
               <Card hover={false} className="relative overflow-hidden border border-primary/10">
-                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-green-400 via-amber-400 to-red-400" />
                 <div className="flex items-center gap-4 pt-1">
                   {/* Circular Progress */}
                   <div className="relative w-20 h-20 shrink-0">

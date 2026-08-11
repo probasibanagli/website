@@ -167,7 +167,13 @@ export default function MatrimonialPage() {
   // Stats
   const totalProfiles = allProfs.length;
   const verifiedProfiles = allProfs.filter(p => p.verified).length;
-  const citiesCount = new Set(allProfs.map(p => p.city)).size;
+  const availableCities = useMemo(() => {
+    return Array.from(new Set(allProfs.map(p => p.city).filter(Boolean).map(c => {
+      const trimmed = c!.trim();
+      return trimmed.charAt(0).toUpperCase() + trimmed.slice(1).toLowerCase();
+    }))).sort();
+  }, [allProfs]);
+  const citiesCount = availableCities.length;
 
   return (
     <div className="min-h-screen bg-surface bg-alpana">
@@ -207,12 +213,12 @@ export default function MatrimonialPage() {
                 <div className="h-11 w-40 bg-white/10 animate-pulse rounded-xl" />
               ) : !firebaseUser ? (
                 <>
-                  <Link href="/auth/register">
+                  <Link href="/auth/register?redirect=/community/matrimonial">
                     <Button variant="secondary" size="lg" className="shadow-lg flex items-center gap-2">
                       <UserPlus className="w-5 h-5" /> Sign Up
                     </Button>
                   </Link>
-                  <Link href="/auth/login">
+                  <Link href="/auth/login?redirect=/community/matrimonial">
                     <Button variant="outline" size="lg" className="border-white/30 text-white hover:bg-white/10 hover:text-white">
                       Login
                     </Button>
@@ -304,12 +310,12 @@ export default function MatrimonialPage() {
 
               {/* Call to Actions */}
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center w-full max-w-md">
-                <Link href="/auth/register" className="w-full sm:w-auto">
+                <Link href="/auth/register?redirect=/community/matrimonial" className="w-full sm:w-auto">
                   <Button variant="primary" size="lg" className="w-full sm:px-8 shadow-lg shadow-primary/20 hover:scale-105 transition-all flex items-center justify-center gap-2">
                     <UserPlus className="w-5 h-5" /> Sign Up Now
                   </Button>
                 </Link>
-                <Link href="/auth/login" className="w-full sm:w-auto">
+                <Link href="/auth/login?redirect=/community/matrimonial" className="w-full sm:w-auto">
                   <Button variant="outline" size="lg" className="w-full sm:px-8 border-border text-text-primary hover:bg-surface">
                     Login to Account
                   </Button>
@@ -467,7 +473,7 @@ export default function MatrimonialPage() {
                     onChange={(val) => updateFilter('city', val)}
                     options={[
                       { value: '', label: 'All Cities' },
-                      ...CITIES.map(c => ({ value: c, label: c }))
+                      ...availableCities.map(c => ({ value: c, label: c }))
                     ]}
                     placeholder="All Cities"
                     searchable={true}
@@ -540,7 +546,7 @@ export default function MatrimonialPage() {
                         onChange={(val) => updateFilter('city', val)}
                         options={[
                           { value: '', label: 'All Cities' },
-                          ...CITIES.map(c => ({ value: c, label: c }))
+                          ...availableCities.map(c => ({ value: c, label: c }))
                         ]}
                         placeholder="All Cities"
                         searchable={true}
@@ -658,8 +664,7 @@ export default function MatrimonialPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {visibleProfiles.map((profile) => (
                 <Card key={profile.id} className="group relative overflow-hidden">
-                  {/* Top accent bar */}
-                  <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary to-accent" />
+
 
                   <div className="pt-2">
                     {/* Header */}

@@ -44,7 +44,7 @@ export default function EditMatrimonialProfile() {
   useEffect(() => {
     if (authLoading) return;
     if (!firebaseUser) {
-      router.push('/auth/login');
+      router.push('/auth/login?redirect=/community/matrimonial/edit');
       return;
     }
 

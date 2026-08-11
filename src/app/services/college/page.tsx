@@ -12,7 +12,6 @@ import { collection, getDocs } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { COLLECTIONS } from '@/lib/firestore/collections';
 import { useAuth } from '@/lib/auth/AuthContext';
-import { OtpVerificationModal } from '@/components/auth/OtpVerificationModal';
 import type { College } from '@/types';
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -34,10 +33,8 @@ export default function CollegePage() {
   const [search, setSearch] = useState('');
   const [colleges, setColleges] = useState<College[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isVerified, setIsVerified] = useState(false);
-  const [showOtpModal, setShowOtpModal] = useState(false);
   const [expandedColleges, setExpandedColleges] = useState<Record<string, boolean>>({});
-  
+
 
   useEffect(() => {
     const fetchColleges = async () => {
@@ -56,9 +53,7 @@ export default function CollegePage() {
   }, []);
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setIsVerified(localStorage.getItem('directory_verified') === 'true');
-    }
+    // Empty effect to match previous structure
   }, []);
 
   const toggleExpand = (id: string) => {
@@ -220,24 +215,11 @@ export default function CollegePage() {
                                 <Lock className="w-6 h-6 text-amber-600 mx-auto mb-2" />
                                 <p className="text-xs font-bold text-amber-800">Registration Required</p>
                                 <p className="text-xs text-amber-700/80 mt-1">Please login or register to view Bengali faculty contact details.</p>
-                                <Link href="/auth/login" className="mt-3 block">
+                                <Link href="/auth/login?redirect=/services/college" className="mt-3 block">
                                   <Button size="sm" variant="outline" className="w-full border-amber-300 text-amber-800 hover:bg-amber-100/50 font-semibold cursor-pointer">
                                     Login to Account <ArrowRight className="w-3.5 h-3.5 ml-1" />
                                   </Button>
                                 </Link>
-                              </div>
-                            ) : !isVerified ? (
-                              <div className="p-4 bg-amber-50/50 border border-amber-200 rounded-2xl text-center">
-                                <ShieldAlert className="w-6 h-6 text-amber-600 mx-auto mb-2" />
-                                <p className="text-xs font-bold text-amber-800">Verification Required</p>
-                                <p className="text-xs text-amber-700/80 mt-1">Verify your phone and email to access direct contact details.</p>
-                                <Button
-                                  size="sm"
-                                  onClick={() => setShowOtpModal(true)}
-                                  className="w-full mt-3 bg-amber-600 text-white hover:bg-amber-700 font-semibold cursor-pointer border-transparent"
-                                >
-                                  Verify via OTP
-                                </Button>
                               </div>
                             ) : (
                               <div className="space-y-3">
@@ -318,18 +300,6 @@ export default function CollegePage() {
           </>
         )}
       </div>
-
-      <OtpVerificationModal 
-        isOpen={showOtpModal}
-        onClose={() => setShowOtpModal(false)}
-        onSuccess={() => {
-          setIsVerified(true);
-          setShowOtpModal(false);
-          if (typeof window !== 'undefined') {
-            localStorage.setItem('directory_verified', 'true');
-          }
-        }}
-      />
     </div>
   );
 }

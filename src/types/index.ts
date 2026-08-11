@@ -76,6 +76,7 @@ export interface Listing {
   lat?: number;
   lng?: number;
   images: string[];
+  image_url?: string;
   verified: boolean;
   available_rooms?: number;
   deposit_amount?: number;
@@ -114,6 +115,7 @@ export interface FoodListing {
   zomato_url?: string;
   swiggy_url?: string;
   images?: string[];
+  image_url?: string;
   verified: boolean;
   bengali_friendly?: boolean;
   created_at?: string;
@@ -143,6 +145,7 @@ export interface Hospital {
   description?: string;
   main_branch?: boolean;
   images?: string[];
+  image_url?: string;
   updated_at?: string;
   category?: 'Government' | 'Private';
   status?: 'Active' | 'Inactive';
@@ -202,6 +205,7 @@ export interface BloodBank {
   website?: string;
   lat?: number;
   lng?: number;
+  image_url?: string;
 }
 
 export interface Ambulance {
@@ -212,6 +216,7 @@ export interface Ambulance {
   address?: string;
   google_maps_url?: string;
   website?: string;
+  image_url?: string;
   created_at?: string;
   updated_at?: string;
 }
@@ -219,6 +224,7 @@ export interface Ambulance {
 export interface CommunityGroup {
   id: string;
   name: string;
+  image_url?: string;
   platform?: 'whatsapp' | 'telegram' | 'facebook' | 'instagram' | 'linkedin' | 'website';
   city?: string;
   region?: 'tamil_nadu' | 'india' | 'all';

@@ -238,10 +238,10 @@ export function Navbar() {
                 </div>
               ) : (
                 <div className="hidden sm:flex items-center gap-2">
-                  <Link href="/auth/login">
+                  <Link href={`/auth/login${pathname && pathname !== '/' ? `?redirect=${encodeURIComponent(pathname)}` : ''}`}>
                     <Button variant="ghost" size="sm"><T>Login</T></Button>
                   </Link>
-                  <Link href="/auth/register">
+                  <Link href={`/auth/register${pathname && pathname !== '/' ? `?redirect=${encodeURIComponent(pathname)}` : ''}`}>
                     <Button variant="primary" size="sm"><T>Register</T></Button>
                   </Link>
                 </div>
