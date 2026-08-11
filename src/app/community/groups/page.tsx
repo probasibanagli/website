@@ -2,13 +2,28 @@
 
 import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { Users, ExternalLink, Search, Globe, MapPin, ChevronDown } from 'lucide-react';
+import { Users, ExternalLink, Search, Globe, MapPin, ChevronDown, Heart, ArrowRight } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { sampleCommunityGroups } from '@/data/sample-data';
 import { useFirestore } from '@/lib/hooks/useFirestore';
 import { CommunityGroup } from '@/types';
+
+// Custom inline SVG icons since older version of lucide-react might not export Facebook/Instagram
+const FacebookIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+  </svg>
+);
+
+const InstagramIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+    <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+  </svg>
+);
 
 /* ── Platform config ── */
 const PLATFORMS = [
@@ -158,57 +173,88 @@ export default function GroupsPage() {
           {filtered.map((group) => {
             const pConfig = getPlatformConfig(group.platform || 'whatsapp');
             const link = getPlatformLink(group);
-            const buttonLabel = getPlatformButtonLabel(group.platform || 'whatsapp');
 
-            return (
-              <Card key={group.id} className="group overflow-hidden flex flex-col h-full hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-border/50 bg-white/80 backdrop-blur-sm">
-                {/* Image Banner */}
-                <div className="relative h-48 -mx-6 -mt-6 mb-5 bg-surface overflow-hidden">
-                  {group.image_url ? (
-                    <img src={group.image_url} alt={group.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                  ) : (
-                    <div className={`w-full h-full ${pConfig.color} opacity-10 flex items-center justify-center group-hover:scale-105 transition-transform duration-500`}>
-                      <span className="text-7xl opacity-30">{pConfig.icon}</span>
-                    </div>
-                  )}
-                  {/* Platform Badge */}
-                  <div className="absolute top-4 right-4 shadow-sm">
-                    <Badge variant={group.platform === 'whatsapp' ? 'teal' : group.platform === 'instagram' ? 'bengali' : 'default'} className="backdrop-blur-md bg-white/95 border-white/20 text-xs py-1">
-                      <span className="mr-1.5 text-sm">{pConfig.icon}</span> {pConfig.label}
-                    </Badge>
-                  </div>
-                  {/* Gradient Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-                </div>
+            let secondaryLabel = 'Website';
+            let secondaryIcon = <Globe className="w-4 h-4" />;
+            let secondaryHref = link;
 
-                <div className="flex-1 flex flex-col px-1">
-                  <h3 className="text-xl font-bold font-display text-text-primary group-hover:text-primary transition-colors line-clamp-2 leading-tight">{group.name}</h3>
-                  
-                  <div className="flex items-center gap-2 mt-3 flex-wrap">
-                    {group.city && <span className="text-xs text-text-muted flex items-center gap-1 font-medium bg-surface px-2.5 py-1 rounded-md border border-border/50"><MapPin className="w-3.5 h-3.5 text-primary" />{group.city}</span>}
-                    {group.region && (
-                      <span className="text-[10px] px-2.5 py-1 rounded-md bg-surface border border-border/50 text-text-muted font-bold uppercase tracking-wider flex items-center gap-1">
-                        {group.region === 'tamil_nadu' ? '🏛️ TN' : group.region === 'india' ? '🇮🇳 India' : '🌍 Global'}
-                      </span>
-                    )}
-                  </div>
-                  
-                  <p className="text-sm text-text-muted mt-4 leading-relaxed line-clamp-3 flex-1">{group.description}</p>
-                </div>
+            if (group.website_url) {
+              secondaryLabel = 'Website';
+              secondaryIcon = <Globe className="w-4 h-4" />;
+              secondaryHref = group.website_url;
+            } else if (group.facebook_url) {
+              secondaryLabel = 'Facebook';
+              secondaryIcon = <FacebookIcon className="w-4 h-4" />;
+              secondaryHref = group.facebook_url;
+            } else if (group.instagram_url) {
+              secondaryLabel = 'Instagram';
+              secondaryIcon = <InstagramIcon className="w-4 h-4" />;
+              secondaryHref = group.instagram_url;
+            } else {
+              secondaryLabel = 'Link';
+              secondaryIcon = <ExternalLink className="w-4 h-4" />;
+              secondaryHref = link;
+            }
 
-                <div className="flex items-center justify-between mt-6 pt-4 border-t border-border/50 px-1">
-                  <div className="flex items-center gap-1.5 text-text-muted text-xs font-medium">
-                     <Users className="w-4 h-4 text-primary" />
-                     <span>Join Community</span>
-                  </div>
-                  <a href={link} target="_blank" rel="noopener noreferrer">
-                    <Button variant="primary" size="sm" className="shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 transition-all font-semibold px-4 rounded-xl">
-                      {buttonLabel} <ExternalLink className="w-3.5 h-3.5 ml-1.5" />
-                    </Button>
-                  </a>
-                </div>
-              </Card>
-            );
+             return (
+               <Card key={group.id} padding="none" className="rounded-[24px] overflow-hidden group flex flex-col h-full bg-white border border-gray-100 shadow-[0_4px_25px_-4px_rgba(0,0,0,0.05)] relative">
+                 {/* Image Banner */}
+                 <div className="relative h-56 bg-slate-100 overflow-hidden">
+                   {group.image_url ? (
+                     <img src={group.image_url} alt={group.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                   ) : (
+                     <div className={`w-full h-full ${pConfig.color} opacity-10 flex items-center justify-center group-hover:scale-105 transition-transform duration-500`}>
+                       <span className="text-7xl opacity-30">{pConfig.icon}</span>
+                     </div>
+                   )}
+                 </div>
+
+                 <div className="bg-white rounded-t-[28px] p-6 relative z-10 -mt-6 flex-grow flex flex-col justify-between">
+                   <div className="flex-1 flex flex-col">
+                     <p className="text-[12px] text-[#0A6C4A] font-extrabold tracking-widest mb-2 flex items-center gap-1.5 uppercase">
+                       {group.category || pConfig.label} • {group.region === 'tamil_nadu' ? 'TAMIL NADU' : group.region === 'india' ? 'INDIA' : 'GLOBAL'}
+                     </p>
+
+                     {/* Title */}
+                     <h3 className="text-xl font-bold font-display text-gray-900 leading-snug group-hover:text-primary transition-colors line-clamp-2">
+                       {group.name}
+                     </h3>
+                     
+                     {/* Info Row (Location & Members) */}
+                     <div className="flex items-center gap-4 mt-4 flex-wrap text-sm text-[#8F9BB3]">
+                       <div className="flex items-center gap-1.5 font-semibold">
+                         <MapPin className="w-4 h-4 text-[#8F9BB3] shrink-0" />
+                         <span>{group.city || 'Chennai'}</span>
+                       </div>
+                       <span>•</span>
+                       <div className="flex items-center gap-1.5 font-semibold">
+                         <Users className="w-4 h-4 text-[#8F9BB3] shrink-0" />
+                         <span>{group.member_count ? `${group.member_count.toLocaleString()}` : '1.2k'} Members</span>
+                       </div>
+                     </div>
+                     
+                     <p className="text-sm text-text-muted mt-4 leading-relaxed line-clamp-3 flex-grow">{group.description}</p>
+                   </div>
+
+                   {/* Side-by-Side Action Buttons */}
+                   <div className="flex items-center gap-3 mt-6 pt-4 border-t border-gray-100">
+                     <a href={link} target="_blank" rel="noopener noreferrer" className="flex-1">
+                       <button className="w-full bg-[#A63A13] hover:bg-[#8F310F] text-white font-bold py-2.5 px-4 rounded-xl text-sm flex items-center justify-center gap-1.5 shadow-sm transition-all active:scale-[0.98]">
+                         <span>Join Group</span>
+                         <ArrowRight className="w-4 h-4" />
+                       </button>
+                     </a>
+                     
+                     <a href={secondaryHref} target="_blank" rel="noopener noreferrer" className="flex-1">
+                       <button className="w-full bg-white hover:bg-slate-50 border border-[#E4E9F2] text-[#A63A13] font-bold py-2.5 px-4 rounded-xl text-sm flex items-center justify-center gap-1.5 shadow-sm transition-all active:scale-[0.98]">
+                         {secondaryIcon}
+                         <span>{secondaryLabel}</span>
+                       </button>
+                     </a>
+                   </div>
+                 </div>
+               </Card>
+             );
           })}
         </div>
 

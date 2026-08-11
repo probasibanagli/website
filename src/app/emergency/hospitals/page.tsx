@@ -410,53 +410,73 @@ export default function EmergencyHospitalsPage() {
               <>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {filteredHospitals.map((hospital) => (
-                    <Card key={hospital.id} padding="none" className="overflow-hidden group flex flex-col h-full bg-white border border-border hover:border-primary/20 hover:shadow-lg transition-all duration-300">
-                      <div className="relative h-44 bg-gradient-to-br from-red-50 to-orange-50 overflow-hidden">
+                    <Card key={hospital.id} padding="none" className="overflow-hidden group flex flex-col h-full bg-white border border-gray-100 shadow-[0_4px_25px_-4px_rgba(0,0,0,0.05)] rounded-[24px]">
+                      {/* Image header with text overlay */}
+                      <div className="relative h-64 bg-slate-100 overflow-hidden">
                         <ListingCoverImage 
                           name={hospital.name} 
                           city={hospital.city} 
                           mapsUrl={hospital.google_maps_url} 
                           imageUrl={hospital.image_url}
-                          fallbackIcon={<Building2 className="w-8 h-8" />}
+                          fallbackIcon={<Building2 className="w-12 h-12" />}
                         />
-                        <div className="absolute top-3 left-3 flex flex-wrap gap-1.5">
+                        
+                        {/* Gradient Shadow Overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-5 z-10 pointer-events-none">
+                          <h3 className="text-xl font-bold text-white leading-tight font-display">{hospital.name}</h3>
+                          <div className="flex items-center gap-1.5 mt-2 text-sm text-white/90">
+                            <MapPin className="w-4 h-4 text-white shrink-0" />
+                            <span>{hospital.area ? `${hospital.area}, ` : ''}{hospital.city}</span>
+                          </div>
+                        </div>
+
+                        {/* Top-left Badges */}
+                        <div className="absolute top-4 left-4 flex flex-wrap gap-1.5 z-20">
                           {hospital.category && (
-                            <Badge className={hospital.category === 'Government' ? 'bg-blue-600 text-white font-bold' : 'bg-orange-600 text-white font-bold'}>
+                            <span className={`text-[10px] font-extrabold px-2.5 py-1 rounded-full uppercase tracking-wider text-white shadow-sm ${hospital.category === 'Government' ? 'bg-blue-600' : 'bg-orange-600'}`}>
                               {hospital.category}
-                            </Badge>
+                            </span>
                           )}
-                          {hospital.is_24_7 && <Badge variant="red"><Clock className="w-3 h-3 mr-1" />24/7</Badge>}
-                          {hospital.has_bengali_doctor && <Badge variant="bengali">🗣️ Bengali Doctor</Badge>}
+                          {hospital.is_24_7 && (
+                            <span className="bg-red-600 text-white text-[10px] font-extrabold px-2.5 py-1 rounded-full shadow-sm flex items-center gap-1 uppercase tracking-wider">
+                              <Clock className="w-3.5 h-3.5" /> 24/7
+                            </span>
+                          )}
+                          {hospital.has_bengali_doctor && (
+                            <span className="bg-emerald-600 text-white text-[10px] font-extrabold px-2.5 py-1 rounded-full shadow-sm uppercase tracking-wider">
+                              🩺 Bengali Doctor
+                            </span>
+                          )}
                         </div>
                       </div>
 
                       <div className="p-5 flex-1 flex flex-col justify-between">
+                        {/* Specializations Tags */}
                         <div>
-                          <Link href={`/emergency/hospitals/${hospital.id}`}>
-                            <h3 className="text-lg font-bold text-text-primary group-hover:text-primary transition-colors leading-snug">{hospital.name}</h3>
-                          </Link>
-                          <div className="flex items-center gap-1.5 mt-2 text-sm text-text-muted">
-                            <MapPin className="w-4 h-4 text-primary shrink-0" />
-                            <span>{hospital.area ? `${hospital.area}, ` : ''}{hospital.city}</span>
-                          </div>
-                          
                           {hospital.specializations && hospital.specializations.length > 0 && (
-                            <div className="flex flex-wrap gap-1.5 mt-4">
+                            <div className="flex flex-wrap gap-2 mb-5">
                               {hospital.specializations.slice(0, 4).map((s) => (
-                                <span key={s} className="px-2 py-1 bg-surface border border-border/50 rounded-lg text-xs font-semibold text-text-muted">{s}</span>
+                                <span key={s} className="px-3 py-1.5 bg-[#FFF1F0] border border-[#FFA39E] rounded-lg text-xs font-semibold text-[#B81D18]">
+                                  {s}
+                                </span>
                               ))}
                             </div>
                           )}
                         </div>
 
-                        <div className="flex items-center gap-2 mt-6 pt-4 border-t border-border">
-                          {hospital.emergency_phone && (
-                            <a href={`tel:${hospital.emergency_phone}`} className="flex-1">
-                              <Button variant="danger" size="sm" className="w-full font-semibold"><Phone className="w-3.5 h-3.5 mr-1.5" /> Emergency</Button>
-                            </a>
-                          )}
-                          <Link href={`/emergency/hospitals/${hospital.id}`}>
-                            <Button variant="outline" size="sm" className="px-4">Details</Button>
+                        {/* Side-by-Side Action Buttons */}
+                        <div className="flex items-center gap-3 w-full">
+                          <a href={`tel:${hospital.emergency_phone || hospital.phone || '108'}`} className="flex-1">
+                            <button className="w-full bg-[#B81D18] hover:bg-[#9E1612] text-white font-bold py-2.5 px-4 rounded-xl text-sm flex items-center justify-center gap-2 shadow-sm transition-all active:scale-[0.98]">
+                              <Phone className="w-4 h-4" />
+                              <span>Emergency</span>
+                            </button>
+                          </a>
+                          
+                          <Link href={`/emergency/hospitals/${hospital.id}`} className="flex-1">
+                            <button className="w-full bg-white hover:bg-slate-50 border border-[#E4E9F2] text-gray-800 font-bold py-2.5 px-4 rounded-xl text-sm flex items-center justify-center shadow-sm transition-all active:scale-[0.98]">
+                              <span>Details</span>
+                            </button>
                           </Link>
                         </div>
                       </div>
