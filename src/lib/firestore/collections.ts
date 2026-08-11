@@ -21,6 +21,7 @@ export const COLLECTIONS = {
   bengali_staff: 'bengali_staff',
   otps: 'otps',
   ambulances: 'ambulances',
+  government_services: 'government_services',
 } as const;
 
 /**
@@ -38,4 +39,5 @@ export const MODULE_TO_COLLECTION: Record<ModuleKey, string> = {
   matrimony: COLLECTIONS.matrimonial_profiles,
   blood_bank: COLLECTIONS.blood_banks,
   ambulance: COLLECTIONS.ambulances,
+  government_services: COLLECTIONS.government_services,
 };

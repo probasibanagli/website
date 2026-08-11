@@ -46,14 +46,25 @@ export async function getProfile(id: string): Promise<MatrimonialProfile | undef
   return undefined;
 }
 
+function cleanFirestoreData<T extends Record<string, any>>(obj: T): T {
+  const cleaned: Record<string, any> = {};
+  Object.keys(obj).forEach((key) => {
+    if (obj[key] !== undefined) {
+      cleaned[key] = obj[key];
+    }
+  });
+  return cleaned as T;
+}
+
 export async function saveProfile(profile: MatrimonialProfile): Promise<void> {
   try {
-    const docRef = doc(db, PROFILES_COLLECTION, profile.id);
+    const cleaned = cleanFirestoreData(profile as unknown as Record<string, any>) as unknown as MatrimonialProfile;
+    const docRef = doc(db, PROFILES_COLLECTION, cleaned.id);
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
-      await updateDoc(docRef, { ...profile, updated_at: new Date().toISOString() });
+      await updateDoc(docRef, { ...cleaned, updated_at: new Date().toISOString() });
     } else {
-      await setDoc(docRef, { ...profile, created_at: profile.created_at || new Date().toISOString() });
+      await setDoc(docRef, { ...cleaned, created_at: cleaned.created_at || new Date().toISOString() });
     }
   } catch (error) {
     console.error("Error saving profile:", error);
@@ -293,24 +304,70 @@ export function sortProfiles(profiles: MatrimonialProfile[], sort: SortOption): 
   }
 }
 
-/* ── Media Storage (Firebase Storage) ── */
+/* ── Media Storage (Firebase Storage + Base64 Fallback) ── */
 export async function storeMedia(key: string, file: Blob): Promise<string> {
   try {
     const storage = getStorage(app);
     const storageRef = ref(storage, `matrimony_media/${key}`);
     const snapshot = await uploadBytes(storageRef, file);
-    return await getDownloadURL(snapshot.ref);
+    const downloadUrl = await getDownloadURL(snapshot.ref);
+    if (downloadUrl) return downloadUrl;
   } catch (error) {
-    console.error("Error uploading media to Firebase Storage:", error);
-    return '';
+    console.warn("Firebase Storage upload failed, utilizing resilient base64 fallback:", error);
   }
+
+  // Resilient Fallback: Convert image blob to compressed JPEG Base64 Data URL
+  return new Promise<string>((resolve) => {
+    if (!file.type || !file.type.startsWith('image/')) {
+      resolve('');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const result = reader.result as string;
+      if (result) {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          const maxDim = 800;
+          if (width > maxDim || height > maxDim) {
+            if (width > height) {
+              height = Math.round((height * maxDim) / width);
+              width = maxDim;
+            } else {
+              width = Math.round((width * maxDim) / height);
+              height = maxDim;
+            }
+          }
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          if (ctx) {
+            ctx.drawImage(img, 0, 0, width, height);
+            const compressed = canvas.toDataURL('image/jpeg', 0.7);
+            resolve(compressed);
+            return;
+          }
+          resolve(result);
+        };
+        img.onerror = () => resolve(result);
+        img.src = result;
+      } else {
+        resolve('');
+      }
+    };
+    reader.onerror = () => resolve('');
+    reader.readAsDataURL(file);
+  });
 }
 
 export async function getMedia(key: string): Promise<string | null> {
+  if (!key) return null;
   try {
-    // Note: If you stored the full URL in `photos` array directly, you don't actually need this. 
-    // But we keep it in case it's a key reference.
-    if (key.startsWith('http')) return key;
+    // If key is an HTTP URL or Base64 Data URL, return directly
+    if (key.startsWith('http') || key.startsWith('data:')) return key;
     
     const storage = getStorage(app);
     const storageRef = ref(storage, `matrimony_media/${key}`);

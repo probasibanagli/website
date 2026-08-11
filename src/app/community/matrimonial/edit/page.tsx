@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
   ArrowLeft, Save, User, Users, GraduationCap, Heart, BookOpen, Sparkles, Utensils, CheckCircle,
-  Camera, Video, Trash2, AlertTriangle
+  Camera, Video, Trash2, AlertTriangle, Star
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -15,7 +15,8 @@ import {
   CITIES, HEIGHTS, MARITAL_STATUSES, COMPLEXIONS, FAMILY_TYPES, FAMILY_VALUES, FAMILY_STATUS,
   DIET_TYPES, EDUCATION_LEVELS, INCOME_RANGES, CASTE_MAPPING, WEST_BENGAL_DISTRICTS,
   SMOKING_HABITS, DRINKING_HABITS, MANGLIK_OPTIONS, HOBBIES_LIST, RELIGIONS, BLOOD_GROUPS, NAKSHATRAS, SUBCASTE_MAPPING, RAASIS, RAASI_NAKSHATRAS_MAPPING,
-  FIELDS_OF_STUDY, INSTITUTIONS, PROFESSIONS, COMPANIES, WORK_CITIES,
+  FIELDS_OF_STUDY, INSTITUTIONS, PROFESSIONS, COMPANIES, WORK_CITIES, GOTRAS, PARENT_OCCUPATIONS, ALL_CASTES, ALL_SUBCASTES, NATIVE_CITIES,
+  AGE_RANGES, HEIGHT_RANGES, parseAgeRange, parseHeightRange,
 } from '@/lib/constants';
 import { getMyProfile, saveMyProfile, storeMedia, getMedia } from '@/lib/matrimony-service';
 import type { MatrimonialProfile } from '@/types';
@@ -38,6 +39,7 @@ export default function EditMatrimonialProfile() {
 
   // Media states
   const [photoPreviews, setPhotoPreviews] = useState<(string | null)[]>([null, null, null, null, null]);
+  const [profilePictureIndex, setProfilePictureIndex] = useState<number>(0);
   const [videoPreview, setVideoPreview] = useState<string | null>(null);
   const [uploadError, setUploadError] = useState('');
 
@@ -61,10 +63,22 @@ export default function EditMatrimonialProfile() {
         
         setProfile(myProfile);
         setSelectedHobbies(myProfile.hobbies || []);
+        if (myProfile.profile_picture_index !== undefined) {
+          setProfilePictureIndex(myProfile.profile_picture_index);
+        } else if (myProfile.profile_photo && myProfile.photos) {
+          const idx = myProfile.photos.findIndex(p => p === myProfile.profile_photo);
+          if (idx !== -1) setProfilePictureIndex(idx);
+        }
         const data: FormData = {};
         Object.entries(myProfile).forEach(([key, value]) => {
           if (typeof value === 'string' || typeof value === 'number' || Array.isArray(value)) data[key] = value;
         });
+        if (!data.pref_age_range && (myProfile.pref_age_min || myProfile.pref_age_max)) {
+          data.pref_age_range = `${myProfile.pref_age_min || 18} - ${myProfile.pref_age_max || 50} yrs`;
+        }
+        if (!data.pref_height_range && (myProfile.pref_height_min || myProfile.pref_height_max)) {
+          data.pref_height_range = `${myProfile.pref_height_min || "5'0\""} - ${myProfile.pref_height_max || "6'0\""}`;
+        }
         setFormData(data);
 
         // Load media from Firestore / Storage URLs
@@ -133,16 +147,23 @@ export default function EditMatrimonialProfile() {
     
     try {
       const url = await storeMedia(`profile_${profile.id}_photo_${index}`, file);
+      if (!url) {
+        setUploadError('Failed to process photo file.');
+        return;
+      }
       
       setPhotoPreviews(prev => {
         const next = [...prev];
         next[index] = url;
+        if (prev.every(p => p === null)) {
+          setProfilePictureIndex(index);
+        }
         return next;
       });
       
       setFormData(prev => {
         const nextPhotos = [...((prev.photos as string[]) || [])];
-        nextPhotos[index] = `profile_${profile.id}_photo_${index}`;
+        nextPhotos[index] = url;
         return { ...prev, photos: nextPhotos };
       });
       
@@ -159,6 +180,10 @@ export default function EditMatrimonialProfile() {
     setPhotoPreviews(prev => {
       const next = [...prev];
       next[index] = null;
+      if (profilePictureIndex === index) {
+        const nextIdx = next.findIndex(p => p !== null);
+        setProfilePictureIndex(nextIdx !== -1 ? nextIdx : 0);
+      }
       return next;
     });
     
@@ -208,7 +233,7 @@ export default function EditMatrimonialProfile() {
 
       const url = await storeMedia(`profile_${profile.id}_video`, file);
       setVideoPreview(url);
-      setFormData(prev => ({ ...prev, video: `profile_${profile.id}_video` }));
+      setFormData(prev => ({ ...prev, video: url }));
       setUploadError('');
       setSaved(false);
     } catch (err) {
@@ -230,6 +255,9 @@ export default function EditMatrimonialProfile() {
     const isDobComplete = dobParts.length === 3 && dobParts.every(p => p !== '');
     const dob = isDobComplete ? new Date(dobStr) : null;
     const age = dob && !isNaN(dob.getTime()) ? Math.floor((Date.now() - dob.getTime()) / 31557600000) : profile.age;
+
+    const parsedAge = parseAgeRange(formData.pref_age_range as string);
+    const parsedHeight = parseHeightRange(formData.pref_height_range as string);
 
     const updatedProfile: MatrimonialProfile = {
       ...profile,
@@ -271,12 +299,14 @@ export default function EditMatrimonialProfile() {
       smoking: formData.smoking as string,
       drinking: formData.drinking as string,
       hobbies: selectedHobbies,
-      about_me: formData.about_me as string,
-      partner_preference: formData.partner_preference as string,
-      pref_age_min: formData.pref_age_min ? Number(formData.pref_age_min) : undefined,
-      pref_age_max: formData.pref_age_max ? Number(formData.pref_age_max) : undefined,
-      pref_height_min: formData.pref_height_min as string,
-      pref_height_max: formData.pref_height_max as string,
+      about_me: (formData.about_me as string) || '',
+      partner_preference: (formData.partner_preference as string) || '',
+      pref_age_range: (formData.pref_age_range as string) || '',
+      pref_height_range: (formData.pref_height_range as string) || '',
+      pref_age_min: parsedAge.min || (formData.pref_age_min ? Number(formData.pref_age_min) : undefined),
+      pref_age_max: parsedAge.max || (formData.pref_age_max ? Number(formData.pref_age_max) : undefined),
+      pref_height_min: parsedHeight.min || (formData.pref_height_min as string) || undefined,
+      pref_height_max: parsedHeight.max || (formData.pref_height_max as string) || undefined,
       pref_education: formData.pref_education as string,
       pref_profession: formData.pref_profession as string,
       pref_city: formData.pref_city as string,
@@ -286,6 +316,8 @@ export default function EditMatrimonialProfile() {
       email: formData.email as string,
       whatsapp: formData.whatsapp as string,
       social_handle: formData.social_handle as string,
+      profile_picture_index: profilePictureIndex,
+      profile_photo: ((formData.photos as string[]) || [])[profilePictureIndex] || ((formData.photos as string[]) || []).find(p => p && p !== '') || profile.profile_photo || '',
       photos: (formData.photos as string[]) || profile.photos || [],
       video: (formData.video as string) || profile.video || '',
       updated_at: new Date().toISOString(),
@@ -305,15 +337,19 @@ export default function EditMatrimonialProfile() {
     const selectOptions = hasOther ? options : [...options, 'Other'];
     const otherValue = options.includes('Others') ? 'Others' : 'Other';
 
+    const currentValue = (formData[field] as string) || '';
+    const isPresetOption = options.includes(currentValue);
+
     const isCustom = !!(
-      formData[field] === 'Other' ||
-      formData[field] === 'Others'
+      currentValue === 'Other' ||
+      currentValue === 'Others' ||
+      (!isPresetOption && currentValue !== '')
     );
-    const selectValue = isCustom ? otherValue : ((formData[field] as string) || '');
+    const selectValue = isCustom ? otherValue : currentValue;
 
     return (
       <div className="space-y-1.5 w-full">
-        <AutocompleteSelect
+        <CustomSelect
           label={label}
           value={selectValue}
           onChange={(val) => {
@@ -325,7 +361,7 @@ export default function EditMatrimonialProfile() {
           }}
           options={selectOptions}
           placeholder={`Select ${label}`}
-          allowCustom={true}
+          searchable={false}
         />
 
         {isCustom && (
@@ -483,7 +519,7 @@ export default function EditMatrimonialProfile() {
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <FormSelect label="Current City (TN)" field="city" options={CITIES} />
-                <FormSelect label="Native District (WB)" field="native_district" options={WEST_BENGAL_DISTRICTS} />
+                <FormSelect label="Native City" field="native_district" options={NATIVE_CITIES} />
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <FormInput label="Phone" field="phone" type="tel" placeholder="+91..." />
@@ -499,11 +535,11 @@ export default function EditMatrimonialProfile() {
               <h2 className="text-lg font-bold mb-4">Family Details</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <FormInput label="Father's Name" field="father_name" />
-                <FormInput label="Father's Occupation" field="father_occupation" />
+                <FormSelect label="Father's Occupation" field="father_occupation" options={PARENT_OCCUPATIONS} />
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <FormInput label="Mother's Name" field="mother_name" />
-                <FormInput label="Mother's Occupation" field="mother_occupation" />
+                <FormSelect label="Mother's Occupation" field="mother_occupation" options={PARENT_OCCUPATIONS} />
               </div>
               <FormInput label="Siblings" field="siblings" placeholder="e.g., 1 Elder Sister (Married)" />
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -540,27 +576,23 @@ export default function EditMatrimonialProfile() {
               <h2 className="text-lg font-bold mb-4">Religion & Lifestyle</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <FormSelect label="Religion" field="religion" options={RELIGIONS} />
-                {formData.religion && (
-                  <FormSelect 
-                    label="Caste" 
-                    field="caste" 
-                    options={CASTE_MAPPING[formData.religion as string] || []} 
-                  />
-                )}
+                <FormSelect 
+                  label="Caste" 
+                  field="caste" 
+                  options={formData.religion && CASTE_MAPPING[formData.religion as string] ? CASTE_MAPPING[formData.religion as string] : ALL_CASTES} 
+                />
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {formData.caste && (
-                  <FormSelect 
-                    label="Sub-Caste" 
-                    field="sub_caste" 
-                    options={SUBCASTE_MAPPING[formData.caste as string] || []} 
-                  />
-                )}
+                <FormSelect 
+                  label="Sub-Caste" 
+                  field="sub_caste" 
+                  options={formData.caste && SUBCASTE_MAPPING[formData.caste as string] ? SUBCASTE_MAPPING[formData.caste as string] : ALL_SUBCASTES} 
+                />
                 <FormSelect label="Manglik" field="manglik" options={MANGLIK_OPTIONS} />
               </div>
               {formData.religion === 'Hindu' && (
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 rounded-xl bg-orange-50/30 border border-orange-100/50 animate-fade-in">
-                  <FormInput label="Gotra" field="gotra" placeholder="e.g. Kashyap" />
+                  <FormSelect label="Gotra" field="gotra" options={GOTRAS} />
                   <FormSelect label="Raasi (Zodiac Sign)" field="raasi" options={RAASIS} />
                   {formData.raasi && (
                     <FormSelect 
@@ -596,18 +628,16 @@ export default function EditMatrimonialProfile() {
           {activeSection === 'preferences' && (
             <div className="space-y-4 animate-fade-in">
               <h2 className="text-lg font-bold mb-4">Partner Preferences</h2>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                <FormInput label="Age Min" field="pref_age_min" type="number" placeholder="22" />
-                <FormInput label="Age Max" field="pref_age_max" type="number" placeholder="32" />
-                <FormSelect label="Height Min" field="pref_height_min" options={HEIGHTS} />
-                <FormSelect label="Height Max" field="pref_height_max" options={HEIGHTS} />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <FormSelect label="Partner Age Range" field="pref_age_range" options={AGE_RANGES} />
+                <FormSelect label="Partner Height Range" field="pref_height_range" options={HEIGHT_RANGES} />
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <FormSelect label="Pref. Education" field="pref_education" options={EDUCATION_LEVELS} />
                 <FormSelect label="Pref. Profession" field="pref_profession" options={PROFESSIONS} />
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <FormSelect label="Pref. City" field="pref_city" options={CITIES} />
+                <FormSelect label="Pref. Work City" field="pref_city" options={WORK_CITIES} />
                 <FormSelect label="Pref. Diet" field="pref_diet" options={DIET_TYPES} />
                 <FormSelect label="Pref. Marital Status" field="pref_marital_status" options={MARITAL_STATUSES} />
               </div>
@@ -649,17 +679,41 @@ export default function EditMatrimonialProfile() {
 
               <div className="space-y-4">
                 <div>
-                  <h3 className="text-sm font-semibold text-text-primary mb-2">Upload Photos (Up to 5)</h3>
-                  <p className="text-xs text-text-muted mb-3">Add clear, high-quality photos. JPG or PNG, max 5MB each.</p>
+                  <h3 className="text-sm font-semibold text-text-primary mb-1">Upload Photos (Up to 5)</h3>
+                  <p className="text-xs text-text-muted mb-3 flex items-center gap-1.5">
+                    <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500 shrink-0" />
+                    Select your preferred photo as the main <strong>Profile Picture</strong> for this profile.
+                  </p>
                   
                   <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
                     {Array.from({ length: 5 }).map((_, i) => {
                       const preview = photoPreviews[i];
+                      const isMain = profilePictureIndex === i && preview !== null;
                       return (
-                        <div key={i} className="aspect-square bg-surface border border-border rounded-xl flex flex-col items-center justify-center relative overflow-hidden group">
+                        <div
+                          key={i}
+                          className={`aspect-square bg-surface border rounded-xl flex flex-col items-center justify-center relative overflow-hidden group transition-all ${
+                            isMain ? 'ring-2 ring-amber-500 border-amber-400 shadow-md' : 'border-border'
+                          }`}
+                        >
                           {preview ? (
                             <>
                               <img src={preview} alt={`Preview ${i + 1}`} className="w-full h-full object-cover" />
+
+                              {isMain ? (
+                                <div className="absolute top-1.5 left-1.5 bg-amber-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-md">
+                                  <Star className="w-2.5 h-2.5 fill-white" /> Main Pic
+                                </div>
+                              ) : (
+                                <button
+                                  type="button"
+                                  onClick={() => setProfilePictureIndex(i)}
+                                  className="absolute bottom-1.5 left-1/2 -translate-x-1/2 bg-black/75 hover:bg-amber-500 text-white text-[9px] font-medium px-2 py-0.5 rounded-full transition-all flex items-center gap-1 shadow-sm whitespace-nowrap opacity-90 hover:opacity-100 cursor-pointer"
+                                >
+                                  <Star className="w-2.5 h-2.5" /> Make Main
+                                </button>
+                              )}
+
                               <button
                                 type="button"
                                 onClick={() => handlePhotoRemove(i)}

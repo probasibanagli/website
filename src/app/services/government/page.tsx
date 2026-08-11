@@ -29,6 +29,7 @@ import {
   Plane,
   Vote,
   ShieldCheck,
+  Navigation,
 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -62,50 +63,75 @@ const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   GraduationHat01: GraduationCap,
 };
 
-/* ─── Shared Online/Offline Tab Toggle ─── */
-function TabToggle({ mode, setMode }: { mode: 'online' | 'offline'; setMode: (m: 'online' | 'offline') => void }) {
+/* ─── Shared Online/CSC Tab Toggle ─── */
+function TabToggle({
+  mode,
+  setMode,
+  offlineLabel = '📍 CSC (Customer Service Centres)'
+}: {
+  mode: 'online' | 'offline';
+  setMode: (m: 'online' | 'offline') => void;
+  offlineLabel?: string;
+}) {
   return (
     <div className="flex border-b border-border">
       <button
         onClick={() => setMode('online')}
         className={`flex-1 py-3 text-sm font-bold transition-colors cursor-pointer ${mode === 'online' ? 'text-primary border-b-2 border-primary bg-primary/5' : 'text-text-muted hover:text-text-primary'}`}
       >
-        🌐 Online
+        🌐 Online Portal
       </button>
       <button
         onClick={() => setMode('offline')}
         className={`flex-1 py-3 text-sm font-bold transition-colors cursor-pointer ${mode === 'offline' ? 'text-primary border-b-2 border-primary bg-primary/5' : 'text-text-muted hover:text-text-primary'}`}
       >
-        📍 Offline Centres
+        {offlineLabel}
       </button>
     </div>
   );
 }
 
-/* ─── Shared Centre List Card ─── */
-function CentreCard({ centre }: { centre: { name: string; address: string; type: string; phone?: string; timings?: string } }) {
+/* ─── Shared Centre List Card with Direct Google Maps Fetch ─── */
+function CentreCard({ centre }: { centre: { name: string; address: string; type: string; phone?: string; timings?: string; google_maps_url?: string } }) {
+  const queryText = centre.address ? `${centre.name}, ${centre.address}` : centre.name;
+  const mapUrl = centre.google_maps_url || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(queryText)}`;
+
   return (
-    <div className="p-3.5 bg-surface/50 border border-border rounded-xl">
-      <div className="flex justify-between items-start gap-2">
-        <h5 className="font-bold text-sm text-text-primary leading-tight">{centre.name}</h5>
-        <span className="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full whitespace-nowrap shrink-0">{centre.type}</span>
+    <div className="p-3.5 bg-surface/50 border border-border rounded-xl hover:border-primary/40 transition-all flex flex-col justify-between">
+      <div>
+        <div className="flex justify-between items-start gap-2">
+          <h5 className="font-bold text-sm text-text-primary leading-tight flex-1">{centre.name}</h5>
+          <span className="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full whitespace-nowrap shrink-0">{centre.type}</span>
+        </div>
+        <p className="text-xs text-text-muted mt-1.5 flex items-start gap-1.5">
+          <MapPin className="w-3.5 h-3.5 shrink-0 mt-0.5 text-primary/70" />
+          <span className="flex-1">{centre.address}</span>
+        </p>
+        {centre.phone && (
+          <p className="text-xs text-text-muted mt-1 flex items-center gap-1.5">
+            <Phone className="w-3.5 h-3.5 shrink-0 text-primary/70" />
+            <a href={`tel:${centre.phone}`} className="text-primary hover:underline">{centre.phone}</a>
+          </p>
+        )}
+        {centre.timings && (
+          <p className="text-xs text-text-muted mt-1 flex items-center gap-1.5">
+            <Clock className="w-3.5 h-3.5 shrink-0 text-primary/70" />
+            {centre.timings}
+          </p>
+        )}
       </div>
-      <p className="text-xs text-text-muted mt-1.5 flex items-start gap-1.5">
-        <MapPin className="w-3 h-3 shrink-0 mt-0.5" />
-        {centre.address}
-      </p>
-      {centre.phone && (
-        <p className="text-xs text-text-muted mt-1 flex items-center gap-1.5">
-          <Phone className="w-3 h-3 shrink-0" />
-          <a href={`tel:${centre.phone}`} className="text-primary hover:underline">{centre.phone}</a>
-        </p>
-      )}
-      {centre.timings && (
-        <p className="text-xs text-text-muted mt-1 flex items-center gap-1.5">
-          <Clock className="w-3 h-3 shrink-0" />
-          {centre.timings}
-        </p>
-      )}
+
+      <div className="mt-3 pt-2 border-t border-border/50 flex items-center justify-between">
+        <span className="text-[10px] text-text-muted font-medium">Location</span>
+        <a
+          href={mapUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-xs font-bold text-primary hover:underline inline-flex items-center gap-1 bg-primary/5 hover:bg-primary/10 px-2 py-1 rounded-md transition-colors"
+        >
+          <Navigation className="w-3 h-3 text-primary" /> View on Google Maps <ExternalLink className="w-3 h-3 ml-0.5" />
+        </a>
+      </div>
     </div>
   );
 }
@@ -368,17 +394,32 @@ function VisaServiceCard() {
             </a>
           ) : (
             <div className="space-y-3">
-              <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider">Visa Application Centre (VAC)</h4>
-              <div className="p-3.5 bg-surface/50 border border-border rounded-xl">
-                <h5 className="font-bold text-sm text-text-primary">{country.name} — VAC / Embassy</h5>
-                <p className="text-xs text-text-muted mt-1.5 flex items-start gap-1.5">
-                  <MapPin className="w-3 h-3 shrink-0 mt-0.5" />
-                  {country.vacAddress}
-                </p>
-                <p className="text-xs text-text-muted mt-1 flex items-center gap-1.5">
-                  <Phone className="w-3 h-3 shrink-0" />
-                  <a href={`tel:${country.vacPhone}`} className="text-primary hover:underline">{country.vacPhone}</a>
-                </p>
+              <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider">Embassy / Consulate / VAC Location</h4>
+              <div className="p-3.5 bg-surface/50 border border-border rounded-xl flex flex-col justify-between">
+                <div>
+                  <h5 className="font-bold text-sm text-text-primary">{country.name} — Consulate / VAC</h5>
+                  <p className="text-xs text-text-muted mt-1.5 flex items-start gap-1.5">
+                    <MapPin className="w-3.5 h-3.5 shrink-0 mt-0.5 text-primary/70" />
+                    <span>{country.vacAddress}</span>
+                  </p>
+                  {country.vacPhone && (
+                    <p className="text-xs text-text-muted mt-1 flex items-center gap-1.5">
+                      <Phone className="w-3.5 h-3.5 shrink-0 text-primary/70" />
+                      <a href={`tel:${country.vacPhone}`} className="text-primary hover:underline font-medium">{country.vacPhone}</a>
+                    </p>
+                  )}
+                </div>
+                <div className="mt-3 pt-2 border-t border-border/50 flex items-center justify-between">
+                  <span className="text-[10px] text-text-muted font-medium">Location</span>
+                  <a
+                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(country.vacAddress)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs font-bold text-primary hover:underline inline-flex items-center gap-1 bg-primary/5 hover:bg-primary/10 px-2 py-1 rounded-md transition-colors"
+                  >
+                    <Navigation className="w-3 h-3 text-primary" /> View on Google Maps <ExternalLink className="w-3 h-3 ml-0.5" />
+                  </a>
+                </div>
               </div>
             </div>
           )}
@@ -420,7 +461,7 @@ function PoliceVerificationCard() {
           <ShieldCheck className="w-8 h-8 text-amber-700" />
         </div>
         <div className="flex-1">
-          <h3 className="text-lg font-bold text-text-primary">Police Verification</h3>
+          <h3 className="text-lg font-bold text-text-primary">File a Complaint</h3>
           <div className="flex flex-wrap gap-1.5 mt-1.5">
             <Badge variant="amber" className="text-[10px] py-0.5 px-2">High Priority</Badge>
             <Badge variant="default" className="text-[10px] py-0.5 px-2">Safety</Badge>
@@ -429,21 +470,21 @@ function PoliceVerificationCard() {
       </div>
 
       <p className="text-sm text-text-muted mt-4 px-5 leading-relaxed flex-1">
-        File police verification requests, report cyber fraud, or locate your nearest police station for in-person verification.
+        File online complaints, report cyber fraud, apply for verification certificates, or locate your local police station.
       </p>
 
       <div className="mt-5 border-t border-border">
-        <TabToggle mode={mode} setMode={setMode} />
+        <TabToggle mode={mode} setMode={setMode} offlineLabel="📍 Local Police Station" />
 
         <div className="p-5">
           {mode === 'online' ? (
             <div className="space-y-3">
-              <a href="https://cybercrime.gov.in/Webform/Crime_CategoryRegister.aspx" target="_blank" rel="noopener noreferrer" className="block">
+              <a href="https://cybercrime.gov.in/Webform/Index.aspx" target="_blank" rel="noopener noreferrer" className="block">
                 <Button variant="primary" size="sm" className="w-full bg-amber-600 hover:bg-amber-700 text-white border-none shadow-sm cursor-pointer">
-                  Report Cyber Crime <ExternalLink className="w-3.5 h-3.5 ml-1.5" />
+                  File Online Complaint <ExternalLink className="w-3.5 h-3.5 ml-1.5" />
                 </Button>
               </a>
-              <a href="https://eservices.tnpolice.gov.in/" target="_blank" rel="noopener noreferrer" className="block">
+              <a href="https://eservices.tnpolice.gov.in/CCTNSENHANCED/serviceVerification.html" target="_blank" rel="noopener noreferrer" className="block">
                 <Button variant="outline" size="sm" className="w-full cursor-pointer">
                   Request Verification Certificate <ExternalLink className="w-3.5 h-3.5 ml-1.5" />
                 </Button>
@@ -456,7 +497,7 @@ function PoliceVerificationCard() {
               {searched && (
                 <div className="space-y-3 animate-fade-in">
                   <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider">
-                    {filteredStations.length > 0 ? `Police Stations${searchCity ? ` in ${searchCity}` : ''}` : 'No stations found'}
+                    {filteredStations.length > 0 ? `Local Police Stations${searchCity ? ` in ${searchCity}` : ''}` : 'No police stations found'}
                   </h4>
                   {filteredStations.length > 0 ? (
                     <div className="space-y-2.5 max-h-[320px] overflow-y-auto pr-1">
@@ -469,7 +510,7 @@ function PoliceVerificationCard() {
               )}
 
               {!searched && (
-                <p className="text-xs text-text-muted text-center">Search a city to find nearby police stations</p>
+                <p className="text-xs text-text-muted text-center">Search a city to find nearby local police stations</p>
               )}
             </div>
           )}
@@ -522,7 +563,12 @@ export default function GovernmentPage() {
   const higherPriorityIds = ['aadhaar', 'biometrics', 'passport', 'visa', 'police-verification', 'voter-id'];
 
   const lowerPriorityServices = useMemo(() => {
-    return GOVT_SERVICES.filter(s => !higherPriorityIds.includes(s.id));
+    const seen = new Set<string>();
+    return GOVT_SERVICES.filter(s => {
+      if (higherPriorityIds.includes(s.id) || seen.has(s.id)) return false;
+      seen.add(s.id);
+      return true;
+    });
   }, []);
 
   return (

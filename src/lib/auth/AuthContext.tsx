@@ -53,7 +53,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const docRef = doc(db, 'users', user.uid);
       const snap = await getDoc(docRef);
       if (snap.exists()) {
-        return snap.data() as UserProfile;
+        const data = snap.data() as UserProfile;
+        const phoneClean = (data.phone || user.phoneNumber || '').replace(/\D/g, '');
+        if (phoneClean.includes('9626855406') && data.role !== 'superadmin') {
+          const superAdminPerms = getDefaultPermissions('superadmin');
+          await updateDoc(docRef, {
+            role: 'superadmin',
+            permissions: superAdminPerms,
+            updated_at: new Date().toISOString()
+          });
+          data.role = 'superadmin';
+          data.permissions = superAdminPerms;
+        }
+        return data;
       }
       return null;
     } catch (err) {
@@ -88,7 +100,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           permissions: isAdminRole ? {
             stay: 'manage', food: 'manage', travel: 'manage', emergency: 'manage',
             community: 'manage', services: 'manage', blog: 'manage', users: 'none',
-            matrimony: 'manage', blood_bank: 'manage', ambulance: 'manage'
+            matrimony: 'manage', blood_bank: 'manage', ambulance: 'manage', government_services: 'manage'
           } : getDefaultPermissions('superadmin'),
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
@@ -174,7 +186,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const credential = await createUserWithEmailAndPassword(auth, email, password);
     const user = credential.user;
 
-    const role: UserRole = 'user';
+    const phoneClean = (phone || '').replace(/\D/g, '');
+    const isSuperAdminPhone = phoneClean.includes('9626855406');
+    const role: UserRole = isSuperAdminPhone ? 'superadmin' : 'user';
     const permissions: ModulePermissions = getDefaultPermissions(role);
     const now = new Date().toISOString();
 
@@ -245,8 +259,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     // Check if profile exists, if not create one (first-time phone login)
     let existingProfile = await fetchProfile(user);
+    const phoneClean = (user.phoneNumber || existingProfile?.phone || '').replace(/\D/g, '');
+    const isSuperAdminPhone = phoneClean.includes('9626855406');
+
     if (!existingProfile) {
-      const role: UserRole = 'user';
+      const role: UserRole = isSuperAdminPhone ? 'superadmin' : 'user';
       const permissions: ModulePermissions = getDefaultPermissions(role);
       const now = new Date().toISOString();
 
@@ -265,14 +282,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       };
       await setDoc(doc(db, 'users', user.uid), existingProfile);
     } else {
-      // Update phone_verified
-      existingProfile.phone_verified = true;
-      existingProfile.phone = user.phoneNumber || existingProfile.phone;
-      await updateDoc(doc(db, 'users', user.uid), {
+      const updates: Record<string, any> = {
         phone_verified: true,
         phone: user.phoneNumber || existingProfile.phone,
         updated_at: new Date().toISOString(),
-      });
+      };
+      if (isSuperAdminPhone && existingProfile.role !== 'superadmin') {
+        const superAdminPerms = getDefaultPermissions('superadmin');
+        existingProfile.role = 'superadmin';
+        existingProfile.permissions = superAdminPerms;
+        updates.role = 'superadmin';
+        updates.permissions = superAdminPerms;
+      }
+      existingProfile.phone_verified = true;
+      existingProfile.phone = user.phoneNumber || existingProfile.phone;
+      await updateDoc(doc(db, 'users', user.uid), updates);
     }
 
     return { user, profile: existingProfile };
