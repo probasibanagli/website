@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
-import { Droplets, MapPin, Phone, Globe, Loader2 } from 'lucide-react';
+import { Droplets, MapPin, Phone, Globe, Loader2, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { db } from '@/lib/firebase';
@@ -10,6 +10,11 @@ import { collection, getDocs } from 'firebase/firestore';
 import { COLLECTIONS } from '@/lib/firestore/collections';
 import type { BloodBank } from '@/types';
 import { CITIES } from '@/lib/constants';
+const MessageSquareIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+  </svg>
+);
 
 export default function BloodPage() {
   const [city, setCity] = useState('');
@@ -72,21 +77,88 @@ export default function BloodPage() {
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filtered.map((bank) => (
-                <Card key={bank.id} className="group">
-                  <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-2xl bg-red-50 flex items-center justify-center shrink-0"><Droplets className="w-6 h-6 text-red-500" /></div>
-                    <div>
-                      <h3 className="text-lg font-bold text-text-primary group-hover:text-primary transition-colors">{bank.name}</h3>
-                      <div className="flex items-center gap-1.5 mt-1 text-sm text-text-muted"><MapPin className="w-3.5 h-3.5" />{bank.city}</div>
-                      {bank.phone && <div className="flex items-center gap-1.5 mt-1 text-sm text-text-muted"><Phone className="w-3.5 h-3.5" />{bank.phone}</div>}
+                <Card key={bank.id} padding="none" className="rounded-[28px] overflow-hidden group flex flex-col justify-between hover:shadow-lg transition-all border border-gray-100 shadow-[0_4px_25px_-4px_rgba(0,0,0,0.05)] bg-white p-6 pb-5 relative text-center">
+                  <div>
+                    {/* Top Blood Drop circular pill */}
+                    <div className="w-12 h-12 flex items-center justify-center rounded-full bg-[#FFF0EB] text-[#A63A13] mx-auto mb-4 shrink-0 shadow-sm">
+                      <Droplets className="w-5 h-5 text-[#A63A13] fill-[#A63A13]" />
+                    </div>
+
+                    {/* Blood Bank Title */}
+                    <h3 className="text-xl font-bold text-gray-900 leading-tight group-hover:text-primary transition-colors font-display line-clamp-2 max-w-[95%] mx-auto">
+                      {bank.name}
+                    </h3>
+                    
+                    {/* City/Region Subtitle */}
+                    <p className="text-[10px] text-[#8F9BB3] font-extrabold uppercase tracking-widest mt-2.5 flex items-center justify-center gap-1">
+                      <MapPin className="w-3.5 h-3.5 text-[#8F9BB3]" />
+                      <span>{bank.city}</span>
+                    </p>
+
+                    {/* Full Address Details */}
+                    {bank.address && (
+                      <p className="text-xs text-text-muted mt-2 px-2 leading-relaxed">
+                        {bank.address}
+                      </p>
+                    )}
+
+                    {/* Phone Details */}
+                    {bank.phone && (
+                      <p className="text-xs text-text-muted mt-2 font-medium">
+                        Phone: <span className="text-gray-900 font-bold">{bank.phone}</span>
+                      </p>
+                    )}
+
+                    {/* Thin subtle horizontal divider line */}
+                    <div className="w-16 h-[1px] bg-gray-100 mx-auto my-4.5" />
+
+                    {/* Coordinator Details */}
+                    {/* <div>
+                      <p className="text-[9px] text-[#8F9BB3] uppercase tracking-wider font-extrabold">Center Coordinator</p>
+                      <p className="text-base font-bold text-gray-900 mt-1">
+                        {bank.coordinator_name || "Sanjay Das"}
+                      </p>
+                    </div> */}
+
+                    {/* Action Row: Request Blood + Website + Google Maps */}
+                    <div className="flex items-center gap-2 mt-5">
+                      <a href={bank.phone ? `tel:${bank.phone}` : '#'} className="flex-1">
+                        <button className="w-full bg-[#B81D18] hover:bg-[#c24f28] text-white font-bold py-3.5 px-4 rounded-xl text-sm flex items-center justify-center gap-2 shadow-sm transition-all active:scale-[0.98]">
+                          <Phone className="w-4 h-4" />
+                          <span>Call Now</span>
+                        </button>
+                      </a>
+
+                      {bank.website && (
+                        <a href={bank.website} target="_blank" rel="noopener noreferrer" title="Visit Website">
+                          <button className="h-11 w-11 bg-white hover:bg-slate-50 border border-[#E4E9F2] text-[#A63A13] rounded-xl flex items-center justify-center transition-all active:scale-[0.98]">
+                            <Globe className="w-4.5 h-4.5 text-[#A63A13]" />
+                          </button>
+                        </a>
+                      )}
+
+                      {bank.google_maps_url && (
+                        <a href={bank.google_maps_url} target="_blank" rel="noopener noreferrer" title="View on Map">
+                          <button className="h-11 w-11 bg-white hover:bg-slate-50 border border-[#E4E9F2] text-[#A63A13] rounded-xl flex items-center justify-center transition-all active:scale-[0.98]">
+                            <MapPin className="w-4.5 h-4.5 text-[#A63A13]" />
+                          </button>
+                        </a>
+                      )}
                     </div>
                   </div>
-                  {bank.address && <p className="text-sm text-text-muted mt-3">{bank.address}</p>}
-                  <div className="flex items-center gap-2 mt-4 pt-4 border-t border-border">
-                    {bank.phone && <a href={`tel:${bank.phone}`} className="flex-1"><Button variant="danger" size="sm" className="w-full"><Phone className="w-3.5 h-3.5" />Call</Button></a>}
-                    {bank.website && <a href={bank.website} target="_blank" rel="noopener noreferrer"><Button variant="ghost" size="sm" title="Visit Website"><Globe className="w-4 h-4" /></Button></a>}
-                    {bank.google_maps_url && <a href={bank.google_maps_url} target="_blank" rel="noopener noreferrer"><Button variant="ghost" size="sm"><MapPin className="w-4 h-4" /></Button></a>}
-                  </div>
+
+                  {/* WhatsApp Coordinator footer link */}
+                  {/* <div className="mt-4 pt-3.5 border-t border-gray-50 flex items-center justify-center">
+                    <a 
+                      href={bank.whatsapp_url || (bank.phone ? `https://wa.me/${bank.phone.replace(/[^0-9]/g, '')}` : '#')} 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="text-xs font-bold text-[#A63A13] hover:text-[#8F310F] flex items-center justify-center gap-2 transition-colors cursor-pointer"
+                    >
+                      <MessageSquareIcon className="w-4.5 h-4.5 text-[#0A6C4A]" />
+                      <span>WhatsApp Coordinator</span>
+                    </a>
+                  </div> */}
                 </Card>
               ))}
             </div>

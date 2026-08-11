@@ -7,6 +7,30 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import type { Ambulance } from '@/types';
 
+const ClockIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <circle cx="12" cy="12" r="10" />
+    <polyline points="12 6 12 12 16 14" />
+  </svg>
+);
+
+const BanknoteIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <rect width="20" height="12" x="2" y="6" rx="2" />
+    <circle cx="12" cy="12" r="2" />
+    <line x1="6" x2="6.01" y1="12" y2="12" />
+    <line x1="18" x2="18.01" y1="12" y2="12" />
+  </svg>
+);
+
+const MedicalKitIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <path d="M16 4h-8V2H8v2H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-4z" />
+    <path d="M12 10v6" />
+    <path d="M9 13h6" />
+  </svg>
+);
+
 const emergencyNumbers = [
   { label: 'All Emergency', number: '112', icon: <AlertTriangle className="w-6 h-6" />, color: 'bg-red-600', desc: 'Police, Fire, Ambulance' },
   { label: 'Ambulance', number: '108', icon: <Siren className="w-6 h-6" />, color: 'bg-red-500', desc: 'Govt. Ambulance Service' },
@@ -107,39 +131,102 @@ export default function AmbulancePage() {
             <Loader2 className="w-8 h-8 animate-spin text-red-600" />
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4">
             {ambulances.map((amb) => (
-              <Card key={amb.id} className="flex items-center justify-between p-5 hover:border-red-200 transition-colors">
-                <div>
-                  <h3 className="font-bold text-text-primary">{amb.name}</h3>
-                  <div className="flex items-center gap-1.5 text-sm text-text-muted mt-1">
-                    <MapPin className="w-3.5 h-3.5 shrink-0" />
+              <Card key={amb.id} padding="none" className="flex flex-col md:flex-row items-start md:items-center justify-between p-6 gap-6 hover:shadow-lg transition-all border border-gray-100 shadow-[0_4px_25px_-4px_rgba(0,0,0,0.05)] bg-white rounded-3xl w-full">
+                {/* Left section: Title, Badge, City, Phone & Description */}
+                <div className="flex-1 min-w-0 text-left space-y-2">
+                  {/* Unit Type Badge */}
+                  {amb.unit_type && (
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#FFF0EB] text-[#A63A13] text-xs font-bold rounded-full mb-1 tracking-wide uppercase">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#A63A13] shrink-0" />
+                      {amb.unit_type}
+                    </span>
+                  )}
+                  
+                  <h3 className="text-xl font-bold text-gray-900 leading-tight font-display">
+                    {amb.name}
+                  </h3>
+
+                  {/* Location Pin */}
+                  <div className="flex items-center gap-2 text-sm text-[#5F6368]">
+                    <MapPin className="w-4 h-4 text-[#5F6368] shrink-0" />
                     <span>{amb.city}</span>
                   </div>
+
+                  {/* Phone Details */}
                   {amb.phone && (
-                    <div className="flex items-center gap-1.5 text-sm text-text-muted mt-1 font-semibold">
-                      <Phone className="w-3.5 h-3.5 shrink-0 text-red-500" />
+                    <div className="flex items-center gap-2 text-sm text-[#A63A13] font-semibold">
+                      <Phone className="w-4 h-4 text-[#A63A13] shrink-0" />
                       <span>{amb.phone}</span>
                     </div>
                   )}
+
+                  {/* Description / Address */}
                   {amb.address && (
-                    <p className="text-xs text-text-muted mt-2 max-w-md line-clamp-2" title={amb.address}>
+                    <p className="text-xs text-text-muted mt-2 max-w-2xl leading-relaxed">
                       {amb.address}
                     </p>
                   )}
                 </div>
-                {amb.phone && (
-                  <a href={`tel:${amb.phone}`} className="ml-4 shrink-0">
-                    <Button variant="danger" size="sm" className="font-bold flex items-center gap-1">
-                      <Phone className="w-4 h-4" />
-                      <span>Call</span>
-                    </Button>
-                  </a>
+
+                {/* Middle section: Special details (ETA, Equipment, Base Rate) - Only shown if defined */}
+                {(amb.eta || amb.equipment || amb.base_rate) && (
+                  <>
+                    {/* Vertical Divider */}
+                    <div className="hidden md:block w-[1px] h-16 bg-gray-100 shrink-0 self-center mx-2" />
+
+                    <div className="flex flex-col gap-2 min-w-[200px] text-left">
+                      {amb.eta && (
+                        <div className="flex items-center gap-2 text-sm text-[#5F6368] font-semibold">
+                          <ClockIcon className="w-4 h-4 text-[#A63A13] shrink-0" />
+                          <span>{amb.eta}</span>
+                        </div>
+                      )}
+                      
+                      {amb.equipment && (
+                        <div className="flex items-center gap-2 text-sm text-[#5F6368]">
+                          <MedicalKitIcon className="w-4 h-4 text-[#0A6C4A] shrink-0" />
+                          <span className="truncate" title={amb.equipment}>{amb.equipment}</span>
+                        </div>
+                      )}
+                      
+                      {amb.base_rate && (
+                        <div className="flex items-center gap-2 text-sm text-[#5F6368] font-semibold">
+                          <BanknoteIcon className="w-4 h-4 text-[#0A6C4A] shrink-0" />
+                          <span>{amb.base_rate}</span>
+                        </div>
+                      )}
+                    </div>
+                  </>
                 )}
+
+                {/* Vertical Divider */}
+                <div className="hidden md:block w-[1px] h-16 bg-gray-100 shrink-0 self-center mx-2" />
+
+                {/* Right: Actions */}
+                <div className="flex items-center gap-3 shrink-0 self-stretch md:self-auto justify-end w-full md:w-auto">
+                  {amb.google_maps_url && (
+                    <a href={amb.google_maps_url} target="_blank" rel="noopener noreferrer" title="View on Map" className="shrink-0">
+                      <button className="h-11 w-11 bg-[#FFF0EB] hover:bg-[#FFE5DC] text-[#A63A13] rounded-full flex items-center justify-center transition-all active:scale-[0.98] shadow-sm border border-[#FBE0D6]/60">
+                        <MapPin className="w-5 h-5 text-[#A63A13]" />
+                      </button>
+                    </a>
+                  )}
+
+                  {amb.phone && (
+                    <a href={`tel:${amb.phone}`} className="flex-1 md:flex-none">
+                      <button className="w-full md:w-auto bg-[#d85a30] hover:bg-[#c24f28] text-white font-bold py-3 px-6 rounded-2xl text-sm flex items-center justify-center gap-2 shadow-sm transition-all active:scale-[0.98]">
+                        <Phone className="w-4 h-4 text-white fill-white" />
+                        <span>Call</span>
+                      </button>
+                    </a>
+                  )}
+                </div>
               </Card>
             ))}
             {ambulances.length === 0 && (
-              <div className="col-span-2 text-center py-10 text-text-muted italic">
+              <div className="text-center py-12 text-text-muted italic">
                 No ambulance services registered in this region yet.
               </div>
             )}
