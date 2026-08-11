@@ -544,17 +544,13 @@ export default function EmergencyHospitalsPage() {
 
                         {/* Side-by-Side Action Buttons */}
                         <div className="flex items-center gap-3 w-full">
-                          <a href={`tel:${hospital.emergency_phone || hospital.phone || '108'}`} className="flex-1">
-                            <button className="w-full bg-[#B81D18] hover:bg-[#9E1612] text-white font-bold py-2.5 px-4 rounded-xl text-sm flex items-center justify-center gap-2 shadow-sm transition-all active:scale-[0.98]">
-                              <Phone className="w-4 h-4" />
-                              <span>Emergency</span>
-                            </button>
+                          <a href={`tel:${hospital.emergency_phone || hospital.phone || '108'}`} className="flex-1 w-full bg-[#B81D18] hover:bg-[#9E1612] text-white font-bold py-2.5 px-4 rounded-xl text-sm flex items-center justify-center gap-2 shadow-sm transition-all active:scale-[0.98]">
+                            <Phone className="w-4 h-4" />
+                            <span>Emergency</span>
                           </a>
                           
-                          <Link href={`/emergency/hospitals/${hospital.id}`} className="flex-1">
-                            <button className="w-full bg-white hover:bg-slate-50 border border-[#E4E9F2] text-gray-800 font-bold py-2.5 px-4 rounded-xl text-sm flex items-center justify-center shadow-sm transition-all active:scale-[0.98]">
-                              <span>Details</span>
-                            </button>
+                          <Link href={`/emergency/hospitals/${hospital.id}`} className="flex-1 w-full bg-white hover:bg-slate-50 border border-[#E4E9F2] text-gray-800 font-bold py-2.5 px-4 rounded-xl text-sm flex items-center justify-center shadow-sm transition-all active:scale-[0.98]">
+                            <span>Details</span>
                           </Link>
                         </div>
                       </div>
