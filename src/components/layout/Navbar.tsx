@@ -137,6 +137,7 @@ export function Navbar() {
               {/* Language Selector */}
               <div className="relative">
                 <button
+                  suppressHydrationWarning
                   onClick={() => setLangMenuOpen(!langMenuOpen)}
                   className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-text-muted hover:text-primary border border-border rounded-full hover:border-primary transition-all cursor-pointer bg-white notranslate"
                 >
@@ -171,7 +172,7 @@ export function Navbar() {
               </div>
 
               <Link href="/emergency/ambulance">
-                <Button variant="danger" size="sm" className="hidden sm:inline-flex animate-pulse-glow">
+                <Button variant="danger" size="sm" className="hidden sm:inline-flex animate-pulse-glow" suppressHydrationWarning>
                   <Phone className="w-3.5 h-3.5" />
                   <T>Emergency</T>
                 </Button>
@@ -183,6 +184,7 @@ export function Navbar() {
               ) : isLoggedIn ? (
                 <div className="relative hidden sm:block">
                   <button
+                    suppressHydrationWarning
                     onClick={() => setUserMenuOpen(!userMenuOpen)}
                     className="flex items-center gap-2 px-2 py-1.5 rounded-full border border-border hover:border-primary/40 transition-all cursor-pointer"
                   >
@@ -249,7 +251,7 @@ export function Navbar() {
 
               {/* Mobile Menu Toggle */}
               <div className="lg:hidden">
-                <button onClick={() => setMobileOpen(!mobileOpen)} className="p-2 rounded-md text-text-primary">
+                <button suppressHydrationWarning onClick={() => setMobileOpen(!mobileOpen)} className="p-2 rounded-md text-text-primary">
                   {mobileOpen ? <X /> : <Menu />}
                 </button>
               </div>

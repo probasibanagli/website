@@ -1,4 +1,4 @@
-import { Listing, FoodListing, Hospital, BloodBank, CommunityGroup, MatrimonialProfile, College, Event, BlogPost } from '@/types';
+import { Listing, FoodListing, Hospital, BloodBank, CommunityGroup, MatrimonialProfile, College, CommunityEvent, BlogPost } from '@/types';
 
 export const cityRestaurants: Record<string, string[]> = {};
 export const sampleStayListings: Listing[] = [];
@@ -9,5 +9,5 @@ export const sampleBloodBanks: BloodBank[] = [];
 export const sampleCommunityGroups: CommunityGroup[] = [];
 export const sampleMatrimonialProfiles: MatrimonialProfile[] = [];
 export const sampleColleges: College[] = [];
-export const sampleEvents: Event[] = [];
+export const sampleEvents: CommunityEvent[] = [];
 export const sampleBlogPosts: BlogPost[] = [];

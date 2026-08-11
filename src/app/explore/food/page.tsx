@@ -6,7 +6,6 @@ import { MapPin, Phone, MessageCircle, Search, CheckCircle2, ExternalLink, Home,
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/card';
-import { sampleFoodListings } from '@/data/sample-data';
 import { CITIES, FOOD_AREAS } from '@/lib/constants';
 import { getWhatsAppUrl } from '@/lib/utils';
 import { useFirestore } from '@/lib/hooks/useFirestore';
@@ -26,15 +25,23 @@ const FOOD_TYPE_ICONS: Record<string, React.ReactNode> = {
   delivery: <Truck className="w-5 h-5" />,
 };
 
-function ListingCoverImage({ name, city, mapsUrl, imageUrl, type, fallbackIcon }: { 
+function ListingCoverImage({ name, city, mapsUrl, imageUrl, type, mapEmbedCode, fallbackIcon }: { 
   name: string; 
   city?: string; 
   mapsUrl?: string; 
   imageUrl?: string;
   type?: string;
+  mapEmbedCode?: string;
   fallbackIcon: React.ReactNode;
 }) {
-  const imgSrc = imageUrl || (mapsUrl ? `/api/public/place-photo?name=${encodeURIComponent(name)}&city=${encodeURIComponent(city || '')}&mapsUrl=${encodeURIComponent(mapsUrl)}&v=3` : null);
+  let extractUrl = mapsUrl || '';
+  if (!extractUrl && mapEmbedCode) {
+    const match = mapEmbedCode.match(/src="([^"]+)"/);
+    if (match) extractUrl = match[1];
+  }
+  
+  // Always try to fetch if we have name and city, even if URL is missing
+  const imgSrc = imageUrl || (name && city ? `/api/public/place-photo?name=${encodeURIComponent(name)}&city=${encodeURIComponent(city || '')}&mapsUrl=${encodeURIComponent(extractUrl)}&v=4` : null);
   const [error, setError] = useState(false);
 
   React.useEffect(() => {
@@ -81,11 +88,7 @@ export default function FoodPage() {
     { key: 'uber_eats_url', label: 'Uber Eats', variant: 'red' },
   ] as const;
 
-  const combinedListings = useMemo(() => {
-    const firestoreIds = new Set(firestoreListings.map((l) => l.id));
-    const dedupedSample = sampleFoodListings.filter((l) => !firestoreIds.has(l.id));
-    return [...firestoreListings, ...dedupedSample];
-  }, [firestoreListings]);
+  const combinedListings = firestoreListings;
 
   const sortedCities = useMemo(() => {
     return Array.from(new Set(combinedListings.map((l) => l.city).filter(Boolean).map(c => {
@@ -245,9 +248,7 @@ export default function FoodPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filtered.map((food) => {
             // Dynamic mock details matching mockup style
-            const ratingVal = 4.5 + (food.name.charCodeAt(0) % 6) * 0.1;
             const reviewsCount = 50 + (food.name.charCodeAt(1) % 150);
-            const priceTier = (food.name.charCodeAt(2) % 3) === 0 ? '₹ (Budget)' : (food.name.charCodeAt(2) % 3) === 1 ? '₹₹ (Mid-range)' : '₹₹₹ (Premium)';
             
             // Build custom tags
             const tagsToShow = [];
@@ -281,21 +282,19 @@ export default function FoodPage() {
                       mapsUrl={food.google_maps_url}
                       imageUrl={food.image_url}
                       type={food.type}
+                      mapEmbedCode={food.map_embed_code}
                       fallbackIcon={
                         <span className="text-4xl opacity-35 select-none">
                           {food.type === 'restaurant' ? '🍽️' : food.type === 'sweets' ? '🍬' : food.type === 'tiffin' ? '🍱' : '🛵'}
                         </span>
                       }
                     />
-                    
-                    <div className="absolute top-3 left-3 bg-white text-gray-900 text-[11px] font-bold px-2.5 py-1 rounded-full shadow-sm flex items-center gap-1">
-                      <Star className="w-3.5 h-3.5 fill-[#B06000] text-[#B06000]" />
-                      <span>{ratingVal.toFixed(1)}</span>
-                    </div>
-
-                    <div className="absolute top-3 right-3 bg-white text-gray-900 text-[11px] font-bold px-2.5 py-1 rounded-full shadow-sm">
-                      {priceTier.split(' ')[0]}
-                    </div>
+                    {food.rating && (
+                      <div className="absolute top-3 left-3 bg-white text-gray-900 text-[11px] font-bold px-2.5 py-1 rounded-full shadow-sm flex items-center gap-1">
+                        <Star className="w-3.5 h-3.5 fill-[#B06000] text-[#B06000]" />
+                        <span>{food.rating}</span>
+                      </div>
+                    )}
                   </div>
 
                   <div className="px-1">

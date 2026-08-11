@@ -32,8 +32,9 @@ import {
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { sampleEvents, sampleCommunityGroups } from '@/data/sample-data';
 import { CITIES } from '@/lib/constants';
+import { useFirestore } from '@/lib/hooks/useFirestore';
+import { CommunityEvent, CommunityGroup } from '@/types';
 
 const categoryColors: Record<string, string> = { 
   festival: 'bg-amber-100 text-amber-700', 
@@ -376,7 +377,7 @@ function getEventImage(title: string, category: string): string | null {
   return null;
 }
 
-function getFestivalsForDate(date: Date) {
+function getFestivalsForDate(date: Date, firestoreEvents: CommunityEvent[] = []) {
   const y = date.getFullYear();
   const m = date.getMonth() + 1; // 1-based
   const d = date.getDate();
@@ -408,8 +409,8 @@ function getFestivalsForDate(date: Date) {
   if (ymd === '2026-09-21') festivals.push({ name: 'Mahalaya', nameBn: 'মহালয়া', id: 'mahalaya', url: 'https://en.wikipedia.org/wiki/Mahalaya' });
   if (ymd === '2026-11-01') festivals.push({ name: 'Bhai Phonta', nameBn: 'ভাইফোঁটা', id: 'bhai-phonta', url: 'https://en.wikipedia.org/wiki/Bhai_Dooj' });
   
-  // Also check if any sampleEvents match
-  sampleEvents.forEach(e => {
+  // Also check if any firestoreEvents match
+  firestoreEvents.forEach(e => {
     if (e.event_date === ymd) {
       festivals.push({
         name: e.title,
@@ -444,11 +445,12 @@ function getPlatformIcon(platform?: string) {
   }
 }
 
-function getGroupById(id: string) {
-  return sampleCommunityGroups.find(g => g.id === id);
-}
+
 
 export default function EventsPage() {
+  const { data: firestoreEvents } = useFirestore<CommunityEvent>('community_events');
+  const { data: firestoreGroups } = useFirestore<CommunityGroup>('community_groups');
+
   const [city, setCity] = useState('');
   const [category, setCategory] = useState('');
   const [activeTab, setActiveTab] = useState<'events' | 'panjika' | 'annual' | 'converter'>('events');
@@ -479,8 +481,8 @@ export default function EventsPage() {
 
   const celebratingCommunities = useMemo(() => {
     if (!selectedFestival) return [];
-    return sampleCommunityGroups.filter(group => selectedFestival.communityIds.includes(group.id));
-  }, [selectedFestival]);
+    return firestoreGroups.filter(group => selectedFestival.communityIds.includes(group.id));
+  }, [selectedFestival, firestoreGroups]);
 
   const bengaliDate = useMemo(() => {
     const d = new Date(converterDate + 'T12:00:00');
@@ -492,12 +494,12 @@ export default function EventsPage() {
   const todayBengali = useMemo(() => convertToBengaliDate(new Date()), []);
 
   const filtered = useMemo(() => {
-    return sampleEvents.filter((e) => {
+    return firestoreEvents.filter((e) => {
       if (city && e.city !== city) return false;
       if (category && e.category !== category) return false;
       return true;
     });
-  }, [city, category]);
+  }, [city, category, firestoreEvents]);
 
   // Calendar calculations
   const daysInMonth = useMemo(() => {
@@ -520,7 +522,7 @@ export default function EventsPage() {
     for (let day = 1; day <= daysInMonth; day++) {
       const date = new Date(currentYear, currentMonth, day);
       const bDate = convertToBengaliDate(date);
-      const festivals = getFestivalsForDate(date);
+      const festivals = getFestivalsForDate(date, firestoreEvents);
       const ymd = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
       const observance = BENGALI_OBSERVANCES[ymd] || null;
       cells.push({
@@ -537,7 +539,7 @@ export default function EventsPage() {
 
   // Annual calendar — events grouped by month
   const annualEvents = useMemo(() => {
-    const filteredEvents = sampleEvents.filter(e => {
+    const filteredEvents = firestoreEvents.filter(e => {
       if (annualCommunityFilter && e.community_group_id !== annualCommunityFilter) return false;
       if (annualCategoryFilter && e.category !== annualCategoryFilter) return false;
       if (annualCityFilter && e.city !== annualCityFilter) return false;
@@ -565,9 +567,9 @@ export default function EventsPage() {
 
   // Unique community groups in events for filter
   const communityGroupsInEvents = useMemo(() => {
-    const ids = new Set(sampleEvents.map(e => e.community_group_id).filter(Boolean));
-    return sampleCommunityGroups.filter(g => ids.has(g.id));
-  }, []);
+    const ids = new Set(firestoreEvents.map(e => e.community_group_id).filter(Boolean));
+    return firestoreGroups.filter(g => ids.has(g.id));
+  }, [firestoreEvents, firestoreGroups]);
 
   const handlePrevMonth = () => {
     if (currentMonth === 0) {
@@ -845,7 +847,7 @@ export default function EventsPage() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filtered.map((event) => {
-                  const communityGroup = event.community_group_id ? getGroupById(event.community_group_id) : null;
+                  const communityGroup = event.community_group_id ? firestoreGroups.find((g: any) => g.id === event.community_group_id) : null;
                   return (
                     <Card key={event.id} className="group overflow-hidden p-0 bg-white hover:shadow-lg transition-shadow">
                       <div className="h-36 overflow-hidden bg-gradient-to-br from-amber-50 to-orange-50 flex items-center justify-center relative">
@@ -1321,7 +1323,7 @@ export default function EventsPage() {
                     {events.length > 0 ? (
                       <div className="space-y-3 ml-8 border-l-2 border-primary/20 pl-6">
                         {events.map((event) => {
-                          const communityGroup = event.community_group_id ? getGroupById(event.community_group_id) : null;
+                          const communityGroup = event.community_group_id ? firestoreGroups.find((g: any) => g.id === event.community_group_id) : null;
                           const eventDate = event.event_date ? new Date(event.event_date + 'T12:00:00') : null;
                           const bDate = eventDate ? convertToBengaliDate(eventDate) : null;
                           
@@ -1413,7 +1415,7 @@ export default function EventsPage() {
             <Card className="bg-gradient-to-r from-primary/5 to-accent/5 p-6">
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
                 <div>
-                  <p className="text-2xl font-bold text-primary">{sampleEvents.length}</p>
+                  <p className="text-2xl font-bold text-primary">{firestoreEvents.length}</p>
                   <p className="text-xs text-text-muted font-medium">Total Events</p>
                 </div>
                 <div>
@@ -1421,7 +1423,7 @@ export default function EventsPage() {
                   <p className="text-xs text-text-muted font-medium">Community Groups</p>
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-primary">{new Set(sampleEvents.map(e => e.city).filter(Boolean)).size}</p>
+                  <p className="text-2xl font-bold text-primary">{new Set(firestoreEvents.map(e => e.city).filter(Boolean)).size}</p>
                   <p className="text-xs text-text-muted font-medium">Cities</p>
                 </div>
                 <div>

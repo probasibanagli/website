@@ -27,11 +27,22 @@ interface ListingItem {
   price_monthly?: number;
   website_link?: string;
   image_url?: string;
+  rating?: string | number;
   google_maps_url?: string;
+  map_embed_code?: string;
   nearby_hospital?: string;
   landmark?: string;
   created_at?: string;
+  room_type?: string;
+  deposit_amount?: number;
+  available_rooms?: number;
+  amenities?: string[];
+  bengali_food?: boolean;
+  bengali_friendly?: boolean;
+  verified?: boolean;
 }
+
+const PREDEFINED_AMENITIES = ['WiFi', 'AC', 'Laundry', 'Power Backup', 'Food', 'RO Water', 'CCTV'];
 
 export default function AdminStayPage() {
   const { profile, firebaseUser } = useAuth();
@@ -64,6 +75,13 @@ export default function AdminStayPage() {
     google_maps_url: '',
     nearby_hospital: '',
     landmark: '',
+    room_type: '',
+    deposit_amount: undefined,
+    available_rooms: undefined,
+    amenities: [],
+    bengali_food: false,
+    bengali_friendly: false,
+    verified: false,
   });
 
   const canView = canAccess(profile?.role || 'user', profile?.permissions, 'stay', 'view');
@@ -103,9 +121,18 @@ export default function AdminStayPage() {
       price_monthly: 0,
       website_link: '',
       image_url: '',
+      rating: '',
       google_maps_url: '',
+      map_embed_code: '',
       nearby_hospital: '',
       landmark: '',
+      room_type: '',
+      deposit_amount: undefined,
+      available_rooms: undefined,
+      amenities: [],
+      bengali_food: false,
+      bengali_friendly: false,
+      verified: false,
     });
     setShowForm(true);
   }
@@ -251,7 +278,7 @@ export default function AdminStayPage() {
               {items.filter(item => {
                 const q = searchVal.toLowerCase();
                 return (
-                  item.name.toLowerCase().includes(q) ||
+                  (item.name || '').toLowerCase().includes(q) ||
                   (item.city || '').toLowerCase().includes(q) ||
                   (item.area || '').toLowerCase().includes(q) ||
                   (item.contact_person_name || '').toLowerCase().includes(q)
@@ -357,6 +384,10 @@ export default function AdminStayPage() {
                       </select>
                     </div>
                   )}
+                  <div className="sm:col-span-2 flex items-center gap-2 mt-2">
+                    <input type="checkbox" id="verified" checked={formData.verified || false} onChange={e => setFormData({ ...formData, verified: e.target.checked })} className="w-4 h-4 text-primary rounded border-border" />
+                    <label htmlFor="verified" className="text-sm font-semibold text-text-primary">Mark as Verified Listing</label>
+                  </div>
                 </div>
               </div>
 
@@ -415,6 +446,60 @@ export default function AdminStayPage() {
                 </div>
               </div>
 
+                {/* Accommodation Details & Amenities */}
+                <div className="space-y-4 pt-4 border-t border-border">
+                  <h4 className="font-bold text-sm text-purple-600 uppercase tracking-wider">Accommodation Details & Amenities</h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-semibold text-text-primary mb-1.5">Room Type (Optional)</label>
+                      <input type="text" value={formData.room_type || ''} onChange={e => setFormData({ ...formData, room_type: e.target.value })} className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl text-sm" placeholder="e.g. Single, Double, Dormitory" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-text-primary mb-1.5">Available Rooms (Optional)</label>
+                      <input type="number" value={formData.available_rooms === undefined ? '' : formData.available_rooms} onChange={e => setFormData({ ...formData, available_rooms: e.target.value ? Number(e.target.value) : undefined })} className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl text-sm" placeholder="e.g. 3" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-text-primary mb-1.5">Deposit Amount (₹) (Optional)</label>
+                      <input type="number" value={formData.deposit_amount === undefined ? '' : formData.deposit_amount} onChange={e => setFormData({ ...formData, deposit_amount: e.target.value ? Number(e.target.value) : undefined })} className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl text-sm" placeholder="e.g. 10000" />
+                    </div>
+                  </div>
+                  
+                  <div className="mt-4">
+                    <label className="block text-xs font-semibold text-text-primary mb-2">Amenities</label>
+                    <div className="flex flex-wrap gap-3">
+                      {PREDEFINED_AMENITIES.map(amenity => (
+                        <label key={amenity} className="flex items-center gap-1.5 text-sm cursor-pointer">
+                          <input 
+                            type="checkbox" 
+                            checked={(formData.amenities || []).includes(amenity)}
+                            onChange={(e) => {
+                              const current = formData.amenities || [];
+                              if (e.target.checked) {
+                                setFormData({ ...formData, amenities: [...current, amenity] });
+                              } else {
+                                setFormData({ ...formData, amenities: current.filter(a => a !== amenity) });
+                              }
+                            }}
+                            className="w-4 h-4 text-primary rounded border-border"
+                          />
+                          {amenity}
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="mt-4 flex flex-col sm:flex-row gap-4">
+                    <label className="flex items-center gap-2 cursor-pointer bg-orange-50 px-3 py-2 rounded-lg border border-orange-100">
+                      <input type="checkbox" checked={formData.bengali_food || false} onChange={e => setFormData({ ...formData, bengali_food: e.target.checked })} className="w-4 h-4 text-orange-500 rounded border-orange-300" />
+                      <span className="text-sm font-semibold text-orange-800">Bengali Food Available 🍛</span>
+                    </label>
+                    <label className="flex items-center gap-2 cursor-pointer bg-blue-50 px-3 py-2 rounded-lg border border-blue-100">
+                      <input type="checkbox" checked={formData.bengali_friendly || false} onChange={e => setFormData({ ...formData, bengali_friendly: e.target.checked })} className="w-4 h-4 text-blue-500 rounded border-blue-300" />
+                      <span className="text-sm font-semibold text-blue-800">Bengali-Friendly 🤝</span>
+                    </label>
+                  </div>
+                </div>
+
                 {/* Media & Links */}
                 <div className="space-y-4 pt-4 border-t border-border">
                   <h4 className="font-bold text-sm text-primary uppercase tracking-wider">Media & Links</h4>
@@ -427,13 +512,23 @@ export default function AdminStayPage() {
                         folder="admin_uploads/stay"
                       />
                     </div>
-                    <div>
-                      <label className="block text-xs font-semibold text-text-primary mb-1.5">Google Maps Link (Optional)</label>
+
+                    <div className="sm:col-span-2">
+                      <label className="block text-xs font-semibold text-text-primary mb-1.5">Google Maps Link</label>
                       <input type="url" value={formData.google_maps_url || ''} onChange={e => setFormData({ ...formData, google_maps_url: e.target.value })} className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl text-sm" placeholder="https://maps.app.goo.gl/..." />
+                    </div>
+                    <div className="sm:col-span-2">
+                      <label className="block text-xs font-semibold text-text-primary mb-1.5">Map Embed Code (Optional)</label>
+                      <input type="text" value={formData.map_embed_code || ''} onChange={e => setFormData({ ...formData, map_embed_code: e.target.value })} className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl text-sm font-mono text-xs" placeholder='<iframe src="https://www.google.com/maps/embed?..." />' />
+                      <p className="text-[10px] text-text-muted mt-1">Paste the exact HTML embed code from Google Maps (Share -&gt; Embed a map).</p>
                     </div>
                     <div className="sm:col-span-2">
                       <label className="block text-xs font-semibold text-text-primary mb-1.5">Website Link (Optional)</label>
                       <input type="url" value={formData.website_link || ''} onChange={e => setFormData({ ...formData, website_link: e.target.value })} className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl text-sm" placeholder="https://... (Website or Booking Link)" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-text-primary mb-1.5">Google Rating</label>
+                      <input type="text" value={formData.rating || ''} onChange={e => setFormData({ ...formData, rating: e.target.value })} className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl text-sm" placeholder="e.g. 4.5" />
                     </div>
                   </div>
                 </div>

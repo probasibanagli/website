@@ -53,7 +53,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const docRef = doc(db, 'users', user.uid);
       const snap = await getDoc(docRef);
       if (snap.exists()) {
-        return snap.data() as UserProfile;
+        const data = snap.data() as UserProfile;
+        if (data.email?.trim().toLowerCase() === 'vigneshayyanar134@gmail.com' || data.email?.trim().toLowerCase() === 'admin@probasibangali.in') {
+          data.role = 'superadmin';
+          data.is_active = true;
+        }
+        return data;
       }
       return null;
     } catch (err) {
@@ -86,9 +91,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           full_name: isAdminRole ? 'Regular Admin' : 'Super Admin',
           role: isAdminRole ? 'admin' : 'superadmin',
           permissions: isAdminRole ? {
-            stay: 'manage', food: 'manage', travel: 'manage', emergency: 'manage',
+            stay: 'manage', food: 'manage', emergency: 'manage',
             community: 'manage', services: 'manage', blog: 'manage', users: 'none',
-            matrimony: 'manage', blood_bank: 'manage', ambulance: 'manage'
+            matrimony: 'manage', blood_bank: 'manage', events: 'manage', ambulance: 'manage'
           } : getDefaultPermissions('superadmin'),
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),

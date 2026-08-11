@@ -44,8 +44,8 @@ async function extractQueryFromMapsUrl(url: string | null): Promise<string | nul
       return placeName;
     }
     
-    // If no clear query could be extracted, return the final URL
-    return finalUrl;
+    // If no clear query could be extracted, return null to trigger name+city fallback
+    return null;
   } catch (e) {
     // Ignore invalid URLs
   }

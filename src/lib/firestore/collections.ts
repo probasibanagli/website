@@ -29,7 +29,6 @@ export const COLLECTIONS = {
 export const MODULE_TO_COLLECTION: Record<ModuleKey, string> = {
   stay: COLLECTIONS.listings,
   food: COLLECTIONS.food_listings,
-  travel: COLLECTIONS.travel_info,
   emergency: COLLECTIONS.hospitals,
   community: COLLECTIONS.community_groups,
   services: COLLECTIONS.colleges,
@@ -37,5 +36,6 @@ export const MODULE_TO_COLLECTION: Record<ModuleKey, string> = {
   users: COLLECTIONS.users,
   matrimony: COLLECTIONS.matrimonial_profiles,
   blood_bank: COLLECTIONS.blood_banks,
+  events: COLLECTIONS.events,
   ambulance: COLLECTIONS.ambulances,
 };

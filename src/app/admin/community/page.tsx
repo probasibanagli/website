@@ -21,6 +21,7 @@ export default function AdminCommunityPage() {
         { key: 'region', label: 'Region', type: 'select', options: ['tamil_nadu', 'india', 'all'] },
         { key: 'description', label: 'Description', type: 'textarea' },
         { key: 'join_url', label: 'Join URL' },
+        { key: 'member_count', label: 'Member Count (e.g. 500)' },
         { key: 'website_url', label: 'Website URL' },
         { key: 'facebook_url', label: 'Facebook URL' },
         { key: 'instagram_url', label: 'Instagram URL' },

@@ -44,7 +44,7 @@ export function getAccessibleModules(
   permissions: ModulePermissions | undefined
 ): ModuleKey[] {
   const ALL_MODULES: ModuleKey[] = [
-    'stay', 'food', 'travel', 'emergency',
+    'stay', 'food', 'emergency',
     'community', 'services', 'blog', 'users', 'matrimony',
     'blood_bank', 'ambulance'
   ];
@@ -63,7 +63,6 @@ export function getDefaultPermissions(role: UserRole): ModulePermissions {
   const none: ModulePermissions = {
     stay: 'none',
     food: 'none',
-    travel: 'none',
     emergency: 'none',
     community: 'none',
     services: 'none',
@@ -71,13 +70,13 @@ export function getDefaultPermissions(role: UserRole): ModulePermissions {
     users: 'none',
     matrimony: 'none',
     blood_bank: 'none',
+    events: 'none',
     ambulance: 'none',
   };
 
   const full: ModulePermissions = {
     stay: 'manage',
     food: 'manage',
-    travel: 'manage',
     emergency: 'manage',
     community: 'manage',
     services: 'manage',
@@ -85,6 +84,7 @@ export function getDefaultPermissions(role: UserRole): ModulePermissions {
     users: 'manage',
     matrimony: 'manage',
     blood_bank: 'manage',
+    events: 'manage',
     ambulance: 'manage',
   };
 
@@ -104,7 +104,7 @@ export function getDefaultPermissions(role: UserRole): ModulePermissions {
  * All module keys.
  */
 export const ALL_MODULES: ModuleKey[] = [
-  'stay', 'food', 'travel', 'emergency',
+  'stay', 'food', 'emergency',
   'community', 'services', 'blog', 'users', 'matrimony',
   'blood_bank', 'ambulance'
 ];

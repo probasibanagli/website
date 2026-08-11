@@ -2,11 +2,11 @@
 
 import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { Users, ExternalLink, Search, Globe, MapPin, ChevronDown, ArrowRight, Camera, Briefcase, MessageCircle, Send, Building, Map, Globe2 } from 'lucide-react';
+import { MapPin, Users, Globe, ArrowRight, ExternalLink, Search, Building, Globe2 } from 'lucide-react';
+import { FaWhatsapp, FaFacebook, FaDiscord, FaTelegram, FaLink } from 'react-icons/fa';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { sampleCommunityGroups } from '@/data/sample-data';
 import { useFirestore } from '@/lib/hooks/useFirestore';
 import { CommunityGroup } from '@/types';
 
@@ -27,17 +27,16 @@ const InstagramIcon = (props: React.SVGProps<SVGSVGElement>) => (
 
 /* ── Platform config ── */
 const PLATFORMS = [
-  { key: 'instagram', label: 'Instagram', icon: <Camera className="w-4 h-4" />, color: 'bg-gradient-to-br from-purple-500 via-pink-500 to-orange-400', textColor: 'text-white', ringColor: 'ring-pink-300', badgeColor: 'bg-pink-100 text-pink-700' },
-  { key: 'facebook', label: 'Facebook', icon: <Users className="w-4 h-4" />, color: 'bg-gradient-to-br from-blue-600 to-blue-500', textColor: 'text-white', ringColor: 'ring-blue-300', badgeColor: 'bg-indigo-100 text-indigo-700' },
-  { key: 'linkedin', label: 'LinkedIn', icon: <Briefcase className="w-4 h-4" />, color: 'bg-gradient-to-br from-blue-700 to-sky-600', textColor: 'text-white', ringColor: 'ring-sky-300', badgeColor: 'bg-sky-100 text-sky-700' },
-  { key: 'website', label: 'Website', icon: <Globe className="w-4 h-4" />, color: 'bg-gradient-to-br from-emerald-500 to-teal-500', textColor: 'text-white', ringColor: 'ring-teal-300', badgeColor: 'bg-teal-100 text-teal-700' },
-  { key: 'whatsapp', label: 'WhatsApp', icon: <MessageCircle className="w-4 h-4" />, color: 'bg-gradient-to-br from-green-500 to-green-600', textColor: 'text-white', ringColor: 'ring-green-300', badgeColor: 'bg-green-100 text-green-700' },
-  { key: 'telegram', label: 'Telegram', icon: <Send className="w-4 h-4" />, color: 'bg-gradient-to-br from-sky-400 to-blue-500', textColor: 'text-white', ringColor: 'ring-sky-300', badgeColor: 'bg-blue-100 text-blue-700' },
+  { key: 'whatsapp', label: 'WhatsApp', icon: <FaWhatsapp className="w-5 h-5" />, color: 'bg-green-500', ringColor: 'ring-green-500', textColor: 'text-green-700' },
+  { key: 'facebook', label: 'Facebook', icon: <FaFacebook className="w-5 h-5" />, color: 'bg-blue-600', ringColor: 'ring-blue-600', textColor: 'text-blue-700' },
+  { key: 'discord', label: 'Discord', icon: <FaDiscord className="w-5 h-5" />, color: 'bg-indigo-500', ringColor: 'ring-indigo-500', textColor: 'text-indigo-700' },
+  { key: 'telegram', label: 'Telegram', icon: <FaTelegram className="w-5 h-5" />, color: 'bg-sky-500', ringColor: 'ring-sky-500', textColor: 'text-sky-700' },
+  { key: 'website', label: 'Website', icon: <FaLink className="w-5 h-5" />, color: 'bg-slate-700', ringColor: 'ring-slate-700', textColor: 'text-slate-800' },
 ];
 
 const REGIONS = [
   { key: 'tamil_nadu', label: 'Tamil Nadu', icon: <Building className="w-3.5 h-3.5" /> },
-  { key: 'india', label: 'India', icon: <Map className="w-3.5 h-3.5" /> },
+  { key: 'india', label: 'India', icon: <Globe className="w-3.5 h-3.5" /> },
   { key: 'all', label: 'Global / All', icon: <Globe2 className="w-3.5 h-3.5" /> },
 ];
 
@@ -45,7 +44,7 @@ function getPlatformConfig(key: string) {
   return PLATFORMS.find(p => p.key === key) || PLATFORMS[0];
 }
 
-function getPlatformLink(group: typeof sampleCommunityGroups[0]) {
+function getPlatformLink(group: CommunityGroup) {
   if (group.platform === 'instagram' && group.instagram_url) return group.instagram_url;
   if (group.platform === 'facebook' && group.facebook_url) return group.facebook_url;
   if (group.platform === 'linkedin' && group.linkedin_url) return group.linkedin_url;
@@ -71,11 +70,7 @@ export default function GroupsPage() {
   const [selectedRegion, setSelectedRegion] = useState('');
   const [search, setSearch] = useState('');
 
-  const combinedGroups = useMemo(() => {
-    const firestoreIds = new Set(firestoreGroups.map((g) => g.id));
-    const dedupedSample = sampleCommunityGroups.filter((g) => !firestoreIds.has(g.id));
-    return [...firestoreGroups, ...dedupedSample];
-  }, [firestoreGroups]);
+  const combinedGroups = firestoreGroups;
 
   const filtered = useMemo(() => {
     return combinedGroups.filter((g) => {
@@ -112,7 +107,7 @@ export default function GroupsPage() {
                   onClick={() => handlePlatformChange(p.key)}
                   className={`relative flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold transition-all cursor-pointer border ${
                     selectedPlatform === p.key
-                      ? `${p.color} ${p.textColor} border-transparent shadow-sm ring-1 ring-offset-1 ring-offset-surface ${p.ringColor}`
+                      ? `${p.color} text-white border-transparent shadow-sm ring-1 ring-offset-1 ring-offset-surface ${p.ringColor}`
                       : 'bg-white text-text-primary border-border hover:border-primary/40'
                   }`}
                 >
@@ -180,15 +175,15 @@ export default function GroupsPage() {
 
             if (group.website_url) {
               secondaryLabel = 'Website';
-              secondaryIcon = <Globe className="w-4 h-4" />;
+              secondaryIcon = <FaLink className="w-4 h-4" />;
               secondaryHref = group.website_url;
             } else if (group.facebook_url) {
               secondaryLabel = 'Facebook';
-              secondaryIcon = <FacebookIcon className="w-4 h-4" />;
+              secondaryIcon = <FaFacebook className="w-4 h-4" />;
               secondaryHref = group.facebook_url;
             } else if (group.instagram_url) {
               secondaryLabel = 'Instagram';
-              secondaryIcon = <InstagramIcon className="w-4 h-4" />;
+              secondaryIcon = <ExternalLink className="w-4 h-4" />;
               secondaryHref = group.instagram_url;
             } else {
               secondaryLabel = 'Link';
@@ -199,15 +194,20 @@ export default function GroupsPage() {
              return (
                <Card key={group.id} padding="none" className="rounded-[24px] overflow-hidden group flex flex-col h-full bg-white border border-gray-100 shadow-[0_4px_25px_-4px_rgba(0,0,0,0.05)] relative">
                  {/* Image Banner */}
-                 <div className="relative h-56 bg-slate-100 overflow-hidden">
+                 <a href={link} target="_blank" rel="noopener noreferrer" className="block relative h-56 bg-slate-50 overflow-hidden">
                    {group.image_url ? (
                      <img src={group.image_url} alt={group.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                    ) : (
-                     <div className={`w-full h-full ${pConfig.color} opacity-10 flex items-center justify-center group-hover:scale-105 transition-transform duration-500`}>
-                       <span className="text-7xl opacity-30">{pConfig.icon}</span>
-                     </div>
+                     <>
+                       <div className={`absolute inset-0 w-full h-full ${pConfig.color} opacity-10 transition-transform duration-500`}></div>
+                       <div className="absolute inset-0 w-full h-full flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+                         <div className={`w-24 h-24 rounded-2xl flex items-center justify-center ${pConfig.color} shadow-lg`}>
+                           <span className="text-white transform scale-150">{pConfig.icon}</span>
+                         </div>
+                       </div>
+                     </>
                    )}
-                 </div>
+                 </a>
 
                  <div className="bg-white rounded-t-[28px] p-6 relative z-10 -mt-6 flex-grow flex flex-col justify-between">
                    <div className="flex-1 flex flex-col">

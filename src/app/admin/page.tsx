@@ -61,11 +61,10 @@ export default function AdminDashboard() {
   useEffect(() => {
     async function loadStats() {
       try {
-        const collections = [
+        const allCollections = [
           { name: 'users', label: 'Total Users & Admins', icon: <Users className="w-5 h-5" />, color: 'text-[#D85A30]', bg: 'bg-[#FAF0EC]', badge: '12%', bgImage: true },
           { name: 'listings', label: 'Stays & Accommodations', icon: <Home className="w-5 h-5" />, color: 'text-emerald-500', bg: 'bg-emerald-50' },
           { name: 'food_listings', label: 'Bengali Food & Sweets', icon: <UtensilsCrossed className="w-5 h-5" />, color: 'text-orange-500', bg: 'bg-orange-50' },
-          { name: 'travel_info', label: 'Travel & Transport', icon: <Bus className="w-5 h-5" />, color: 'text-blue-500', bg: 'bg-blue-50' },
           { name: 'hospitals', label: 'Hospital Management', icon: <AlertTriangle className="w-5 h-5" />, color: 'text-rose-500', bg: 'bg-rose-50' },
           { name: 'community_groups', label: 'Community Groups', icon: <Users className="w-5 h-5" />, color: 'text-teal-500', bg: 'bg-teal-50' },
           { name: 'colleges', label: 'Campus & Government', icon: <GraduationCap className="w-5 h-5" />, color: 'text-cyan-500', bg: 'bg-cyan-50' },
@@ -74,6 +73,10 @@ export default function AdminDashboard() {
           { name: 'blood_banks', label: 'Blood Banks', icon: <Droplets className="w-5 h-5" />, color: 'text-red-500', bg: 'bg-red-50' },
           { name: 'ambulances', label: 'Ambulance Directory', icon: <Truck className="w-5 h-5" />, color: 'text-indigo-500', bg: 'bg-indigo-50' },
         ];
+        
+        const collections = profile?.role === 'superadmin' 
+          ? allCollections.filter(c => c.name === 'users')
+          : allCollections.filter(c => c.name !== 'users');
 
         const results: StatCard[] = [];
         for (const col of collections) {
@@ -571,7 +574,12 @@ export default function AdminDashboard() {
           <div>
             <h3 className="text-base font-bold text-neutral-900 tracking-tight mb-3">Quick Actions</h3>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5">
-              {[
+              {
+                (profile?.role === 'superadmin' ? [
+                  { label: 'Admin Management', href: '/admin/users?tab=admins', icon: <Shield className="w-4 h-4" />, highlight: true },
+                  { label: 'User Management', href: '/admin/users?tab=users', icon: <Users className="w-4 h-4" />, highlight: true },
+                  { label: 'Activity Logs', href: '/admin/users?tab=activities', icon: <Activity className="w-4 h-4" />, highlight: true },
+              ] : [
                 { label: 'Stay Directory', href: '/admin/stay', icon: <Home className="w-4 h-4" /> },
                 { label: 'Food Directory', href: '/admin/food', icon: <UtensilsCrossed className="w-4 h-4" /> },
                 { label: 'Hospital Info', href: '/admin/emergency', icon: <AlertTriangle className="w-4 h-4" /> },
@@ -581,11 +589,7 @@ export default function AdminDashboard() {
                 { label: 'Matrimonial', href: '/admin/matrimony', icon: <Heart className="w-4 h-4" /> },
                 { label: 'Blood Banks', href: '/admin/blood-bank', icon: <Droplets className="w-4 h-4" /> },
                 { label: 'Ambulances', href: '/admin/ambulance', icon: <Truck className="w-4 h-4" /> },
-                ...(profile?.role === 'superadmin' ? [
-                  { label: 'Manage Admins', href: '/admin/users?tab=admins', icon: <Crown className="w-4 h-4" />, highlight: true },
-                  { label: 'Activity Logs', href: '/admin/users?tab=activities', icon: <Activity className="w-4 h-4" />, highlight: true },
-                ] : []),
-              ].map((action) => {
+              ]).map((action: any) => {
                 const colorClass = action.highlight 
                   ? 'bg-[#D85A30] text-white hover:bg-[#c24e25]' 
                   : 'bg-white/50 text-neutral-800 hover:bg-neutral-50/80 border border-[#EADED9]/60';

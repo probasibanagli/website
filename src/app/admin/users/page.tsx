@@ -80,6 +80,12 @@ export default function AdminUsersPage() {
     }
   }, [tabParam]);
   const searchTerm = searchParams.get('search') || '';
+  const [localSearch, setLocalSearch] = useState(searchTerm);
+
+  useEffect(() => {
+    setLocalSearch(searchParams.get('search') || '');
+  }, [searchParams]);
+
   const [filterRole, setFilterRole] = useState<string>('all');
 
   // Create Admin Modal State
@@ -408,9 +414,10 @@ export default function AdminUsersPage() {
           <input
             type="text"
             placeholder={`Search ${activeTab === 'visitors' ? 'visitors by phone/email' : activeTab}...`}
-            value={searchTerm}
+            value={localSearch}
             onChange={(e) => {
               const value = e.target.value;
+              setLocalSearch(value);
               const params = new URLSearchParams(searchParams.toString());
               if (value) {
                 params.set('search', value);

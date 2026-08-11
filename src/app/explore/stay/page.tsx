@@ -2,15 +2,14 @@
 
 import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { MapPin, Phone, MessageSquare, Wifi, Wind, CheckCircle2, Search, SlidersHorizontal, ChevronDown, Home, Building, Building2, Download, GraduationCap, Train, Bus, Gift, Globe, User, Utensils } from 'lucide-react';
+import { MapPin, Phone, MessageSquare, Wifi, Wind, CheckCircle2, Search, SlidersHorizontal, ChevronDown, Home, Building, Building2, Download, GraduationCap, Train, Bus, Gift, Globe, User, Utensils, BedDouble, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/card';
-import { sampleStayListings } from '@/data/sample-data';
-import { CITIES, CITY_HOSPITALS, CITY_COLLEGES, CITY_AREAS, METRO_ROUTES } from '@/lib/constants';
-import { formatPrice, getWhatsAppUrl } from '@/lib/utils';
 import { useFirestore } from '@/lib/hooks/useFirestore';
 import { Listing } from '@/types';
+import { CITIES, CITY_HOSPITALS, CITY_COLLEGES, CITY_AREAS, METRO_ROUTES } from '@/lib/constants';
+import { formatPrice, getWhatsAppUrl } from '@/lib/utils';
 
 const amenityIcons: Record<string, React.ReactNode> = {
   'WiFi': <Wifi className="w-3.5 h-3.5" />,
@@ -25,15 +24,23 @@ const STAY_TYPE_ICONS: Record<string, React.ReactNode> = {
   rental: <Building2 className="w-5 h-5" />,
 };
 
-function ListingCoverImage({ name, city, mapsUrl, imageUrl, type, fallbackIcon }: { 
+function ListingCoverImage({ name, city, mapsUrl, imageUrl, type, mapEmbedCode, fallbackIcon }: { 
   name: string; 
   city?: string; 
   mapsUrl?: string; 
   imageUrl?: string;
   type?: string;
+  mapEmbedCode?: string;
   fallbackIcon: React.ReactNode;
 }) {
-  const imgSrc = imageUrl || (mapsUrl ? `/api/public/place-photo?name=${encodeURIComponent(name)}&city=${encodeURIComponent(city || '')}&mapsUrl=${encodeURIComponent(mapsUrl)}&v=3` : null);
+  let extractUrl = mapsUrl || '';
+  if (!extractUrl && mapEmbedCode) {
+    const match = mapEmbedCode.match(/src="([^"]+)"/);
+    if (match) extractUrl = match[1];
+  }
+  
+  // Always try to fetch if we have name and city, even if URL is missing
+  const imgSrc = imageUrl || (name && city ? `/api/public/place-photo?name=${encodeURIComponent(name)}&city=${encodeURIComponent(city || '')}&mapsUrl=${encodeURIComponent(extractUrl)}&v=4` : null);
   const [error, setError] = useState(false);
 
   React.useEffect(() => {
@@ -78,11 +85,7 @@ export default function StayPage() {
   const [selectedCollege, setSelectedCollege] = useState('');
   const [selectedMetroRoute, setSelectedMetroRoute] = useState('');
 
-  const combinedListings = useMemo(() => {
-    const firestoreIds = new Set(firestoreListings.map((l) => l.id));
-    const dedupedSample = sampleStayListings.filter((l) => !firestoreIds.has(l.id));
-    return [...firestoreListings, ...dedupedSample];
-  }, [firestoreListings]);
+  const combinedListings = firestoreListings;
 
   const sortedCities = useMemo(() => {
     return Array.from(new Set(combinedListings.map((l) => l.city).filter(Boolean).map(c => {
@@ -401,13 +404,20 @@ export default function StayPage() {
                     city={listing.city}
                     mapsUrl={listing.google_maps_url}
                     imageUrl={listing.image_url}
-                    type={listing.type}
-                    fallbackIcon={STAY_TYPE_ICONS[listing.type] || <Home />}
+                    type={listing.accommodation_type}
+                    mapEmbedCode={listing.map_embed_code}
+                    fallbackIcon={<BedDouble className="w-16 h-16" />}
                   />
                   <div className="absolute top-4 left-4 flex gap-2">
                     <span className="bg-white text-[#D35400] text-[11px] font-bold px-3.5 py-1.5 rounded-full shadow-sm tracking-wide">
                       {typeLabel}
                     </span>
+                    {listing.rating && (
+                      <span className="bg-white text-gray-900 text-[11px] font-bold px-2.5 py-1.5 rounded-full shadow-sm flex items-center gap-1">
+                        <Star className="w-3.5 h-3.5 fill-[#B06000] text-[#B06000]" />
+                        <span>{listing.rating}</span>
+                      </span>
+                    )}
                     {listing.verified && (
                       <span className="bg-emerald-500 text-white text-[11px] font-bold px-2.5 py-1.5 rounded-full shadow-sm flex items-center gap-1">
                         <CheckCircle2 className="w-3 h-3" /> Verified

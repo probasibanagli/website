@@ -18,9 +18,16 @@ export function AdminHeader({ profile, onMenuClick }: AdminHeaderProps) {
   const searchParams = useSearchParams();
 
   const currentSearch = searchParams.get('search') || '';
+  const [localSearch, setLocalSearch] = React.useState(currentSearch);
+
+  React.useEffect(() => {
+    setLocalSearch(searchParams.get('search') || '');
+  }, [searchParams]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
+    setLocalSearch(value);
+    
     const params = new URLSearchParams(searchParams.toString());
     if (value) {
       params.set('search', value);
@@ -48,7 +55,7 @@ export function AdminHeader({ profile, onMenuClick }: AdminHeaderProps) {
         <input
           type="text"
           placeholder="Search..."
-          value={currentSearch}
+          value={localSearch}
           onChange={handleSearchChange}
           className="w-full pl-10 pr-4 py-2.5 rounded-full border border-neutral-200/50 bg-white text-sm text-[#85736E] placeholder-[#85736E]/60 focus:outline-none focus:ring-2 focus:ring-[#D85A30]/50 shadow-sm"
         />

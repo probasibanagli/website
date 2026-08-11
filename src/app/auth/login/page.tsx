@@ -18,6 +18,7 @@ type PhoneStep = 'input' | 'otp' | 'email-verify';
 type AdminFirstLoginStep = 'double-otp' | 'create-password';
 
 const SUPER_ADMIN_EMAIL = 'admin@probasibangali.in';
+const SECOND_SUPER_ADMIN_EMAIL = 'vigneshayyanar134@gmail.com';
 const PRECONFIGURED_SUPER_ADMIN_PHONE = '+919626855406';
 
 export default function LoginPage() {
@@ -170,6 +171,12 @@ export default function LoginPage() {
 
       const snap = await getDoc(doc(db, 'users', currentUser.uid));
       const userProfile = snap.data();
+      if (emailLower === 'vigneshayyanar134@gmail.com' || emailLower === 'admin@probasibangali.in') {
+        if (userProfile) {
+          userProfile.is_active = true;
+          userProfile.role = 'superadmin';
+        }
+      }
 
       // Check if blocked
       if (userProfile?.is_active === false) {
@@ -180,8 +187,8 @@ export default function LoginPage() {
       }
 
       // Check if Admin or Super Admin
-      if (emailLower === SUPER_ADMIN_EMAIL || userProfile?.role === 'superadmin' || userProfile?.role === 'admin') {
-        const isSuper = emailLower === SUPER_ADMIN_EMAIL || userProfile?.role === 'superadmin';
+      if (emailLower === SUPER_ADMIN_EMAIL || emailLower === SECOND_SUPER_ADMIN_EMAIL || userProfile?.role === 'superadmin' || userProfile?.role === 'admin') {
+        const isSuper = emailLower === SUPER_ADMIN_EMAIL || emailLower === SECOND_SUPER_ADMIN_EMAIL || userProfile?.role === 'superadmin';
         const adminPhone = isSuper ? PRECONFIGURED_SUPER_ADMIN_PHONE : userProfile?.phone;
         
         if (!adminPhone) {
@@ -563,10 +570,6 @@ export default function LoginPage() {
       next[index] = value;
       setSuperAdminEmailOtp(next);
       if (value && index < 5) superAdminEmailOtpRefs.current[index + 1]?.focus();
-      if (value && index === 5) {
-        const fullCode = next.join('');
-        if (fullCode.length === 6 && superAdminOtp.join('').length === 6) setTimeout(() => handleSuperAdminOtpVerify(), 200);
-      }
     } else if (type === 'admin-phone') {
       const next = [...adminPhoneOtp];
       next[index] = value;
@@ -582,10 +585,6 @@ export default function LoginPage() {
       next[index] = value;
       setPhoneLoginEmailOtp(next);
       if (value && index < 5) phoneLoginEmailOtpRefs.current[index + 1]?.focus();
-      if (value && index === 5) {
-        const fullCode = next.join('');
-        if (fullCode.length === 6) setTimeout(() => handlePhoneLoginEmailVerify(), 200);
-      }
     }
   };
 
@@ -810,7 +809,8 @@ export default function LoginPage() {
           {!superAdminVerify && !adminFirstLogin && (
             <>
               {/* Mode Tabs */}
-              <div className="flex rounded-xl border border-border p-1 mb-6 bg-surface/50">
+              {!(mode === 'phone' && phoneStep !== 'input') && (
+                <div className="flex rounded-xl border border-border p-1 mb-6 bg-surface/50">
                 <button
                   onClick={() => { setMode('phone'); setError(''); }}
                   className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 cursor-pointer ${
@@ -832,6 +832,7 @@ export default function LoginPage() {
                   <Mail className="w-4 h-4" /> Email
                 </button>
               </div>
+              )}
 
               {/* EMAIL MODE */}
               {mode === 'email' && (

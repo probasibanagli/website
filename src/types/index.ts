@@ -7,7 +7,6 @@ export type PermissionLevel = 'none' | 'view' | 'edit' | 'manage';
 export type ModuleKey =
   | 'stay'
   | 'food'
-  | 'travel'
   | 'emergency'
   | 'community'
   | 'services'
@@ -15,6 +14,7 @@ export type ModuleKey =
   | 'users'
   | 'matrimony'
   | 'blood_bank'
+  | 'events'
   | 'ambulance';
 
 export type ModulePermissions = Record<ModuleKey, PermissionLevel>;
@@ -42,7 +42,6 @@ export interface UserProfile {
 export const MODULE_LABELS: Record<ModuleKey, string> = {
   stay: 'Stay & Accommodation',
   food: 'Bengali Food & Sweets',
-  travel: 'Travel & Transport',
   emergency: 'Hospital Management',
   community: 'Community',
   services: 'Campus & Government',
@@ -50,6 +49,7 @@ export const MODULE_LABELS: Record<ModuleKey, string> = {
   users: 'User Management',
   matrimony: 'Matrimonial',
   blood_bank: 'Blood Banks',
+  events: 'Events & Festivals',
   ambulance: 'Ambulance Directory',
 };
 
@@ -73,6 +73,8 @@ export interface Listing {
   owner_phone?: string;
   owner_whatsapp?: string;
   google_maps_url?: string;
+  map_embed_code?: string;
+  rating?: string | number;
   lat?: number;
   lng?: number;
   images: string[];
@@ -104,7 +106,9 @@ export interface FoodListing {
   pincode?: string;
   phone?: string;
   whatsapp?: string;
+  rating?: string | number;
   google_maps_url?: string;
+  map_embed_code?: string;
   magicpin_url?: string;
   dunzo_url?: string;
   eatsure_url?: string;
@@ -361,18 +365,21 @@ export interface College {
   staff_contacts?: CollegeStaffContact[];
 }
 
-export interface Event {
+export interface CommunityEvent {
   id: string;
   title: string;
   description?: string;
   event_date?: string;
   city?: string;
   venue?: string;
+  location?: string;
   organizer?: string;
   contact?: string;
   image_url?: string;
   category?: string;
   community_group_id?: string;
+  booking_url?: string;
+  google_maps_url?: string;
 }
 
 export interface BlogPost {
