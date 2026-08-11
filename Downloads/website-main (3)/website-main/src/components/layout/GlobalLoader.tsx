@@ -1,0 +1,79 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { usePathname, useSearchParams } from 'next/navigation';
+import { PageSkeleton } from '@/components/ui/Skeleton';
+import { useAuth } from '@/lib/auth/AuthContext';
+
+export function GlobalLoader() {
+  const [mounted, setMounted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const { loading: authLoading } = useAuth();
+
+  useEffect(() => {
+    const handle = requestAnimationFrame(() => {
+      setMounted(true);
+    });
+    return () => cancelAnimationFrame(handle);
+  }, []);
+
+  useEffect(() => {
+    setIsLoading(false);
+  }, [pathname, searchParams]);
+
+  useEffect(() => {
+    const handleAnchorClick = (event: MouseEvent) => {
+      if (pathname?.startsWith('/admin')) return;
+      const target = event.target as HTMLElement;
+      const anchor = target.closest('a');
+
+      if (anchor) {
+        const href = anchor.getAttribute('href');
+        const targetAttr = anchor.getAttribute('target');
+        
+        if (href && href.startsWith('/') && targetAttr !== '_blank' && !href.includes('#')) {
+          const currentUrl = new URL(window.location.href);
+          const targetUrl = new URL(href, window.location.origin);
+
+          if (currentUrl.origin === targetUrl.origin && (currentUrl.pathname !== targetUrl.pathname || currentUrl.search !== targetUrl.search)) {
+            setIsLoading(true);
+          }
+        }
+      }
+    };
+
+    document.addEventListener('click', handleAnchorClick);
+
+    return () => {
+      document.removeEventListener('click', handleAnchorClick);
+    };
+  }, [pathname]);
+
+  if (!mounted) return null;
+  if (pathname?.startsWith('/admin')) return null;
+
+  return (
+    <>
+      {isLoading && (
+        <>
+          <style>{`
+            @keyframes shift-rightwards {
+              0% { transform: translateX(-100%); }
+              50% { transform: translateX(0); }
+              100% { transform: translateX(100%); }
+            }
+            .nav-progress-bar {
+              animation: shift-rightwards 1.5s infinite linear;
+              transform-origin: left;
+            }
+          `}</style>
+          <div className="fixed top-0 left-0 right-0 h-[3px] z-[9999] bg-primary/10 overflow-hidden">
+            <div className="h-full bg-gradient-to-r from-primary via-accent to-primary w-full nav-progress-bar" />
+          </div>
+        </>
+      )}
+    </>
+  );
+}
