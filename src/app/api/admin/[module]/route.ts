@@ -63,7 +63,7 @@ export async function GET(request: Request, ctx: any) {
   if ('error' in result) return NextResponse.json({ error: result.error }, { status: result.status });
 
   const snap = await adminDb.collection(col).get();
-  return NextResponse.json({ items: snap.docs.map(d => ({ id: d.id, ...d.data() })) });
+  return NextResponse.json({ items: snap.docs.map((d: any) => ({ id: d.id, ...d.data() })) });
 }
 
 export async function POST(request: Request, ctx: any) {

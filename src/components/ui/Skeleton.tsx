@@ -40,7 +40,7 @@ export function PageSkeleton() {
       <div className="flex-1 overflow-y-auto">
         {/* Hero Section Skeleton */}
         <div className="relative py-20 sm:py-28 lg:py-36 bg-gradient-to-br from-surface to-white px-4 sm:px-6 lg:px-8 text-center">
-          <div className="max-w-7xl mx-auto flex flex-col items-center">
+          <div className="max-w-[1536px] mx-auto flex flex-col items-center">
             <Skeleton className="w-40 h-6 rounded-full mb-8 bg-primary/10" />
             <Skeleton className="w-full max-w-3xl h-16 sm:h-20 mb-6" />
             <Skeleton className="w-2/3 max-w-xl h-6 mb-12 opacity-70" />
@@ -60,7 +60,7 @@ export function PageSkeleton() {
 
         {/* Explore Section Skeleton */}
         <div className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
-          <div className="max-w-7xl mx-auto">
+          <div className="max-w-[1536px] mx-auto">
             <div className="text-center mb-16">
               <Skeleton className="w-24 h-6 rounded-full mx-auto mb-4" />
               <Skeleton className="w-64 h-10 mx-auto mb-4" />

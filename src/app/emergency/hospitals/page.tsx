@@ -229,7 +229,7 @@ export default function EmergencyHospitalsPage() {
     <div className="min-h-screen bg-surface">
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-red-50/70 to-orange-50/50 border-b border-red-100/50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-10">
           <div className="flex items-center gap-2 text-sm text-red-600/70 mb-4 font-medium">
             <Link href="/" className="hover:text-red-600 transition-colors">Home</Link><span>/</span>
             <Link href="/emergency" className="hover:text-red-600 transition-colors">Emergency</Link><span>/</span>
@@ -295,7 +295,7 @@ export default function EmergencyHospitalsPage() {
 
       {/* Tabs Switcher */}
       <div className="bg-white border-b border-border sticky top-0 z-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex gap-4">
             <button
               onClick={() => { setSearchTab('hospitals'); setSearchQuery(''); setSpecializationFilter(''); }}
@@ -323,7 +323,7 @@ export default function EmergencyHospitalsPage() {
 
       {/* Search and Filters Header */}
       <div className="bg-white border-b border-border shadow-xs">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-wrap items-center gap-4">
             {/* Search Query Input */}
             <div className="relative flex-1 min-w-[240px]">
@@ -397,7 +397,7 @@ export default function EmergencyHospitalsPage() {
       </div>
 
       {/* Main Grid Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {loading ? (
           <div className="text-center py-20 animate-pulse">
             <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>

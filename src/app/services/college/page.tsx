@@ -85,7 +85,7 @@ export default function CollegePage() {
   return (
     <div className="min-h-screen bg-surface">
       <div className="bg-white border-b border-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex items-center gap-2 text-sm text-text-muted mb-4">
             <Link href="/" className="hover:text-primary">Home</Link><span>/</span>
             <span className="text-text-primary font-medium">College & School Finder</span>
@@ -147,7 +147,7 @@ export default function CollegePage() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {loading ? (
           <div className="flex flex-col items-center justify-center py-32 gap-3">
             <Loader2 className="w-10 h-10 text-primary animate-spin" />

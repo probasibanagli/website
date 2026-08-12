@@ -28,6 +28,7 @@ import {
   PartyPopper,
   Palette,
   Heart,
+  Clock,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/card';
@@ -257,7 +258,7 @@ const PANJIKA_LINKS = [
     title: 'Bengali Panjika (Annual)',
     titleBn: 'বাংলা পঞ্জিকা',
     description: 'Complete yearly Bengali almanac with tithis, nakshatras, festivals, and auspicious timings.',
-    icon: '📅',
+    icon: CalendarIcon,
     url: 'https://bengalipanjika.com/',
     color: 'from-orange-500 to-red-500',
   },
@@ -265,7 +266,7 @@ const PANJIKA_LINKS = [
     title: 'Monthly Panjika Calendar',
     titleBn: 'মাসিক পঞ্জিকা',
     description: 'Month-by-month Bengali calendar with daily tithi, yoga, and important dates.',
-    icon: '🗓️',
+    icon: CalendarIcon,
     url: 'https://www.bengalicalendar.com/',
     color: 'from-violet-500 to-purple-600',
   },
@@ -280,7 +281,7 @@ interface Festival {
   externalUrl: string;
   monthEn: string;
   monthBn: string;
-  icon: string;
+  icon: React.ComponentType<{ className?: string }>;
   communityIds: string[];
   image?: string;
 }
@@ -294,7 +295,7 @@ const MAJOR_FESTIVALS: Festival[] = [
     externalUrl: 'https://en.wikipedia.org/wiki/Durga_Puja',
     monthEn: 'Ashshin / Kartik (Oct)',
     monthBn: 'আশ্বিন / কার্তিক',
-    icon: '🥁',
+    icon: Sparkles,
     communityIds: ['1', 'web-2', 'fb-1', 'ig-1', 'fb-2', '6', 'ig-4', 'web-1'],
     image: '/images/durga_puja_idol.png',
   },
@@ -306,7 +307,7 @@ const MAJOR_FESTIVALS: Festival[] = [
     externalUrl: 'https://en.wikipedia.org/wiki/Poila_Boishakh',
     monthEn: 'Boishakh (Apr 14)',
     monthBn: 'বৈশাখ',
-    icon: '🌾',
+    icon: Sprout,
     communityIds: ['1', '5', '6', 'fb-1', 'fb-2', 'web-1'],
     image: '/images/bengali_festive_sweets.png',
   },
@@ -318,7 +319,7 @@ const MAJOR_FESTIVALS: Festival[] = [
     externalUrl: 'https://en.wikipedia.org/wiki/Saraswati_Puja',
     monthEn: 'Magh / Falgun (Jan/Feb)',
     monthBn: 'মাঘ / ফাল্গুন',
-    icon: '🌸',
+    icon: BookOpen,
     communityIds: ['2', '5', 'ig-3', 'fb-1', 'fb-2'],
     image: '/images/bengali_festive_sweets.png',
   },
@@ -330,7 +331,7 @@ const MAJOR_FESTIVALS: Festival[] = [
     externalUrl: 'https://en.wikipedia.org/wiki/Kali_Puja',
     monthEn: 'Kartik (Oct/Nov)',
     monthBn: 'কার্তিক',
-    icon: '🪔',
+    icon: Flame,
     communityIds: ['1', 'web-2', 'fb-1', 'fb-2', '6'],
     image: '/images/dakshineswar_temple.png',
   },
@@ -342,7 +343,7 @@ const MAJOR_FESTIVALS: Festival[] = [
     externalUrl: 'https://en.wikipedia.org/wiki/Lakshmi_Puja',
     monthEn: 'Ashshin / Kartik (Oct)',
     monthBn: 'আশ্বিন / কার্তিক',
-    icon: '💰',
+    icon: Coins,
     communityIds: ['1', 'fb-1', 'fb-2', '4'],
     image: '/images/bengali_festive_sweets.png',
   },
@@ -354,7 +355,7 @@ const MAJOR_FESTIVALS: Festival[] = [
     externalUrl: 'https://en.wikipedia.org/wiki/Rabindra_Jayanti',
     monthEn: 'Boishakh (May 8/9)',
     monthBn: '২৫শে বৈশাখ',
-    icon: '✍️',
+    icon: Feather,
     communityIds: ['2', '5', 'ig-3', 'fb-1'],
     image: '/images/bengali_culture_hero.png',
   },
@@ -592,7 +593,7 @@ export default function EventsPage() {
   return (
     <div className="min-h-screen bg-surface">
       <div className="bg-white border-b border-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex items-center gap-2 text-sm text-text-muted mb-4">
             <Link href="/" className="hover:text-primary">Home</Link><span>/</span>
             <Link href="/community/groups" className="hover:text-primary">Community</Link><span>/</span>
@@ -604,8 +605,8 @@ export default function EventsPage() {
           {/* ── Today's Bengali Date Banner ── */}
           <div className="mt-5 p-4 bg-gradient-to-r from-amber-50 via-orange-50 to-red-50 rounded-2xl border border-amber-200/50 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-6">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center text-white shadow-md">
-                <CalendarIcon className="w-5 h-5 text-white" />
+              <div className="w-12 h-12 rounded-xl bg-surface border border-border/40 flex items-center justify-center text-primary shrink-0 shadow-sm">
+                <CalendarIcon className="w-6 h-6" />
               </div>
               <div>
                 <p className="text-[10px] font-semibold text-amber-700 uppercase tracking-wider">Today&apos;s Bengali Date</p>
@@ -647,7 +648,7 @@ export default function EventsPage() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
         {/* ═══════════════ EVENTS & FESTIVALS TAB ═══════════════ */}
         {activeTab === 'events' && (
@@ -657,7 +658,7 @@ export default function EventsPage() {
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-6">
                 <div>
                   <h2 className="text-2xl font-bold font-display text-text-primary flex items-center gap-2">
-                    🕌 Explore Major Bengali Festivals
+                    <Sparkles className="w-6 h-6 text-primary shrink-0" /> Explore Major Bengali Festivals
                   </h2>
                   <p className="text-sm text-text-muted mt-1">
                     Select a festival below to see celebrating communities and visit related pages.
@@ -704,8 +705,8 @@ export default function EventsPage() {
                             {fest.name}
                           </h3>
                           <p className="text-xs bengali-text text-text-muted mt-0.5">{fest.nameBn}</p>
-                          <p className="text-xs text-text-muted mt-2 font-medium bg-surface px-2.5 py-0.5 rounded-full inline-block">
-                            🕒 {fest.monthEn}
+                          <p className="text-xs text-text-muted mt-2 font-medium bg-surface px-2.5 py-0.5 rounded-full inline-flex items-center gap-1">
+                            <Clock className="w-3.5 h-3.5 text-primary shrink-0" /> <span>{fest.monthEn}</span>
                           </p>
                         </div>
                       </div>
@@ -921,7 +922,9 @@ export default function EventsPage() {
               </div>
               {filtered.length === 0 && (
                 <div className="text-center py-20 bg-white rounded-2xl border border-border">
-                  <p className="text-5xl mb-4">🎉</p>
+                  <div className="flex justify-center mb-4 text-primary/40">
+                    <PartyPopper className="w-16 h-16" />
+                  </div>
                   <h3 className="text-xl font-bold mb-2">No events found</h3>
                   <p className="text-text-muted">Check back soon or try different filters.</p>
                 </div>
@@ -944,11 +947,10 @@ export default function EventsPage() {
                   className="group block"
                 >
                   <div className="relative overflow-hidden rounded-2xl border border-border bg-white hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-                    <div className={`h-2 bg-gradient-to-r ${panjika.color}`} />
                     <div className="p-6">
                       <div className="flex items-start gap-4">
-                        <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${panjika.color} flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform`}>
-                          <CalendarIcon className="w-8 h-8 text-white" />
+                        <div className="w-16 h-16 rounded-2xl bg-surface border border-border/40 flex items-center justify-center text-primary shrink-0 shadow-sm group-hover:scale-105 transition-all">
+                          <CalendarIcon className="w-8 h-8" />
                         </div>
                         <div className="flex-1">
                           <h3 className="text-xl font-bold text-text-primary group-hover:text-primary transition-colors">{panjika.title}</h3>
@@ -971,7 +973,7 @@ export default function EventsPage() {
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                 <div>
                   <h3 className="text-xl font-bold text-text-primary flex items-center gap-2">
-                    📅 Monthly Calendar — English & Bengali
+                    <CalendarIcon className="w-5 h-5 text-primary shrink-0" /> Monthly Calendar — English & Bengali
                   </h3>
                   <p className="text-xs text-text-muted mt-1">
                     Both English (Gregorian) and Bengali (বাংলা) calendars showing the same month. Festivals and observances highlighted.
@@ -1007,7 +1009,7 @@ export default function EventsPage() {
                 {/* ENGLISH CALENDAR */}
                 <Card className="p-5 bg-white">
                   <div className="flex items-center gap-2 mb-4 pb-3 border-b border-border">
-                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-sm font-bold shadow-sm">
+                    <div className="w-8 h-8 rounded-lg bg-surface border border-border/40 flex items-center justify-center text-primary text-xs font-extrabold shadow-sm">
                       EN
                     </div>
                     <div>
@@ -1062,7 +1064,7 @@ export default function EventsPage() {
                 {/* BENGALI CALENDAR */}
                 <Card className="p-5 bg-gradient-to-br from-amber-50/30 to-orange-50/20">
                   <div className="flex items-center gap-2 mb-4 pb-3 border-b border-amber-200/50">
-                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center text-white text-sm font-bold shadow-sm bengali-text">
+                    <div className="w-8 h-8 rounded-lg bg-surface border border-border/40 flex items-center justify-center text-primary text-xs font-extrabold shadow-sm bengali-text">
                       বা
                     </div>
                     <div>
@@ -1186,7 +1188,8 @@ export default function EventsPage() {
                             key={f.name}
                             className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 border border-amber-200"
                           >
-                            🎉 {f.name} {f.nameBn && <span className="bengali-text">({f.nameBn})</span>}
+                            <Sparkles className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                            <span>{f.name} {f.nameBn && <span className="bengali-text">({f.nameBn})</span>}</span>
                           </span>
                         ))
                       ) : !observance ? (
@@ -1233,7 +1236,7 @@ export default function EventsPage() {
           <div className="space-y-8 animate-fade-in">
             <div>
               <h2 className="text-2xl font-bold font-display text-text-primary flex items-center gap-2">
-                📆 Annual Events Calendar — {currentYear}
+                <CalendarIcon className="w-6 h-6 text-primary shrink-0" /> Annual Events Calendar — {currentYear}
               </h2>
               <p className="text-sm text-text-muted mt-1">
                 Complete listing of all community events and festivals throughout the year. Click on any community name to visit their group page.
@@ -1253,10 +1256,10 @@ export default function EventsPage() {
                 </select>
                 <select value={annualCategoryFilter} onChange={(e) => setAnnualCategoryFilter(e.target.value)} className="px-4 py-2.5 rounded-xl border border-border bg-white text-sm cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30">
                   <option value="">All Categories</option>
-                  <option value="festival">🎊 Festival</option>
-                  <option value="cultural">🎭 Cultural</option>
-                  <option value="social">🤝 Social</option>
-                  <option value="religious">🙏 Religious</option>
+                  <option value="festival">Festival</option>
+                  <option value="cultural">Cultural</option>
+                  <option value="social">Social</option>
+                  <option value="religious">Religious</option>
                 </select>
                 <select value={annualCityFilter} onChange={(e) => setAnnualCityFilter(e.target.value)} className="px-4 py-2.5 rounded-xl border border-border bg-white text-sm cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30">
                   <option value="">All Cities</option>
@@ -1439,10 +1442,10 @@ export default function EventsPage() {
         {activeTab === 'converter' && (
           <div className="max-w-2xl mx-auto space-y-6 animate-fade-in">
             <Card className="overflow-hidden p-0 bg-white">
-              <div className="h-2 bg-gradient-to-r from-primary to-accent" />
+              <div  />
               <div className="p-6 sm:p-8">
                 <h3 className="text-xl font-bold text-text-primary flex items-center gap-2 mb-1">
-                  🔄 English to Bengali Date Converter
+                  <Globe className="w-5 h-5 text-primary shrink-0" /> English to Bengali Date Converter
                 </h3>
                 <p className="text-sm text-text-muted mb-6">Convert any Gregorian (English) date to the Bengali calendar (Bangabda).</p>
 
@@ -1509,7 +1512,8 @@ export default function EventsPage() {
                                   key={f.name}
                                   className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800 border border-amber-200"
                                 >
-                                  🎉 {f.name}
+                                  <Sparkles className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                                  <span>{f.name}</span>
                                 </span>
                               ))}
                             </div>

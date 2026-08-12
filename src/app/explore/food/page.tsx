@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { MapPin, Phone, MessageCircle, Search, CheckCircle2, ExternalLink, Home, Gift, ShoppingBag, Truck, Download, ChevronDown, SlidersHorizontal, Heart, Star, Utensils } from 'lucide-react';
+import { MapPin, Phone, MessageCircle, Search, CheckCircle2, ExternalLink, Home, Gift, ShoppingBag, Truck, Download, ChevronDown, SlidersHorizontal, Heart, Star, Utensils, Candy, Soup, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/card';
@@ -19,10 +19,10 @@ const FOOD_TYPE_LABELS: Record<string, string> = {
 };
 
 const FOOD_TYPE_ICONS: Record<string, React.ReactNode> = {
-  restaurant: <Home className="w-5 h-5" />,
-  sweets: <Gift className="w-5 h-5" />,
-  tiffin: <ShoppingBag className="w-5 h-5" />,
-  delivery: <Truck className="w-5 h-5" />,
+  restaurant: <Home className="w-5 h-5 text-black" />,
+  sweets: <Gift className="w-5 h-5 text-black" />,
+  tiffin: <ShoppingBag className="w-5 h-5 text-black" />,
+  delivery: <Truck className="w-5 h-5 text-black" />,
 };
 
 function ListingCoverImage({ name, city, mapsUrl, imageUrl, type, mapEmbedCode, fallbackIcon }: { 
@@ -51,7 +51,7 @@ function ListingCoverImage({ name, city, mapsUrl, imageUrl, type, mapEmbedCode, 
   if (error || !imgSrc) {
     return (
       <div className="absolute inset-0 bg-gradient-to-br from-orange-50 to-amber-50 flex items-center justify-center">
-        <div className="text-primary opacity-40 scale-[3]">
+        <div className="text-black opacity-45">
           {fallbackIcon}
         </div>
       </div>
@@ -124,7 +124,7 @@ export default function FoodPage() {
   return (
     <div className="min-h-screen bg-surface">
       <div className="bg-white border-b border-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex items-center gap-2 text-sm text-text-muted mb-4">
             <Link href="/" className="hover:text-primary">Home</Link><span>/</span>
             <Link href="/explore/food" className="hover:text-primary">Explore</Link><span>/</span>
@@ -136,16 +136,20 @@ export default function FoodPage() {
           {/* Type Tabs */}
           <div className="mt-6 flex flex-wrap gap-2">
             {[
-              { value: 'all', label: 'All' },
-              { value: 'restaurant', label: '🍽️ Restaurants' },
-              { value: 'sweets', label: '🍬 Sweets' },
-              { value: 'tiffin', label: '🍱 Tiffin' },
-            ].map((tab) => (
-              <button key={tab.value} onClick={() => setActiveType(tab.value as string)}
-                className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all cursor-pointer ${activeType === tab.value ? 'bg-primary text-white shadow-md' : 'bg-white text-text-primary border border-border hover:border-primary'}`}>
-                {tab.label}
-              </button>
-            ))}
+              { value: 'all', label: 'All', icon: null },
+              { value: 'restaurant', label: 'Restaurants', icon: (active: boolean) => <Utensils className={`w-4 h-4 ${active ? 'text-white' : 'text-black'}`} /> },
+              { value: 'sweets', label: 'Sweets', icon: (active: boolean) => <Candy className={`w-4 h-4 ${active ? 'text-white' : 'text-black'}`} /> },
+              { value: 'tiffin', label: 'Tiffin', icon: (active: boolean) => <Soup className={`w-4 h-4 ${active ? 'text-white' : 'text-black'}`} /> },
+            ].map((tab) => {
+              const active = activeType === tab.value;
+              return (
+                <button key={tab.value} onClick={() => setActiveType(tab.value as string)}
+                  className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all cursor-pointer ${active ? 'bg-primary text-white shadow-md' : 'bg-white text-text-primary border border-border hover:border-primary'}`}>
+                  {tab.icon ? tab.icon(active) : null}
+                  <span>{tab.label}</span>
+                </button>
+              );
+            })}
 
           </div>
 
@@ -234,8 +238,8 @@ export default function FoodPage() {
                   bengaliOnly ? 'bg-orange-500 text-white shadow-md' : 'bg-white border border-border text-text-primary hover:border-orange-400'
                 }`}
               >
-                <SlidersHorizontal className="w-3.5 h-3.5" />
-                🍛 Bengali Friendly
+                <Sparkles className={`w-4 h-4 ${bengaliOnly ? 'text-white' : 'text-black'}`} />
+                <span>Bengali Friendly</span>
               </button>
             )}
           </div>
@@ -243,7 +247,7 @@ export default function FoodPage() {
       </div>
 
       {/* Results */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <p className="text-sm text-text-muted mb-6"><span className="font-semibold text-text-primary">{filtered.length}</span> places found</p>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filtered.map((food) => {
@@ -284,9 +288,9 @@ export default function FoodPage() {
                       type={food.type}
                       mapEmbedCode={food.map_embed_code}
                       fallbackIcon={
-                        <span className="text-4xl opacity-35 select-none">
-                          {food.type === 'restaurant' ? '🍽️' : food.type === 'sweets' ? '🍬' : food.type === 'tiffin' ? '🍱' : '🛵'}
-                        </span>
+                        <div className="text-black opacity-45 scale-[1.5]">
+                          {food.type === 'restaurant' ? <Utensils className="w-12 h-12" /> : food.type === 'sweets' ? <Candy className="w-12 h-12" /> : food.type === 'tiffin' ? <Soup className="w-12 h-12" /> : <Truck className="w-12 h-12" />}
+                        </div>
                       }
                     />
                     {food.rating && (
@@ -326,8 +330,8 @@ export default function FoodPage() {
                       {DELIVERY_PARTNERS.map((partner) => {
                         const url = (food as unknown as Record<string, unknown>)[partner.key] as string | undefined;
                         return url ? (
-                          <a key={partner.key} href={url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-[11px] bg-orange-50 hover:bg-orange-100 text-orange-700 font-bold px-3 py-1 rounded-full transition-colors border border-orange-100 shadow-sm">
-                            <span>🛵</span>
+                          <a key={partner.key} href={url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-[11px] bg-orange-50 hover:bg-orange-100 text-orange-700 font-bold px-3 py-1 rounded-full transition-colors border border-orange-100 shadow-sm text-black">
+                            <Truck className="w-3 h-3 text-black" />
                             <span>{partner.label}</span>
                           </a>
                         ) : null;

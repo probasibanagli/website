@@ -604,13 +604,10 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-light/30 via-white to-accent-light/20 flex items-center justify-center px-4 py-12">
+    <div className="min-h-[calc(100vh-80px)] bg-gradient-to-br from-primary-light/30 via-white to-accent-light/20 flex justify-center pt-20 pb-12 px-4">
       <div className="w-full max-w-md">
-        {/* Logo */}
-        <div className="text-center mb-8">
-          <Link href="/" className="inline-flex items-center justify-center mb-6">
-            <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-white font-bold text-xl bengali-text">প</div>
-          </Link>
+        {/* Header */}
+        <div className="text-center mb-6 pt-4">
           <h1 className="text-2xl font-bold font-display text-text-primary">Welcome Back</h1>
           <p className="text-text-muted mt-1">Login to access all features</p>
         </div>

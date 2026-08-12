@@ -89,7 +89,7 @@ export default function GroupsPage() {
   return (
     <div className="min-h-screen bg-surface">
       <div className="bg-white border-b border-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex items-center gap-2 text-sm text-text-muted mb-4">
             <Link href="/" className="hover:text-primary">Home</Link><span>/</span>
             <span className="text-text-primary font-medium">Community Groups</span>
@@ -157,7 +157,7 @@ export default function GroupsPage() {
       </div>
 
       {/* Results */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <p className="text-sm text-text-muted mb-6">
           <span className="font-semibold text-text-primary">{filtered.length}</span> groups found
           {selectedPlatform && <> on <span className="font-semibold text-primary capitalize">{getPlatformConfig(selectedPlatform).label}</span></>}

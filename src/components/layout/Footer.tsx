@@ -13,7 +13,7 @@ export function Footer() {
   if (pathname?.startsWith('/admin')) return null;
   return (
     <footer className="bg-text-primary text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
           {/* Brand */}
           <div className="space-y-4">
@@ -68,7 +68,7 @@ export function Footer() {
         {/* Bottom */}
         <div className="border-t border-gray-800 mt-12 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-gray-500">
-            © {new Date().getFullYear()} <T>ProbasiBangali.in — All rights reserved.</T>
+            © {new Date().getFullYear()} <T>probasibangali.in — All rights reserved.</T>
           </p>
           <p className="text-xs text-gray-500 flex items-center gap-1">
             <T>Made with</T> <Heart className="w-3 h-3 text-primary fill-primary" /> <T>for Bengalis in Tamil Nadu</T>

@@ -184,7 +184,7 @@ export default function MatrimonialPage() {
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-white/5 blur-3xl" />
         </div>
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+        <div className="relative max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
           <div className="flex items-center gap-2 text-sm text-white/70 mb-4">
             <Link href="/" className="hover:text-white transition-colors">Home</Link>
             <span>/</span>
@@ -266,7 +266,7 @@ export default function MatrimonialPage() {
       </div>
 
       {hasProfile === null || authLoading ? (
-        <div className="max-w-7xl mx-auto px-4 py-20 flex flex-col items-center justify-center gap-4">
+        <div className="max-w-[1536px] mx-auto px-4 py-20 flex flex-col items-center justify-center gap-4">
           <div className="w-10 h-10 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
           <p className="text-sm text-text-muted">Loading profile status...</p>
         </div>
@@ -294,13 +294,13 @@ export default function MatrimonialPage() {
               {/* Feature Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-lg mx-auto mb-8 text-left">
                 {[
-                  { text: 'Browse 100+ verified profiles in Tamil Nadu', icon: '🔍' },
-                  { text: 'Filter by caste, profession, education, and city', icon: '🏛️' },
-                  { text: 'Send connection interests and chat directly', icon: '📩' },
-                  { text: 'Safe & secure environment with admin verification', icon: '🔒' },
+                  { text: 'Browse 100+ verified profiles in Tamil Nadu', icon: <Search className="w-5 h-5 text-black" /> },
+                  { text: 'Filter by caste, profession, education, and city', icon: <SlidersHorizontal className="w-5 h-5 text-black" /> },
+                  { text: 'Send connection interests and chat directly', icon: <Mail className="w-5 h-5 text-black" /> },
+                  { text: 'Safe & secure environment with admin verification', icon: <Lock className="w-5 h-5 text-black" /> },
                 ].map((item, idx) => (
-                  <div key={idx} className="flex items-start gap-2.5 p-3 rounded-xl bg-surface border border-border/50">
-                    <span className="text-lg shrink-0">{item.icon}</span>
+                  <div key={idx} className="flex items-center gap-3 p-3 rounded-xl bg-surface border border-border/50">
+                    <div className="shrink-0">{item.icon}</div>
                     <span className="text-xs sm:text-sm text-text-muted leading-snug">{item.text}</span>
                   </div>
                 ))}
@@ -400,13 +400,13 @@ export default function MatrimonialPage() {
               {/* Feature Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-lg mx-auto mb-8 text-left">
                 {[
-                  { text: 'Browse 100+ verified profiles in Tamil Nadu', icon: '🔍' },
-                  { text: 'Filter by caste, profession, education, and city', icon: '🏛️' },
-                  { text: 'Send connection interests and chat directly', icon: '📩' },
-                  { text: 'Safe & secure environment with admin verification', icon: '🔒' },
+                  { text: 'Browse 100+ verified profiles in Tamil Nadu', icon: <Search className="w-5 h-5 text-black" /> },
+                  { text: 'Filter by caste, profession, education, and city', icon: <SlidersHorizontal className="w-5 h-5 text-black" /> },
+                  { text: 'Send connection interests and chat directly', icon: <Mail className="w-5 h-5 text-black" /> },
+                  { text: 'Safe & secure environment with admin verification', icon: <Lock className="w-5 h-5 text-black" /> },
                 ].map((item, idx) => (
-                  <div key={idx} className="flex items-start gap-2.5 p-3 rounded-xl bg-surface border border-border/50">
-                    <span className="text-lg shrink-0">{item.icon}</span>
+                  <div key={idx} className="flex items-center gap-3 p-3 rounded-xl bg-surface border border-border/50">
+                    <div className="shrink-0">{item.icon}</div>
                     <span className="text-xs sm:text-sm text-text-muted leading-snug">{item.text}</span>
                   </div>
                 ))}
@@ -436,7 +436,7 @@ export default function MatrimonialPage() {
         <>
           {/* Search & Filter Bar */}
           <div className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-border shadow-sm">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+            <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-3">
               <div className="flex items-center gap-3">
                 {/* Search */}
                 <div className="relative flex-1 max-w-md">
@@ -605,7 +605,7 @@ export default function MatrimonialPage() {
           </div>
 
           {/* Results */}
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
             {/* Tab Switcher */}
             {myProfile && (
               <div className="flex items-center gap-1 mb-6 p-1 bg-surface rounded-xl border border-border w-fit">

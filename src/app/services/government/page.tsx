@@ -575,7 +575,7 @@ export default function GovernmentPage() {
     <div className="min-h-screen bg-surface">
       {/* Header Banner */}
       <div className="bg-white border-b border-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex items-center gap-2 text-sm text-text-muted mb-4">
             <Link href="/" className="hover:text-primary">Home</Link><span>/</span>
             <span className="text-text-primary font-medium">Government Services</span>
@@ -585,7 +585,7 @@ export default function GovernmentPage() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
+      <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
         {/* ── HIGHER PRIORITY SERVICES ── */}
         <div>
           <div className="mb-6">

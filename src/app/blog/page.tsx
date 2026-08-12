@@ -205,7 +205,7 @@ export default function BlogPage() {
   return (
     <div className="min-h-screen bg-surface">
       <div className="bg-white border-b border-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+        <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col sm:flex-row justify-between sm:items-center gap-4">
           <div>
             <div className="flex items-center gap-2 text-sm text-text-muted mb-3">
               <Link href="/" className="hover:text-primary">Home</Link><span>/</span>
@@ -224,7 +224,7 @@ export default function BlogPage() {
       </div>
 
       {/* Main Grid */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {loading ? (
           <div className="flex justify-center py-20"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>
         ) : (

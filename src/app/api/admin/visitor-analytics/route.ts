@@ -32,15 +32,15 @@ export async function GET(request: Request) {
       adminDb.collection('otps').get()
     ]);
 
-    const usersList = usersSnap.docs.map(doc => doc.data());
-    const registeredPhones = new Set(usersList.map(u => u.phone?.trim()).filter(Boolean));
-    const registeredEmails = new Set(usersList.map(u => u.email?.trim().toLowerCase()).filter(Boolean));
+    const usersList = usersSnap.docs.map((doc: any) => doc.data());
+    const registeredPhones = new Set(usersList.map((u: any) => u.phone?.trim()).filter(Boolean));
+    const registeredEmails = new Set(usersList.map((u: any) => u.email?.trim().toLowerCase()).filter(Boolean));
 
     let regMembers = 0;
     let newVisitors = 0;
 
     const uniqueVisitors = new Map<string, { phone?: string, email?: string }>();
-    otpsSnap.docs.forEach(doc => {
+    otpsSnap.docs.forEach((doc: any) => {
       const data = doc.data();
       if (data.verified) {
         const phone = data.phone?.trim();

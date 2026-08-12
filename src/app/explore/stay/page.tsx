@@ -176,7 +176,7 @@ export default function StayPage() {
     <div className="min-h-screen bg-surface">
       {/* Header */}
       <div className="bg-white border-b border-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex items-center gap-2 text-sm text-text-muted mb-4">
             <Link href="/" className="hover:text-primary">Home</Link>
             <span>/</span>
@@ -378,7 +378,7 @@ export default function StayPage() {
       </div>
 
       {/* Results */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <p className="text-sm text-text-muted mb-6">
           <span className="font-semibold text-text-primary">{filtered.length}</span> listings found
           {city && <> in <span className="font-semibold text-primary">{city}</span></>}
