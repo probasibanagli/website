@@ -552,7 +552,7 @@ export default function MatrimonialRegisterPage() {
                   onChange={(e) => updateField('about_me', e.target.value)}
                   rows={4}
                   className="w-full px-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none"
-                  placeholder="Tell potential matches about yourself — your personality, interests, values..."
+                  placeholder="Tell potential matches about yourself - your personality, interests, values..."
                 />
               </div>
 
@@ -586,7 +586,7 @@ export default function MatrimonialRegisterPage() {
                     <h4 className="text-sm font-semibold text-primary mb-2">{section.title}</h4>
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-1 text-sm">
                       {section.items.map(([label, value]) => (
-                        <p key={label as string}><span className="text-text-muted">{label as string}:</span> <span className="font-medium">{(value as string) || '—'}</span></p>
+                        <p key={label as string}><span className="text-text-muted">{label as string}:</span> <span className="font-medium">{(value as string) || '-'}</span></p>
                       ))}
                     </div>
                   </div>

@@ -3139,7 +3139,7 @@ export default function TravelPage() {
                           <div className="relative">
                             <span className="absolute -left-[21px] top-0.5 w-3.5 h-3.5 rounded-full bg-indigo-500 text-white text-[9px] font-bold flex items-center justify-center">5</span>
                             <strong className="text-text-primary block text-[11px] leading-none mb-1">Add Money / Recharge</strong>
-                            <p className="text-[10px]">Add money to the SVP — recharge is a minimum of ₹50, with a maximum balance/top-up limit of ₹3,000.</p>
+                            <p className="text-[10px]">Add money to the SVP - recharge is a minimum of ₹50, with a maximum balance/top-up limit of ₹3,000.</p>
                           </div>
                           <div className="relative">
                             <span className="absolute -left-[21px] top-0.5 w-3.5 h-3.5 rounded-full bg-indigo-500 text-white text-[9px] font-bold flex items-center justify-center">6</span>

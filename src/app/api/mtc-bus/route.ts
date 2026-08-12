@@ -102,7 +102,12 @@ function norm(str: string): string {
   if (!str) return '';
   return str.toLowerCase()
     .replace(/\s+/g, '')
-    .replace(/[.,'()]/g, '');
+    .replace(/[.,'()]/g, '')
+    .replace(/th/g, 't')
+    .replace(/dh/g, 't')
+    .replace(/d/g, 't')
+    .replace(/y/g, 'i')
+    .replace(/sh/g, 's');
 }
 
 function findStopIndex(routeStops: string[], query: string): number {

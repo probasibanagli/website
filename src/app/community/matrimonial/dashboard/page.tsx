@@ -124,6 +124,8 @@ export default function MatrimonialDashboard() {
     draft: { icon: Edit3, color: 'text-gray-500', bg: 'bg-gray-50', border: 'border-gray-200', label: 'Draft', desc: 'Complete your profile and submit for review.' },
     pending: { icon: Clock, color: 'text-amber-600', bg: 'bg-amber-50', border: 'border-amber-200', label: 'Pending Review', desc: 'Your profile is being reviewed by our admin team.' },
     approved: { icon: CheckCircle, color: 'text-accent', bg: 'bg-accent-light', border: 'border-emerald-200', label: 'Approved & Live', desc: 'Your profile is live and visible to other members.' },
+    verified: { icon: CheckCircle, color: 'text-accent', bg: 'bg-accent-light', border: 'border-emerald-200', label: 'Verified & Live', desc: 'Your profile is verified, live and visible to other members.' },
+    married: { icon: Heart, color: 'text-pink-500', bg: 'bg-pink-50', border: 'border-pink-200', label: 'Married / Found Partner', desc: 'Congratulations on finding your life partner!' },
     rejected: { icon: XCircle, color: 'text-red-500', bg: 'bg-red-50', border: 'border-red-200', label: 'Rejected', desc: 'Your profile was rejected. Please update and resubmit.' },
   };
 

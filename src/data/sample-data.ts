@@ -1352,7 +1352,7 @@ export const sampleBloodBanks: BloodBank[] = [
 ];
 
 export const sampleCommunityGroups: CommunityGroup[] = [
-  // ── WhatsApp Groups ──
+  // -- WhatsApp Groups --
   { id: '1', name: 'Bengalis in Chennai', platform: 'whatsapp', city: 'Chennai', region: 'tamil_nadu', description: 'Main WhatsApp group for all Bengalis in Chennai. Share tips, find help, and connect!', member_count: 450, join_url: 'https://chat.whatsapp.com/example1', category: 'general' },
   { id: '2', name: 'Bengali Students TN', platform: 'telegram', city: 'Chennai', region: 'tamil_nadu', description: 'Students from Bengal studying in Tamil Nadu colleges. Exam tips, notes, and fun!', member_count: 320, join_url: 'https://t.me/example2', category: 'students' },
   { id: '3', name: 'Bengali Professionals Chennai', platform: 'whatsapp', city: 'Chennai', region: 'tamil_nadu', description: 'Working professionals group for networking, job referrals and meetups.', member_count: 180, join_url: 'https://chat.whatsapp.com/example3', category: 'professionals' },
@@ -1360,27 +1360,27 @@ export const sampleCommunityGroups: CommunityGroup[] = [
   { id: '5', name: 'VIT Bengali Students', platform: 'whatsapp', city: 'Vellore', region: 'tamil_nadu', description: 'Bengali students at VIT Vellore. Campus life, events, and help.', member_count: 280, join_url: 'https://chat.whatsapp.com/example5', category: 'students' },
   { id: '6', name: 'Bangali Adda Coimbatore', platform: 'facebook', city: 'Coimbatore', region: 'tamil_nadu', description: 'Facebook group for Bengalis in Coimbatore. Events, food finds, and meetups.', member_count: 150, join_url: 'https://facebook.com/groups/example6', facebook_url: 'https://facebook.com/groups/example6', category: 'general' },
 
-  // ── Bengali Association Instagram ──
+  // -- Bengali Association Instagram --
   { id: 'ig-1', name: 'Bengali Association Chennai', platform: 'instagram', city: 'Chennai', region: 'tamil_nadu', description: 'Official Instagram of Bengali Association Chennai. Cultural updates, Durga Puja photos, community news.', member_count: 2800, join_url: 'https://instagram.com/bengali_assoc_chennai', instagram_url: 'https://instagram.com/bengali_assoc_chennai', category: 'general' },
   { id: 'ig-2', name: 'Probasi Bangali TN', platform: 'instagram', city: 'Chennai', region: 'tamil_nadu', description: 'Tamil Nadu-wide Bengali community on Instagram. Events, meetups, and cultural showcases.', member_count: 5200, join_url: 'https://instagram.com/probasibangali_tn', instagram_url: 'https://instagram.com/probasibangali_tn', category: 'general' },
-  { id: 'ig-3', name: 'Bengali Students Tamil Nadu', platform: 'instagram', city: 'Chennai', region: 'tamil_nadu', description: 'Student life in TN — campus stories, exam prep, and Bengali nostalgia.', member_count: 1500, join_url: 'https://instagram.com/bengali_students_tn', instagram_url: 'https://instagram.com/bengali_students_tn', category: 'students' },
+  { id: 'ig-3', name: 'Bengali Students Tamil Nadu', platform: 'instagram', city: 'Chennai', region: 'tamil_nadu', description: 'Student life in TN - campus stories, exam prep, and Bengali nostalgia.', member_count: 1500, join_url: 'https://instagram.com/bengali_students_tn', instagram_url: 'https://instagram.com/bengali_students_tn', category: 'students' },
   { id: 'ig-4', name: 'Bengalis in Coimbatore', platform: 'instagram', city: 'Coimbatore', region: 'tamil_nadu', description: 'Coimbatore Bengali community Instagram. Food, culture, and networking.', member_count: 900, join_url: 'https://instagram.com/bengalis_coimbatore', instagram_url: 'https://instagram.com/bengalis_coimbatore', category: 'general' },
   { id: 'ig-5', name: 'Bengali Association India', platform: 'instagram', region: 'india', description: 'Pan-India Bengali community page. Connecting Bengalis across all states.', member_count: 15000, join_url: 'https://instagram.com/bengali_assoc_india', instagram_url: 'https://instagram.com/bengali_assoc_india', category: 'general' },
   { id: 'ig-6', name: 'NRI Bangali Network', platform: 'instagram', region: 'all', description: 'Global Bengali diaspora network. Connecting Bengalis worldwide through culture and heritage.', member_count: 25000, join_url: 'https://instagram.com/nri_bangali', instagram_url: 'https://instagram.com/nri_bangali', category: 'general' },
   { id: 'ig-7', name: 'Probasi Bangali Worldwide', platform: 'instagram', region: 'all', description: 'International platform for Bengalis living outside Bengal. Events, culture, and connections.', member_count: 18000, join_url: 'https://instagram.com/probasibangali_world', instagram_url: 'https://instagram.com/probasibangali_world', category: 'general' },
 
-  // ── Bengali Association Facebook ──
+  // -- Bengali Association Facebook --
   { id: 'fb-1', name: 'Bengali Association Chennai', platform: 'facebook', city: 'Chennai', region: 'tamil_nadu', description: 'Official Facebook group of Bengali Association Chennai. Community events, discussions, and help.', member_count: 3500, join_url: 'https://facebook.com/groups/bengali_chennai', facebook_url: 'https://facebook.com/groups/bengali_chennai', category: 'general' },
   { id: 'fb-2', name: 'Bangali Samaj Tamil Nadu', platform: 'facebook', region: 'tamil_nadu', description: 'Tamil Nadu-wide Bengali Samaj community. Puja committees, cultural events, and support network.', member_count: 4200, join_url: 'https://facebook.com/groups/bangali_samaj_tn', facebook_url: 'https://facebook.com/groups/bangali_samaj_tn', category: 'general' },
   { id: 'fb-3', name: 'Bengalis in India', platform: 'facebook', region: 'india', description: 'Pan-India Facebook community for Bengalis. Job posts, cultural discussions, and networking.', member_count: 28000, join_url: 'https://facebook.com/groups/bengalis_india', facebook_url: 'https://facebook.com/groups/bengalis_india', category: 'general' },
   { id: 'fb-4', name: 'Global Bengali Forum', platform: 'facebook', region: 'all', description: 'Worldwide forum for Bengali diaspora. Heritage, literature, and global meetups.', member_count: 45000, join_url: 'https://facebook.com/groups/global_bengali', facebook_url: 'https://facebook.com/groups/global_bengali', category: 'general' },
 
-  // ── Bengali Association LinkedIn ──
+  // -- Bengali Association LinkedIn --
   { id: 'li-1', name: 'Bengali Professionals TN', platform: 'linkedin', city: 'Chennai', region: 'tamil_nadu', description: 'Professional networking for Bengalis in Tamil Nadu. Job opportunities, career advice, and industry connections.', member_count: 1200, join_url: 'https://linkedin.com/groups/bengali-professionals-tn', linkedin_url: 'https://linkedin.com/groups/bengali-professionals-tn', category: 'professionals' },
   { id: 'li-2', name: 'Bengali Entrepreneurs India', platform: 'linkedin', region: 'india', description: 'Network of Bengali entrepreneurs and business professionals across India. Startups, investments, and mentorship.', member_count: 5600, join_url: 'https://linkedin.com/groups/bengali-entrepreneurs', linkedin_url: 'https://linkedin.com/groups/bengali-entrepreneurs', category: 'professionals' },
   { id: 'li-3', name: 'Bengali Tech Network', platform: 'linkedin', region: 'all', description: 'Global community of Bengali tech professionals. Hiring, projects, and knowledge sharing.', member_count: 8900, join_url: 'https://linkedin.com/groups/bengali-tech', linkedin_url: 'https://linkedin.com/groups/bengali-tech', category: 'professionals' },
 
-  // ── Bengali Association Websites ──
+  // -- Bengali Association Websites --
   { id: 'web-1', name: 'ProbasiBangali.in', platform: 'website', region: 'tamil_nadu', description: 'Official website for Bengalis in Tamil Nadu. PG listings, food guides, emergency services, and community resources.', member_count: 10000, join_url: 'https://probasibangali.in', website_url: 'https://probasibangali.in', category: 'general' },
   { id: 'web-2', name: 'Chennai Bengali Association', platform: 'website', city: 'Chennai', region: 'tamil_nadu', description: 'Official website of Chennai Bengali Association. Durga Puja schedules, membership, and cultural events.', member_count: 5000, join_url: 'https://chennaibengali.org', website_url: 'https://chennaibengali.org', category: 'general' },
   { id: 'web-3', name: 'Bengal Foundation India', platform: 'website', region: 'india', description: 'Pan-India Bengali foundation website. Scholarships, cultural programs, and community support.', member_count: 20000, join_url: 'https://bengalfoundation.in', website_url: 'https://bengalfoundation.in', category: 'general' },
@@ -1424,7 +1424,7 @@ export const sampleMatrimonialProfiles: MatrimonialProfile[] = [
     religion: 'Hindu', caste: 'Bengali', sub_caste: 'Kayastha', gotra: '', manglik: 'No',
     diet: 'Non-Vegetarian', smoking: 'No', drinking: 'No',
     hobbies: ['Dancing', 'Painting', 'Music', 'Cooking', 'Traveling'],
-    about_me: 'Passionate about travel, art and Bengali cuisine. I love exploring new places and trying local foods. Dancing is my stress-buster — I\'ve trained in Rabindra Nritya. Looking for a life partner who respects Bengali traditions while having a progressive outlook on life.',
+    about_me: 'Passionate about travel, art and Bengali cuisine. I love exploring new places and trying local foods. Dancing is my stress-buster - I\'ve trained in Rabindra Nritya. Looking for a life partner who respects Bengali traditions while having a progressive outlook on life.',
     partner_preference: 'Well-educated Bengali boy with good values and a caring nature. Should respect elders and be supportive of a working wife.',
     pref_age_min: 26, pref_age_max: 32, pref_height_min: "5'7\"", pref_height_max: "6'2\"",
     pref_education: 'B.Tech or above', pref_city: 'Chennai', pref_diet: 'Non-Vegetarian',
@@ -1446,7 +1446,7 @@ export const sampleMatrimonialProfiles: MatrimonialProfile[] = [
     religion: 'Hindu', caste: 'Bengali', sub_caste: 'Brahmin', gotra: 'Bharadwaj', manglik: 'No',
     diet: 'Non-Vegetarian', smoking: 'No', drinking: 'Occasionally',
     hobbies: ['Sports', 'Music', 'Bengali Literature', 'Cooking Bengali Food'],
-    about_me: 'Working in the manufacturing sector. Sports enthusiast — I play cricket every weekend. Love reading Bengali literature and listening to Rabindra Sangeet.',
+    about_me: 'Working in the manufacturing sector. Sports enthusiast - I play cricket every weekend. Love reading Bengali literature and listening to Rabindra Sangeet.',
     partner_preference: 'Bengali girl who values family traditions. Should be kind-hearted and supportive.',
     pref_age_min: 25, pref_age_max: 30, pref_height_min: "5'0\"", pref_height_max: "5'6\"",
     pref_education: 'Graduate', pref_diet: 'Non-Vegetarian',
@@ -1556,7 +1556,7 @@ export const sampleMatrimonialProfiles: MatrimonialProfile[] = [
     religion: 'Hindu', caste: 'Bengali', sub_caste: 'Mahishya', gotra: '', manglik: 'No',
     diet: 'Non-Vegetarian', smoking: 'No', drinking: 'No',
     hobbies: ['Cooking', 'Singing', 'Rabindra Sangeet', 'Yoga & Fitness', 'Painting'],
-    about_me: 'CA working in Coimbatore. I am deeply connected to my Bengali roots — I sing Rabindra Sangeet and cook authentic Bengali food. Looking for someone who shares these values.',
+    about_me: 'CA working in Coimbatore. I am deeply connected to my Bengali roots - I sing Rabindra Sangeet and cook authentic Bengali food. Looking for someone who shares these values.',
     partner_preference: 'Well-settled Bengali boy from a good family. Should be non-smoker, family-oriented, and supportive.',
     pref_age_min: 29, pref_age_max: 35, pref_height_min: "5'6\"", pref_height_max: "6'0\"",
     pref_education: 'Graduate or above', pref_income_min: '8-10 LPA',
@@ -1663,15 +1663,15 @@ export const sampleColleges: College[] = [
 ];
 
 export const sampleEvents: Event[] = [
-  { id: '1', title: 'Durga Puja 2025 — Chennai', description: 'Grand Durga Puja celebration at Deshapriya Park, T.Nagar. 5 days of cultural programs, Bengali food stalls, dhunuchi naach.', event_date: '2025-10-01', city: 'Chennai', venue: 'Deshapriya Park, T.Nagar', organizer: 'Chennai Bengali Association', contact: '9876543230', category: 'festival' },
+  { id: '1', title: 'Durga Puja 2025 - Chennai', description: 'Grand Durga Puja celebration at Deshapriya Park, T.Nagar. 5 days of cultural programs, Bengali food stalls, dhunuchi naach.', event_date: '2025-10-01', city: 'Chennai', venue: 'Deshapriya Park, T.Nagar', organizer: 'Chennai Bengali Association', contact: '9876543230', category: 'festival' },
   { id: '2', title: 'Saraswati Puja', description: 'Saraswati Puja celebration with pushpanjali, cultural events and prasad distribution.', event_date: '2025-02-02', city: 'Chennai', venue: 'Bengali Club, Anna Nagar', organizer: 'Anna Nagar Bengali Sabha', contact: '9876543231', category: 'religious' },
   { id: '3', title: 'Bengali New Year (Poila Boishakh)', description: 'Celebrate Poila Boishakh with music, dance, and traditional Bengali food.', event_date: '2025-04-15', city: 'Chennai', venue: 'Kalaivanar Arangam', organizer: 'ProbasiBangali Chennai', contact: '9876543232', category: 'cultural' },
   { id: '4', title: 'Rabindra Jayanti', description: 'Tribute to Rabindranath Tagore with recitations, songs, and drama.', event_date: '2025-05-09', city: 'Vellore', venue: 'VIT Auditorium', organizer: 'VIT Bengali Students Club', contact: '9876543233', category: 'cultural' },
-  { id: '5', title: 'Community Meetup — Coimbatore', description: 'Monthly meetup for Bengali families in Coimbatore. Food, fun and networking.', event_date: '2025-04-20', city: 'Coimbatore', venue: 'Hotel Residency Towers', organizer: 'Coimbatore Banga Samaj', contact: '9876543234', category: 'social' },
+  { id: '5', title: 'Community Meetup - Coimbatore', description: 'Monthly meetup for Bengali families in Coimbatore. Food, fun and networking.', event_date: '2025-04-20', city: 'Coimbatore', venue: 'Hotel Residency Towers', organizer: 'Coimbatore Banga Samaj', contact: '9876543234', category: 'social' },
 ];
 
 export const sampleBlogPosts: BlogPost[] = [
   { id: '1', title: 'Top 10 Bengali Restaurants in Chennai', slug: 'top-bengali-restaurants-chennai', excerpt: 'Missing home food? Here are the best places to find authentic Bengali cuisine in Chennai.', author: 'ProbasiBangali Team', tags: ['food', 'chennai', 'restaurants'], published: true, created_at: '2025-03-01' },
   { id: '2', title: 'How to Find Bengali-Friendly PG in Tamil Nadu', slug: 'find-bengali-pg-tamil-nadu', excerpt: 'A complete guide for Bengali students and professionals looking for accommodation.', author: 'ProbasiBangali Team', tags: ['accommodation', 'guide', 'pg'], published: true, created_at: '2025-03-10' },
-  { id: '3', title: 'Durga Puja in Chennai — A Complete Guide', slug: 'durga-puja-chennai-guide', excerpt: 'Everything you need to know about celebrating Durga Puja in Chennai.', author: 'ProbasiBangali Team', tags: ['festival', 'durga puja', 'chennai'], published: true, created_at: '2025-03-15' },
+  { id: '3', title: 'Durga Puja in Chennai - A Complete Guide', slug: 'durga-puja-chennai-guide', excerpt: 'Everything you need to know about celebrating Durga Puja in Chennai.', author: 'ProbasiBangali Team', tags: ['festival', 'durga puja', 'chennai'], published: true, created_at: '2025-03-15' },
 ];

@@ -9,7 +9,7 @@ const INTERESTS_KEY = 'pb_matrimony_interests';
 const SHORTLIST_KEY = 'pb_matrimony_shortlist';
 const VIEWS_KEY = 'pb_matrimony_views';
 
-/* ── Helpers ── */
+/* -- Helpers -- */
 
 function getFromStorage<T>(key: string, fallback: T): T {
   if (typeof window === 'undefined') return fallback;
@@ -26,7 +26,7 @@ function setToStorage<T>(key: string, value: T): void {
   localStorage.setItem(key, JSON.stringify(value));
 }
 
-/* ── Profile ID Generator ── */
+/* -- Profile ID Generator -- */
 
 export function generateProfileId(): string {
   const existing = getAllProfiles();
@@ -37,7 +37,7 @@ export function generateProfileId(): string {
   return `PB-${String(maxNum + 1).padStart(4, '0')}`;
 }
 
-/* ── Profile CRUD ── */
+/* -- Profile CRUD -- */
 
 export function getAllProfiles(): MatrimonialProfile[] {
   const userProfiles = getFromStorage<MatrimonialProfile[]>(PROFILES_KEY, []);
@@ -84,7 +84,7 @@ export function deleteMyProfile(): void {
   localStorage.removeItem(MY_PROFILE_KEY);
 }
 
-/* ── Interests ── */
+/* -- Interests -- */
 
 interface Interest {
   fromId: string;
@@ -122,7 +122,7 @@ export function updateInterestStatus(fromId: string, toId: string, status: 'acce
   }
 }
 
-/* ── Shortlist ── */
+/* -- Shortlist -- */
 
 export function getShortlist(): string[] {
   return getFromStorage<string[]>(SHORTLIST_KEY, []);
@@ -146,7 +146,7 @@ export function isShortlisted(profileId: string): boolean {
   return getShortlist().includes(profileId);
 }
 
-/* ── Profile Views ── */
+/* -- Profile Views -- */
 
 export function recordView(profileId: string): void {
   const views = getFromStorage<Record<string, number>>(VIEWS_KEY, {});
@@ -159,7 +159,7 @@ export function getViewCount(profileId: string): number {
   return views[profileId] || 0;
 }
 
-/* ── Search / Filter ── */
+/* -- Search / Filter -- */
 
 export interface MatrimonyFilters {
   gender?: string;
@@ -212,4 +212,42 @@ export function sortProfiles(profiles: MatrimonialProfile[], sort: SortOption): 
     default:
       return sorted;
   }
+}
+
+/* -- Admin Functions -- */
+
+export function adminUpdateProfileStatus(id: string, status: 'pending' | 'verified' | 'rejected' | 'married'): void {
+  const profiles = getFromStorage<MatrimonialProfile[]>(PROFILES_KEY, []);
+  const idx = profiles.findIndex(p => p.id === id);
+  if (idx >= 0) {
+    profiles[idx] = { ...profiles[idx], status, updated_at: new Date().toISOString() };
+    setToStorage(PROFILES_KEY, profiles);
+  }
+  // Also check and update my profile if applicable
+  const myProfile = getMyProfile();
+  if (myProfile && myProfile.id === id) {
+    saveMyProfile({ ...myProfile, status, updated_at: new Date().toISOString() });
+  }
+}
+
+export function adminDeleteProfile(id: string): void {
+  const profiles = getFromStorage<MatrimonialProfile[]>(PROFILES_KEY, []);
+  const filtered = profiles.filter(p => p.id !== id);
+  setToStorage(PROFILES_KEY, filtered);
+  // Also delete my profile if applicable
+  const myProfile = getMyProfile();
+  if (myProfile && myProfile.id === id) {
+    deleteMyProfile();
+  }
+}
+
+export async function getMedia(key: string): Promise<string | null> {
+  // Return placeholder URLs based on type
+  if (key.includes('_photo_')) {
+    return 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200';
+  }
+  if (key.includes('_video')) {
+    return 'https://www.w3schools.com/html/mov_bbb.mp4';
+  }
+  return null;
 }

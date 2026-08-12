@@ -166,10 +166,10 @@ export default function StayPage() {
 
           </div>
 
-          {/* ── STEP 1: City Selection ── */}
+          {/* -- STEP 1: City Selection -- */}
           <div className={`mt-5 p-4 bg-gradient-to-r from-primary/5 to-accent/5 rounded-2xl border border-primary/10 ${isCityOpen ? 'relative z-50' : 'relative z-30'}`}>
             <p className="text-xs font-semibold text-primary uppercase tracking-wider mb-3 flex items-center gap-1.5">
-              <MapPin className="w-3.5 h-3.5" /> Step 1 — Select City
+              <MapPin className="w-3.5 h-3.5" /> Step 1 - Select City
             </p>
             <div className={`relative w-full sm:max-w-xs ${isCityOpen ? 'z-50' : ''}`}>
               <button onClick={() => setIsCityOpen(!isCityOpen)} className="flex items-center justify-between w-full px-4 py-2.5 rounded-xl border border-border bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary/30">
@@ -190,7 +190,7 @@ export default function StayPage() {
             </div>
           </div>
 
-          {/* ── STEP 2: Area + Subcategory ── */}
+          {/* -- STEP 2: Area + Subcategory -- */}
           {city && (
             <div className={`mt-3 p-4 bg-white rounded-2xl border border-border space-y-4 animate-fade-in ${isAreaOpen || isSubcatOpen ? 'relative z-50' : 'relative z-20'}`}>
               <div className="flex flex-col md:flex-row md:flex-wrap items-start md:items-center gap-3">

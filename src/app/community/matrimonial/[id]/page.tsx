@@ -337,10 +337,10 @@ export default function MatrimonialDetailPage() {
                 )}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6">
                   {(profile.pref_age_min || profile.pref_age_max) && (
-                    <InfoRow icon={User} label="Preferred Age" value={`${profile.pref_age_min || '—'} to ${profile.pref_age_max || '—'} years`} />
+                    <InfoRow icon={User} label="Preferred Age" value={`${profile.pref_age_min || '-'} to ${profile.pref_age_max || '-'} years`} />
                   )}
                   {(profile.pref_height_min || profile.pref_height_max) && (
-                    <InfoRow icon={Ruler} label="Preferred Height" value={`${profile.pref_height_min || '—'} to ${profile.pref_height_max || '—'}`} />
+                    <InfoRow icon={Ruler} label="Preferred Height" value={`${profile.pref_height_min || '-'} to ${profile.pref_height_max || '-'}`} />
                   )}
                   <InfoRow icon={GraduationCap} label="Preferred Education" value={profile.pref_education} />
                   <InfoRow icon={Briefcase} label="Preferred Profession" value={profile.pref_profession} />

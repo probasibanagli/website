@@ -84,7 +84,7 @@ export function getDefaultPermissions(role: UserRole): ModulePermissions {
     case 'superadmin':
       return full;
     case 'admin':
-      // Admins start with no permissions — Super Admin assigns them
+      // Admins start with no permissions - Super Admin assigns them
       return none;
     case 'user':
     default:

@@ -24,7 +24,7 @@ export function Footer() {
               </span>
             </div>
             <p className="text-sm text-gray-400 leading-relaxed">
-              <T>Helping Bengalis in Tamil Nadu feel at home. Find accommodation, food, community, and emergency help — all in one place.</T>
+              <T>Helping Bengalis in Tamil Nadu feel at home. Find accommodation, food, community, and emergency help - all in one place.</T>
             </p>
             <p className="text-xs text-gray-500 italic font-display">
               &ldquo;<T>Helping You Feel at Home, Anywhere</T>&rdquo;
@@ -68,7 +68,7 @@ export function Footer() {
         {/* Bottom */}
         <div className="border-t border-gray-800 mt-12 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-gray-500">
-            © {new Date().getFullYear()} <T>ProbasiBangali.in — All rights reserved.</T>
+            © {new Date().getFullYear()} <T>ProbasiBangali.in - All rights reserved.</T>
           </p>
           <p className="text-xs text-gray-500 flex items-center gap-1">
             <T>Made with</T> <Heart className="w-3 h-3 text-primary fill-primary" /> <T>for Bengalis in Tamil Nadu</T>

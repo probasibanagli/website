@@ -28,7 +28,7 @@ export default function HomePage() {
           </h1>
 
           <p className="mt-6 text-lg sm:text-xl text-text-muted max-w-2xl mx-auto leading-relaxed animate-fade-in delay-200">
-            <T>Find Bengali food, safe accommodation, travel help, and community connections — built for Bengalis living in Tamil Nadu.</T>
+            <T>Find Bengali food, safe accommodation, travel help, and community connections - built for Bengalis living in Tamil Nadu.</T>
           </p>
 
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in delay-300">
@@ -70,7 +70,7 @@ export default function HomePage() {
               <T>Everything You Need</T>
             </h2>
             <p className="mt-3 text-text-muted max-w-xl mx-auto">
-              <T>From finding a Bengali-friendly PG to authentic fish curry — we&apos;ve got you covered.</T>
+              <T>From finding a Bengali-friendly PG to authentic fish curry - we&apos;ve got you covered.</T>
             </p>
           </div>
 
@@ -105,7 +105,7 @@ export default function HomePage() {
             <T>Emergency Services</T>
           </h2>
           <p className="text-white/80 max-w-xl mx-auto mb-10">
-            <T>Immediate help when you need it most — hospitals, blood banks, and emergency contacts.</T>
+            <T>Immediate help when you need it most - hospitals, blood banks, and emergency contacts.</T>
           </p>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl mx-auto">
             {[
@@ -206,7 +206,7 @@ export default function HomePage() {
             <T>Join the ProbasiBangali Community</T>
           </h2>
           <p className="text-text-muted mb-8 max-w-lg mx-auto">
-            <T>Whether you&apos;re a student, professional, or family — connect with fellow Bengalis and make Tamil Nadu feel like home.</T>
+            <T>Whether you&apos;re a student, professional, or family - connect with fellow Bengalis and make Tamil Nadu feel like home.</T>
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link href="/auth/register">

@@ -153,7 +153,7 @@ export function ChatWidget() {
       {mounted && (
         <button
           onClick={() => setIsOpen(!isOpen)}
-          aria-label="Tamil Word Helper — Ask in Bengali, Tamil, or English"
+          aria-label="Tamil Word Helper - Ask in Bengali, Tamil, or English"
           title="Tamil Word Helper"
           className={cn(
             'fixed bottom-5 right-4 sm:right-6 z-50 w-14 h-14 rounded-full shadow-2xl shadow-primary/25 flex items-center justify-center transition-all duration-300 cursor-pointer ring-1 ring-primary/10 hover:ring-primary/20',

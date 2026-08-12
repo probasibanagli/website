@@ -376,7 +376,7 @@ export default function MatrimonialPage() {
                     <div className="mt-3 space-y-1.5">
                       <div className="flex items-center gap-2 text-sm text-text-muted">
                         <GraduationCap className="w-4 h-4 flex-shrink-0 text-primary/70" />
-                        <span className="truncate">{profile.education}{profile.institution ? ` — ${profile.institution}` : ''}</span>
+                        <span className="truncate">{profile.education}{profile.institution ? ` - ${profile.institution}` : ''}</span>
                       </div>
                       <div className="flex items-center gap-2 text-sm text-text-muted">
                         <Briefcase className="w-4 h-4 flex-shrink-0 text-primary/70" />
@@ -468,7 +468,7 @@ export default function MatrimonialPage() {
                 </p>
                 <Link href="/community/matrimonial/register">
                   <Button variant="primary" size="lg">
-                    <Heart className="w-5 h-5" /> Register Your Profile — It&apos;s Free
+                    <Heart className="w-5 h-5" /> Register Your Profile - It&apos;s Free
                   </Button>
                 </Link>
               </div>

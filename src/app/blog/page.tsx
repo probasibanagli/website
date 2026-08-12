@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/Badge';
 import { sampleBlogPosts } from '@/data/sample-data';
 
 export const metadata = {
-  title: 'Blog — ProbasiBangali',
+  title: 'Blog - ProbasiBangali',
   description: 'Tips, guides, and stories for Bengalis living in Tamil Nadu.',
 };
 

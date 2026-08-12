@@ -81,7 +81,7 @@ export default function ProfilePage() {
     }
   };
 
-  /* ── Phone OTP: Send ── */
+  /* -- Phone OTP: Send -- */
   const handleSendOtp = async () => {
     setPhoneError('');
     setPhoneSuccess('');
@@ -126,7 +126,7 @@ export default function ProfilePage() {
     }
   };
 
-  /* ── Phone OTP: Verify ── */
+  /* -- Phone OTP: Verify -- */
   const handleVerifyOtp = async () => {
     const code = otp.join('');
     if (code.length !== 6) {
@@ -165,7 +165,7 @@ export default function ProfilePage() {
     }
   };
 
-  /* ── OTP Input Handling ── */
+  /* -- OTP Input Handling -- */
   const handleOtpChange = (index: number, value: string) => {
     if (value.length > 1) value = value.slice(-1);
     if (value && !/^\d$/.test(value)) return;

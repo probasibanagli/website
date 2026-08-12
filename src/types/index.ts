@@ -1,4 +1,4 @@
-/* ──────────────── Role & Permission Types ──────────────── */
+/* ---------------- Role & Permission Types ---------------- */
 
 export type UserRole = 'user' | 'admin' | 'superadmin';
 
@@ -33,7 +33,7 @@ export interface UserProfile {
   email_verified?: boolean;
 }
 
-/* ──────────────── Module Labels (for UI) ──────────────── */
+/* ---------------- Module Labels (for UI) ---------------- */
 
 export const MODULE_LABELS: Record<ModuleKey, string> = {
   stay: 'Stay & Accommodation',
@@ -46,7 +46,7 @@ export const MODULE_LABELS: Record<ModuleKey, string> = {
   users: 'User Management',
 };
 
-/* ──────────────── Data Models ──────────────── */
+/* ---------------- Data Models ---------------- */
 
 export interface Listing {
   id: string;
@@ -129,12 +129,41 @@ export interface BengaliDoctor {
   id: string;
   doctor_name: string;
   specialization: string;
+  department?: string;
+  qualifications?: string[];
+  consultation_timings?: string;
+  social_links?: {
+    linkedin?: string;
+    facebook?: string;
+    instagram?: string;
+    x?: string;
+  };
   hospital_id: string;
+  hospital_ids?: string[];
   experience: string;
   languages: string[];
   photo: string;
   phone: string;
   email: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface BengaliStaff {
+  id: string;
+  name: string;
+  role: string;
+  department?: string;
+  hospital_id: string;
+  experience: string;
+  languages: string[];
+  photo?: string;
+  phone?: string;
+  email?: string;
+  availability?: string;
+  description?: string;
+  hospital?: string;
+  hospital_name?: string;
   created_at?: string;
   updated_at?: string;
 }
@@ -149,6 +178,16 @@ export interface BloodBank {
   google_maps_url?: string;
   lat?: number;
   lng?: number;
+}
+
+export interface Ambulance {
+  id: string;
+  name: string;
+  city: string;
+  address?: string;
+  phone?: string;
+  created_at: string;
+  updated_at?: string;
 }
 
 export interface CommunityGroup {
@@ -213,6 +252,8 @@ export interface MatrimonialProfile {
   caste?: string;
   sub_caste?: string;
   gotra?: string;
+  raasi?: string;
+  star?: string;
   manglik?: string;
 
   // Lifestyle
@@ -244,11 +285,13 @@ export interface MatrimonialProfile {
 
   // Photos
   profile_photo?: string;
+  photos?: string[];
+  video?: string;
 
   // System
   verified: boolean;
   published: boolean;
-  status?: 'draft' | 'pending' | 'approved' | 'rejected';
+  status?: 'draft' | 'pending' | 'approved' | 'rejected' | 'verified' | 'married';
   contact_visible_after_login: boolean;
   created_at: string;
   updated_at?: string;

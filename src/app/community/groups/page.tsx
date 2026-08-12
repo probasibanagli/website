@@ -10,7 +10,7 @@ import { sampleCommunityGroups } from '@/data/sample-data';
 import { useFirestore } from '@/lib/hooks/useFirestore';
 import { CommunityGroup } from '@/types';
 
-/* ── Platform config ── */
+/* -- Platform config -- */
 const PLATFORMS = [
   { key: 'instagram', label: 'Instagram', icon: '📷', color: 'bg-gradient-to-br from-purple-500 via-pink-500 to-orange-400', textColor: 'text-white', ringColor: 'ring-pink-300', badgeColor: 'bg-pink-100 text-pink-700' },
   { key: 'facebook', label: 'Facebook', icon: '👤', color: 'bg-gradient-to-br from-blue-600 to-blue-500', textColor: 'text-white', ringColor: 'ring-blue-300', badgeColor: 'bg-indigo-100 text-indigo-700' },
@@ -87,10 +87,10 @@ export default function GroupsPage() {
           <h1 className="text-3xl sm:text-4xl font-bold font-display text-text-primary">Community Groups</h1>
           <p className="mt-2 text-text-muted">Connect with Bengali communities across Tamil Nadu, India, and worldwide.</p>
 
-          {/* ── STEP 1: Platform Selection ── */}
+          {/* -- STEP 1: Platform Selection -- */}
           <div className="mt-6 p-5 bg-gradient-to-r from-primary/5 to-accent/5 rounded-2xl border border-primary/10">
             <p className="text-xs font-semibold text-primary uppercase tracking-wider mb-3 flex items-center gap-1.5">
-              <Globe className="w-3.5 h-3.5" /> Step 1 — Choose Platform
+              <Globe className="w-3.5 h-3.5" /> Step 1 - Choose Platform
             </p>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
               {PLATFORMS.map((p) => (
@@ -113,11 +113,11 @@ export default function GroupsPage() {
             </div>
           </div>
 
-          {/* ── STEP 2: Region Scope (shown after platform selected) ── */}
+          {/* -- STEP 2: Region Scope (shown after platform selected) -- */}
           {selectedPlatform && (
             <div className="mt-3 p-5 bg-white rounded-2xl border border-border animate-fade-in">
               <p className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-3 flex items-center gap-1.5">
-                <MapPin className="w-3.5 h-3.5" /> Step 2 — Select Region
+                <MapPin className="w-3.5 h-3.5" /> Step 2 - Select Region
               </p>
               <div className="flex flex-wrap gap-3">
                 <button

@@ -64,7 +64,7 @@ export default function LoginPage() {
     };
   }, []);
 
-  /* ── Email Login ── */
+  /* -- Email Login -- */
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -112,7 +112,7 @@ export default function LoginPage() {
     }
   };
 
-  /* ── Phone OTP: Send ── */
+  /* -- Phone OTP: Send -- */
   const handleSendOtp = async () => {
     setError('');
     setSuccess('');
@@ -153,7 +153,7 @@ export default function LoginPage() {
     }
   };
 
-  /* ── Phone OTP: Verify ── */
+  /* -- Phone OTP: Verify -- */
   const handleVerifyOtp = async (codeOverride?: string) => {
     const code = codeOverride || otp.join('');
     if (code.length !== 6) {
@@ -192,7 +192,7 @@ export default function LoginPage() {
     }
   };
 
-  /* ── OTP Input Handling ── */
+  /* -- OTP Input Handling -- */
   const handleOtpChange = (index: number, value: string) => {
     if (value.length > 1) value = value.slice(-1);
     if (value && !/^\d$/.test(value)) return;

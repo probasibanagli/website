@@ -105,10 +105,10 @@ export default function FoodPage() {
 
           </div>
 
-          {/* ── STEP 1: City Selection (Primary) ── */}
+          {/* -- STEP 1: City Selection (Primary) -- */}
           <div className={`mt-5 p-4 bg-gradient-to-r from-orange-50 to-amber-50 rounded-2xl border border-orange-100 ${isCityOpen ? 'relative z-50' : 'relative z-30'}`}>
             <p className="text-xs font-semibold text-orange-600 uppercase tracking-wider mb-3 flex items-center gap-1.5">
-              <MapPin className="w-3.5 h-3.5" /> Step 1 — Select City
+              <MapPin className="w-3.5 h-3.5" /> Step 1 - Select City
             </p>
             <div className={`relative w-full sm:max-w-xs ${isCityOpen ? 'z-50' : ''}`}>
               <button
@@ -144,7 +144,7 @@ export default function FoodPage() {
             </div>
           </div>
 
-          {/* ── STEP 2: Area + Bengali Friendly (visible after city selected) ── */}
+          {/* -- STEP 2: Area + Bengali Friendly (visible after city selected) -- */}
           {city && (
             <div className={`mt-3 p-4 bg-white rounded-2xl border border-border space-y-4 animate-fade-in ${isAreaOpen ? 'relative z-50' : 'relative z-20'}`}>
               <div className="flex flex-col md:flex-row md:flex-wrap items-start md:items-center gap-3">

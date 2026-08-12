@@ -13,7 +13,7 @@ const categoryColors: Record<string, string> = { festival: 'bg-amber-100 text-am
 
 /* ══════════════════════════════════════════════════════════
    Bengali Calendar Conversion Logic
-   Bengali calendar (Bangabda) — based on the fixed Bangla calendar
+   Bengali calendar (Bangabda) - based on the fixed Bangla calendar
    reform (BS 1402 / AD 1995 onward).
    Months: Boishakh(1)..Choitro(12)
    Boishakh 1 = April 14 (or 15 in leap years)
@@ -115,7 +115,7 @@ function convertToBengaliDate(date: Date): { day: number; month: number; year: n
   return { day: bengaliDay, month: bengaliMonth, year: bengaliYear, dayOfWeek };
 }
 
-/* ── Panjika Links ── */
+/* -- Panjika Links -- */
 const PANJIKA_LINKS = [
   {
     title: 'Bengali Panjika (Annual)',
@@ -172,9 +172,9 @@ export default function EventsPage() {
             <span className="text-text-primary font-medium">Events & Festivals</span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-bold font-display text-text-primary">Events & Festivals</h1>
-          <p className="mt-2 text-text-muted">Celebrate Bengali culture — Panjika, calendar tools, and community events.</p>
+          <p className="mt-2 text-text-muted">Celebrate Bengali culture - Panjika, calendar tools, and community events.</p>
 
-          {/* ── Today's Bengali Date Banner ── */}
+          {/* -- Today's Bengali Date Banner -- */}
           <div className="mt-5 p-4 bg-gradient-to-r from-amber-50 via-orange-50 to-red-50 rounded-2xl border border-amber-200/50 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-6">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center text-white text-xl shadow-md">
@@ -192,7 +192,7 @@ export default function EventsPage() {
             </div>
           </div>
 
-          {/* ── Tab Navigation ── */}
+          {/* -- Tab Navigation -- */}
           <div className="mt-6 flex flex-wrap gap-2">
             {[
               { key: 'events' as const, label: '🎉 Events & Festivals' },

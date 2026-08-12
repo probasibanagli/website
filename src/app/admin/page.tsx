@@ -47,7 +47,7 @@ export default function AdminDashboard() {
               bg: col.bg,
             });
           } catch {
-            results.push({ label: col.label, value: '—', icon: col.icon, color: col.color, bg: col.bg });
+            results.push({ label: col.label, value: '-', icon: col.icon, color: col.color, bg: col.bg });
           }
         }
         setStats(results);

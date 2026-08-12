@@ -63,7 +63,7 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // 2. Not cached or expired — fetch from Google Places API
+    // 2. Not cached or expired - fetch from Google Places API
     const mapsQuery = extractQueryFromMapsUrl(mapsUrl);
     const query = mapsQuery || (city ? `${name}, ${city}` : name);
     
@@ -77,7 +77,7 @@ export async function GET(request: NextRequest) {
       !searchData.candidates?.length ||
       !searchData.candidates[0].photos?.length
     ) {
-      // No photo found — cache the miss in Firestore
+      // No photo found - cache the miss in Firestore
       await cacheRef.set({
         name,
         city: city || '',

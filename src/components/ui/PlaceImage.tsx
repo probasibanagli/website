@@ -29,7 +29,7 @@ const TYPE_STYLES: Record<string, { gradient: string; icon: React.ReactNode }> =
 };
 
 /**
- * PlaceImage — shows a real Google Places photo with elegant fallback.
+ * PlaceImage - shows a real Google Places photo with elegant fallback.
  *
  * Usage: <PlaceImage name="Kolkata Home PG" city="Chennai" type="pg" className="h-48" />
  */

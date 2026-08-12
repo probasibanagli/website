@@ -89,7 +89,7 @@ export default function RegisterPage() {
     return '+91' + digits;
   };
 
-  /* ── Step 1: Validate Form & Send Phone OTP ── */
+  /* -- Step 1: Validate Form & Send Phone OTP -- */
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -121,7 +121,7 @@ export default function RegisterPage() {
     }
   };
 
-  /* ── Step 2: Verify Phone OTP → Create Account ── */
+  /* -- Step 2: Verify Phone OTP → Create Account -- */
   const handleVerifyOtp = async (codeOverride?: string) => {
     const code = codeOverride || otp.join('');
     if (code.length !== 6) { setError('Please enter the complete 6-digit OTP.'); return; }
@@ -130,7 +130,7 @@ export default function RegisterPage() {
     setError('');
     setLoading(true);
     try {
-      // Verify OTP first — this signs the user in with just phone
+      // Verify OTP first - this signs the user in with just phone
       await confirmationResult.confirm(code);
 
       // Now create the full account (email + password) which re-authenticates and sets up Firestore profile
@@ -227,7 +227,7 @@ export default function RegisterPage() {
     return f;
   };
 
-  /* ── Step 3: Email Sent Screen ── */
+  /* -- Step 3: Email Sent Screen -- */
   if (step === 'email-sent') {
     return (
       <div className="min-h-screen bg-gradient-to-br from-accent-light/30 via-white to-primary-light/20 flex items-center justify-center px-4 py-12">
@@ -319,7 +319,7 @@ export default function RegisterPage() {
     );
   }
 
-  /* ── Step 2: Phone OTP Verification ── */
+  /* -- Step 2: Phone OTP Verification -- */
   if (step === 'phone-otp') {
     return (
       <div className="min-h-screen bg-gradient-to-br from-accent-light/30 via-white to-primary-light/20 flex items-center justify-center px-4 py-12">
@@ -413,7 +413,7 @@ export default function RegisterPage() {
     );
   }
 
-  /* ── Step 1: Registration Form ── */
+  /* -- Step 1: Registration Form -- */
   return (
     <div className="min-h-screen bg-gradient-to-br from-accent-light/30 via-white to-primary-light/20 flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-md">
@@ -473,7 +473,7 @@ export default function RegisterPage() {
               />
               <p className="text-[11px] text-text-muted mt-1 flex items-center gap-1">
                 <Phone className="w-3 h-3" />
-                Required — will be verified via OTP
+                Required - will be verified via OTP
               </p>
             </div>
             <div>
@@ -535,7 +535,7 @@ export default function RegisterPage() {
 
             <Button variant="primary" size="lg" className="w-full" type="submit" disabled={!form.agree || loading}>
               {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <UserPlus className="w-4 h-4" />}
-              {loading ? 'Sending OTP...' : 'Continue — Verify Phone'}
+              {loading ? 'Sending OTP...' : 'Continue - Verify Phone'}
             </Button>
           </form>
 
