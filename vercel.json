@@ -1,5 +1,3 @@
 {
-  "buildCommand": "cd \"Downloads/website-main (3)/website-main\" && npm install && npm run build",
-  "outputDirectory": "Downloads/website-main (3)/website-main/.next",
   "framework": "nextjs"
 }
