@@ -44,7 +44,7 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
   }
   const snap = await adminDb.collection('users').orderBy('created_at', 'desc').get();
-  const users = snap.docs.map((d) => ({ uid: d.id, ...d.data() }));
+  const users = snap.docs.map((d: any) => ({ uid: d.id, ...d.data() }));
   return NextResponse.json({ users });
 }
 

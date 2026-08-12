@@ -64,28 +64,11 @@ export async function GET(request: Request) {
 
     return NextResponse.json({ items });
   } catch (error: any) {
-    console.error('API Firestore query error:', error);
+    // Log the actual error for debugging in Vercel logs
+    console.error('API Firestore query error:', error?.message || error);
     
-    // In local development, if Firebase Admin is not fully configured (missing service credentials),
-    // return a successful empty items array to let the frontend components gracefully fall back to sample lists
-    // and avoid polluting the developer console with HTTP 500 errors.
-    const errMsg = (error.message || '').toLowerCase();
-    if (
-      errMsg.includes('credential') || 
-      errMsg.includes('initialize') || 
-      errMsg.includes('default') || 
-      errMsg.includes('token') ||
-      errMsg.includes('permission') ||
-      errMsg.includes('unauthenticated') ||
-      errMsg.includes('missing')
-    ) {
-      return NextResponse.json({ items: [], fallback: true });
-    }
-
-    return NextResponse.json(
-      { error: 'Internal Server Error', message: error.message },
-      { status: 500 }
-    );
+    // Always return empty items instead of a 500 so the frontend gracefully
+    // falls back to sample data rather than crashing with an error.
+    return NextResponse.json({ items: [], fallback: true, reason: error?.message });
   }
 }
-

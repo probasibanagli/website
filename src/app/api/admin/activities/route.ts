@@ -43,7 +43,7 @@ export async function GET(request: Request) {
       .limit(100)
       .get();
 
-    const logs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    const logs = snap.docs.map((d: any) => ({ id: d.id, ...d.data() }));
     return NextResponse.json({ logs });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
