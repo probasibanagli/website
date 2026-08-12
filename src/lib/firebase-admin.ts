@@ -47,7 +47,7 @@ function getAdminApp(): App | null {
 
 const adminApp = getAdminApp();
 
-/** true when Firebase Admin SDK initialised successfully */
+/** true when Firebase Admin SDK was initialised without error */
 export const isAdminConfigured = adminApp !== null;
 
 // Create proxies that throw a recognizable error if Firebase is not configured
@@ -62,7 +62,23 @@ const createFallbackProxy = (serviceName: string) => {
   }) as any;
 };
 
-const adminAuth = adminApp ? getAuth(adminApp)      : createFallbackProxy('Auth');
-const adminDb   = adminApp ? getFirestore(adminApp) : createFallbackProxy('Firestore');
+// Wrap in individual try-catch blocks so a throw from getAuth/getFirestore
+// at module-level cannot crash every route that imports this file.
+let adminAuth: any = createFallbackProxy('Auth');
+let adminDb: any   = createFallbackProxy('Firestore');
+
+if (adminApp) {
+  try {
+    adminAuth = getAuth(adminApp);
+  } catch (e) {
+    console.warn('[firebase-admin] getAuth failed:', (e as Error).message);
+  }
+
+  try {
+    adminDb = getFirestore(adminApp);
+  } catch (e) {
+    console.warn('[firebase-admin] getFirestore failed:', (e as Error).message);
+  }
+}
 
 export { adminApp, adminAuth, adminDb };
