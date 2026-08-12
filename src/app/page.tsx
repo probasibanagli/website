@@ -12,12 +12,12 @@ export default function HomePage() {
   return (
     <div className="overflow-hidden bg-alpana">
       {/* ====== HERO SECTION ====== */}
-      <section className="relative bg-gradient-to-br from-white/90 via-primary-light/40 to-accent-light/30 py-20 sm:py-24 lg:py-32 border-b border-border/50">
+      <section className="relative bg-gradient-to-br from-white/90 via-primary-light/40 to-accent-light/30 pt-10 pb-20 sm:pt-12 sm:pb-24 lg:pt-16 lg:pb-32 border-b border-border/50">
         {/* Decorative blobs */}
         <div className="absolute top-10 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl" />
         <div className="absolute bottom-10 right-10 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="relative max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
             
             {/* Text Column */}
@@ -66,7 +66,7 @@ export default function HomePage() {
 
             {/* Image Column */}
             <div className="flex-1 w-full max-w-md lg:max-w-lg animate-fade-in delay-200">
-              <div className="relative aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl border-4 border-white/80 ring-8 ring-primary-light/20 bg-white">
+              <div className="relative aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl border-4 border-white/80 ring-8 ring-primary-light/20 bg-white animate-dance">
                 <img 
                   src="/images/bengali_culture_hero.png" 
                   alt="Bengali Culture in Tamil Nadu" 
@@ -81,7 +81,7 @@ export default function HomePage() {
 
       {/* ====== EXPLORE SECTION ====== */}
       <section className="py-20 lg:py-28 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
             <Badge variant="bengali" className="mb-4"><T>Explore</T></Badge>
             <h2 className="text-3xl sm:text-4xl font-bold font-display text-text-primary">
@@ -118,7 +118,7 @@ export default function HomePage() {
       {/* ====== EMERGENCY STRIP ====== */}
       <section className="bg-gradient-to-r from-primary to-primary-dark py-14 lg:py-20 relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSA2MCAwIEwgMCAwIDAgNjAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNTUsMjU1LDI1NSwwLjA1KSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')] opacity-30" />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div className="relative max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl sm:text-4xl font-bold font-display text-white mb-3">
             <T>Emergency Services</T>
           </h2>
@@ -148,7 +148,7 @@ export default function HomePage() {
 
       {/* ====== COMMUNITY SECTION ====== */}
       <section className="py-20 lg:py-28 bg-surface">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
             <Badge variant="teal" className="mb-4"><T>Community</T></Badge>
             <h2 className="text-3xl sm:text-4xl font-bold font-display text-text-primary">
@@ -182,7 +182,7 @@ export default function HomePage() {
 
       {/* ====== SERVICES SECTION ====== */}
       <section className="py-20 lg:py-28 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
             <Badge variant="bengali" className="mb-4">Services</Badge>
             <h2 className="text-3xl sm:text-4xl font-bold font-display text-text-primary">

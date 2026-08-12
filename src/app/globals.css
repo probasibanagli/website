@@ -300,3 +300,34 @@ body {
   color: white;
   transform: rotateY(180deg);
 }
+
+/* Constant Dancing Animation (No Rotation) */
+@keyframes dance {
+  0%, 100% {
+    transform: translateY(0px) translateX(0px) scale(1);
+  }
+  15% {
+    transform: translateY(-6px) translateX(-2px) scale(1.01) rotate(1deg);
+  }
+  30% {
+    transform: translateY(4px) translateX(2px) scale(1.02) rotate(-1deg);
+  }
+  45% {
+    transform: translateY(-8px) translateX(1px) scale(1.03) rotate(0.5deg);
+  }
+  60% {
+    transform: translateY(3px) translateX(-2px) scale(1.02) rotate(-0.5deg);
+  }
+  75% {
+    transform: translateY(-4px) translateX(2px) scale(1.01) rotate(1deg);
+  }
+  90% {
+    transform: translateY(2px) translateX(-1px) scale(1.005) rotate(-0.5deg);
+  }
+}
+
+.animate-dance {
+  animation: dance 3s ease-in-out infinite;
+}
+
+

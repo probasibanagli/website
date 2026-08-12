@@ -32,12 +32,12 @@ const MedicalKitIcon = (props: React.SVGProps<SVGSVGElement>) => (
 );
 
 const emergencyNumbers = [
-  { label: 'All Emergency', number: '112', icon: <AlertTriangle className="w-6 h-6" />, color: 'bg-red-600', desc: 'Police, Fire, Ambulance' },
-  { label: 'Ambulance', number: '108', icon: <Siren className="w-6 h-6" />, color: 'bg-red-500', desc: 'Govt. Ambulance Service' },
-  { label: 'Police', number: '100', icon: <Shield className="w-6 h-6" />, color: 'bg-blue-600', desc: 'Tamil Nadu Police' },
-  { label: 'Fire', number: '101', icon: <Flame className="w-6 h-6" />, color: 'bg-orange-600', desc: 'Fire & Rescue' },
-  { label: "Women's Helpline", number: '181', icon: <Phone className="w-6 h-6" />, color: 'bg-purple-600', desc: 'Women Safety' },
-  { label: 'Child Helpline', number: '1098', icon: <Phone className="w-6 h-6" />, color: 'bg-teal-600', desc: 'Child Protection' },
+  { label: 'All Emergency', number: '112', icon: (cls: string) => <AlertTriangle className={`w-6 h-6 ${cls}`} />, color: 'text-red-600', desc: 'Police, Fire, Ambulance' },
+  { label: 'Ambulance', number: '108', icon: (cls: string) => <Siren className={`w-6 h-6 ${cls}`} />, color: 'text-red-600', desc: 'Govt. Ambulance Service' },
+  { label: 'Police', number: '100', icon: (cls: string) => <Shield className={`w-6 h-6 ${cls}`} />, color: 'text-red-600', desc: 'Tamil Nadu Police' },
+  { label: 'Fire', number: '101', icon: (cls: string) => <Flame className={`w-6 h-6 ${cls}`} />, color: 'text-red-600', desc: 'Fire & Rescue' },
+  { label: "Women's Helpline", number: '181', icon: (cls: string) => <Phone className={`w-6 h-6 ${cls}`} />, color: 'text-red-600', desc: 'Women Safety' },
+  { label: 'Child Helpline', number: '1098', icon: (cls: string) => <Phone className={`w-6 h-6 ${cls}`} />, color: 'text-red-600', desc: 'Child Protection' },
 ];
 
 export default function AmbulancePage() {
@@ -64,7 +64,7 @@ export default function AmbulancePage() {
   return (
     <div className="min-h-screen bg-surface">
       <div className="bg-gradient-to-br from-red-600 to-red-800 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-center">
+        <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-12 text-center">
           <div className="flex items-center justify-center gap-2 text-sm text-white/80 mb-6">
             <Link href="/" className="hover:text-white">Home</Link><span>/</span>
             <span className="font-medium">Emergency SOS</span>
@@ -104,15 +104,15 @@ export default function AmbulancePage() {
         </div>
       )}
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-10">
         {/* Emergency Numbers */}
         <h2 className="text-2xl font-bold font-display mb-6">Emergency Numbers</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-12">
           {emergencyNumbers.map((em) => (
             <a key={em.number} href={`tel:${em.number}`}>
               <Card className="group flex items-center gap-4 hover:border-red-300">
-                <div className={`w-14 h-14 rounded-2xl ${em.color} text-white flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform`}>
-                  {em.icon}
+                <div className="w-14 h-14 rounded-2xl bg-surface border border-border/40 flex items-center justify-center shrink-0 shadow-sm group-hover:scale-110 transition-transform">
+                  {em.icon(em.color)}
                 </div>
                 <div>
                   <h3 className="font-bold text-text-primary">{em.label}</h3>

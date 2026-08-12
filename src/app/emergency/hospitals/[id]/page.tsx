@@ -141,7 +141,7 @@ export default function HospitalDetailsPage({ params }: { params: Promise<{ id: 
     <div className="min-h-screen bg-surface pb-20">
       {/* Breadcrumb */}
       <div className="bg-white border-b border-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center gap-2 text-sm text-text-muted overflow-x-auto whitespace-nowrap">
             <Link href="/" className="hover:text-primary shrink-0">Home</Link><span>/</span>
             <Link href="/emergency" className="hover:text-primary shrink-0">Emergency</Link><span>/</span>
@@ -151,7 +151,7 @@ export default function HospitalDetailsPage({ params }: { params: Promise<{ id: 
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Link href="/emergency/hospitals" className="inline-flex items-center gap-2 text-sm font-medium text-text-muted hover:text-primary transition-colors mb-6">
           <ArrowLeft className="w-4 h-4" /> Back to Directory
         </Link>

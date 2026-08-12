@@ -392,7 +392,7 @@ export default function AdminDashboard() {
   }, [profile, firebaseUser]);
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto px-1 font-sans">
+    <div className="space-y-8 max-w-[1536px] mx-auto px-1 font-sans">
 
 
       {/* Welcome Title */}
