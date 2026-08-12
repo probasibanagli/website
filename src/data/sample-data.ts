@@ -131,5 +131,29 @@ export const sampleColleges: College[] = [
     staff_contacts: []
   }
 ];
-export const sampleEvents: CommunityEvent[] = [];
+export const sampleEvents: CommunityEvent[] = [
+  {
+    id: 'durga-puja-2026',
+    title: 'Grand Durga Puja Celebration',
+    description: 'Join us for the annual Durga Puja festivities with traditional rituals, cultural programs, and bhog.',
+    event_date: '2026-10-15T10:00:00Z',
+    city: 'Chennai',
+    venue: 'Besant Nagar Bengali Association',
+    location: 'Besant Nagar',
+    organizer: 'Chennai Bengali Association',
+    contact: 'contact@cba.org',
+    category: 'festival',
+  },
+  {
+    id: 'saraswati-puja-2026',
+    title: 'Saraswati Puja',
+    description: 'Auspicious Saraswati Puja for students and devotees.',
+    event_date: '2026-02-14T09:00:00Z',
+    city: 'Coimbatore',
+    venue: 'Coimbatore Bengali Samiti',
+    location: 'Peelamedu',
+    organizer: 'Coimbatore Bengali Samiti',
+    category: 'festival',
+  }
+];
 export const sampleBlogPosts: BlogPost[] = [];
