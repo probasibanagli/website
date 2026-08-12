@@ -67,10 +67,10 @@ export async function GET(request: NextRequest) {
     return new NextResponse(null, { status: 204 });
   }
 
-  const cacheKey = getCacheKey(name, city || '', mapsUrl);
-  const cacheRef = adminDb.collection('place_photos').doc(cacheKey);
-
   try {
+    const cacheKey = getCacheKey(name, city || '', mapsUrl);
+    const cacheRef = adminDb.collection('place_photos').doc(cacheKey);
+
     // 1. Check Firestore cache
     const cacheDoc = await cacheRef.get();
     if (cacheDoc.exists) {
