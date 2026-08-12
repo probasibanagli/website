@@ -70,7 +70,15 @@ export async function GET(request: Request) {
     // return a successful empty items array to let the frontend components gracefully fall back to sample lists
     // and avoid polluting the developer console with HTTP 500 errors.
     const errMsg = (error.message || '').toLowerCase();
-    if (errMsg.includes('credential') || errMsg.includes('initialize') || errMsg.includes('default') || errMsg.includes('token')) {
+    if (
+      errMsg.includes('credential') || 
+      errMsg.includes('initialize') || 
+      errMsg.includes('default') || 
+      errMsg.includes('token') ||
+      errMsg.includes('permission') ||
+      errMsg.includes('unauthenticated') ||
+      errMsg.includes('missing')
+    ) {
       return NextResponse.json({ items: [], fallback: true });
     }
 
