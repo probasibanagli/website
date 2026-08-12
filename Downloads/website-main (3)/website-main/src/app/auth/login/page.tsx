@@ -387,7 +387,7 @@ export default function LoginPage() {
     // Clear any stale MFA verification state
     sessionStorage.removeItem('mfa_verified');
 
-    let rawPhone = phone.trim();
+    const rawPhone = phone.trim();
     if (!rawPhone) {
       setError('Please enter your phone number.');
       return;

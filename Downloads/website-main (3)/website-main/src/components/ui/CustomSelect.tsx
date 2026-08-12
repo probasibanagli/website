@@ -88,6 +88,7 @@ export function CustomSelect({
         });
       }
     } else {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setHighlightedIndex(-1);
     }
   }, [isOpen, showSearch, value]);

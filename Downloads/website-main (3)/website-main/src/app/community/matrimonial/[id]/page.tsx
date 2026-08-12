@@ -78,7 +78,7 @@ export default function MatrimonialDetailPage() {
         if (!mounted) return;
         setProfile(p);
         
-        let myProfile = firebaseUser ? await getMyProfile(firebaseUser.uid) : null;
+        const myProfile = firebaseUser ? await getMyProfile(firebaseUser.uid) : null;
         if (!mounted) return;
         setHasProfile(!!myProfile);
         setMyProfileData(myProfile);
