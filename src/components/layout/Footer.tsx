@@ -57,7 +57,7 @@ export function Footer() {
           <div>
             <h4 className="text-sm font-semibold uppercase tracking-wider text-gray-400 mb-4"><T>Quick Links</T></h4>
             <ul className="space-y-2.5">
-              <li><Link href="/services/college" className="text-sm text-gray-300 hover:text-primary transition-colors"><T>College Finder</T></Link></li>
+              <li><Link href="/services/college" className="text-sm text-gray-300 hover:text-primary transition-colors"><T>College/School Finder</T></Link></li>
               <li><Link href="/services/government" className="text-sm text-gray-300 hover:text-primary transition-colors"><T>Government Services</T></Link></li>
               <li><Link href="/emergency/ambulance" className="text-sm text-gray-300 hover:text-primary transition-colors"><T>Emergency SOS</T></Link></li>
               <li><Link href={`/auth/login${pathname && pathname !== '/' ? `?redirect=${encodeURIComponent(pathname)}` : ''}`} className="text-sm text-gray-300 hover:text-primary transition-colors"><T>Login / Register</T></Link></li>

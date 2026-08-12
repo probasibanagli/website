@@ -379,8 +379,9 @@ export interface CollegeStaffContact {
 
 export interface College {
   id: string;
+  category?: 'college' | 'school';
   name: string;
-  type?: 'engineering' | 'medical' | 'arts_science';
+  type?: 'engineering' | 'medical' | 'arts_science' | 'cbse' | 'icse' | 'kv';
   city?: string;
   area?: string;
   address?: string;

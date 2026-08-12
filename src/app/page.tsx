@@ -195,7 +195,7 @@ export default function HomePage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
             {[
-              { icon: <GraduationCap className="w-8 h-8" />, title: 'College Finder', desc: 'Search engineering, medical, arts, and management colleges across Tamil Nadu. Includes integrated travel planner.', href: '/services/college', color: 'from-blue-500 to-indigo-600' },
+              { icon: <GraduationCap className="w-8 h-8" />, title: 'College & School Finder', desc: 'Search engineering, medical, arts, and management colleges as well as top schools across Tamil Nadu. Includes integrated travel planner.', href: '/services/college', color: 'from-blue-500 to-indigo-600' },
               { icon: <Landmark className="w-8 h-8" />, title: 'Government Services', desc: 'Quick access to Aadhaar, Ration Card, Passport, Health Schemes and more Tamil Nadu government portals.', href: '/services/government', color: 'from-emerald-500 to-teal-600' },
             ].map((item) => (
               <Link key={item.title} href={item.href}>

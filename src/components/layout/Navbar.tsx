@@ -40,7 +40,7 @@ const navLinks = [
   {
     label: 'Services',
     children: [
-      { label: 'College Finder', href: '/services/college', icon: <GraduationCap className="w-4 h-4" /> },
+      { label: 'College/School Finder', href: '/services/college', icon: <GraduationCap className="w-4 h-4" /> },
       { label: 'Government Services', href: '/services/government', icon: <Building className="w-4 h-4" /> },
     ],
   },

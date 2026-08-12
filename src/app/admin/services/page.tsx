@@ -15,8 +15,9 @@ export default function AdminServicesPage() {
         { key: 'phone', label: 'Phone' },
       ]}
       formFields={[
-        { key: 'name', label: 'College Name', required: true },
-        { key: 'type', label: 'Type', type: 'select', options: ['engineering', 'medical', 'arts_science'], required: true },
+        { key: 'category', label: 'Category', type: 'select', options: ['college', 'school'], required: true },
+        { key: 'name', label: 'Institution Name', required: true },
+        { key: 'type', label: 'Type / Board', type: 'select', options: ['engineering', 'medical', 'arts_science', 'cbse', 'icse', 'kv'], required: true },
         { key: 'ranking', label: 'Ranking / Priority (1 = Top, 2 = Second, etc.)', type: 'number' },
         { key: 'city', label: 'City', required: true },
         { key: 'area', label: 'Area' },

@@ -263,7 +263,14 @@ export default function AdminDashboard() {
           try {
             const [usersRes, staysSnap, blogsSnap] = await Promise.all([
               (async () => {
-                const token = firebaseUser ? await firebaseUser.getIdToken() : 'temp';
+                let token = 'temp';
+                if (firebaseUser) {
+                  try {
+                    token = await firebaseUser.getIdToken();
+                  } catch (e) {
+                    console.warn('Network error while fetching Firebase token:', e);
+                  }
+                }
                 const res = await fetch('/api/admin/users', { headers: { 'Authorization': `Bearer ${token}` } });
                 return res.ok ? await res.json() : { users: [] };
               })(),

@@ -104,7 +104,7 @@ export default function MatrimonialDetailPage() {
           const allProfiles = await getAllProfiles();
           if (mounted) {
             const similar = allProfiles
-              .filter(op => op.id !== p.id && op.published && (op.city === p.city || Math.abs((op.age || 0) - (p.age || 0)) <= 5))
+              .filter(op => op.id !== p.id && op.published && op.gender === p.gender && (op.city === p.city || Math.abs((op.age || 0) - (p.age || 0)) <= 5))
               .slice(0, 3);
             setSimilarProfiles(similar);
           }

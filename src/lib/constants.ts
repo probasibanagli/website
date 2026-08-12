@@ -223,6 +223,7 @@ export const COMMUNITY_PLATFORMS = ['whatsapp', 'telegram', 'facebook', 'instagr
 export const COMMUNITY_CATEGORIES = ['general', 'students', 'professionals', 'women', 'seniors'] as const;
 
 export const COLLEGE_TYPES = ['engineering', 'medical', 'arts_science'] as const;
+export const SCHOOL_TYPES = ['cbse', 'icse', 'kv'] as const;
 
 export const EVENT_CATEGORIES = ['festival', 'cultural', 'social', 'religious'] as const;
 

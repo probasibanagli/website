@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/card';
 import { sampleColleges } from '@/data/sample-data';
-import { CITIES, COLLEGE_TYPES } from '@/lib/constants';
+import { CITIES, COLLEGE_TYPES, SCHOOL_TYPES } from '@/lib/constants';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { COLLECTIONS } from '@/lib/firestore/collections';
@@ -17,17 +17,24 @@ import type { College } from '@/types';
 const CATEGORY_LABELS: Record<string, string> = {
   engineering: 'Engineering Colleges',
   medical: 'Medical Colleges',
-  arts_science: 'Arts & Science Colleges'
+  arts_science: 'Arts & Science Colleges',
+  cbse: 'CBSE Schools',
+  icse: 'ICSE Schools',
+  kv: 'KV Schools'
 };
 
 const CATEGORY_THEMES: Record<string, { bg: string; text: string; iconBg: string; iconColor: string }> = {
   engineering: { bg: 'bg-blue-50', text: 'text-blue-700', iconBg: 'bg-blue-100', iconColor: 'text-blue-600' },
   medical: { bg: 'bg-rose-50', text: 'text-rose-700', iconBg: 'bg-rose-100', iconColor: 'text-rose-600' },
-  arts_science: { bg: 'bg-emerald-50', text: 'text-emerald-700', iconBg: 'bg-emerald-100', iconColor: 'text-emerald-600' }
+  arts_science: { bg: 'bg-emerald-50', text: 'text-emerald-700', iconBg: 'bg-emerald-100', iconColor: 'text-emerald-600' },
+  cbse: { bg: 'bg-indigo-50', text: 'text-indigo-700', iconBg: 'bg-indigo-100', iconColor: 'text-indigo-600' },
+  icse: { bg: 'bg-violet-50', text: 'text-violet-700', iconBg: 'bg-violet-100', iconColor: 'text-violet-600' },
+  kv: { bg: 'bg-orange-50', text: 'text-orange-700', iconBg: 'bg-orange-100', iconColor: 'text-orange-600' }
 };
 
 export default function CollegePage() {
   const { firebaseUser: user, profile } = useAuth();
+  const [activeTab, setActiveTab] = useState<'colleges' | 'schools'>('colleges');
   const [type, setType] = useState('');
   const [city, setCity] = useState('');
   const [search, setSearch] = useState('');
@@ -59,6 +66,10 @@ export default function CollegePage() {
   const filtered = useMemo(() => {
     return colleges
       .filter((c) => {
+        const isSchool = c.category === 'school';
+        if (activeTab === 'colleges' && isSchool) return false;
+        if (activeTab === 'schools' && !isSchool) return false;
+
         if (type && c.type !== type) return false;
         if (city && c.city !== city) return false;
         if (search && !c.name.toLowerCase().includes(search.toLowerCase())) return false;
@@ -69,7 +80,7 @@ export default function CollegePage() {
         const rankB = b.ranking !== undefined && b.ranking !== null ? Number(b.ranking) : 9999;
         return rankA - rankB;
       });
-  }, [type, city, search, colleges]);
+  }, [type, city, search, colleges, activeTab]);
 
   return (
     <div className="min-h-screen bg-surface">
@@ -77,19 +88,34 @@ export default function CollegePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex items-center gap-2 text-sm text-text-muted mb-4">
             <Link href="/" className="hover:text-primary">Home</Link><span>/</span>
-            <span className="text-text-primary font-medium">College Finder</span>
+            <span className="text-text-primary font-medium">College & School Finder</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold font-display text-text-primary">College Finder</h1>
-          <p className="mt-2 text-text-muted">Find Engineering, Medical, and Arts & Science colleges in major districts of Tamil Nadu.</p>
+          <h1 className="text-3xl sm:text-4xl font-bold font-display text-text-primary">College & School Finder</h1>
+          <p className="mt-2 text-text-muted">Find Engineering, Medical, Arts & Science colleges, and top schools in major districts of Tamil Nadu.</p>
 
-          <div className="mt-6 flex flex-wrap gap-2">
+          <div className="mt-8 flex border-b border-border mb-6">
+            <button
+              onClick={() => { setActiveTab('colleges'); setType(''); }}
+              className={`px-6 py-3 font-medium text-sm border-b-2 transition-colors ${activeTab === 'colleges' ? 'border-primary text-primary' : 'border-transparent text-text-muted hover:text-text-primary'}`}
+            >
+              Colleges
+            </button>
+            <button
+              onClick={() => { setActiveTab('schools'); setType(''); }}
+              className={`px-6 py-3 font-medium text-sm border-b-2 transition-colors ${activeTab === 'schools' ? 'border-primary text-primary' : 'border-transparent text-text-muted hover:text-text-primary'}`}
+            >
+              Schools
+            </button>
+          </div>
+
+          <div className="mt-2 flex flex-wrap gap-2">
             <button 
               onClick={() => setType('')} 
               className={`px-4 py-2 rounded-full text-sm font-medium transition-all cursor-pointer ${!type ? 'bg-primary text-white shadow-md' : 'bg-white border border-border hover:border-primary'}`}
             >
-              All Colleges
+              All {activeTab === 'colleges' ? 'Colleges' : 'Schools'}
             </button>
-            {COLLEGE_TYPES.map((ct) => (
+            {(activeTab === 'colleges' ? COLLEGE_TYPES : SCHOOL_TYPES).map((ct) => (
               <button 
                 key={ct} 
                 onClick={() => setType(ct)} 
@@ -105,7 +131,7 @@ export default function CollegePage() {
               <input 
                 value={search} 
                 onChange={(e) => setSearch(e.target.value)} 
-                placeholder="Search colleges..." 
+                placeholder={`Search ${activeTab}...`} 
                 className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" 
               />
             </div>
@@ -210,7 +236,7 @@ export default function CollegePage() {
                               variant="ghost"
                               className="w-full justify-between py-3 text-xs font-bold border border-border/60 hover:bg-surface rounded-xl cursor-pointer h-auto"
                             >
-                              <span>Bengali Lecturers & Staff ({college.staff_contacts?.length || 0})</span>
+                              <span>{college.category === 'school' ? 'Bengali Teachers & Staff' : 'Bengali Lecturers & Staff'} ({college.staff_contacts?.length || 0})</span>
                               <ArrowRight className="w-4 h-4 text-text-muted" />
                             </Button>
                           </div>
@@ -240,8 +266,8 @@ export default function CollegePage() {
 
             {filtered.length === 0 && (
               <div className="text-center py-20 bg-white rounded-3xl border border-border mt-6">
-                <p className="text-5xl mb-4">🎓</p>
-                <h3 className="text-xl font-bold text-text-primary mb-2">No colleges found</h3>
+                <p className="text-5xl mb-4">{activeTab === 'colleges' ? '🎓' : '🏫'}</p>
+                <h3 className="text-xl font-bold text-text-primary mb-2">No {activeTab} found</h3>
                 <p className="text-text-muted text-sm">Try using different search keywords or district filters.</p>
               </div>
             )}

@@ -134,45 +134,78 @@ export default function EditMatrimonialProfile() {
 
   const handlePhotoChange = async (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
     if (!profile) return;
-    const file = e.target.files?.[0];
-    if (!file) return;
-    if (!file.type.startsWith('image/')) {
-      setUploadError('Only image files are allowed.');
-      return;
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
+
+    let availableSlots: number[] = [];
+    if (photoPreviews[index] === null) {
+      availableSlots.push(index);
     }
-    if (file.size > 5 * 1024 * 1024) {
-      setUploadError('Photo size must be less than 5MB.');
-      return;
+    for (let i = 0; i < 5; i++) {
+      if (i !== index && photoPreviews[i] === null) {
+        availableSlots.push(i);
+      }
     }
+
+    if (availableSlots.length === 0) {
+      availableSlots = [index, ...[0, 1, 2, 3, 4].filter(i => i !== index)];
+    }
+
+    let fileIndex = 0;
     
-    try {
-      const url = await storeMedia(`profile_${profile.id}_photo_${index}`, file);
-      if (!url) {
-        setUploadError('Failed to process photo file.');
-        return;
+    for (const file of files) {
+      if (fileIndex >= availableSlots.length || fileIndex >= 5) {
+        setUploadError('You can only upload up to 5 photos.');
+        break;
+      }
+
+      const slotToUpdate = availableSlots[fileIndex];
+
+      if (!file.type.startsWith('image/')) {
+        setUploadError('Only image files are allowed.');
+        fileIndex++;
+        continue;
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        setUploadError('Photo size must be less than 5MB.');
+        fileIndex++;
+        continue;
       }
       
-      setPhotoPreviews(prev => {
-        const next = [...prev];
-        next[index] = url;
-        if (prev.every(p => p === null)) {
-          setProfilePictureIndex(index);
+      try {
+        const url = await storeMedia(`profile_${profile.id}_photo_${slotToUpdate}_${Date.now()}`, file);
+        if (!url) {
+          setUploadError('Failed to process photo file.');
+          fileIndex++;
+          continue;
         }
-        return next;
-      });
+        
+        setPhotoPreviews(prev => {
+          const next = [...prev];
+          next[slotToUpdate] = url;
+          if (prev.every(p => p === null) && fileIndex === 0) {
+            setProfilePictureIndex(slotToUpdate);
+          }
+          return next;
+        });
+        
+        setFormData(prev => {
+          const nextPhotos = [...((prev.photos as string[]) || [])];
+          nextPhotos[slotToUpdate] = url;
+          return { ...prev, photos: nextPhotos };
+        });
+        
+        setUploadError('');
+        setSaved(false);
+      } catch (err) {
+        console.error(err);
+        setUploadError('Failed to upload photo.');
+      }
       
-      setFormData(prev => {
-        const nextPhotos = [...((prev.photos as string[]) || [])];
-        nextPhotos[index] = url;
-        return { ...prev, photos: nextPhotos };
-      });
-      
-      setUploadError('');
-      setSaved(false);
-    } catch (err) {
-      console.error(err);
-      setUploadError('Failed to upload photo.');
+      fileIndex++;
     }
+    
+    e.target.value = '';
   };
 
   const handlePhotoRemove = (index: number) => {
@@ -729,6 +762,7 @@ export default function EditMatrimonialProfile() {
                               <input
                                 type="file"
                                 accept="image/*"
+                                multiple
                                 onChange={(e) => handlePhotoChange(i, e)}
                                 id={`photo-upload-${i}`}
                                 className="hidden"
