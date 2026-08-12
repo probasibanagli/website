@@ -142,7 +142,7 @@ export default function BlogDetailPage() {
       {suggestedPosts.length > 0 && (
         <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-12 border-t border-border mt-8">
           <h2 className="text-2xl font-bold text-text-primary mb-8 text-center font-display">More Articles You Might Like</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
             {suggestedPosts.map((sp) => (
               <Link key={sp.id} href={`/blog/${sp.slug}`}>
                 <Card className="h-full group p-0 overflow-hidden hover:border-primary/20 transition-all hover:shadow-lg">

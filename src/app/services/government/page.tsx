@@ -597,7 +597,7 @@ export default function GovernmentPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Aadhaar Update */}
             <AadhaarServiceCard
               service={GOVT_SERVICES.find(s => s.id === 'aadhaar')!}
@@ -635,7 +635,7 @@ export default function GovernmentPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {lowerPriorityServices.map((service) => {
               const IconComponent = ICON_MAP[service.icon] || Building;
               return (

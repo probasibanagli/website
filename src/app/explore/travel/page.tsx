@@ -786,7 +786,7 @@ export default function TravelPage() {
 
       <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Main Dashboard Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Left/Middle Content Area based on Selected Tab */}
           <div className="lg:col-span-2 space-y-6">
 

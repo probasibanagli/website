@@ -387,7 +387,7 @@ export default function StayPage() {
            · Verified first
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {filtered.map((listing) => {
             const typeLabel = listing.accommodation_type || (listing.type ? listing.type.toUpperCase() : 'STAY');
             const contactName = listing.contact_person_name || listing.owner_name || 'Contact Person';
