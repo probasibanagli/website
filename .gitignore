@@ -40,3 +40,6 @@ functions/.env
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# nested backup folder
+Downloads/
