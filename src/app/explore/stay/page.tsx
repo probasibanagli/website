@@ -26,14 +26,14 @@ const STAY_TYPE_ICONS: Record<string, React.ReactNode> = {
   rental: <Building2 className="w-5 h-5" />,
 };
 
-function ListingCoverImage({ name, city, mapsUrl, imageUrl, type, mapEmbedCode, fallbackIcon }: { 
+function ListingCoverImage({ name, city, mapsUrl, imageUrl, type, mapEmbedCode, fallbackImageUrl }: { 
   name: string; 
   city?: string; 
   mapsUrl?: string; 
   imageUrl?: string;
   type?: string;
   mapEmbedCode?: string;
-  fallbackIcon: React.ReactNode;
+  fallbackImageUrl?: string;
 }) {
   let extractUrl = mapsUrl || '';
   if (!extractUrl && mapEmbedCode) {
@@ -50,10 +50,20 @@ function ListingCoverImage({ name, city, mapsUrl, imageUrl, type, mapEmbedCode, 
   }, [imgSrc]);
 
   if (error || !imgSrc) {
+    if (fallbackImageUrl) {
+      return (
+        <img
+          src={fallbackImageUrl}
+          alt={name}
+          className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          loading="lazy"
+        />
+      );
+    }
     return (
       <div className="absolute inset-0 bg-primary-light flex items-center justify-center">
         <div className="text-primary opacity-40 scale-[3]">
-          {fallbackIcon}
+          <Building className="w-16 h-16" />
         </div>
       </div>
     );
@@ -404,7 +414,10 @@ export default function StayPage() {
             const phoneNum = listing.contact_phone || listing.owner_phone;
             const priceVal = listing.accommodation_type === 'Hotel' ? (listing.price_daily || 0) : (listing.price_monthly || listing.price_per_month || 0);
             const pricePeriod = listing.accommodation_type === 'Hotel' ? 'per day' : 'per month';
-            
+            let fallbackImg = 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=800&q=80';
+            if (listing.type === 'pg') fallbackImg = 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80';
+            if (listing.type === 'rental') fallbackImg = 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80';
+
             return (
               <Card key={listing.id} padding="none" className="rounded-[24px] overflow-hidden group border border-gray-100 shadow-[0_4px_25px_-4px_rgba(0,0,0,0.05)] bg-white">
                 <div className="relative h-60 bg-primary-light overflow-hidden">
@@ -412,10 +425,10 @@ export default function StayPage() {
                     name={listing.name}
                     city={listing.city}
                     mapsUrl={listing.google_maps_url}
-                    imageUrl={listing.image_url}
+                    imageUrl={listing.images?.[0] || listing.image_url}
                     type={listing.accommodation_type}
                     mapEmbedCode={listing.map_embed_code}
-                    fallbackIcon={<BedDouble className="w-16 h-16" />}
+                    fallbackImageUrl={fallbackImg}
                   />
                   <div className="absolute top-4 left-4 flex gap-2">
                     <span className="bg-white text-[#D35400] text-[11px] font-bold px-3.5 py-1.5 rounded-full shadow-sm tracking-wide">

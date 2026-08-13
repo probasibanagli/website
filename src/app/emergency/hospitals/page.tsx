@@ -373,7 +373,7 @@ export default function EmergencyHospitalsPage() {
 
       {/* Tabs Switcher */}
       <div className="bg-white border-b border-border sticky top-0 z-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="w-full mx-auto px-4 sm:px-6 lg:px-[38px]">
           <div className="flex gap-4">
             <button
               onClick={() => { setSearchTab('hospitals'); setSearchQuery(''); setSpecializationFilter(''); }}
@@ -401,7 +401,7 @@ export default function EmergencyHospitalsPage() {
 
       {/* Search and Filters Header */}
       <div className="bg-white border-b border-border shadow-xs">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="w-full mx-auto px-4 sm:px-6 lg:px-[38px] py-6">
           <div className="flex flex-wrap items-center gap-4">
             {/* Search Query Input */}
             <div className="relative flex-1 min-w-[240px]">
@@ -475,7 +475,7 @@ export default function EmergencyHospitalsPage() {
       </div>
 
       {/* Main Grid Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="w-full mx-auto px-4 sm:px-6 lg:px-[38px] py-8">
         {loading ? (
           <div className="text-center py-20 animate-pulse">
             <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
@@ -486,11 +486,11 @@ export default function EmergencyHospitalsPage() {
             {/* ── HOSPITALS SEARCH RESULTS ── */}
             {searchTab === 'hospitals' && (
               <>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-[30px]">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-[28px]">
                   {filteredHospitals.map((hospital) => (
-                    <Card key={hospital.id} padding="none" className="overflow-hidden group flex flex-col h-full bg-white border border-gray-100 shadow-[0_4px_25px_-4px_rgba(0,0,0,0.05)] rounded-[25px] min-h-[520px]">
+                    <Card key={hospital.id} padding="none" className="overflow-hidden group flex flex-col h-full bg-white border border-gray-100 shadow-[0_4px_25px_-4px_rgba(0,0,0,0.05)] rounded-[24px]">
                       {/* Image header with text overlay */}
-                      <div className="relative h-[255px] bg-slate-100 overflow-hidden shrink-0">
+                      <div className="relative h-[273px] w-full bg-slate-100 overflow-hidden shrink-0">
                         <ListingCoverImage 
                           name={hospital.name} 
                           city={hospital.city} 
@@ -543,7 +543,7 @@ export default function EmergencyHospitalsPage() {
                         </div>
 
                         {/* Side-by-Side Action Buttons */}
-                        <div className="flex items-center gap-3 w-full mt-auto">
+                        <div className="flex items-center gap-[12px] w-full mt-6">
                           <a href={`tel:${hospital.emergency_phone || hospital.phone || '108'}`} className="flex-1 w-full bg-[#B81D18] hover:bg-[#9E1612] text-white font-bold h-[52px] px-4 rounded-xl text-sm flex items-center justify-center gap-2 shadow-sm transition-all active:scale-[0.98]">
                             <Phone className="w-4 h-4" />
                             <span>Emergency</span>
@@ -570,7 +570,7 @@ export default function EmergencyHospitalsPage() {
             {/* ── DOCTORS SEARCH RESULTS ── */}
             {searchTab === 'doctors' && (
               <>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-[28px]">
                   {filteredDoctors.map((doctor) => {
                     const docHospitals = doctor.hospital_ids?.map(hid => hospitals.find(h => h.id === hid)).filter(Boolean) || [hospitals.find(h => h.id === doctor.hospital_id)].filter(Boolean);
                     const otpRequired = doctor.otp_required !== false;
@@ -695,7 +695,7 @@ export default function EmergencyHospitalsPage() {
             {/* ── STAFF SEARCH RESULTS ── */}
             {searchTab === 'staff' && (
               <>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-[28px]">
                   {filteredStaff.map((s) => {
                     const hospital = hospitals.find((h) => h.id === s.hospital_id);
                     const otpRequired = s.otp_required !== false;

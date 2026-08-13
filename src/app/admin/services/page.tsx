@@ -15,6 +15,7 @@ export default function AdminServicesPage() {
         { key: 'phone', label: 'Phone' },
       ]}
       formFields={[
+        { key: 'image_url', label: 'Cover Image', type: 'image' },
         { key: 'category', label: 'Category', type: 'select', options: ['college', 'school'], required: true },
         { key: 'name', label: 'Institution Name', required: true },
         { key: 'type', label: 'Type / Board', type: 'select', options: ['engineering', 'medical', 'arts_science', 'cbse', 'icse', 'kv'], required: true },

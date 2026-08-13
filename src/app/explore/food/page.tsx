@@ -28,14 +28,14 @@ const FOOD_TYPE_ICONS: Record<string, React.ReactNode> = {
   delivery: <Truck className="w-5 h-5 text-black" />,
 };
 
-function ListingCoverImage({ name, city, mapsUrl, imageUrl, type, mapEmbedCode, fallbackIcon }: { 
+function ListingCoverImage({ name, city, mapsUrl, imageUrl, type, mapEmbedCode, fallbackImageUrl }: { 
   name: string; 
   city?: string; 
   mapsUrl?: string; 
   imageUrl?: string;
   type?: string;
   mapEmbedCode?: string;
-  fallbackIcon: React.ReactNode;
+  fallbackImageUrl?: string;
 }) {
   let extractUrl = mapsUrl || '';
   if (!extractUrl && mapEmbedCode) {
@@ -52,10 +52,20 @@ function ListingCoverImage({ name, city, mapsUrl, imageUrl, type, mapEmbedCode, 
   }, [imgSrc]);
 
   if (error || !imgSrc) {
+    if (fallbackImageUrl) {
+      return (
+        <img
+          src={fallbackImageUrl}
+          alt={name}
+          className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          loading="lazy"
+        />
+      );
+    }
     return (
       <div className="absolute inset-0 bg-orange-50 flex items-center justify-center">
         <div className="text-black opacity-45">
-          {fallbackIcon}
+          <Utensils className="w-16 h-16" />
         </div>
       </div>
     );
@@ -299,6 +309,10 @@ export default function FoodPage() {
               'bg-[#FCE8E6] text-[#C5221F]',
               'bg-[#FEF7E0] text-[#B06000]',
             ];
+            
+            let fallbackImg = 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80'; // Restaurant
+            if (food.type === 'sweets') fallbackImg = 'https://images.unsplash.com/photo-1558322394-4d8813ceef8a?auto=format&fit=crop&w=800&q=80'; // Sweets/Desserts
+            if (food.type === 'tiffin') fallbackImg = 'https://images.unsplash.com/photo-1589301760014-d929f39ce9b1?auto=format&fit=crop&w=800&q=80'; // Tiffin/Thali
 
             return (
               <Card key={food.id} padding="none" className="rounded-[24px] overflow-hidden group border border-gray-100 shadow-[0_4px_25px_-4px_rgba(0,0,0,0.05)] bg-white p-4 flex flex-col justify-between">
@@ -308,14 +322,10 @@ export default function FoodPage() {
                       name={food.name}
                       city={food.city}
                       mapsUrl={food.google_maps_url}
-                      imageUrl={food.image_url}
+                      imageUrl={food.images?.[0] || food.image_url}
                       type={food.type}
                       mapEmbedCode={food.map_embed_code}
-                      fallbackIcon={
-                        <div className="text-black opacity-45 scale-[1.5]">
-                          {food.type === 'restaurant' ? <Utensils className="w-12 h-12" /> : food.type === 'sweets' ? <Candy className="w-12 h-12" /> : food.type === 'tiffin' ? <Soup className="w-12 h-12" /> : <Truck className="w-12 h-12" />}
-                        </div>
-                      }
+                      fallbackImageUrl={fallbackImg}
                     />
                     {food.rating && (
                       <div className="absolute top-3 left-3 bg-white text-gray-900 text-[11px] font-bold px-2.5 py-1 rounded-full shadow-sm flex items-center gap-1">

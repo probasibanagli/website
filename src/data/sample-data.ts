@@ -24,188 +24,188 @@ export const sampleStayListings: Listing[] = [
     id: '1', type: 'pg', name: 'Kolkata Home PG', description: 'Bengali-friendly PG with home-cooked Bengali food. Located near Guindy metro station. Clean rooms with AC and WiFi. Separate floors for boys and girls.', city: 'Chennai', area: 'Guindy', address: '45, 2nd Cross Street, Guindy, Chennai - 600032',
     price_per_month: 8500, room_type: 'double', gender: 'male', amenities: ['Bengali Food', 'AC', 'WiFi', 'Laundry', 'Power Backup'], bengali_friendly: true, bengali_food: true,
     owner_name: 'Subhash Mondal', owner_phone: '9876543210', owner_whatsapp: '9876543210', google_maps_url: 'https://maps.google.com/?q=Guindy,Chennai', lat: 13.0067, lng: 80.2206,
-    images: [], verified: true, available_rooms: 3, deposit_amount: 10000, created_at: '2025-01-15',
+    images: ['https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=500&q=80'], verified: true, available_rooms: 3, deposit_amount: 10000, created_at: '2025-01-15',
   },
   {
     id: '2', type: 'pg', name: 'Bengal Nest Ladies PG', description: 'Safe and secure ladies PG near Anna Nagar. Bengali tiffin available. Near Apollo Hospital and walking distance to metro. CCTV surveillance and biometric entry.', city: 'Chennai', area: 'Anna Nagar', address: '12, W Block, Anna Nagar, Chennai - 600040',
     price_per_month: 9500, room_type: 'double', gender: 'female', amenities: ['Bengali Food', 'AC', 'WiFi', 'CCTV', 'Biometric Entry'], bengali_friendly: true, bengali_food: true,
     owner_name: 'Rupa Das', owner_phone: '9876543211', owner_whatsapp: '9876543211', google_maps_url: 'https://maps.google.com/?q=Anna+Nagar,Chennai', lat: 13.0850, lng: 80.2101,
-    images: [], verified: true, available_rooms: 2, deposit_amount: 12000, created_at: '2025-02-10',
+    images: ['https://images.unsplash.com/photo-1513694203232-719ea280c822?w=500&q=80'], verified: true, available_rooms: 2, deposit_amount: 12000, created_at: '2025-02-10',
   },
   {
     id: '3', type: 'hotel', name: 'Hotel Bengal Inn', description: 'Budget hotel with Bengali restaurant. Ideal for short stays and tourists. Near T. Nagar bus stand. Room service available 24/7.', city: 'Chennai', area: 'T. Nagar', address: '78, Usman Road, T. Nagar, Chennai - 600017',
     price_per_month: 15000, room_type: 'single', gender: 'mixed', amenities: ['Restaurant', 'AC', 'WiFi', 'Room Service', '24/7 Reception'], bengali_friendly: true, bengali_food: true,
     owner_name: 'Hotel Bengal Inn', owner_phone: '9876543212', owner_whatsapp: '9876543212', google_maps_url: 'https://maps.google.com/?q=T.Nagar,Chennai', lat: 13.0418, lng: 80.2341,
-    images: [], verified: true, available_rooms: 8, deposit_amount: 5000, created_at: '2025-01-20',
+    images: ['https://images.unsplash.com/photo-1484154218962-a1396b12798e?w=500&q=80'], verified: true, available_rooms: 8, deposit_amount: 5000, created_at: '2025-01-20',
   },
   {
     id: '4', type: 'rental', name: '2BHK Flat - Velachery', description: 'Fully furnished 2BHK apartment in a gated community. Bengali family preferred. Close to Phoenix Mall and Velachery railway station.', city: 'Chennai', area: 'Velachery', address: 'Sunshine Apartments, Velachery Main Road, Chennai - 600042',
     price_per_month: 18000, room_type: 'double', gender: 'mixed', amenities: ['Furnished', 'AC', 'WiFi', 'Parking', 'Gym', 'Security'], bengali_friendly: true, bengali_food: false,
     owner_name: 'Amit Roy', owner_phone: '9876543213', owner_whatsapp: '9876543213', google_maps_url: 'https://maps.google.com/?q=Velachery,Chennai', lat: 12.9815, lng: 80.2180,
-    images: [], verified: false, available_rooms: 1, deposit_amount: 50000, created_at: '2025-03-01',
+    images: ['https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80'], verified: false, available_rooms: 1, deposit_amount: 50000, created_at: '2025-03-01',
   },
   {
     id: '5', type: 'pg', name: 'Bangla Bhavan PG', description: 'Premium PG with authentic Bengali meals. Near VIT campus. Ideal for students. Common study area and recreation room.', city: 'Vellore', area: 'Katpadi', address: '23, College Road, Katpadi, Vellore - 632006',
     price_per_month: 7000, room_type: 'triple', gender: 'male', amenities: ['Bengali Food', 'WiFi', 'Study Room', 'Laundry'], bengali_friendly: true, bengali_food: true,
     owner_name: 'Pranab Ghosh', owner_phone: '9876543214', owner_whatsapp: '9876543214', google_maps_url: 'https://maps.google.com/?q=Katpadi,Vellore', lat: 12.9692, lng: 79.1559,
-    images: [], verified: true, available_rooms: 5, deposit_amount: 7000, created_at: '2025-01-05',
+    images: ['https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80'], verified: true, available_rooms: 5, deposit_amount: 7000, created_at: '2025-01-05',
   },
   {
     id: '6', type: 'pg', name: 'Didi\'s Home PG', description: 'Women-only PG near SRM University. Homely atmosphere with Bengali style cooking. Washing machine and common kitchen available.', city: 'Chennai', area: 'Potheri', address: 'SRM Nagar, Potheri, Chennai - 603203',
     price_per_month: 6500, room_type: 'double', gender: 'female', amenities: ['Bengali Food', 'WiFi', 'Kitchen', 'Washing Machine'], bengali_friendly: true, bengali_food: true,
     owner_name: 'Sharmila Dey', owner_phone: '9876543215', owner_whatsapp: '9876543215', google_maps_url: 'https://maps.google.com/?q=Potheri,Chennai', lat: 12.8231, lng: 80.0440,
-    images: [], verified: true, available_rooms: 4, deposit_amount: 6500, created_at: '2025-02-15',
+    images: ['https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80'], verified: true, available_rooms: 4, deposit_amount: 6500, created_at: '2025-02-15',
   },
   // ===== REAL CHENNAI PGs FROM GOOGLE MAPS =====
   {
     id: '7', type: 'pg', name: 'Krishna PG for Men', description: 'Rated 4.6Γÿà (110 reviews). Good place to stay, food is good (like home food), owners are easily reachable. Home like experience, hostel was good and clean with many facilities. Open 24 hours. LGBTQ+ friendly.', city: 'Chennai', area: 'Vandalur', address: 'GST Rd, near Eraniyamman Koil, Otteri Extension, Vandalur, Tamil Nadu 600048',
     price_per_month: 7000, room_type: 'double', gender: 'male', amenities: ['WiFi', 'CCTV', 'Washing Machine', 'Home Food', 'Power Backup'], bengali_friendly: false, bengali_food: false,
     owner_name: 'Krishna PG', owner_phone: '08838296334', owner_whatsapp: '08838296334', google_maps_url: 'https://www.google.com/maps/search/Krishna+PG+for+Men+Vandalur+Chennai', lat: 12.8923, lng: 80.0821,
-    images: [], verified: true, available_rooms: 5, deposit_amount: 7000, created_at: '2025-01-10',
+    images: ['https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80'], verified: true, available_rooms: 5, deposit_amount: 7000, created_at: '2025-01-10',
   },
   {
     id: '8', type: 'pg', name: 'Sri Sai Grn Men\'s PG & Hostel', description: 'Rated 4.8Γÿà (374 reviews). Top-rated PG near Ramakrishna Street. Opposite Bata showroom. Known for cleanliness and excellent management.', city: 'Chennai', area: 'T. Nagar', address: 'No:19, Ramakrishna St, opposite Bata showroom, Chennai',
     price_per_month: 8000, room_type: 'double', gender: 'male', amenities: ['WiFi', 'AC', 'CCTV', 'Laundry', 'Power Backup'], bengali_friendly: false, bengali_food: false,
     owner_name: 'Sri Sai PG', owner_phone: '08122824076', owner_whatsapp: '08122824076', google_maps_url: 'https://www.google.com/maps/search/Sri+Sai+Grn+Mens+PG+Hostel+Chennai', lat: 13.0418, lng: 80.2341,
-    images: [], verified: true, available_rooms: 4, deposit_amount: 8000, created_at: '2025-01-12',
+    images: ['https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80'], verified: true, available_rooms: 4, deposit_amount: 8000, created_at: '2025-01-12',
   },
   {
     id: '9', type: 'pg', name: 'NILA Hostel for Men', description: 'Rated 4.9Γÿà (57 reviews). Clean, spacious, affordable and well-managed. Located in Vandalur near colleges.', city: 'Chennai', area: 'Vandalur', address: '1/411, Moogambigai Kovil Street, Singara Thottam, Vandalur, Chennai 600048',
     price_per_month: 5500, room_type: 'triple', gender: 'male', amenities: ['WiFi', 'Home Food', 'Laundry', 'Study Room'], bengali_friendly: false, bengali_food: false,
     owner_name: 'Nila Hostel', owner_phone: '08973045509', owner_whatsapp: '08973045509', google_maps_url: 'https://www.google.com/maps/search/NILA+HOSTEL+FOR+MEN+Vandalur+Chennai', lat: 12.8950, lng: 80.0800,
-    images: [], verified: true, available_rooms: 6, deposit_amount: 5500, created_at: '2025-02-01',
+    images: ['https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80'], verified: true, available_rooms: 6, deposit_amount: 5500, created_at: '2025-02-01',
   },
   {
     id: '10', type: 'pg', name: 'Aadith PG for Men', description: 'Rated 4.8Γÿà (36 reviews). Near Gateway Office Parks on GST Road. Well-maintained rooms with good amenities.', city: 'Chennai', area: 'Vandalur', address: '1/588A, Eraniyamman Kovil Street, GST Rd, near Gateway Office Parks, Chennai',
     price_per_month: 6500, room_type: 'double', gender: 'male', amenities: ['WiFi', 'AC', 'Home Food', 'Parking'], bengali_friendly: false, bengali_food: false,
     owner_name: 'Aadith PG', owner_phone: '09094172769', owner_whatsapp: '09094172769', google_maps_url: 'https://www.google.com/maps/search/Aadith+PG+for+Men+Chennai', lat: 12.8900, lng: 80.0830,
-    images: [], verified: true, available_rooms: 3, deposit_amount: 6500, created_at: '2025-02-05',
+    images: ['https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80'], verified: true, available_rooms: 3, deposit_amount: 6500, created_at: '2025-02-05',
   },
   {
     id: '11', type: 'pg', name: 'OLive Inn PG for Men', description: 'Rated 4.5Γÿà (144 reviews). Open 24 hours. Located on Balagangadhar Tilak Street. Popular among working professionals.', city: 'Chennai', area: 'T. Nagar', address: 'Balagangadhar Tilak St, T. Nagar, Chennai',
     price_per_month: 9000, room_type: 'single', gender: 'male', amenities: ['WiFi', 'AC', 'CCTV', '24/7 Reception', 'Laundry'], bengali_friendly: false, bengali_food: false,
     owner_name: 'OLive Inn', owner_phone: '07658958241', owner_whatsapp: '07658958241', google_maps_url: 'https://www.google.com/maps/search/OLive+Inn+PG+for+Men+Chennai', lat: 13.0400, lng: 80.2350,
-    images: [], verified: true, available_rooms: 4, deposit_amount: 9000, created_at: '2025-01-18',
+    images: ['https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80'], verified: true, available_rooms: 4, deposit_amount: 9000, created_at: '2025-01-18',
   },
   {
     id: '12', type: 'pg', name: 'Zolo Flyer - Anna Nagar', description: 'Rated 4.2Γÿà (94 reviews). Zolo branded PG near Anna Nagar metro station. Professional management with app-based services.', city: 'Chennai', area: 'Anna Nagar', address: 'No. 4, 11, 4th St, Anna Nagar, Chennai',
     price_per_month: 10000, room_type: 'single', gender: 'male', amenities: ['WiFi', 'AC', 'Gym', 'CCTV', 'Biometric Entry', 'Housekeeping'], bengali_friendly: false, bengali_food: false,
     owner_name: 'Zolo Stays', owner_phone: '08884518010', owner_whatsapp: '08884518010', google_maps_url: 'https://www.google.com/maps/search/Zolo+Flyer+Anna+Nagar+Chennai', lat: 13.0850, lng: 80.2100,
-    images: [], verified: true, available_rooms: 10, deposit_amount: 10000, created_at: '2025-01-20',
+    images: ['https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80'], verified: true, available_rooms: 10, deposit_amount: 10000, created_at: '2025-01-20',
   },
   {
     id: '13', type: 'pg', name: 'VJB Apartment - AC PG for Men', description: 'Rated 4.5Γÿà (125 reviews). Near TCS OMR and IMU gate in Sholinganallur. AC rooms with good on-site services.', city: 'Chennai', area: 'Sholinganallur', address: 'HIG-29 C1 Road, Rajiv Gandhi Salai, behind TCS, opp. IMU OMR gate, Chennai',
     price_per_month: 9500, room_type: 'single', gender: 'male', amenities: ['AC', 'WiFi', 'CCTV', 'Power Backup', 'Parking'], bengali_friendly: false, bengali_food: false,
     owner_name: 'VJB Apartment', owner_phone: '09840867142', owner_whatsapp: '09840867142', google_maps_url: 'https://www.google.com/maps/search/VJB+APARTMENT+PG+Sholinganallur+Chennai', lat: 12.9010, lng: 80.2275,
-    images: [], verified: true, available_rooms: 5, deposit_amount: 9500, created_at: '2025-01-25',
+    images: ['https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80'], verified: true, available_rooms: 5, deposit_amount: 9500, created_at: '2025-01-25',
   },
   {
     id: '14', type: 'pg', name: 'Happy Nest Men\'s PG', description: 'Rated 4.6Γÿà (107 reviews). Good PG with nice food and peaceful accommodation. Near Kilambakkam Bus Terminus, under Urapakkam Bridge. Open 24 hours.', city: 'Chennai', area: 'Urapakkam', address: '215/22B1, Railway Gate Rd, opposite Kilambakkam Bus Terminus, Chennai',
     price_per_month: 6000, room_type: 'double', gender: 'male', amenities: ['Home Food', 'WiFi', 'Parking', 'Power Backup'], bengali_friendly: false, bengali_food: false,
     owner_name: 'Happy Nest', owner_phone: '07200205444', owner_whatsapp: '07200205444', google_maps_url: 'https://www.google.com/maps/search/Happy+Nest+Mens+PG+Urapakkam+Chennai', lat: 12.8500, lng: 80.1300,
-    images: [], verified: true, available_rooms: 6, deposit_amount: 6000, created_at: '2025-02-10',
+    images: ['https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80'], verified: true, available_rooms: 6, deposit_amount: 6000, created_at: '2025-02-10',
   },
   {
     id: '15', type: 'pg', name: 'Sai Nila Stay - Near VIT Chennai', description: 'Rated 4.0Γÿà (54 reviews). Affordable PG near VIT campus with both AC and non-AC accommodations. Good for students.', city: 'Chennai', area: 'Kelambakkam', address: 'Sagayapuri Layout, 48, Keelakottaiyur, Chennai',
     price_per_month: 5000, room_type: 'triple', gender: 'male', amenities: ['WiFi', 'Home Food', 'Study Room', 'Parking'], bengali_friendly: false, bengali_food: false,
     owner_name: 'Sai Nila Stay', owner_phone: '09884094010', owner_whatsapp: '09884094010', google_maps_url: 'https://www.google.com/maps/search/Sai+Nila+Stay+VIT+Chennai', lat: 12.8231, lng: 80.0440,
-    images: [], verified: true, available_rooms: 8, deposit_amount: 5000, created_at: '2025-02-15',
+    images: ['https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80'], verified: true, available_rooms: 8, deposit_amount: 5000, created_at: '2025-02-15',
   },
   {
     id: '16', type: 'pg', name: 'Amman Men\'s PG Hostel', description: 'Rated 4.6Γÿà (50 reviews). Affordable price with well-cleaned rooms, good to stay in Chennai. Central location.', city: 'Chennai', area: 'Nungambakkam', address: 'New No.17, Old No. 13, 2nd St, Nungambakkam, Chennai',
     price_per_month: 8500, room_type: 'double', gender: 'male', amenities: ['WiFi', 'AC', 'Home Food', 'Laundry', 'CCTV'], bengali_friendly: false, bengali_food: false,
     owner_name: 'Amman PG', owner_phone: '07010300360', owner_whatsapp: '07010300360', google_maps_url: 'https://www.google.com/maps/search/Amman+Mens+PG+Hostel+Chennai', lat: 13.0600, lng: 80.2400,
-    images: [], verified: true, available_rooms: 3, deposit_amount: 8500, created_at: '2025-01-28',
+    images: ['https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80'], verified: true, available_rooms: 3, deposit_amount: 8500, created_at: '2025-01-28',
   },
   {
     id: '17', type: 'pg', name: 'K S Mens PG Hostel', description: 'Rated 5.0Γÿà (16 reviews). Highest rated PG - clean and respectful. Open 24 hours. Located on Dr Besant Road.', city: 'Chennai', area: 'T. Nagar', address: 'Dr Besant Rd, T. Nagar, Chennai',
     price_per_month: 7500, room_type: 'double', gender: 'male', amenities: ['WiFi', 'Home Food', 'Laundry', 'Power Backup'], bengali_friendly: false, bengali_food: false,
     owner_name: 'K S PG', owner_phone: '09003030499', owner_whatsapp: '09003030499', google_maps_url: 'https://www.google.com/maps/search/K+S+MENS+PG+HOSTAL+Chennai', lat: 13.0450, lng: 80.2400,
-    images: [], verified: true, available_rooms: 2, deposit_amount: 7500, created_at: '2025-03-01',
+    images: ['https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80'], verified: true, available_rooms: 2, deposit_amount: 7500, created_at: '2025-03-01',
   },
   {
     id: '18', type: 'pg', name: 'Skyhome Boys PG/Hostel', description: 'Rated 4.6Γÿà (84 reviews). Highly recommend for anyone looking for a comfortable and affordable stay. Located on New Tank Street.', city: 'Chennai', area: 'Kilpauk', address: '15/27, New Tank Street, Kilpauk, Chennai',
     price_per_month: 7000, room_type: 'double', gender: 'male', amenities: ['WiFi', 'Home Food', 'CCTV', 'Laundry'], bengali_friendly: false, bengali_food: false,
     owner_name: 'Skyhome PG', owner_phone: '07204398255', owner_whatsapp: '07204398255', google_maps_url: 'https://www.google.com/maps/search/Skyhome+Boys+PG+Hostel+Chennai', lat: 13.0800, lng: 80.2450,
-    images: [], verified: true, available_rooms: 4, deposit_amount: 7000, created_at: '2025-02-20',
+    images: ['https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80'], verified: true, available_rooms: 4, deposit_amount: 7000, created_at: '2025-02-20',
   },
   {
     id: '19', type: 'pg', name: 'Relaxo PG Shenoy Nagar', description: 'Rated 4.8Γÿà (25 reviews). Excellent PG service at affordable price. Open 24 hours. Great location in Shenoy Nagar.', city: 'Chennai', area: 'Shenoy Nagar', address: '20A, Pulla Ave, Shenoy Nagar, Chennai',
     price_per_month: 8000, room_type: 'single', gender: 'male', amenities: ['WiFi', 'AC', 'Home Food', 'Parking'], bengali_friendly: false, bengali_food: false,
     owner_name: 'Relaxo PG', owner_phone: '07708793813', owner_whatsapp: '07708793813', google_maps_url: 'https://www.google.com/maps/search/Relaxo+PG+Shenoy+Nagar+Chennai', lat: 13.0780, lng: 80.2350,
-    images: [], verified: true, available_rooms: 3, deposit_amount: 8000, created_at: '2025-03-05',
+    images: ['https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80'], verified: true, available_rooms: 3, deposit_amount: 8000, created_at: '2025-03-05',
   },
   {
     id: '20', type: 'pg', name: 'G6 PG Hostel', description: 'Rated 4.9Γÿà (26 reviews). Comfortable stay for working men with good amenities. Open 24 hours. Located on Sekkizhar Street.', city: 'Chennai', area: 'Mylapore', address: '7, Sekkizhar St, Mylapore, Chennai',
     price_per_month: 8500, room_type: 'single', gender: 'male', amenities: ['WiFi', 'AC', 'Home Food', 'CCTV', 'Power Backup'], bengali_friendly: false, bengali_food: false,
     owner_name: 'G6 PG', owner_phone: '07339269513', owner_whatsapp: '07339269513', google_maps_url: 'https://www.google.com/maps/search/G6+PG+HOSTEL+Chennai', lat: 13.0330, lng: 80.2690,
-    images: [], verified: true, available_rooms: 2, deposit_amount: 8500, created_at: '2025-03-10',
+    images: ['https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80'], verified: true, available_rooms: 2, deposit_amount: 8500, created_at: '2025-03-10',
   },
   {
     id: '21', type: 'pg', name: 'Jayalakshmi Mens PG Hostel', description: 'Rated 4.7Γÿà (63 reviews). Good place to stay with good facilities and affordable rent. Open 24 hours. Near Shenoy Road.', city: 'Chennai', area: 'Nungambakkam', address: '14, 3, Shenoy Rd, Nungambakkam, Chennai',
     price_per_month: 9000, room_type: 'single', gender: 'male', amenities: ['WiFi', 'AC', 'Home Food', 'Laundry', 'CCTV'], bengali_friendly: false, bengali_food: false,
     owner_name: 'Jayalakshmi PG', owner_phone: '09843809533', owner_whatsapp: '09843809533', google_maps_url: 'https://www.google.com/maps/search/Jayalakshmi+Mens+PG+Hostel+Chennai', lat: 13.0600, lng: 80.2380,
-    images: [], verified: true, available_rooms: 3, deposit_amount: 9000, created_at: '2025-03-12',
+    images: ['https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80'], verified: true, available_rooms: 3, deposit_amount: 9000, created_at: '2025-03-12',
   },
   {
     id: '22', type: 'pg', name: 'Rishi Andhra Men\'s PG', description: 'Rated 4.2Γÿà (316 reviews). Open 24 hours. Near train ticket counter. Popular among students and working professionals.', city: 'Chennai', area: 'Guindy', address: 'Near Train Ticket Counter, opposite Lassi Shop, Guindy, Chennai',
     price_per_month: 6500, room_type: 'triple', gender: 'male', amenities: ['WiFi', 'Home Food', 'Laundry', 'Power Backup'], bengali_friendly: false, bengali_food: false,
     owner_name: 'Rishi PG', owner_phone: '08686866683', owner_whatsapp: '08686866683', google_maps_url: 'https://www.google.com/maps/search/Rishi+Andhra+Mens+PG+Chennai', lat: 13.0067, lng: 80.2206,
-    images: [], verified: true, available_rooms: 6, deposit_amount: 6500, created_at: '2025-01-08',
+    images: ['https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80'], verified: true, available_rooms: 6, deposit_amount: 6500, created_at: '2025-01-08',
   },
   {
     id: '23', type: 'pg', name: 'Yube1 Madras League - Chetpet', description: 'Rated 4.5Γÿà (190 reviews). Offers really good accommodation with clean rooms and good services. Open 24 hours. Premium coliving.', city: 'Chennai', area: 'Chetpet', address: 'No:15, 7, Dr Gurusamy Rd, Chetpet, Chennai',
     price_per_month: 12000, room_type: 'single', gender: 'mixed', amenities: ['WiFi', 'AC', 'Gym', 'CCTV', 'Housekeeping', 'Biometric Entry'], bengali_friendly: false, bengali_food: false,
     owner_name: 'Yube1', owner_phone: '09150881113', owner_whatsapp: '09150881113', google_maps_url: 'https://www.google.com/maps/search/Yube1+Madras+League+Chetpet+Chennai', lat: 13.0720, lng: 80.2480,
-    images: [], verified: true, available_rooms: 8, deposit_amount: 12000, created_at: '2025-02-18',
+    images: ['https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80'], verified: true, available_rooms: 8, deposit_amount: 12000, created_at: '2025-02-18',
   },
   {
     id: '24', type: 'pg', name: 'Sree Ramajayam Mens PG', description: 'Rated 4.5Γÿà (110 reviews). Good PG, very secure and safe. Nearest to all kind of shops and bus stop. Located on Eswaran Koil Street.', city: 'Chennai', area: 'Choolaimedu', address: 'Eswaran Koil 2nd St, Choolaimedu, Chennai',
     price_per_month: 7500, room_type: 'double', gender: 'male', amenities: ['WiFi', 'Home Food', 'CCTV', 'Power Backup'], bengali_friendly: false, bengali_food: false,
     owner_name: 'Sree Ramajayam', owner_phone: '07449099999', owner_whatsapp: '07449099999', google_maps_url: 'https://www.google.com/maps/search/Sree+Ramajayam+Mens+PG+Chennai', lat: 13.0650, lng: 80.2300,
-    images: [], verified: true, available_rooms: 5, deposit_amount: 7500, created_at: '2025-03-01',
+    images: ['https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80'], verified: true, available_rooms: 5, deposit_amount: 7500, created_at: '2025-03-01',
   },
   {
     id: '25', type: 'pg', name: 'Zolo Cruze - Karapakkam', description: 'Rated 4.3Γÿà (269 reviews). Good gents PG. Professional Zolo management with app-based services. Open 24 hours.', city: 'Chennai', area: 'Karapakkam', address: '2/135, Gangai Amman Kovil St, Karapakkam, Chennai',
     price_per_month: 10000, room_type: 'single', gender: 'male', amenities: ['WiFi', 'AC', 'Gym', 'CCTV', 'Housekeeping', 'Biometric Entry'], bengali_friendly: false, bengali_food: false,
     owner_name: 'Zolo Stays', owner_phone: '08884518010', owner_whatsapp: '08884518010', google_maps_url: 'https://www.google.com/maps/search/Zolo+Cruze+Karapakkam+Chennai', lat: 12.9350, lng: 80.2280,
-    images: [], verified: true, available_rooms: 12, deposit_amount: 10000, created_at: '2025-01-15',
+    images: ['https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80'], verified: true, available_rooms: 12, deposit_amount: 10000, created_at: '2025-01-15',
   },
   {
     id: '26', type: 'pg', name: 'Ladies Luxury PG', description: 'Rated 4.3Γÿà (64 reviews). They offer 4 times non-veg in a week and also provide laundry service. Women-only PG.', city: 'Chennai', area: 'Nungambakkam', address: '18, 1st Floor, 21, Viswanathapuram 3rd St, Nungambakkam, Chennai',
     price_per_month: 9000, room_type: 'double', gender: 'female', amenities: ['WiFi', 'AC', 'Home Food', 'Laundry', 'CCTV'], bengali_friendly: false, bengali_food: false,
     owner_name: 'Ladies Luxury PG', owner_phone: '08939648457', owner_whatsapp: '08939648457', google_maps_url: 'https://www.google.com/maps/search/Ladies+Luxury+PG+Nungambakkam+Chennai', lat: 13.0610, lng: 80.2410,
-    images: [], verified: true, available_rooms: 3, deposit_amount: 9000, created_at: '2025-02-22',
+    images: ['https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80'], verified: true, available_rooms: 3, deposit_amount: 9000, created_at: '2025-02-22',
   },
   {
     id: '27', type: 'pg', name: 'Truliv Hestia - T.Nagar', description: 'Rated 4.3Γÿà (86 reviews). Truliv offers good facilities with clean rooms and a comfortable stay. Premium co-living space.', city: 'Chennai', area: 'T. Nagar', address: 'Truliv Hestia, 29, Thanikachalam Rd, T. Nagar, Chennai',
     price_per_month: 11000, room_type: 'single', gender: 'mixed', amenities: ['WiFi', 'AC', 'Gym', 'CCTV', 'Housekeeping', 'Kitchen'], bengali_friendly: false, bengali_food: false,
     owner_name: 'Truliv', owner_phone: '09043221620', owner_whatsapp: '09043221620', google_maps_url: 'https://www.google.com/maps/search/Truliv+Hestia+T+Nagar+Chennai', lat: 13.0410, lng: 80.2350,
-    images: [], verified: true, available_rooms: 7, deposit_amount: 11000, created_at: '2025-02-25',
+    images: ['https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80'], verified: true, available_rooms: 7, deposit_amount: 11000, created_at: '2025-02-25',
   },
   {
     id: '28', type: 'pg', name: 'GK Mens Hostel', description: 'Rated 4.7Γÿà (125 reviews). Good PG with good food and neat rooms. Located on Aziz Muluk 2nd Street.', city: 'Chennai', area: 'Thousand Lights', address: '7, Aziz Muluk 2nd Street, Thousand Lights, Chennai',
     price_per_month: 7500, room_type: 'double', gender: 'male', amenities: ['WiFi', 'Home Food', 'Laundry', 'CCTV'], bengali_friendly: false, bengali_food: false,
     owner_name: 'GK Hostel', owner_phone: '07200479899', owner_whatsapp: '07200479899', google_maps_url: 'https://www.google.com/maps/search/GK+mens+hostel+Thousand+Lights+Chennai', lat: 13.0530, lng: 80.2560,
-    images: [], verified: true, available_rooms: 4, deposit_amount: 7500, created_at: '2025-03-08',
+    images: ['https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80'], verified: true, available_rooms: 4, deposit_amount: 7500, created_at: '2025-03-08',
   },
   {
     id: '29', type: 'pg', name: 'Yube1 Sarmani', description: 'Rated 4.6Γÿà (141 reviews). Very good PG, neat and clean. Great property management. Open 24 hours. Located on Thiru Vi Ka Road.', city: 'Chennai', area: 'Royapettah', address: '38, Thiru. Vika. Rd, Royapettah, Chennai',
     price_per_month: 11500, room_type: 'single', gender: 'mixed', amenities: ['WiFi', 'AC', 'Gym', 'CCTV', 'Housekeeping', 'Biometric Entry'], bengali_friendly: false, bengali_food: false,
     owner_name: 'Yube1', owner_phone: '09150881113', owner_whatsapp: '09150881113', google_maps_url: 'https://www.google.com/maps/search/Yube1+Sarmani+Chennai', lat: 13.0530, lng: 80.2600,
-    images: [], verified: true, available_rooms: 6, deposit_amount: 11500, created_at: '2025-03-15',
+    images: ['https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80'], verified: true, available_rooms: 6, deposit_amount: 11500, created_at: '2025-03-15',
   },
   {
     id: '30', type: 'pg', name: 'BRUNDAVAN Gents PG', description: 'Rated 4.3Γÿà (85 reviews). Nice PG at reasonable price. Open 24 hours. Near Tailavaram area.', city: 'Chennai', area: 'Thailavaram', address: 'No 134, Beside Smiles Inn, Thailavaram, Chennai',
     price_per_month: 6000, room_type: 'double', gender: 'male', amenities: ['WiFi', 'Home Food', 'Parking', 'Power Backup'], bengali_friendly: false, bengali_food: false,
     owner_name: 'Brundavan PG', owner_phone: '07550004426', owner_whatsapp: '07550004426', google_maps_url: 'https://www.google.com/maps/search/BRUNDAVAN+GENTS+PG+Chennai', lat: 12.8700, lng: 80.0600,
-    images: [], verified: true, available_rooms: 5, deposit_amount: 6000, created_at: '2025-03-18',
+    images: ['https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80'], verified: true, available_rooms: 5, deposit_amount: 6000, created_at: '2025-03-18',
   },
   {
     id: '31', type: 'pg', name: 'Sri Sai Ram PG - Near VIT Chennai', description: 'Rated 4.3Γÿà (141 reviews). Good PG near VIT Chennai campus. On-site services available. Located in Vishnupriya Garden.', city: 'Chennai', area: 'Kelambakkam', address: 'Plot No 7A, Vishnupriya Garden 2nd St, near VIT Chennai, Chennai',
     price_per_month: 5500, room_type: 'triple', gender: 'male', amenities: ['WiFi', 'Home Food', 'Study Room', 'Laundry'], bengali_friendly: false, bengali_food: false,
     owner_name: 'Sri Sai Ram PG', owner_phone: '09841722899', owner_whatsapp: '09841722899', google_maps_url: 'https://www.google.com/maps/search/Sri+Sai+Ram+Paying+Guest+VIT+Chennai', lat: 12.8250, lng: 80.0450,
-    images: [], verified: true, available_rooms: 7, deposit_amount: 5500, created_at: '2025-02-28',
+    images: ['https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80'], verified: true, available_rooms: 7, deposit_amount: 5500, created_at: '2025-02-28',
   },
 ];
 
@@ -1319,16 +1319,16 @@ export const sampleFoodListings: FoodListing[] = [
   // Additional food listings can be added here to match the full PDF dataset.
   
   // ================= BENGALI FOODS =================
-  { id: '1', name: 'Kolkata Kitchen', type: 'restaurant', city: 'Chennai', area: 'T. Nagar', address: '34, South Usman Road, T. Nagar', pincode: '600017', phone: '9876543220', whatsapp: '9876543220', specialties: ['Hilsa Fish', 'Kosha Mangsho', 'Luchi Alur Dom', 'Chingri Malaikari'], zomato_url: 'https://zomato.com', swiggy_url: 'https://swiggy.com', images: [], verified: true, bengali_friendly: true, created_at: '2025-01-01', google_maps_url: 'https://maps.google.com/?q=T.Nagar,Chennai' },
-  { id: '2', name: 'Mishti Hub', type: 'sweets', city: 'Chennai', area: 'Anna Nagar', address: '56, 2nd Avenue, Anna Nagar', pincode: '600040', phone: '9876543221', whatsapp: '9876543221', specialties: ['Rosogolla', 'Mishti Doi', 'Sandesh', 'Pantua', 'Chomchom'], swiggy_url: 'https://swiggy.com', magicpin_url: 'https://magicpin.in', images: [], verified: true, bengali_friendly: true, created_at: '2025-01-10', google_maps_url: 'https://maps.google.com/?q=Anna+Nagar,Chennai' },
-  { id: '3', name: 'Banglar Rannaghar', type: 'tiffin', city: 'Chennai', area: 'Guindy', address: 'Home delivery only - Guindy area', pincode: '600032', phone: '9876543222', whatsapp: '9876543222', specialties: ['Bengali Thali', 'Fish Curry', 'Dal-Bhaat', 'Shukto'], magicpin_url: 'https://magicpin.in', dunzo_url: 'https://dunzo.com', images: [], verified: true, bengali_friendly: true, created_at: '2025-02-01', google_maps_url: 'https://maps.google.com/?q=Guindy,Chennai' },
-  { id: '4', name: 'Bong Bites', type: 'delivery partner', city: 'Chennai', area: 'Velachery', address: 'Online delivery - Chennai wide', pincode: '600042', phone: '9876543223', whatsapp: '9876543223', specialties: ['Kathi Rolls', 'Egg Devil', 'Mughlai Paratha', 'Chicken Chaap'], zomato_url: 'https://zomato.com', swiggy_url: 'https://swiggy.com', magicpin_url: 'https://magicpin.in', dunzo_url: 'https://dunzo.com', eatsure_url: 'https://eatsure.com', images: [], verified: false, bengali_friendly: false, created_at: '2025-02-15', google_maps_url: 'https://maps.google.com/?q=Velachery,Chennai' },
-  { id: '5', name: 'Barir Ranna', type: 'restaurant', city: 'Coimbatore', area: 'Gandhipuram', address: '12, Cross Cut Road, Gandhipuram', pincode: '641012', phone: '9876543224', whatsapp: '9876543224', specialties: ['Bengali Thali', 'Chingri Bhapa', 'Begun Bhaja', 'Payesh'], zomato_url: 'https://zomato.com', swiggy_url: 'https://swiggy.com', images: [], verified: true, bengali_friendly: true, created_at: '2025-03-01', google_maps_url: 'https://maps.google.com/?q=Gandhipuram,Coimbatore' },
-  { id: '6', name: 'Kolkata Sweets Palace', type: 'sweets', city: 'Vellore', area: 'Katpadi', address: 'Near VIT Main Gate, Katpadi', pincode: '632006', phone: '9876543225', whatsapp: '9876543225', specialties: ['Rosogolla', 'Langcha', 'Mihidana', 'Sitabhog'], swiggy_url: 'https://swiggy.com', images: [], verified: true, bengali_friendly: true, created_at: '2025-02-20', google_maps_url: 'https://maps.google.com/?q=Katpadi,Vellore' },
-  { id: '7', name: 'Petuk', type: 'restaurant', city: 'Chennai', area: 'Adyar', address: '15, 1st Cross Street, Adyar', pincode: '600020', phone: '9876543226', whatsapp: '9876543226', specialties: ['Fish Kabiraji', 'Mutton Kosha', 'Basanti Pulao'], zomato_url: 'https://zomato.com', swiggy_url: 'https://swiggy.com', images: [], verified: true, bengali_friendly: true, created_at: '2025-03-10', google_maps_url: 'https://maps.google.com/?q=Adyar,Chennai' },
-  { id: '8', name: 'Kolkata Mithai', type: 'sweets', city: 'Chennai', area: 'Egmore', address: '42, Gandhi Irwin Road, Egmore', pincode: '600008', phone: '9876543227', whatsapp: '9876543227', specialties: ['Kanchagolla', 'Sita Bhog', 'Nolen Gur Sandesh'], zomato_url: 'https://zomato.com', images: [], verified: true, bengali_friendly: true, created_at: '2025-02-25', google_maps_url: 'https://maps.google.com/?q=Egmore,Chennai' },
-  { id: '9', name: 'Meenaxi Bengali Bhoj', type: 'restaurant', city: 'Madurai', area: 'Simmakkal', address: 'Near Meenakshi Temple, Madurai', pincode: '625001', phone: '9876543228', whatsapp: '9876543228', specialties: ['Temple City Thali', 'Bhetki Macher Jhal'], zomato_url: 'https://zomato.com', swiggy_url: 'https://swiggy.com', images: [], verified: true, bengali_friendly: true, created_at: '2025-03-15', google_maps_url: 'https://maps.google.com/?q=Simmakkal,Madurai' },
-  { id: '10', name: 'Salem Bengali Hotel', type: 'restaurant', city: 'Salem', area: 'Fairlands', address: 'Salem - 636016', pincode: '636016', phone: '9876543229', whatsapp: '9876543229', specialties: ['Bengali Style Fish', 'Macher Chopp'], zomato_url: 'https://zomato.com', swiggy_url: 'https://swiggy.com', images: [], verified: true, bengali_friendly: true, created_at: '2025-03-20', google_maps_url: 'https://maps.google.com/?q=Fairlands,Salem' },
+  { id: '1', name: 'Kolkata Kitchen', type: 'restaurant', city: 'Chennai', area: 'T. Nagar', address: '34, South Usman Road, T. Nagar', pincode: '600017', phone: '9876543220', whatsapp: '9876543220', specialties: ['Hilsa Fish', 'Kosha Mangsho', 'Luchi Alur Dom', 'Chingri Malaikari'], zomato_url: 'https://zomato.com', swiggy_url: 'https://swiggy.com', images: ['https://images.unsplash.com/photo-1596797960357-19321799a74a?w=500&q=80'], verified: true, bengali_friendly: true, created_at: '2025-01-01', google_maps_url: 'https://maps.google.com/?q=T.Nagar,Chennai' },
+  { id: '2', name: 'Mishti Hub', type: 'sweets', city: 'Chennai', area: 'Anna Nagar', address: '56, 2nd Avenue, Anna Nagar', pincode: '600040', phone: '9876543221', whatsapp: '9876543221', specialties: ['Rosogolla', 'Mishti Doi', 'Sandesh', 'Pantua', 'Chomchom'], swiggy_url: 'https://swiggy.com', magicpin_url: 'https://magicpin.in', images: ['https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=500&q=80'], verified: true, bengali_friendly: true, created_at: '2025-01-10', google_maps_url: 'https://maps.google.com/?q=Anna+Nagar,Chennai' },
+  { id: '3', name: 'Banglar Rannaghar', type: 'tiffin', city: 'Chennai', area: 'Guindy', address: 'Home delivery only - Guindy area', pincode: '600032', phone: '9876543222', whatsapp: '9876543222', specialties: ['Bengali Thali', 'Fish Curry', 'Dal-Bhaat', 'Shukto'], magicpin_url: 'https://magicpin.in', dunzo_url: 'https://dunzo.com', images: ['https://images.unsplash.com/photo-1603133872878-684f2089d4b1?w=500&q=80'], verified: true, bengali_friendly: true, created_at: '2025-02-01', google_maps_url: 'https://maps.google.com/?q=Guindy,Chennai' },
+  { id: '4', name: 'Bong Bites', type: 'delivery partner', city: 'Chennai', area: 'Velachery', address: 'Online delivery - Chennai wide', pincode: '600042', phone: '9876543223', whatsapp: '9876543223', specialties: ['Kathi Rolls', 'Egg Devil', 'Mughlai Paratha', 'Chicken Chaap'], zomato_url: 'https://zomato.com', swiggy_url: 'https://swiggy.com', magicpin_url: 'https://magicpin.in', dunzo_url: 'https://dunzo.com', eatsure_url: 'https://eatsure.com', images: ['https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=800&q=80'], verified: false, bengali_friendly: false, created_at: '2025-02-15', google_maps_url: 'https://maps.google.com/?q=Velachery,Chennai' },
+  { id: '5', name: 'Barir Ranna', type: 'restaurant', city: 'Coimbatore', area: 'Gandhipuram', address: '12, Cross Cut Road, Gandhipuram', pincode: '641012', phone: '9876543224', whatsapp: '9876543224', specialties: ['Bengali Thali', 'Chingri Bhapa', 'Begun Bhaja', 'Payesh'], zomato_url: 'https://zomato.com', swiggy_url: 'https://swiggy.com', images: ['https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80'], verified: true, bengali_friendly: true, created_at: '2025-03-01', google_maps_url: 'https://maps.google.com/?q=Gandhipuram,Coimbatore' },
+  { id: '6', name: 'Kolkata Sweets Palace', type: 'sweets', city: 'Vellore', area: 'Katpadi', address: 'Near VIT Main Gate, Katpadi', pincode: '632006', phone: '9876543225', whatsapp: '9876543225', specialties: ['Rosogolla', 'Langcha', 'Mihidana', 'Sitabhog'], swiggy_url: 'https://swiggy.com', images: ['https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80'], verified: true, bengali_friendly: true, created_at: '2025-02-20', google_maps_url: 'https://maps.google.com/?q=Katpadi,Vellore' },
+  { id: '7', name: 'Petuk', type: 'restaurant', city: 'Chennai', area: 'Adyar', address: '15, 1st Cross Street, Adyar', pincode: '600020', phone: '9876543226', whatsapp: '9876543226', specialties: ['Fish Kabiraji', 'Mutton Kosha', 'Basanti Pulao'], zomato_url: 'https://zomato.com', swiggy_url: 'https://swiggy.com', images: ['https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80'], verified: true, bengali_friendly: true, created_at: '2025-03-10', google_maps_url: 'https://maps.google.com/?q=Adyar,Chennai' },
+  { id: '8', name: 'Kolkata Mithai', type: 'sweets', city: 'Chennai', area: 'Egmore', address: '42, Gandhi Irwin Road, Egmore', pincode: '600008', phone: '9876543227', whatsapp: '9876543227', specialties: ['Kanchagolla', 'Sita Bhog', 'Nolen Gur Sandesh'], zomato_url: 'https://zomato.com', images: ['https://images.unsplash.com/photo-1558322394-4d8813ceef8a?auto=format&fit=crop&w=800&q=80'], verified: true, bengali_friendly: true, created_at: '2025-02-25', google_maps_url: 'https://maps.google.com/?q=Egmore,Chennai' },
+  { id: '9', name: 'Meenaxi Bengali Bhoj', type: 'restaurant', city: 'Madurai', area: 'Simmakkal', address: 'Near Meenakshi Temple, Madurai', pincode: '625001', phone: '9876543228', whatsapp: '9876543228', specialties: ['Temple City Thali', 'Bhetki Macher Jhal'], zomato_url: 'https://zomato.com', swiggy_url: 'https://swiggy.com', images: ['https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80'], verified: true, bengali_friendly: true, created_at: '2025-03-15', google_maps_url: 'https://maps.google.com/?q=Simmakkal,Madurai' },
+  { id: '10', name: 'Salem Bengali Hotel', type: 'restaurant', city: 'Salem', area: 'Fairlands', address: 'Salem - 636016', pincode: '636016', phone: '9876543229', whatsapp: '9876543229', specialties: ['Bengali Style Fish', 'Macher Chopp'], zomato_url: 'https://zomato.com', swiggy_url: 'https://swiggy.com', images: ['https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80'], verified: true, bengali_friendly: true, created_at: '2025-03-20', google_maps_url: 'https://maps.google.com/?q=Fairlands,Salem' },
 ];
 
 export const sampleListings = sampleStayListings;
@@ -2072,5 +2072,12 @@ export const sampleBlogPosts: BlogPost[] = [
   { id: '3', title: 'Durga Puja in Chennai ΓÇö A Complete Guide', slug: 'durga-puja-chennai-guide', excerpt: 'Everything you need to know about celebrating Durga Puja in Chennai.', author: 'ProbasiBangali Team', tags: ['festival', 'durga puja', 'chennai'], published: true, created_at: '2025-03-15' },
 ];
 
-export const sampleDoctors: BengaliDoctor[] = [];
-export const sampleStaff: BengaliStaff[] = [];
+export const sampleDoctors: BengaliDoctor[] = [
+  { id: 'd1', doctor_name: 'Dr. Arup Mukherjee', specialization: 'Cardiology', experience: '15 years', languages: ['Bengali', 'English', 'Hindi'], phone: '9876543210', email: 'arup@example.com', photo: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=200&q=80', hospital_ids: ['1'] },
+  { id: 'd2', doctor_name: 'Dr. Supriya Sen', specialization: 'Pediatrics', experience: '10 years', languages: ['Bengali', 'English'], phone: '9876543211', email: 'supriya@example.com', photo: 'https://images.unsplash.com/photo-1594824436999-05e2d3e16015?w=200&q=80', hospital_ids: ['1', '2'] },
+  { id: 'd3', doctor_name: 'Dr. Ramesh Bhattacharya', specialization: 'Orthopedics', experience: '20 years', languages: ['Bengali', 'Tamil', 'English'], phone: '9876543212', email: 'ramesh@example.com', photo: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=200&q=80', hospital_ids: ['3'] }
+];
+export const sampleStaff: BengaliStaff[] = [
+  { id: 's1', name: 'Ritu Mondal', department: 'Nursing', role: 'Head Nurse', experience: '8 years', languages: ['Bengali', 'Tamil'], phone: '9876543213', email: 'ritu@example.com', photo: 'https://images.unsplash.com/photo-1584467735815-f778f274e296?w=200&q=80', hospital_id: '1', availability: 'Mon-Fri', description: 'Experienced nurse' },
+  { id: 's2', name: 'Subrata Das', department: 'Administration', role: 'Patient Coordinator', experience: '5 years', languages: ['Bengali', 'English', 'Hindi'], phone: '9876543214', email: 'subrata@example.com', photo: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=200&q=80', hospital_id: '2', availability: 'Mon-Sat', description: 'Helps Bengali patients' }
+];

@@ -26,14 +26,20 @@ export function useFirestore<T>(collectionName: string, constraints: QueryConstr
       try {
         setLoading(true);
 
-        if (PUBLIC_COLLECTIONS.has(collectionName)) {
-          const res = await fetch(`/api/public/firestore?collection=${collectionName}`);
-          if (!res.ok) {
-            throw new Error(`Failed to fetch ${collectionName} via API: ${res.statusText}`);
+          if (PUBLIC_COLLECTIONS.has(collectionName)) {
+            const res = await fetch(`/api/public/firestore?collection=${collectionName}`);
+            if (res.ok) {
+              const json = await res.json();
+              if (!json.fallback) {
+                setData(json.items || []);
+                setLoading(false);
+                return;
+              }
+              console.warn(`API fallback triggered for ${collectionName}. Using client SDK instead.`);
+            }
           }
-          const json = await res.json();
-          setData(json.items || []);
-        } else {
+          
+          // Fallback to client SDK if API fetch fails or triggers fallback, or if not a public collection
           const q = query(collection(db, collectionName), ...constraints);
           const snapshot = await getDocs(q);
           const items = snapshot.docs.map(doc => ({
@@ -41,7 +47,6 @@ export function useFirestore<T>(collectionName: string, constraints: QueryConstr
             ...doc.data()
           })) as T[];
           setData(items);
-        }
       } catch (err) {
         console.error(`Error fetching ${collectionName}:`, err);
         setError(err as Error);

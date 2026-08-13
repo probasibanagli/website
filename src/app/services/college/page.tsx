@@ -40,10 +40,17 @@ function CollegeCoverImage({ name, city, mapsUrl, imageUrl, isSchool }: {
   }, [imgSrc]);
 
   if (error || !imgSrc) {
+    const fallbackImageUrl = isSchool
+      ? 'https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=800&q=80' // School
+      : 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=800&q=80'; // College
+
     return (
-      <div className={`absolute inset-0 bg-gradient-to-br ${isSchool ? 'from-indigo-50 to-violet-50' : 'from-blue-50 to-emerald-50'} flex items-center justify-center`}>
-        <GraduationCap className={`w-16 h-16 ${isSchool ? 'text-indigo-200' : 'text-emerald-200'} opacity-60`} />
-      </div>
+      <img
+        src={fallbackImageUrl}
+        alt={name}
+        className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+        loading="lazy"
+      />
     );
   }
 

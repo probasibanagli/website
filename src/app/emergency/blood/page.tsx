@@ -6,6 +6,7 @@ import { Droplets, MapPin, Phone, Globe, Loader2, ArrowRight, Search } from 'luc
 import { Skeleton } from '@/components/ui/Skeleton';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { useFirestore } from '@/lib/hooks/useFirestore';
 import { db } from '@/lib/firebase';
 import { collection, getDocs } from 'firebase/firestore';
 import { COLLECTIONS } from '@/lib/firestore/collections';
@@ -20,24 +21,7 @@ const MessageSquareIcon = (props: React.SVGProps<SVGSVGElement>) => (
 export default function BloodPage() {
   const [city, setCity] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
-  const [bloodBanks, setBloodBanks] = useState<BloodBank[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function fetchBloodBanks() {
-      try {
-        const res = await fetch('/api/public/firestore?collection=blood_banks');
-        if (!res.ok) throw new Error('Failed to fetch blood banks');
-        const data = await res.json();
-        setBloodBanks(data.items || []);
-      } catch (e) {
-        console.error('Error fetching blood banks:', e);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchBloodBanks();
-  }, []);
+  const { data: bloodBanks, loading } = useFirestore<BloodBank>('blood_banks');
 
   const filtered = useMemo(() => {
     return bloodBanks.filter((b) => {
@@ -147,13 +131,27 @@ export default function BloodPage() {
                     {/* Thin subtle horizontal divider line */}
                     <div className="w-16 h-[1px] bg-gray-100 mx-auto my-4.5" />
 
+                    {/* Blood Groups */}
+                    {bank.available_groups && bank.available_groups.length > 0 && (
+                      <div className="mb-4">
+                        <p className="text-[9px] text-[#8F9BB3] uppercase tracking-wider font-extrabold mb-2">Blood Groups</p>
+                        <div className="flex flex-wrap items-center justify-center gap-2">
+                          {bank.available_groups.map(group => (
+                            <span key={group} className="px-2.5 py-1 bg-red-50 text-red-700 rounded-md text-xs font-bold border border-red-100">
+                              {group}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
                     {/* Coordinator Details */}
-                    {/* <div>
-                      <p className="text-[9px] text-[#8F9BB3] uppercase tracking-wider font-extrabold">Center Coordinator</p>
+                    <div>
+                      <p className="text-[9px] text-[#8F9BB3] uppercase tracking-wider font-extrabold">Donor / Coordinator</p>
                       <p className="text-base font-bold text-gray-900 mt-1">
-                        {bank.coordinator_name || "Sanjay Das"}
+                        {bank.coordinator_name || "Volunteer"}
                       </p>
-                    </div> */}
+                    </div>
 
                     {/* Action Row: Request Blood + Website + Google Maps */}
                     <div className="flex items-center gap-2 mt-5">
@@ -183,7 +181,7 @@ export default function BloodPage() {
                   </div>
 
                   {/* WhatsApp Coordinator footer link */}
-                  {/* <div className="mt-4 pt-3.5 border-t border-gray-50 flex items-center justify-center">
+                  <div className="mt-4 pt-3.5 border-t border-gray-50 flex items-center justify-center">
                     <a 
                       href={bank.whatsapp_url || (bank.phone ? `https://wa.me/${bank.phone.replace(/[^0-9]/g, '')}` : '#')} 
                       target="_blank" 
@@ -191,13 +189,13 @@ export default function BloodPage() {
                       className="text-xs font-bold text-[#A63A13] hover:text-[#8F310F] flex items-center justify-center gap-2 transition-colors cursor-pointer"
                     >
                       <MessageSquareIcon className="w-4.5 h-4.5 text-[#0A6C4A]" />
-                      <span>WhatsApp Coordinator</span>
+                      <span>WhatsApp Donor/Coordinator</span>
                     </a>
-                  </div> */}
+                  </div>
                 </Card>
               ))}
             </div>
-            {filtered.length === 0 && (<div className="text-center py-20"><p className="text-5xl mb-4">🩸</p><h3 className="text-xl font-bold mb-2">No blood banks found</h3><p className="text-text-muted">Try a different city selection.</p></div>)}
+            {filtered.length === 0 && (<div className="text-center py-20"><p className="text-5xl mb-4">🩸</p><h3 className="text-xl font-bold mb-2">No blood records found</h3><p className="text-text-muted">Try a different city or search parameter.</p></div>)}
           </>
         )}
       </div>
