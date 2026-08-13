@@ -420,7 +420,7 @@ export default function EmergencyHospitalsPage() {
             {/* ── HOSPITALS SEARCH RESULTS ── */}
             {searchTab === 'hospitals' && (
               <>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                   {filteredHospitals.map((hospital) => (
                     <Card key={hospital.id} padding="none" className="overflow-hidden group flex flex-col h-full bg-white border border-gray-100 shadow-[0_4px_25px_-4px_rgba(0,0,0,0.05)] rounded-[24px]">
                       {/* Image header with text overlay */}
@@ -508,7 +508,7 @@ export default function EmergencyHospitalsPage() {
             {/* ── DOCTORS SEARCH RESULTS ── */}
             {searchTab === 'doctors' && (
               <>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                   {filteredDoctors.map((doctor) => {
                     const docHospitals = doctor.hospital_ids?.map(hid => hospitals.find(h => h.id === hid)).filter(Boolean) || [hospitals.find(h => h.id === doctor.hospital_id)].filter(Boolean);
                     const otpRequired = doctor.otp_required !== false;
@@ -633,7 +633,7 @@ export default function EmergencyHospitalsPage() {
             {/* ── STAFF SEARCH RESULTS ── */}
             {searchTab === 'staff' && (
               <>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                   {filteredStaff.map((s) => {
                     const hospital = hospitals.find((h) => h.id === s.hospital_id);
                     const otpRequired = s.otp_required !== false;

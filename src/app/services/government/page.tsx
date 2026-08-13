@@ -617,7 +617,7 @@ export default function GovernmentPage() {
           </div>
 
           {/* Row 1: 4 equal-height cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 items-stretch">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 items-stretch">
             <AadhaarCard
               service={GOVT_SERVICES.find(s => s.id === 'aadhaar')!}
               IconComponent={User}
@@ -631,7 +631,7 @@ export default function GovernmentPage() {
           </div>
 
           {/* Row 2: Voter ID (1 col) + Visa (3 cols) */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mt-5 items-start">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 mt-5 items-start">
             <div className="lg:col-span-1">
               <VoterIdCard />
             </div>
@@ -652,7 +652,7 @@ export default function GovernmentPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 items-stretch">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 items-stretch">
             {lowerPriorityServices.map((service) => {
               const IconComponent = ICON_MAP[service.icon] || Building;
               return (

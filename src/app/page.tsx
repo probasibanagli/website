@@ -159,7 +159,7 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {[
               { icon: <Users className="w-7 h-7" />, title: 'Community Groups', desc: 'WhatsApp, Telegram & Facebook groups for Bengalis.', href: '/community/groups', color: 'bg-indigo-50 text-indigo-600' },
               { icon: <Heart className="w-7 h-7" />, title: 'Matrimonial', desc: 'Find your Bengali life partner in Tamil Nadu.', href: '/community/matrimonial', color: 'bg-pink-50 text-pink-600' },

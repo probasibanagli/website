@@ -388,7 +388,7 @@ export default function StayPage() {
            · Verified first
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filtered.map((listing) => {
             const typeLabel = listing.accommodation_type || (listing.type ? listing.type.toUpperCase() : 'STAY');
             const contactName = listing.contact_person_name || listing.owner_name || 'Contact Person';
@@ -477,10 +477,10 @@ export default function StayPage() {
                     )}
                   </div>
 
-                  <div className="flex items-center justify-between mt-6 pt-5 border-t border-gray-100">
-                    <div className="flex items-center gap-2">
-                      <Link href={`/explore/stay/${listing.id}`}>
-                        <button className="bg-[#d85a30] hover:bg-[#b84a00] text-white font-bold px-5 py-2.5 rounded-[12px] transition-colors text-sm shadow-sm whitespace-nowrap">
+                  <div className="flex flex-wrap items-center justify-between mt-6 pt-5 border-t border-gray-100 gap-3">
+                    <div className="flex items-center gap-2 flex-1 min-w-[200px]">
+                      <Link href={`/explore/stay/${listing.id}`} className="flex-1">
+                        <button className="w-full bg-[#d85a30] hover:bg-[#b84a00] text-white font-bold px-3 py-2.5 rounded-[12px] transition-colors text-sm shadow-sm whitespace-nowrap">
                           Book Visit
                         </button>
                       </Link>
@@ -489,15 +489,16 @@ export default function StayPage() {
                           href={getWhatsAppUrl(whatsappNum, `Hi, I found your listing "${listing.name}" on ProbasiBangali.in`)}
                           target="_blank"
                           rel="noopener noreferrer"
+                          className="flex-1"
                         >
-                          <button className="bg-white hover:bg-slate-50 border border-[#E4E9F2] text-slate-700 font-bold px-4 py-2.5 rounded-[12px] transition-all text-sm flex items-center gap-2 whitespace-nowrap">
+                          <button className="w-full bg-white hover:bg-slate-50 border border-[#E4E9F2] text-slate-700 font-bold px-3 py-2.5 rounded-[12px] transition-all text-sm flex items-center justify-center gap-1.5 whitespace-nowrap">
                             <MessageSquare className="w-4 h-4 text-slate-500" />
                             Chat
                           </button>
                         </a>
                       )}
                     </div>
-                    <div className="text-right">
+                    <div className="text-right shrink-0">
                       <p className="text-[20px] font-black text-gray-900 leading-none">
                         {formatPrice(priceVal)}
                       </p>

@@ -220,7 +220,7 @@ export default function HospitalDetailsPage({ params }: { params: Promise<{ id: 
           )}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           <div className="lg:col-span-2 space-y-8">
             
             <div className="bg-white rounded-3xl border border-border p-6 sm:p-8 shadow-sm">

@@ -382,7 +382,7 @@ function GovernmentServicesAdminContent() {
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
           {filteredItems.map((item) => (
             <Card key={item.id} className="p-5 flex flex-col justify-between relative group hover:border-primary/40 transition-all border border-border bg-white shadow-sm">
               <div>

@@ -708,7 +708,7 @@ export default function EventsPage() {
                 )}
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {MAJOR_FESTIVALS.map((fest) => {
                   const isSelected = selectedFestivalId === fest.id;
                   return (
@@ -884,7 +884,7 @@ export default function EventsPage() {
                 </select>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {filtered.map((event) => {
                   const communityGroup = event.community_group_id ? firestoreGroups.find((g: any) => g.id === event.community_group_id) : null;
                   return (

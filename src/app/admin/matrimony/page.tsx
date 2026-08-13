@@ -200,7 +200,7 @@ export default function MatrimonialAdminPage() {
       </div>
 
       {/* Main Content Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {/* Profile List Panel */}
         <div className="lg:col-span-1 space-y-3">
           <h2 className="text-sm font-bold text-text-primary px-1">

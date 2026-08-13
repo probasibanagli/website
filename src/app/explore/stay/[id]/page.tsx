@@ -36,7 +36,7 @@ function ListingCoverImage({ name, city, mapsUrl, imageUrl, type, mapEmbedCode, 
 
   if (error || !imgSrc) {
     return (
-      <div className="absolute inset-0 bg-primary-light flex items-center justify-center">
+      <div className="absolute inset-0 bg-gradient-to-br from-primary-light to-accent-light flex items-center justify-center">
         <div className="text-primary opacity-40 scale-[3]">
           {fallbackIcon}
         </div>
@@ -90,20 +90,48 @@ export default function StayDetailPage() {
           <ArrowLeft className="w-4 h-4" /> Back to listings
         </Link>
 
-        {/* Image */}
-        <div className="relative h-64 sm:h-80 bg-gradient-to-br from-primary-light to-accent-light rounded-2xl flex items-center justify-center mb-8 overflow-hidden border border-border/40 shadow-inner">
-          <ListingCoverImage
-            name={listing.name}
-            city={listing.city}
-            mapsUrl={listing.google_maps_url}
-            imageUrl={listing.image_url}
-            type={listing.accommodation_type?.toLowerCase() || listing.type}
-            mapEmbedCode={listing.map_embed_code}
-            fallbackIcon={<Home className="w-24 h-24" />}
-          />
-          <div className="absolute top-4 left-4 flex gap-2">
-            <Badge variant={(listing.accommodation_type?.toLowerCase() || listing.type) as 'pg' | 'hotel' | 'rental'}>{(listing.accommodation_type || listing.type || 'STAY').toUpperCase()}</Badge>
-            {listing.verified && <Badge variant="verified"><CheckCircle2 className="w-3 h-3 mr-1" /> Verified</Badge>}
+        {/* Header Info */}
+        <div className="mb-6">
+          <div className="flex items-start justify-between gap-4">
+            <h1 className="text-2xl sm:text-3xl font-bold font-display text-text-primary">{listing.name}</h1>
+            {listing.rating && (
+              <div className="flex items-center gap-1.5 bg-white border border-[#E4E9F2] px-3 py-1.5 rounded-full shadow-sm whitespace-nowrap text-sm">
+                <Star className="w-4 h-4 fill-[#B06000] text-[#B06000]" />
+                <span className="font-bold text-gray-900">{listing.rating}</span>
+              </div>
+            )}
+          </div>
+          <div className="flex items-center gap-1.5 mt-2 text-sm text-text-muted">
+            <MapPin className="w-4 h-4" /> {listing.address || `${listing.area}, ${listing.city}`}
+          </div>
+        </div>
+
+        {/* Image & Map row (75% Image / 25% Map) */}
+        <div className="flex flex-col lg:flex-row gap-4 mb-8 w-full">
+          <div className="relative w-full lg:w-[calc(75%-12px)] lg:flex-none h-48 sm:h-56 lg:h-64 bg-gradient-to-br from-primary-light to-accent-light rounded-2xl flex items-center justify-center overflow-hidden border border-border/40 shadow-inner">
+            <ListingCoverImage
+              name={listing.name}
+              city={listing.city}
+              mapsUrl={listing.google_maps_url}
+              imageUrl={listing.image_url}
+              type={listing.accommodation_type?.toLowerCase() || listing.type}
+              mapEmbedCode={listing.map_embed_code}
+              fallbackIcon={<Home className="w-20 h-20" />}
+            />
+            <div className="absolute top-4 left-4 flex gap-2">
+              <Badge variant={(listing.accommodation_type?.toLowerCase() || listing.type) as 'pg' | 'hotel' | 'rental'}>{(listing.accommodation_type || listing.type || 'STAY').toUpperCase()}</Badge>
+              {listing.verified && <Badge variant="verified"><CheckCircle2 className="w-3.5 h-3.5 mr-1" /> Verified</Badge>}
+            </div>
+          </div>
+          <div className="w-full lg:w-[calc(25%-4px)] lg:flex-none rounded-2xl overflow-hidden border border-border h-48 sm:h-56 lg:h-64 bg-surface">
+            <MapEmbed 
+              name={listing.name}
+              address={listing.address}
+              area={listing.area}
+              city={listing.city}
+              googleMapsUrl={listing.google_maps_url}
+              mapEmbedCode={listing.map_embed_code}
+            />
           </div>
         </div>
 
@@ -148,35 +176,38 @@ export default function StayDetailPage() {
             </div>
           </div>
 
-          {/* Sidebar */}
-          <div className="space-y-4">
-            <Card className="bg-gradient-to-br from-primary-light to-white border-primary/20">
-              <p className="text-3xl font-bold text-primary">{formatPrice(listing.price_monthly || listing.price_per_month || listing.price_daily || 0)}</p>
-              <p className="text-sm text-text-muted">{listing.price_daily ? 'per day' : 'per month'}</p>
-              {listing.price_range && <p className="text-xs text-text-muted mt-1">{listing.price_range}</p>}
-              <div className="mt-4 space-y-2">
-                <p className="text-sm"><span className="font-medium">Contact:</span> {listing.contact_person_name || listing.owner_name}</p>
-                {(listing.contact_phone || listing.owner_phone) && (
-                  <p className="flex items-center gap-1.5 text-sm font-medium">
-                    <Phone className="w-4 h-4 text-primary" /> +91 {listing.contact_phone || listing.owner_phone}
-                    {listing.verified && <CheckCircle2 className="w-4 h-4 text-green-500" />}
-                  </p>
-                )}
+          {/* Right Column: Pricing & Contact Actions */}
+          <div className="lg:col-span-5 space-y-6">
+            <Card className="bg-gradient-to-br from-primary-light to-white border-primary/20 p-6 space-y-6">
+              <div className="flex justify-between items-start gap-4">
+                <div>
+                  <p className="text-3xl font-bold text-primary">{formatPrice(listing.price_monthly || listing.price_per_month || listing.price_daily || 0)}</p>
+                  <p className="text-sm text-text-muted">{listing.price_daily ? 'per day' : 'per month'}</p>
+                  {listing.price_range && <p className="text-xs text-text-muted mt-1">{listing.price_range}</p>}
+                </div>
+                <div className="text-right text-sm">
+                  <p className="font-semibold text-text-primary">{listing.contact_person_name || listing.owner_name}</p>
+                  {(listing.contact_phone || listing.owner_phone) && (
+                    <p className="flex items-center justify-end gap-1 mt-1.5 font-medium text-text-muted">
+                      <Phone className="w-4 h-4 text-primary" /> +91 {listing.contact_phone || listing.owner_phone}
+                    </p>
+                  )}
+                </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div className="flex flex-col sm:flex-row gap-3 w-full">
                 {(listing.contact_phone || listing.owner_phone) && (
-                  <a href={`tel:${listing.contact_phone || listing.owner_phone}`} className="w-full">
-                    <Button variant="primary" className="w-full"><Phone className="w-4 h-4" /> Call Owner</Button>
+                  <a href={`tel:${listing.contact_phone || listing.owner_phone}`} className="flex-1 min-w-0">
+                    <Button variant="primary" className="w-full whitespace-nowrap"><Phone className="w-4 h-4" /> Call Owner</Button>
                   </a>
                 )}
                 {(listing.contact_whatsapp || listing.owner_whatsapp) && (
-                  <a href={getWhatsAppUrl(listing.contact_whatsapp || listing.owner_whatsapp, `Hi, I'm interested in "${listing.name}" from ProbasiBangali.in`)} target="_blank" rel="noopener noreferrer" className="w-full">
-                    <Button variant="secondary" className="w-full"><MessageCircle className="w-4 h-4" /> WhatsApp</Button>
+                  <a href={getWhatsAppUrl(listing.contact_whatsapp || listing.owner_whatsapp, `Hi, I'm interested in "${listing.name}" from ProbasiBangali.in`)} target="_blank" rel="noopener noreferrer" className="flex-1 min-w-0">
+                    <Button variant="secondary" className="w-full whitespace-nowrap"><MessageCircle className="w-4 h-4" /> WhatsApp</Button>
                   </a>
                 )}
-                <a href={listing.google_maps_url || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${listing.name}, ${listing.address ? `${listing.address}, ` : ''}${listing.area}, ${listing.city}`)}`} target="_blank" rel="noopener noreferrer" className="w-full">
-                  <Button variant="outline" className="w-full"><MapPin className="w-4 h-4" /> Open in Maps</Button>
+                <a href={listing.google_maps_url || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${listing.name}, ${listing.address ? `${listing.address}, ` : ''}${listing.area}, ${listing.city}`)}`} target="_blank" rel="noopener noreferrer" className="flex-1 min-w-0">
+                  <Button variant="outline" className="w-full whitespace-nowrap"><MapPin className="w-4 h-4" /> Open in Maps</Button>
                 </a>
               </div>
             </Card>
