@@ -7,7 +7,7 @@ import { useAuth } from '@/lib/auth/AuthContext';
 import { canAccess } from '@/lib/permissions';
 import { COLLECTIONS } from '@/lib/firestore/collections';
 import type { BloodBank } from '@/types';
-import { Plus, Pencil, Trash2, X, Loader2, Shield, Droplets, Upload, Phone, Globe, MapPin } from 'lucide-react';
+import { Plus, Pencil, Trash2, X, Loader2, Shield, Droplets, Upload, Phone, Globe, MapPin, ArrowLeft, Save } from 'lucide-react';
 import { CITIES } from '@/lib/constants';
 
 function BloodBankPageContent() {
@@ -45,7 +45,7 @@ function BloodBankPageContent() {
     }
   }
 
-  async function handleCsvImport(e: React.ChangeEvent<HTMLInputElement>) {
+  function handleCsvImport(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -93,66 +93,62 @@ function BloodBankPageContent() {
         }
 
         const headers = lines[0].map(h => h.toLowerCase().replace(/[^a-z0-9]/g, ''));
-        const nameIdx = headers.findIndex(h => h.includes('name') || h.includes('title'));
-        const cityIdx = headers.findIndex(h => h.includes('district') || h.includes('city'));
-        const addressIdx = headers.findIndex(h => h.includes('address'));
-        const phoneIdx = headers.findIndex(h => h.includes('phone') || h.includes('mobile'));
+        let nameIdx = headers.findIndex(h => h.includes('name') || h.includes('title') || h.includes('hospital') || h.includes('bloodbank'));
+        let cityIdx = headers.findIndex(h => h.includes('district') || h.includes('city') || h.includes('area') || h.includes('location'));
+        let addressIdx = headers.findIndex(h => h.includes('address') || h.includes('details'));
+        let phoneIdx = headers.findIndex(h => h.includes('phone') || h.includes('mobile') || h.includes('contact') || h.includes('number'));
+        let mapIdx = headers.findIndex(h => h.includes('map') || h.includes('google') || h.includes('link') || h.includes('url'));
+        let websiteIdx = headers.findIndex(h => h.includes('website') || h.includes('site') || h.includes('web'));
 
         if (nameIdx === -1) {
-          alert('Could not find "Blood Bank Name" column in CSV.');
+          nameIdx = 0;
+          cityIdx = 1;
+          phoneIdx = 2;
+          addressIdx = 3;
+        }
+
+        const newItems: BloodBank[] = [];
+        const now = new Date().toISOString();
+
+        for (let i = 1; i < lines.length; i++) {
+          const r = lines[i];
+          const name = nameIdx !== -1 && r[nameIdx] ? r[nameIdx] : '';
+          if (!name) continue;
+
+          const rawCity = cityIdx !== -1 && r[cityIdx] ? r[cityIdx] : '';
+          let matchedCity = CITIES.find(c => rawCity.toLowerCase().includes(c.toLowerCase())) || 'Chennai';
+
+          const itemData: BloodBank = {
+            id: `bb-${Date.now()}-${i}-${Math.random().toString(36).slice(2, 6)}`,
+            name,
+            city: matchedCity,
+            phone: phoneIdx !== -1 && r[phoneIdx] ? r[phoneIdx] : '',
+            address: addressIdx !== -1 && r[addressIdx] ? r[addressIdx] : '',
+            available_groups: [],
+            google_maps_url: mapIdx !== -1 && r[mapIdx] ? r[mapIdx] : '',
+            website: websiteIdx !== -1 && r[websiteIdx] ? r[websiteIdx] : '',
+            created_at: now,
+            updated_at: now,
+          };
+
+          newItems.push(itemData);
+        }
+
+        if (newItems.length === 0) {
+          alert('No valid rows found in CSV file.');
           return;
         }
 
-        const batch: BloodBank[] = [];
-        const now = new Date().toISOString();
+        setBloodBanks(prev => [...newItems, ...prev]);
 
-        for (let idx = 1; idx < lines.length; idx++) {
-          const cols = lines[idx];
-          if (cols.length <= Math.max(nameIdx, cityIdx, addressIdx, phoneIdx)) continue;
-
-          const name = cols[nameIdx];
-          if (!name) continue;
-
-          const rawCity = cityIdx !== -1 ? cols[cityIdx] : 'Chennai';
-          const matchedCity = CITIES.find(c => c.toLowerCase() === rawCity.toLowerCase()) || 'Chennai';
-
-          const address = addressIdx !== -1 ? cols[addressIdx] : '';
-          const rawPhone = phoneIdx !== -1 ? cols[phoneIdx] : '';
-          const phoneVal = (rawPhone === 'NA' || rawPhone === '-' || !rawPhone) ? '' : rawPhone;
-
-          const id = `bb-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
-          const newBank: BloodBank = {
-            id,
-            name,
-            city: matchedCity,
-            address,
-            phone: phoneVal,
-            created_at: now,
-            updated_at: now
-          } as any;
-
-          batch.push(newBank);
+        for (const item of newItems) {
+          await setDoc(doc(db, COLLECTIONS.blood_banks || 'blood_banks', item.id), item);
         }
 
-        const token = firebaseUser ? await firebaseUser.getIdToken() : 'mock-bypass-token';
-        const res = await fetch('/api/admin/import-csv', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify({ collection: 'blood_banks', items: batch })
-        });
-
-        if (!res.ok) {
-          throw new Error('Failed to import CSV server-side');
-        }
-
-        setBloodBanks(prev => [...batch, ...prev]);
-        alert(`Successfully imported ${batch.length} blood banks from CSV!`);
+        alert(`Successfully imported ${newItems.length} blood bank records!`);
       } catch (err) {
         console.error(err);
-        alert('Failed to parse or import CSV.');
+        alert('Error parsing CSV file.');
       } finally {
         setLoading(false);
       }
@@ -164,12 +160,14 @@ function BloodBankPageContent() {
     setEditId(null);
     setFormData({});
     setShowForm(true);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   function openEdit(bank: BloodBank) {
     setEditId(bank.id);
     setFormData({ ...bank });
     setShowForm(true);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   async function handleSave() {
@@ -232,6 +230,71 @@ function BloodBankPageContent() {
     <div className="text-center py-20"><Shield className="w-12 h-12 text-red-500 mx-auto mb-4" /><h2 className="text-xl font-bold text-text-primary mb-2">No Access</h2><p className="text-text-muted">You don't have permission to access this module.</p></div>
   );
 
+  if (showForm) {
+    return (
+      <div className="space-y-6 animate-fade-in">
+        <div className="flex items-center gap-4">
+          <button
+            type="button"
+            onClick={() => setShowForm(false)}
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-surface hover:bg-surface/80 border border-border text-text-muted hover:text-text-primary transition-colors text-sm font-medium cursor-pointer"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to List
+          </button>
+          <div>
+            <h1 className="text-2xl font-bold text-text-primary">
+              {editId ? 'Edit Blood Bank' : 'Add New Blood Bank'}
+            </h1>
+            <p className="text-text-muted text-sm mt-0.5">Fill in the fields below to update directories.</p>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-3xl border border-border shadow-sm overflow-hidden">
+          <form className="p-6 md:p-8 space-y-6" onSubmit={(e) => { e.preventDefault(); handleSave(); }}>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-semibold text-text-primary mb-1.5">Blood Bank Name *</label>
+                <input type="text" value={formData.name || ''} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-text-primary mb-1.5">City *</label>
+                <select value={formData.city || ''} onChange={e => setFormData({...formData, city: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm cursor-pointer">
+                  <option value="">Select City...</option>
+                  {CITIES.map(c => <option key={c} value={c}>{c}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-text-primary mb-1.5">Phone</label>
+                <input type="text" value={formData.phone || ''} onChange={e => setFormData({...formData, phone: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-text-primary mb-1.5">Website</label>
+                <input type="text" value={formData.website || ''} onChange={e => setFormData({...formData, website: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
+              </div>
+              <div className="md:col-span-2">
+                <label className="block text-sm font-semibold text-text-primary mb-1.5">Full Address</label>
+                <input type="text" value={formData.address || ''} onChange={e => setFormData({...formData, address: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
+              </div>
+              <div className="md:col-span-2">
+                <label className="block text-sm font-semibold text-text-primary mb-1.5">Google Maps Link</label>
+                <input type="text" value={formData.google_maps_url || ''} onChange={e => setFormData({...formData, google_maps_url: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
+              </div>
+            </div>
+            
+            <div className="flex items-center justify-end gap-3 pt-4 border-t border-border">
+              <button type="button" onClick={() => setShowForm(false)} className="px-6 py-2.5 rounded-xl text-sm font-semibold text-text-muted hover:text-text-primary hover:bg-surface border border-border transition-colors cursor-pointer">Cancel</button>
+              <button type="submit" disabled={saving} className="inline-flex items-center gap-2 px-8 py-2.5 bg-primary hover:bg-primary-dark text-white rounded-xl text-sm font-bold disabled:opacity-50 transition-all shadow-md active:scale-95 cursor-pointer">
+                {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                {saving ? 'Saving...' : 'Save Changes'}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -260,7 +323,7 @@ function BloodBankPageContent() {
         <div className="w-full sm:max-w-xs">
           <input 
             type="text" 
-            placeholder="Search name or address..."
+            placeholder="Search blood bank..."
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
             className="w-full px-3 py-2 bg-surface border border-border rounded-lg text-sm"
@@ -301,7 +364,7 @@ function BloodBankPageContent() {
                   <tr key={item.id} className="hover:bg-surface/30 transition-colors">
                     <td className="p-4 font-bold">{item.name}</td>
                     <td className="p-4">{item.city}</td>
-                    <td className="p-4">{item.phone || '-'}</td>
+                    <td className="p-4 font-semibold text-text-primary">{item.phone || '-'}</td>
                     <td className="p-4 max-w-xs truncate" title={item.address}>{item.address || '-'}</td>
                     {canEdit && (
                       <td className="p-4 text-right">
@@ -320,59 +383,6 @@ function BloodBankPageContent() {
                 )}
               </tbody>
             </table>
-          </div>
-        </div>
-      )}
-
-      {showForm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-          <div className="w-full max-w-2xl bg-white rounded-3xl border border-border shadow-2xl flex flex-col max-h-[90vh] animate-scale-up">
-            <div className="p-6 border-b border-border flex items-center justify-between">
-              <div>
-                <h2 className="text-xl font-bold text-text-primary">{editId ? 'Edit Blood Bank' : 'Add New Blood Bank'}</h2>
-                <p className="text-text-muted text-xs mt-0.5">Fill in the fields below to update directories.</p>
-              </div>
-              <button onClick={() => setShowForm(false)} className="p-2 text-text-muted hover:text-text-primary hover:bg-surface rounded-xl transition-colors cursor-pointer"><X className="w-5 h-5" /></button>
-            </div>
-            
-            <div className="p-6 overflow-y-auto flex-1 space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-semibold text-text-primary mb-1.5">Blood Bank Name *</label>
-                  <input type="text" value={formData.name || ''} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-text-primary mb-1.5">City *</label>
-                  <select value={formData.city || ''} onChange={e => setFormData({...formData, city: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm cursor-pointer">
-                    <option value="">Select City...</option>
-                    {CITIES.map(c => <option key={c} value={c}>{c}</option>)}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-text-primary mb-1.5">Phone</label>
-                  <input type="text" value={formData.phone || ''} onChange={e => setFormData({...formData, phone: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-text-primary mb-1.5">Website</label>
-                  <input type="text" value={formData.website || ''} onChange={e => setFormData({...formData, website: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
-                </div>
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-semibold text-text-primary mb-1.5">Full Address</label>
-                  <input type="text" value={formData.address || ''} onChange={e => setFormData({...formData, address: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
-                </div>
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-semibold text-text-primary mb-1.5">Google Maps Link</label>
-                  <input type="text" value={formData.google_maps_url || ''} onChange={e => setFormData({...formData, google_maps_url: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
-                </div>
-              </div>
-            </div>
-            
-            <div className="p-6 border-t border-border flex justify-end gap-3 bg-surface/30">
-              <button onClick={() => setShowForm(false)} className="px-6 py-2.5 rounded-xl text-sm font-semibold text-text-muted hover:text-text-primary hover:bg-surface transition-colors cursor-pointer">Cancel</button>
-              <button onClick={handleSave} disabled={saving} className="inline-flex items-center gap-2 px-8 py-2.5 bg-primary hover:bg-primary-dark text-white rounded-xl text-sm font-bold disabled:opacity-50 transition-all shadow-md active:scale-95 cursor-pointer">
-                {saving && <Loader2 className="w-4 h-4 animate-spin" />} {saving ? 'Saving...' : 'Save Changes'}
-              </button>
-            </div>
           </div>
         </div>
       )}

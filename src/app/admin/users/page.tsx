@@ -10,7 +10,7 @@ import type { UserProfile, ModuleKey, PermissionLevel } from '@/types';
 import { MODULE_LABELS } from '@/types';
 import {
   Shield, Crown, Search, ChevronRight, Check, X, Loader2,
-  UserPlus, Users, Trash2, Ban, UserCheck, Activity, Eye, Settings, ShieldCheck
+  UserPlus, Users, Trash2, Ban, UserCheck, Activity, Eye, Settings, ShieldCheck, ArrowLeft
 } from 'lucide-react';
 
 const ADMIN_DEFAULT_PERMISSIONS = {
@@ -38,7 +38,10 @@ const USER_DEFAULT_PERMISSIONS = {
   matrimony: 'none',
   travel: 'none',
   blood_bank: 'none',
-  ambulance: 'none'
+  ambulance: 'none',
+  events: 'none',
+  government_services: 'none',
+  legal: 'none'
 };
 
 const AVAILABLE_MODULES = [
@@ -53,6 +56,9 @@ const AVAILABLE_MODULES = [
   { key: 'travel', label: 'Travel & Transport' },
   { key: 'blood_bank', label: 'Blood Banks' },
   { key: 'ambulance', label: 'Ambulance Directory' },
+  { key: 'events', label: 'Events & Festivals' },
+  { key: 'government_services', label: 'Government Services' },
+  { key: 'legal', label: 'Legal Services' }
 ];
 
 export default function AdminUsersPage() {
@@ -273,6 +279,7 @@ export default function AdminUsersPage() {
     setCreateAssignedHospitals([]);
     setCreateError('');
     setShowCreateModal(true);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   async function handleCreateAdmin(e: React.FormEvent) {
@@ -368,6 +375,101 @@ export default function AdminUsersPage() {
         <Shield className="w-12 h-12 text-red-500 mx-auto mb-4" />
         <h2 className="text-xl font-bold text-text-primary mb-2">Access Denied</h2>
         <p className="text-text-muted">You do not have the required &apos;Manage User&apos; permission to access this module.</p>
+      </div>
+    );
+  }
+
+  if (showCreateModal && isSuperAdmin) {
+    return (
+      <div className="space-y-6 animate-fade-in">
+        <div className="flex items-center gap-4">
+          <button
+            type="button"
+            onClick={() => setShowCreateModal(false)}
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-surface hover:bg-surface/80 border border-border text-text-muted hover:text-text-primary transition-colors text-sm font-medium cursor-pointer"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to User List
+          </button>
+          <div>
+            <h1 className="text-2xl font-bold text-text-primary">Create New Admin Account</h1>
+            <p className="text-text-muted text-sm mt-0.5">Assign admin privileges, module access, and hospital scopes.</p>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-3xl border border-border shadow-sm overflow-hidden">
+          <form id="create-admin-form" onSubmit={handleCreateAdmin} className="p-6 md:p-8 space-y-6">
+            {createError && <div className="p-3 rounded-xl bg-red-50 text-red-600 text-sm">{createError}</div>}
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-semibold text-text-primary mb-1.5">Full Name *</label>
+                <input required type="text" value={createForm.full_name} onChange={(e) => setCreateForm({...createForm, full_name: e.target.value})} className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none transition-all" placeholder="John Doe" />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-text-primary mb-1.5">Email Address *</label>
+                <input required type="email" value={createForm.email} onChange={(e) => setCreateForm({...createForm, email: e.target.value})} className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none transition-all" placeholder="admin@example.com" />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-text-primary mb-1.5">Phone Number *</label>
+                <input required type="tel" value={createForm.phone} onChange={(e) => setCreateForm({ ...createForm, phone: e.target.value })} className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none transition-all" placeholder="98765 43210" />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-text-primary mb-1.5">Password *</label>
+                <input required type="password" minLength={6} value={createForm.password} onChange={(e) => setCreateForm({...createForm, password: e.target.value})} className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none transition-all" placeholder="Min 6 characters" />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-text-primary mb-2">Module Access Permissions</label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                {AVAILABLE_MODULES.map(m => (
+                  <label key={m.key} className="flex items-center gap-3 p-3 rounded-xl border border-border hover:bg-surface cursor-pointer transition-colors">
+                    <input type="checkbox" checked={selectedModules[m.key] || false} onChange={(e) => setSelectedModules({...selectedModules, [m.key]: e.target.checked})} className="w-4 h-4 accent-primary rounded cursor-pointer" />
+                    <span className="text-sm font-medium text-text-primary">{m.label}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-text-primary mb-1">Hospital Management Scope</label>
+              <p className="text-xs text-text-muted mb-2">Select hospitals this admin is granted permission to manage:</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-48 overflow-y-auto p-3 border border-border rounded-xl bg-surface/30">
+                {allHospitals.length === 0 ? (
+                  <p className="text-xs text-text-muted italic col-span-2">No hospitals registered yet</p>
+                ) : (
+                  allHospitals.map(h => {
+                    const checked = createAssignedHospitals.includes(h.id);
+                    return (
+                      <label key={h.id} className="flex items-center gap-2.5 p-2 rounded-lg hover:bg-white cursor-pointer text-xs">
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          onChange={(e) => {
+                            if (e.target.checked) setCreateAssignedHospitals([...createAssignedHospitals, h.id]);
+                            else setCreateAssignedHospitals(createAssignedHospitals.filter(id => id !== h.id));
+                          }}
+                          className="w-4 h-4 accent-primary rounded cursor-pointer"
+                        />
+                        <span className="font-semibold text-text-primary">{h.name}</span>
+                        <span className="text-text-muted">({h.city})</span>
+                      </label>
+                    );
+                  })
+                )}
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-3 pt-4 border-t border-border">
+              <button type="button" onClick={() => setShowCreateModal(false)} className="px-6 py-2.5 rounded-xl text-sm font-semibold text-text-muted hover:bg-surface border border-border transition-colors cursor-pointer">Cancel</button>
+              <button form="create-admin-form" type="submit" disabled={creating} className="inline-flex items-center gap-2 px-6 py-2.5 bg-primary hover:bg-primary-dark text-white rounded-xl text-sm font-bold disabled:opacity-50 transition-colors cursor-pointer">
+                {creating ? <Loader2 className="w-4 h-4 animate-spin" /> : <UserPlus className="w-4 h-4" />}
+                {creating ? 'Creating...' : 'Create Admin'}
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     );
   }
@@ -725,89 +827,6 @@ export default function AdminUsersPage() {
         </>
       )}
 
-      {/* Create Admin Modal */}
-      {showCreateModal && isSuperAdmin && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setShowCreateModal(false)} />
-          <div className="relative bg-white rounded-3xl border border-border w-full max-w-lg overflow-hidden shadow-2xl animate-fade-in max-h-[90vh] flex flex-col">
-            <div className="flex items-center justify-between p-6 border-b border-border shrink-0">
-              <h3 className="text-xl font-bold text-text-primary">Create Admin</h3>
-              <button onClick={() => setShowCreateModal(false)} className="p-2 rounded-xl hover:bg-surface text-text-muted transition-colors"><X className="w-5 h-5" /></button>
-            </div>
-            <div className="overflow-y-auto">
-              <form id="create-admin-form" onSubmit={handleCreateAdmin}>
-                <div className="p-6 space-y-4">
-                  {createError && <div className="p-3 rounded-xl bg-red-50 text-red-600 text-sm">{createError}</div>}
-                  <div>
-                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Full Name *</label>
-                    <input required type="text" value={createForm.full_name} onChange={(e) => setCreateForm({...createForm, full_name: e.target.value})} className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none transition-all" placeholder="John Doe" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Email Address *</label>
-                    <input required type="email" value={createForm.email} onChange={(e) => setCreateForm({...createForm, email: e.target.value})} className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none transition-all" placeholder="admin@example.com" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Phone Number *</label>
-                    <input required type="tel" value={createForm.phone} onChange={(e) => setCreateForm({ ...createForm, phone: e.target.value })} className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none transition-all" placeholder="98765 43210" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Password *</label>
-                    <input required type="password" minLength={6} value={createForm.password} onChange={(e) => setCreateForm({...createForm, password: e.target.value})} className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none transition-all" placeholder="Min 6 characters" />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-semibold text-text-primary mb-2 mt-4">Module Access Permissions</label>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                      {AVAILABLE_MODULES.map(m => (
-                        <label key={m.key} className="flex items-center gap-3 p-3 rounded-xl border border-border hover:bg-surface cursor-pointer transition-colors">
-                          <input type="checkbox" checked={selectedModules[m.key] || false} onChange={(e) => setSelectedModules({...selectedModules, [m.key]: e.target.checked})} className="w-4 h-4 accent-primary rounded cursor-pointer" />
-                          <span className="text-sm font-medium text-text-primary">{m.label}</span>
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-semibold text-text-primary mb-1 mt-4">Hospital Management Scope</label>
-                    <p className="text-xs text-text-muted mb-2">Select hospitals this admin is granted permission to manage:</p>
-                    <div className="space-y-1.5 max-h-36 overflow-y-auto p-2 border border-border rounded-xl bg-surface/30">
-                      {allHospitals.length === 0 ? (
-                        <p className="text-xs text-text-muted italic">No hospitals registered yet</p>
-                      ) : (
-                        allHospitals.map(h => {
-                          const checked = createAssignedHospitals.includes(h.id);
-                          return (
-                            <label key={h.id} className="flex items-center gap-2.5 p-2 rounded-lg hover:bg-white cursor-pointer text-xs">
-                              <input
-                                type="checkbox"
-                                checked={checked}
-                                onChange={(e) => {
-                                  if (e.target.checked) setCreateAssignedHospitals([...createAssignedHospitals, h.id]);
-                                  else setCreateAssignedHospitals(createAssignedHospitals.filter(id => id !== h.id));
-                                }}
-                                className="w-4 h-4 accent-primary rounded cursor-pointer"
-                              />
-                              <span className="font-semibold text-text-primary">{h.name}</span>
-                              <span className="text-text-muted">({h.city})</span>
-                            </label>
-                          );
-                        })
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </form>
-            </div>
-            <div className="p-6 border-t border-border flex justify-end gap-3 bg-surface/30 shrink-0">
-              <button type="button" onClick={() => setShowCreateModal(false)} className="px-6 py-2.5 rounded-xl text-sm font-semibold text-text-muted hover:bg-surface transition-colors">Cancel</button>
-              <button form="create-admin-form" type="submit" disabled={creating} className="inline-flex items-center gap-2 px-6 py-2.5 bg-primary hover:bg-primary-dark text-white rounded-xl text-sm font-bold disabled:opacity-50 transition-colors">
-                {creating ? <Loader2 className="w-4 h-4 animate-spin" /> : <UserPlus className="w-4 h-4" />}
-                {creating ? 'Creating...' : 'Create Admin'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

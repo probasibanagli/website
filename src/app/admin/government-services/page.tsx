@@ -10,7 +10,7 @@ import type { GovernmentServiceItem } from '@/types';
 import { 
   Plus, Pencil, Trash2, X, Loader2, Shield, Landmark, Search, 
   Globe, FileText, CheckCircle2, XCircle, Clock, CreditCard, 
-  Building, Upload, Download, ExternalLink, MapPin, Tag
+  Building, Upload, Download, ExternalLink, MapPin, Tag, ArrowLeft, Save
 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -205,6 +205,7 @@ function GovernmentServicesAdminContent() {
       setCentresInput('');
     }
     setShowForm(true);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -294,6 +295,164 @@ function GovernmentServicesAdminContent() {
         <Shield className="w-12 h-12 text-red-500 mx-auto mb-4" />
         <h2 className="text-xl font-bold text-text-primary mb-2">Access Denied</h2>
         <p className="text-text-muted">You do not have permission to view or manage Government Services data.</p>
+      </div>
+    );
+  }
+
+  if (showForm) {
+    return (
+      <div className="space-y-6 animate-fade-in">
+        <div className="flex items-center gap-4">
+          <button
+            type="button"
+            onClick={() => setShowForm(false)}
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-surface hover:bg-surface/80 border border-border text-text-muted hover:text-text-primary transition-colors text-sm font-medium cursor-pointer"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to List
+          </button>
+          <div>
+            <h1 className="text-2xl font-bold text-text-primary">
+              {editId ? 'Edit Government Service' : 'Add New Government Service'}
+            </h1>
+            <p className="text-text-muted text-sm mt-0.5">Fill in service details and official portals below.</p>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-3xl border border-border shadow-sm overflow-hidden">
+          <form onSubmit={handleSubmit} className="p-6 md:p-8 space-y-6">
+            <div>
+              <label className="block text-xs font-bold text-text-primary mb-1">Service Title *</label>
+              <input
+                type="text"
+                required
+                value={formData.title || ''}
+                onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+                placeholder="e.g. Voter ID Address Update (Form 8)"
+                className="w-full px-3.5 py-2.5 border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
+              />
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-text-primary mb-1">Category</label>
+                <select
+                  value={formData.category || 'identity'}
+                  onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value as any }))}
+                  className="w-full px-3.5 py-2.5 border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 bg-white"
+                >
+                  <option value="identity">Identity (Aadhaar/Voter)</option>
+                  <option value="welfare">Welfare & Ration</option>
+                  <option value="passport">Passport</option>
+                  <option value="police">Police Verification</option>
+                  <option value="transport">Transport & RTO</option>
+                  <option value="other">Visa & Other Services</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-text-primary mb-1">Official Portal Name</label>
+                <input
+                  type="text"
+                  value={formData.online_portal_name || ''}
+                  onChange={(e) => setFormData(prev => ({ ...prev, online_portal_name: e.target.value }))}
+                  placeholder="e.g. TNPDS / Voters Service Portal"
+                  className="w-full px-3.5 py-2.5 border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-text-primary mb-1">Official Website URL</label>
+              <input
+                type="url"
+                value={formData.official_url || ''}
+                onChange={(e) => setFormData(prev => ({ ...prev, official_url: e.target.value }))}
+                placeholder="https://..."
+                className="w-full px-3.5 py-2.5 border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-text-primary mb-1">Description & Guidelines</label>
+              <textarea
+                rows={3}
+                value={formData.description || ''}
+                onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                placeholder="Provide step-by-step instructions or background info..."
+                className="w-full px-3.5 py-2.5 border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 resize-none"
+              />
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-text-primary mb-1">Fees Details</label>
+                <input
+                  type="text"
+                  value={formData.fees || ''}
+                  onChange={(e) => setFormData(prev => ({ ...prev, fees: e.target.value }))}
+                  placeholder="e.g. ₹50 / Free"
+                  className="w-full px-3.5 py-2.5 border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-text-primary mb-1">Processing Time</label>
+                <input
+                  type="text"
+                  value={formData.processing_time || ''}
+                  onChange={(e) => setFormData(prev => ({ ...prev, processing_time: e.target.value }))}
+                  placeholder="e.g. 7 - 14 Days"
+                  className="w-full px-3.5 py-2.5 border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-text-primary mb-1">Required Documents (comma separated)</label>
+              <input
+                type="text"
+                value={docsInput}
+                onChange={(e) => setDocsInput(e.target.value)}
+                placeholder="Aadhaar Card, Passport photo, Address Proof"
+                className="w-full px-3.5 py-2.5 border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-text-primary mb-1">CSC - Customer Service Centres (comma separated)</label>
+              <input
+                type="text"
+                value={centresInput}
+                onChange={(e) => setCentresInput(e.target.value)}
+                placeholder="Arasu e-Seva Centre Ripon Building, Taluk Office Tambaram"
+                className="w-full px-3.5 py-2.5 border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
+              />
+            </div>
+
+            <div className="flex items-center gap-2 pt-2">
+              <input
+                type="checkbox"
+                id="is_active"
+                checked={formData.is_active ?? true}
+                onChange={(e) => setFormData(prev => ({ ...prev, is_active: e.target.checked }))}
+                className="w-4 h-4 text-primary rounded accent-primary cursor-pointer"
+              />
+              <label htmlFor="is_active" className="text-xs font-medium text-text-primary cursor-pointer">
+                Active (Visible to public users)
+              </label>
+            </div>
+
+            <div className="flex items-center justify-end gap-3 pt-4 border-t border-border">
+              <Button type="button" variant="outline" onClick={() => setShowForm(false)}>
+                Cancel
+              </Button>
+              <Button type="submit" variant="primary" disabled={saving} className="min-w-[100px]">
+                {saving ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : editId ? 'Save Changes' : 'Create Record'}
+              </Button>
+            </div>
+          </form>
+        </div>
       </div>
     );
   }
@@ -465,157 +624,6 @@ function GovernmentServicesAdminContent() {
         </div>
       )}
 
-      {/* Modal Form for Add / Edit */}
-      {showForm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
-          <div className="bg-white rounded-2xl border border-border shadow-2xl w-full max-w-2xl overflow-hidden max-h-[90vh] flex flex-col">
-            <div className="p-5 border-b border-border flex items-center justify-between bg-surface/50">
-              <div className="flex items-center gap-2">
-                <Landmark className="w-5 h-5 text-primary" />
-                <h3 className="font-bold text-base text-text-primary">
-                  {editId ? 'Edit Government Service' : 'Add New Government Service'}
-                </h3>
-              </div>
-              <button onClick={() => setShowForm(false)} className="p-1 rounded-lg hover:bg-surface text-text-muted hover:text-text-primary">
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <form onSubmit={handleSubmit} className="p-5 overflow-y-auto space-y-4 flex-1">
-              <div>
-                <label className="block text-xs font-bold text-text-primary mb-1">Service Title *</label>
-                <input
-                  type="text"
-                  required
-                  value={formData.title || ''}
-                  onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
-                  placeholder="e.g. Voter ID Address Update (Form 8)"
-                  className="w-full px-3.5 py-2.5 border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
-                />
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-bold text-text-primary mb-1">Category</label>
-                  <select
-                    value={formData.category || 'identity'}
-                    onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value as any }))}
-                    className="w-full px-3.5 py-2.5 border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 bg-white"
-                  >
-                    <option value="identity">Identity (Aadhaar/Voter)</option>
-                    <option value="welfare">Welfare & Ration</option>
-                    <option value="passport">Passport</option>
-                    <option value="police">Police Verification</option>
-                    <option value="transport">Transport & RTO</option>
-                    <option value="other">Visa & Other Services</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-text-primary mb-1">Official Portal Name</label>
-                  <input
-                    type="text"
-                    value={formData.online_portal_name || ''}
-                    onChange={(e) => setFormData(prev => ({ ...prev, online_portal_name: e.target.value }))}
-                    placeholder="e.g. TNPDS / Voters Service Portal"
-                    className="w-full px-3.5 py-2.5 border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-text-primary mb-1">Official Website URL</label>
-                <input
-                  type="url"
-                  value={formData.official_url || ''}
-                  onChange={(e) => setFormData(prev => ({ ...prev, official_url: e.target.value }))}
-                  placeholder="https://..."
-                  className="w-full px-3.5 py-2.5 border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-text-primary mb-1">Description & Guidelines</label>
-                <textarea
-                  rows={3}
-                  value={formData.description || ''}
-                  onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                  placeholder="Provide step-by-step instructions or background info..."
-                  className="w-full px-3.5 py-2.5 border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 resize-none"
-                />
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-bold text-text-primary mb-1">Fees Details</label>
-                  <input
-                    type="text"
-                    value={formData.fees || ''}
-                    onChange={(e) => setFormData(prev => ({ ...prev, fees: e.target.value }))}
-                    placeholder="e.g. ₹50 / Free"
-                    className="w-full px-3.5 py-2.5 border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-text-primary mb-1">Processing Time</label>
-                  <input
-                    type="text"
-                    value={formData.processing_time || ''}
-                    onChange={(e) => setFormData(prev => ({ ...prev, processing_time: e.target.value }))}
-                    placeholder="e.g. 7 - 14 Days"
-                    className="w-full px-3.5 py-2.5 border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-text-primary mb-1">Required Documents (comma separated)</label>
-                <input
-                  type="text"
-                  value={docsInput}
-                  onChange={(e) => setDocsInput(e.target.value)}
-                  placeholder="Aadhaar Card, Passport photo, Address Proof"
-                  className="w-full px-3.5 py-2.5 border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-text-primary mb-1">CSC - Customer Service Centres (comma separated)</label>
-                <input
-                  type="text"
-                  value={centresInput}
-                  onChange={(e) => setCentresInput(e.target.value)}
-                  placeholder="Arasu e-Seva Centre Ripon Building, Taluk Office Tambaram"
-                  className="w-full px-3.5 py-2.5 border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
-                />
-              </div>
-
-              <div className="flex items-center gap-2 pt-2">
-                <input
-                  type="checkbox"
-                  id="is_active"
-                  checked={formData.is_active ?? true}
-                  onChange={(e) => setFormData(prev => ({ ...prev, is_active: e.target.checked }))}
-                  className="w-4 h-4 text-primary rounded accent-primary cursor-pointer"
-                />
-                <label htmlFor="is_active" className="text-xs font-medium text-text-primary cursor-pointer">
-                  Active (Visible to public users)
-                </label>
-              </div>
-
-              <div className="pt-4 border-t border-border flex items-center justify-end gap-3">
-                <Button type="button" variant="outline" onClick={() => setShowForm(false)}>
-                  Cancel
-                </Button>
-                <Button type="submit" variant="primary" disabled={saving} className="min-w-[100px]">
-                  {saving ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : editId ? 'Save Changes' : 'Create Record'}
-                </Button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

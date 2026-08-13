@@ -7,7 +7,7 @@ import { useAuth } from '@/lib/auth/AuthContext';
 import { canAccess } from '@/lib/permissions';
 import { COLLECTIONS } from '@/lib/firestore/collections';
 import type { LegalServiceItem, LegalAidCentre, LegalHelpline, LegalCategory, LegalPortal } from '@/types';
-import { Plus, Pencil, Trash2, X, Loader2, Shield, Scale, MapPin, PhoneCall, Globe, BookOpen } from 'lucide-react';
+import { Plus, Pencil, Trash2, X, Loader2, Shield, Scale, MapPin, PhoneCall, Globe, BookOpen, ArrowLeft, Save } from 'lucide-react';
 
 function LegalPageContent() {
   const { profile } = useAuth();
@@ -47,12 +47,14 @@ function LegalPageContent() {
     setEditId(null);
     setFormData({ type: activeTab });
     setShowForm(true);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   function openEdit(item: LegalServiceItem) {
     setEditId(item.id);
     setFormData({ ...item });
     setShowForm(true);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   async function handleSave() {
@@ -103,6 +105,143 @@ function LegalPageContent() {
   );
 
   const filteredItems = items.filter(i => i.type === activeTab);
+
+  if (showForm) {
+    return (
+      <div className="space-y-6 animate-fade-in">
+        <div className="flex items-center gap-4">
+          <button
+            type="button"
+            onClick={() => setShowForm(false)}
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-surface hover:bg-surface/80 border border-border text-text-muted hover:text-text-primary transition-colors text-sm font-medium cursor-pointer"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to List
+          </button>
+          <div>
+            <h1 className="text-2xl font-bold text-text-primary">
+              {editId ? 'Edit Record' : 'Add New Record'}
+            </h1>
+            <p className="text-text-muted text-sm mt-0.5">Editing {activeTab} details</p>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-3xl border border-border shadow-sm overflow-hidden">
+          <form className="p-6 md:p-8 space-y-6" onSubmit={(e) => { e.preventDefault(); handleSave(); }}>
+            {activeTab === 'centre' && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-semibold text-text-primary mb-1.5">Name *</label>
+                  <input type="text" value={formData.name || ''} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-text-primary mb-1.5">City *</label>
+                  <input type="text" value={formData.city || ''} onChange={e => setFormData({...formData, city: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-text-primary mb-1.5">District</label>
+                  <input type="text" value={formData.district || ''} onChange={e => setFormData({...formData, district: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-text-primary mb-1.5">Phone</label>
+                  <input type="text" value={formData.phone || ''} onChange={e => setFormData({...formData, phone: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-text-primary mb-1.5">Timings</label>
+                  <input type="text" value={formData.timings || ''} onChange={e => setFormData({...formData, timings: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-text-primary mb-1.5">Centre Type</label>
+                  <input type="text" value={formData.centre_type || ''} onChange={e => setFormData({...formData, centre_type: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-semibold text-text-primary mb-1.5">Address</label>
+                  <input type="text" value={formData.address || ''} onChange={e => setFormData({...formData, address: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'helpline' && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-semibold text-text-primary mb-1.5">Label *</label>
+                  <input type="text" value={formData.label || ''} onChange={e => setFormData({...formData, label: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-text-primary mb-1.5">Number *</label>
+                  <input type="text" value={formData.number || ''} onChange={e => setFormData({...formData, number: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-semibold text-text-primary mb-1.5">Color Classes (Tailwind)</label>
+                  <input type="text" value={formData.color || ''} onChange={e => setFormData({...formData, color: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'portal' && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-semibold text-text-primary mb-1.5">Label *</label>
+                  <input type="text" value={formData.label || ''} onChange={e => setFormData({...formData, label: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-text-primary mb-1.5">Icon Name (Lucide)</label>
+                  <input type="text" value={formData.icon_name || ''} onChange={e => setFormData({...formData, icon_name: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-semibold text-text-primary mb-1.5">URL *</label>
+                  <input type="text" value={formData.url || ''} onChange={e => setFormData({...formData, url: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-semibold text-text-primary mb-1.5">Description</label>
+                  <input type="text" value={formData.desc || ''} onChange={e => setFormData({...formData, desc: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'category' && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-semibold text-text-primary mb-1.5">Label *</label>
+                  <input type="text" value={formData.label || ''} onChange={e => setFormData({...formData, label: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-text-primary mb-1.5">Color mapping</label>
+                  <select value={formData.color || 'blue'} onChange={e => setFormData({...formData, color: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm">
+                    <option value="blue">Blue</option>
+                    <option value="green">Green</option>
+                    <option value="purple">Purple</option>
+                    <option value="amber">Amber</option>
+                    <option value="red">Red</option>
+                    <option value="slate">Slate</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-text-primary mb-1.5">Icon Name (Lucide)</label>
+                  <input type="text" value={formData.icon_name || ''} onChange={e => setFormData({...formData, icon_name: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-semibold text-text-primary mb-1.5">Description</label>
+                  <textarea value={formData.description || ''} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" rows={2} />
+                </div>
+                <div className="md:col-span-2 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+                  <p className="text-xs text-yellow-800">Advanced fields like Steps, Portals and nested Helplines editing are partially supported here in the simple editor. In a full version, dynamic arrays would be built here. For now, they are preserved when editing.</p>
+                </div>
+              </div>
+            )}
+            
+            <div className="flex items-center justify-end gap-3 pt-4 border-t border-border">
+              <button type="button" onClick={() => setShowForm(false)} className="px-6 py-2.5 rounded-xl text-sm font-semibold text-text-muted hover:text-text-primary hover:bg-surface border border-border transition-colors cursor-pointer">Cancel</button>
+              <button type="submit" disabled={saving} className="inline-flex items-center gap-2 px-8 py-2.5 bg-primary hover:bg-primary-dark text-white rounded-xl text-sm font-bold disabled:opacity-50 transition-all shadow-md active:scale-95 cursor-pointer">
+                {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                {saving ? 'Saving...' : 'Save Changes'}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -233,131 +372,6 @@ function LegalPageContent() {
         </div>
       )}
 
-      {/* Basic Form modal for adding/editing */}
-      {showForm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-          <div className="w-full max-w-2xl bg-white rounded-3xl border border-border shadow-2xl flex flex-col max-h-[90vh] animate-scale-up">
-            <div className="p-6 border-b border-border flex items-center justify-between">
-              <div>
-                <h2 className="text-xl font-bold text-text-primary">{editId ? 'Edit Record' : 'Add New Record'}</h2>
-                <p className="text-text-muted text-xs mt-0.5">Editing {activeTab} details</p>
-              </div>
-              <button onClick={() => setShowForm(false)} className="p-2 text-text-muted hover:text-text-primary hover:bg-surface rounded-xl transition-colors cursor-pointer"><X className="w-5 h-5" /></button>
-            </div>
-            
-            <div className="p-6 overflow-y-auto flex-1 space-y-4">
-              {activeTab === 'centre' && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Name *</label>
-                    <input type="text" value={formData.name || ''} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-text-primary mb-1.5">City *</label>
-                    <input type="text" value={formData.city || ''} onChange={e => setFormData({...formData, city: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-text-primary mb-1.5">District</label>
-                    <input type="text" value={formData.district || ''} onChange={e => setFormData({...formData, district: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Phone</label>
-                    <input type="text" value={formData.phone || ''} onChange={e => setFormData({...formData, phone: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Timings</label>
-                    <input type="text" value={formData.timings || ''} onChange={e => setFormData({...formData, timings: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Centre Type</label>
-                    <input type="text" value={formData.centre_type || ''} onChange={e => setFormData({...formData, centre_type: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
-                  </div>
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Address</label>
-                    <input type="text" value={formData.address || ''} onChange={e => setFormData({...formData, address: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
-                  </div>
-                </div>
-              )}
-
-              {activeTab === 'helpline' && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Label *</label>
-                    <input type="text" value={formData.label || ''} onChange={e => setFormData({...formData, label: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Number *</label>
-                    <input type="text" value={formData.number || ''} onChange={e => setFormData({...formData, number: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
-                  </div>
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Color Classes (Tailwind)</label>
-                    <input type="text" value={formData.color || ''} onChange={e => setFormData({...formData, color: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
-                  </div>
-                </div>
-              )}
-
-              {activeTab === 'portal' && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Label *</label>
-                    <input type="text" value={formData.label || ''} onChange={e => setFormData({...formData, label: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Icon Name (Lucide)</label>
-                    <input type="text" value={formData.icon_name || ''} onChange={e => setFormData({...formData, icon_name: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
-                  </div>
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-semibold text-text-primary mb-1.5">URL *</label>
-                    <input type="text" value={formData.url || ''} onChange={e => setFormData({...formData, url: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
-                  </div>
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Description</label>
-                    <input type="text" value={formData.desc || ''} onChange={e => setFormData({...formData, desc: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
-                  </div>
-                </div>
-              )}
-
-              {activeTab === 'category' && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Label *</label>
-                    <input type="text" value={formData.label || ''} onChange={e => setFormData({...formData, label: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Color mapping</label>
-                    <select value={formData.color || 'blue'} onChange={e => setFormData({...formData, color: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm">
-                      <option value="blue">Blue</option>
-                      <option value="green">Green</option>
-                      <option value="purple">Purple</option>
-                      <option value="amber">Amber</option>
-                      <option value="red">Red</option>
-                      <option value="slate">Slate</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Icon Name (Lucide)</label>
-                    <input type="text" value={formData.icon_name || ''} onChange={e => setFormData({...formData, icon_name: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
-                  </div>
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Description</label>
-                    <textarea value={formData.description || ''} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" rows={2} />
-                  </div>
-                  <div className="md:col-span-2 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
-                    <p className="text-xs text-yellow-800">Advanced fields like Steps, Portals and nested Helplines editing are partially supported here in the simple editor. In a full version, dynamic arrays would be built here. For now, they are preserved when editing.</p>
-                  </div>
-                </div>
-              )}
-            </div>
-            
-            <div className="p-6 border-t border-border flex justify-end gap-3 bg-surface/30">
-              <button onClick={() => setShowForm(false)} className="px-6 py-2.5 rounded-xl text-sm font-semibold text-text-muted hover:text-text-primary hover:bg-surface transition-colors cursor-pointer">Cancel</button>
-              <button onClick={handleSave} disabled={saving} className="inline-flex items-center gap-2 px-8 py-2.5 bg-primary hover:bg-primary-dark text-white rounded-xl text-sm font-bold disabled:opacity-50 transition-all shadow-md active:scale-95 cursor-pointer">
-                {saving && <Loader2 className="w-4 h-4 animate-spin" />} {saving ? 'Saving...' : 'Save Changes'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
