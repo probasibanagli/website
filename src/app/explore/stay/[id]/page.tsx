@@ -206,9 +206,7 @@ export default function StayDetailPage() {
                     <Button variant="secondary" className="w-full whitespace-nowrap"><MessageCircle className="w-4 h-4" /> WhatsApp</Button>
                   </a>
                 )}
-                <a href={listing.google_maps_url || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${listing.name}, ${listing.address ? `${listing.address}, ` : ''}${listing.area}, ${listing.city}`)}`} target="_blank" rel="noopener noreferrer" className="flex-1 min-w-0">
-                  <Button variant="outline" className="w-full whitespace-nowrap"><MapPin className="w-4 h-4" /> Open in Maps</Button>
-                </a>
+
               </div>
             </Card>
           </div>

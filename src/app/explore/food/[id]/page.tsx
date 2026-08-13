@@ -114,37 +114,56 @@ export default function FoodDetailPage() {
           <ArrowLeft className="w-4 h-4" /> Back to food listings
         </Link>
 
-        <div className="relative h-64 sm:h-80 bg-orange-50 rounded-2xl flex items-center justify-center mb-8 overflow-hidden">
-          <ListingCoverImage
-            name={food.name}
-            city={food.city}
-            mapsUrl={food.google_maps_url}
-            imageUrl={food.image_url}
-            type={food.type}
-            mapEmbedCode={food.map_embed_code}
-            fallbackIcon={<span className="text-8xl opacity-20 select-none">🍽️</span>}
-          />
-          <div className="absolute top-4 left-4 flex gap-2">
-            <Badge variant="amber">{typeLabel}</Badge>
-            {food.verified && <Badge variant="verified"><CheckCircle2 className="w-3 h-3 mr-1" />Verified</Badge>}
-            {food.bengali_friendly && <Badge variant="bengali">Bengali Friendly 🤝</Badge>}
+        {/* Title & Rating Section */}
+        <div className="mb-6">
+          <div className="flex items-start justify-between gap-4">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold font-display text-gray-900 leading-tight">
+              {food.name}
+            </h1>
+            {food.rating && (
+              <div className="flex items-center gap-1.5 bg-white border border-[#E4E9F2] px-3 py-1.5 rounded-full shadow-sm whitespace-nowrap text-sm mt-1 sm:mt-2">
+                <Star className="w-4 h-4 fill-[#B06000] text-[#B06000]" />
+                <span className="font-bold text-gray-900">{food.rating}</span>
+              </div>
+            )}
+          </div>
+          <div className="flex items-center gap-1.5 mt-2 text-sm text-text-muted">
+            <MapPin className="w-4 h-4" /> {food.address || `${food.area}, ${food.city}`}
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-          <div className="lg:col-span-2 space-y-6">
-            <div>
-              <div className="flex items-start justify-between gap-4">
-                <h1 className="text-3xl font-bold font-display">{food.name}</h1>
-                {food.rating && (
-                  <div className="flex items-center gap-1.5 bg-white border border-[#E4E9F2] px-3 py-1.5 rounded-full shadow-sm whitespace-nowrap">
-                    <Star className="w-4 h-4 fill-[#B06000] text-[#B06000]" />
-                    <span className="font-bold text-gray-900">{food.rating}</span>
-                  </div>
-                )}
-              </div>
-              <div className="flex items-center gap-1.5 mt-2 text-text-muted"><MapPin className="w-4 h-4" />{food.address || `${food.area}, ${food.city}`}</div>
+        {/* Image & Map row (75% Image / 25% Map) */}
+        <div className="flex flex-col lg:flex-row gap-4 mb-8 w-full">
+          <div className="relative w-full lg:w-[calc(75%-12px)] lg:flex-none h-48 sm:h-56 lg:h-64 bg-orange-50 rounded-2xl flex items-center justify-center overflow-hidden border border-border/40 shadow-inner">
+            <ListingCoverImage
+              name={food.name}
+              city={food.city}
+              mapsUrl={food.google_maps_url}
+              imageUrl={food.image_url}
+              type={food.type}
+              mapEmbedCode={food.map_embed_code}
+              fallbackIcon={<span className="text-8xl opacity-20 select-none">🍽️</span>}
+            />
+            <div className="absolute top-4 left-4 flex gap-2">
+              <Badge variant="amber">{typeLabel}</Badge>
+              {food.verified && <Badge variant="verified"><CheckCircle2 className="w-3.5 h-3.5 mr-1" /> Verified</Badge>}
+              {food.bengali_friendly && <Badge variant="bengali">Bengali Friendly 🤝</Badge>}
             </div>
+          </div>
+          <div className="w-full lg:w-[calc(25%-4px)] lg:flex-none rounded-2xl overflow-hidden border border-border h-48 sm:h-56 lg:h-64 bg-surface">
+            <MapEmbed 
+              name={food.name}
+              address={food.address}
+              area={food.area}
+              city={food.city}
+              googleMapsUrl={food.google_maps_url}
+              mapEmbedCode={food.map_embed_code}
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          <div className="lg:col-span-7 space-y-6">
 
             {food.specialties && food.specialties.length > 0 && (
             <Card>
@@ -155,31 +174,10 @@ export default function FoodDetailPage() {
             </Card>
             )}
 
-            {food.google_maps_url && (
-              <Card>
-                <h3 className="text-lg font-bold mb-3">Location</h3>
-                
-                <div className="rounded-xl overflow-hidden border border-border h-64 bg-surface relative">
-                  <MapEmbed 
-                    name={food.name}
-                    address={food.address}
-                    area={food.area}
-                    city={food.city}
-                    googleMapsUrl={food.google_maps_url}
-                    mapEmbedCode={food.map_embed_code}
-                  />
-                </div>
 
-                <div className="mt-4">
-                  <a href={food.google_maps_url || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${food.name}, ${food.address ? `${food.address}, ` : ''}${food.area}, ${food.city}`)}`} target="_blank" rel="noopener noreferrer">
-                    <Button variant="outline" className="w-full"><MapPin className="w-4 h-4" /> Open in Google Maps</Button>
-                  </a>
-                </div>
-              </Card>
-            )}
           </div>
 
-          <div className="space-y-4">
+          <div className="lg:col-span-5 space-y-4">
             <Card className="bg-orange-50 border-orange-100">
               <h3 className="text-lg font-bold mb-4">Contact & Order</h3>
               <div className="space-y-3">
