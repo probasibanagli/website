@@ -174,7 +174,7 @@ export default function BengaliDoctorsPage() {
 
       <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
              {[1, 2, 3, 4, 5, 6].map(i => (
                <Card key={i} className="animate-pulse p-6">
                  <div className="flex items-center gap-4 mb-4">
@@ -207,7 +207,7 @@ export default function BengaliDoctorsPage() {
             </Card>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {filtered.map((doctor) => {
               const hospital = doctor.hospital_id ? hospitals[doctor.hospital_id] : undefined;
               return (

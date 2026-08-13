@@ -263,21 +263,20 @@ export const TN_DISTRICTS = [
 ] as const;
 
 export const AADHAAR_CENTRES = [
-  { id: 1, name: 'CSC Aadhaar Kendra - T Nagar', address: '12, North Usman Road, T Nagar, Chennai', type: 'CSC / Enrolment Centre', city: 'Chennai', phone: '044-24321000' },
-  { id: 2, name: 'UIDAI Authorized Update Centre', address: 'Post Office Building, Anna Nagar, Chennai', type: 'Update Centre', city: 'Chennai', phone: '044-26212345' },
-  { id: 3, name: 'CSC Aadhaar Kendra - Vadapalani', address: '23, Arcot Road, Vadapalani, Chennai', type: 'CSC / Enrolment Centre', city: 'Chennai', phone: '044-23456789' },
-  { id: 4, name: 'India Post Aadhaar Centre - Mylapore', address: 'Head Post Office, Mylapore, Chennai', type: 'Update Centre', city: 'Chennai', phone: '044-24981234' },
-  { id: 5, name: 'CSC Aadhaar Kendra - RS Puram', address: '45, DB Road, RS Puram, Coimbatore', type: 'CSC / Enrolment Centre', city: 'Coimbatore', phone: '0422-2541000' },
-  { id: 6, name: 'India Post Aadhaar Centre', address: 'Head Post Office, Town Hall Road, Coimbatore', type: 'Update Centre', city: 'Coimbatore', phone: '0422-2391234' },
-  { id: 7, name: 'UIDAI Authorized Update Centre', address: 'Head Post Office, KK Nagar, Madurai', type: 'Update Centre', city: 'Madurai', phone: '0452-2531000' },
-  { id: 8, name: 'CSC Aadhaar Kendra - Goripalayam', address: '78, Goripalayam Main Road, Madurai', type: 'CSC / Enrolment Centre', city: 'Madurai', phone: '0452-2345678' },
-  { id: 9, name: 'CSC Aadhaar Kendra - Cantonment', address: '15, Cantonment Road, Tiruchirappalli', type: 'CSC / Enrolment Centre', city: 'Tiruchirappalli', phone: '0431-2701000' },
-  { id: 10, name: 'India Post Aadhaar Centre', address: 'GPO Building, Thillainagar, Tiruchirappalli', type: 'Update Centre', city: 'Tiruchirappalli', phone: '0431-2414567' },
-  { id: 11, name: 'CSC Aadhaar Kendra - Palayamkottai', address: '22, South Car Street, Palayamkottai, Tirunelveli', type: 'CSC / Enrolment Centre', city: 'Tirunelveli', phone: '0462-2501000' },
-  { id: 12, name: 'CSC Aadhaar Kendra - Hasthampatti', address: '5, Junction Road, Hasthampatti, Salem', type: 'CSC / Enrolment Centre', city: 'Salem', phone: '0427-2316789' },
-  { id: 13, name: 'India Post Aadhaar Centre', address: 'GPO, Omalur Main Road, Salem', type: 'Update Centre', city: 'Salem', phone: '0427-2211234' },
-  { id: 14, name: 'CSC Aadhaar Kendra - Katpadi', address: '10, Katpadi Road, Vellore', type: 'CSC / Enrolment Centre', city: 'Vellore', phone: '0416-2241000' },
-  { id: 15, name: 'CSC Aadhaar Kendra - Tiruppur', address: '88, Avinashi Road, Tiruppur', type: 'CSC / Enrolment Centre', city: 'Tiruppur', phone: '0421-2201000' },
+  { id: 1, name: 'Aadhaar Seva Kendra - Koyambedu', address: '1st Floor, Ten Square Mall, Jawaharlal Nehru Road, Koyambedu, Chennai - 600107', type: 'ASK (UIDAI)', city: 'Chennai', phone: '1947' },
+  { id: 2, name: 'Aadhaar Seva Kendra - Anna Nagar', address: 'TNUIFS Towers, 1st Floor (Left Wing), Block H1, 3rd Avenue, Anna Nagar East, Chennai - 600102', type: 'ASK (UIDAI)', city: 'Chennai', phone: '1947' },
+  { id: 3, name: 'Post Office Aadhaar Centre - Mylapore', address: 'Head Post Office, Kutchery Road, Mylapore, Chennai - 600004', type: 'Update Centre', city: 'Chennai', phone: '044-24642805' },
+  { id: 4, name: 'Aadhaar Seva Kendra - Coimbatore', address: '1st Floor, SNR College Road, Nava India, Coimbatore - 641004', type: 'ASK (UIDAI)', city: 'Coimbatore', phone: '1947' },
+  { id: 5, name: 'Post Office Aadhaar Centre - RS Puram', address: 'Head Post Office, DB Road, RS Puram, Coimbatore - 641002', type: 'Update Centre', city: 'Coimbatore', phone: '0422-2543360' },
+  { id: 6, name: 'Aadhaar Seva Kendra - Madurai', address: 'No 36, Ground Floor, North Veli Street, Simmakkal, Madurai - 625001', type: 'ASK (UIDAI)', city: 'Madurai', phone: '1947' },
+  { id: 7, name: 'Post Office Aadhaar Centre - Tallakulam', address: 'Head Post Office, Tallakulam, Madurai - 625002', type: 'Update Centre', city: 'Madurai', phone: '0452-2531000' },
+  { id: 8, name: 'Aadhaar Seva Kendra - Trichy', address: 'Ground Floor, BSNL CTO Building, Cantonment, Tiruchirappalli - 620001', type: 'ASK (UIDAI)', city: 'Tiruchirappalli', phone: '1947' },
+  { id: 9, name: 'Post Office Aadhaar Centre - Srirangam', address: 'Head Post Office, EVS Road, Srirangam, Tiruchirappalli - 620006', type: 'Update Centre', city: 'Tiruchirappalli', phone: '0431-2432262' },
+  { id: 10, name: 'Aadhaar Seva Kendra - Salem', address: 'Ground Floor, BSNL GM Office complex, Suramangalam, Salem - 636005', type: 'ASK (UIDAI)', city: 'Salem', phone: '1947' },
+  { id: 11, name: 'Post Office Aadhaar Centre - Suramangalam', address: 'Head Post Office, Suramangalam, Salem - 636005', type: 'Update Centre', city: 'Salem', phone: '0427-2447474' },
+  { id: 12, name: 'Post Office Aadhaar Centre - Tirunelveli', address: 'Head Post Office, Palayamkottai, Tirunelveli - 627002', type: 'Update Centre', city: 'Tirunelveli', phone: '0462-2572233' },
+  { id: 13, name: 'Post Office Aadhaar Centre - Vellore', address: 'Head Post Office, Fort Round Road, Vellore - 632001', type: 'Update Centre', city: 'Vellore', phone: '0416-2224500' },
+  { id: 14, name: 'Post Office Aadhaar Centre - Tiruppur', address: 'Head Post Office, Avinashi Road, Tiruppur - 641602', type: 'Update Centre', city: 'Tiruppur', phone: '0421-2244244' },
 ];
 
 export const PASSPORT_SEVA_KENDRAS = [

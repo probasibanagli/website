@@ -86,14 +86,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       { key: 'admin-mgmt', label: 'Admin Management', href: '/admin/users?tab=admins', icon: <Shield className="w-4 h-4" /> },
       { key: 'user-mgmt', label: 'User Management', href: '/admin/users?tab=users', icon: <Users className="w-4 h-4" /> },
       { key: 'activity-log', label: 'Activity Tracking', href: '/admin/users?tab=activities', icon: <Activity className="w-4 h-4" /> },
-    ] : accessibleModules
+    ] : []),
+    ...accessibleModules
       .filter((mod) => mod !== 'users' && MODULE_LABELS[mod])
       .map((mod) => ({
         key: mod,
         label: MODULE_LABELS[mod],
         href: `/admin/${mod === 'blood_bank' ? 'blood-bank' : mod === 'government_services' ? 'government-services' : mod}`,
         icon: moduleIcons[mod],
-      }))),
+      })),
   ];
 
   const handleLogout = async () => {

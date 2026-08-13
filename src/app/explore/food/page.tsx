@@ -249,7 +249,7 @@ export default function FoodPage() {
       {/* Results */}
       <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <p className="text-sm text-text-muted mb-6"><span className="font-semibold text-text-primary">{filtered.length}</span> places found</p>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {filtered.map((food) => {
             // Dynamic mock details matching mockup style
             const reviewsCount = 50 + (food.name.charCodeAt(1) % 150);

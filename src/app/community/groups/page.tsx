@@ -164,7 +164,7 @@ export default function GroupsPage() {
           {selectedRegion && <> · <span className="font-medium">{REGIONS.find(r => r.key === selectedRegion)?.label}</span></>}
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {filtered.map((group) => {
             const pConfig = getPlatformConfig(group.platform || 'whatsapp');
             const link = getPlatformLink(group);

@@ -375,7 +375,27 @@ function getEventImage(title: string, category: string): string | null {
   if (t.includes('rabindra') || t.includes('jayanti') || t.includes('literature') || t.includes('film') || t.includes('drama') || t.includes('music night') || t.includes('adda') || t.includes('networking')) {
     return '/images/bengali_culture_hero.png';
   }
-  return null;
+  
+  if (t.includes('sports') || t.includes('cricket') || t.includes('football') || t.includes('game')) {
+    return '/images/bengali_sports_event.png';
+  }
+  if (t.includes('meet') || t.includes('mixer') || t.includes('adda') || t.includes('orientation') || t.includes('picnic')) {
+    return '/images/bengali_community_meetup.png';
+  }
+  
+  // Fallback by category
+  if (category === 'festival' || category === 'religious') {
+    return '/images/durga_puja_idol.png';
+  }
+  if (category === 'cultural') {
+    return '/images/bengali_culture_hero.png';
+  }
+  if (category === 'social') {
+    return '/images/bengali_community_meetup.png';
+  }
+  
+  // Final generic fallback
+  return '/images/bengali_community_meetup.png';
 }
 
 function getFestivalsForDate(date: Date, firestoreEvents: CommunityEvent[] = []) {
@@ -449,7 +469,7 @@ function getPlatformIcon(platform?: string) {
 
 
 export default function EventsPage() {
-  const { data: firestoreEvents } = useFirestore<CommunityEvent>('community_events');
+  const { data: firestoreEvents } = useFirestore<CommunityEvent>('events');
   const { data: firestoreGroups } = useFirestore<CommunityGroup>('community_groups');
 
   const [city, setCity] = useState('');
@@ -536,7 +556,7 @@ export default function EventsPage() {
     }
     
     return cells;
-  }, [currentYear, currentMonth, startDayOfWeek, daysInMonth]);
+  }, [currentYear, currentMonth, startDayOfWeek, daysInMonth, firestoreEvents]);
 
   // Annual calendar — events grouped by month
   const annualEvents = useMemo(() => {
@@ -564,7 +584,7 @@ export default function EventsPage() {
     });
 
     return grouped;
-  }, [annualCommunityFilter, annualCategoryFilter, annualCityFilter]);
+  }, [annualCommunityFilter, annualCategoryFilter, annualCityFilter, firestoreEvents]);
 
   // Unique community groups in events for filter
   const communityGroupsInEvents = useMemo(() => {
@@ -677,7 +697,7 @@ export default function EventsPage() {
                 )}
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {MAJOR_FESTIVALS.map((fest) => {
                   const isSelected = selectedFestivalId === fest.id;
                   return (
@@ -846,14 +866,14 @@ export default function EventsPage() {
                 </select>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {filtered.map((event) => {
                   const communityGroup = event.community_group_id ? firestoreGroups.find((g: any) => g.id === event.community_group_id) : null;
                   return (
                     <Card key={event.id} className="group overflow-hidden p-0 bg-white hover:shadow-lg transition-shadow">
                       <div className="h-36 overflow-hidden bg-gradient-to-br from-amber-50 to-orange-50 flex items-center justify-center relative">
                         {(() => {
-                          const img = getEventImage(event.title, event.category || '');
+                          const img = event.image_url || getEventImage(event.title, event.category || '');
                           if (img) {
                             return (
                               <img 
@@ -1341,7 +1361,7 @@ export default function EventsPage() {
                                     <div className="flex items-start gap-3">
                                       <div className="w-12 h-12 rounded-xl overflow-hidden bg-gradient-to-br from-amber-50 to-orange-50 flex items-center justify-center shrink-0 border border-amber-100">
                                         {(() => {
-                                          const img = getEventImage(event.title, event.category || '');
+                                          const img = event.image_url || getEventImage(event.title, event.category || '');
                                           if (img) {
                                             return <img src={img} alt={event.title} className="w-full h-full object-cover" />;
                                           }

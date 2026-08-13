@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
-import { Droplets, MapPin, Phone, Globe, Loader2, ArrowRight } from 'lucide-react';
+import { Droplets, MapPin, Phone, Globe, Loader2, ArrowRight, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { db } from '@/lib/firebase';
@@ -18,6 +18,7 @@ const MessageSquareIcon = (props: React.SVGProps<SVGSVGElement>) => (
 
 export default function BloodPage() {
   const [city, setCity] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const [bloodBanks, setBloodBanks] = useState<BloodBank[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -40,9 +41,16 @@ export default function BloodPage() {
   const filtered = useMemo(() => {
     return bloodBanks.filter((b) => {
       if (city && b.city !== city) return false;
+      if (searchQuery) {
+        const query = searchQuery.toLowerCase();
+        const matchesName = b.name.toLowerCase().includes(query);
+        const matchesAddress = b.address?.toLowerCase().includes(query) || false;
+        const matchesCity = b.city?.toLowerCase().includes(query) || false;
+        if (!matchesName && !matchesAddress && !matchesCity) return false;
+      }
       return true;
     });
-  }, [bloodBanks, city]);
+  }, [bloodBanks, city, searchQuery]);
 
   return (
     <div className="min-h-screen bg-surface">
@@ -57,9 +65,24 @@ export default function BloodPage() {
           </h1>
           <p className="mt-2 text-text-muted">Find blood banks and donors near you.</p>
 
-          <div className="mt-6">
-            <label className="block text-sm font-medium text-text-primary mb-2">Filter by City:</label>
-            <select value={city} onChange={(e) => setCity(e.target.value)} className="px-4 py-2.5 rounded-xl border border-border text-sm">
+          <div className="mt-6 flex flex-col md:flex-row md:items-center gap-3 relative z-30">
+            {/* Search */}
+            <div className="relative flex-1 min-w-[200px] md:max-w-xs">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
+              <input 
+                value={searchQuery} 
+                onChange={(e) => setSearchQuery(e.target.value)} 
+                placeholder="Search blood banks by name or area..." 
+                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" 
+              />
+            </div>
+
+            {/* City select */}
+            <select 
+              value={city} 
+              onChange={(e) => setCity(e.target.value)} 
+              className="px-4 py-2.5 rounded-xl border border-border text-sm bg-white cursor-pointer min-w-[160px]"
+            >
               <option value="">All Cities</option>
               {CITIES.map((c) => <option key={c} value={c}>{c}</option>)}
             </select>
@@ -75,7 +98,7 @@ export default function BloodPage() {
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {filtered.map((bank) => (
                 <Card key={bank.id} padding="none" className="rounded-[28px] overflow-hidden group flex flex-col justify-between hover:shadow-lg transition-all border border-gray-100 shadow-[0_4px_25px_-4px_rgba(0,0,0,0.05)] bg-white p-6 pb-5 relative text-center">
                   <div>
