@@ -167,7 +167,7 @@ export default function MatrimonialDetailPage() {
     return (
       <div className="min-h-screen bg-surface">
         {/* Mock Hero Banner */}
-        <div className="bg-gradient-to-r from-primary via-primary-dark to-[#7a2d14] py-6">
+        <div className="bg-primary py-6">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <Link href="/community/matrimonial" className="inline-flex items-center gap-2 text-sm text-white/70 hover:text-white transition-colors mb-4">
               <ArrowLeft className="w-4 h-4" /> Back to profiles
@@ -181,7 +181,7 @@ export default function MatrimonialDetailPage() {
             <div className="absolute -bottom-20 -left-20 w-48 h-48 rounded-full bg-accent/10 blur-3xl" />
 
             <div className="relative z-10 flex flex-col items-center">
-              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary-light to-accent-light flex items-center justify-center mb-6 shadow-md ring-4 ring-primary/10 animate-bounce">
+              <div className="w-20 h-20 rounded-full bg-primary-light flex items-center justify-center mb-6 shadow-md ring-4 ring-primary/10 animate-bounce">
                 <Lock className="w-8 h-8 text-primary" />
               </div>
 
@@ -217,7 +217,7 @@ export default function MatrimonialDetailPage() {
     return (
       <div className="min-h-screen bg-surface">
         {/* Mock Hero Banner */}
-        <div className="bg-gradient-to-r from-primary via-primary-dark to-[#7a2d14] py-6">
+        <div className="bg-primary py-6">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <Link href="/community/matrimonial" className="inline-flex items-center gap-2 text-sm text-white/70 hover:text-white transition-colors mb-4">
               <ArrowLeft className="w-4 h-4" /> Back to profiles
@@ -231,7 +231,7 @@ export default function MatrimonialDetailPage() {
             <div className="absolute -bottom-20 -left-20 w-48 h-48 rounded-full bg-orange-100/20 blur-3xl" />
 
             <div className="relative z-10 flex flex-col items-center">
-              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-amber-100 to-orange-100 flex items-center justify-center mb-6 shadow-md ring-4 ring-amber-500/10 animate-pulse">
+              <div className="w-20 h-20 rounded-full bg-amber-100 flex items-center justify-center mb-6 shadow-md ring-4 ring-amber-500/10 animate-pulse">
                 <AlertCircle className="w-8 h-8 text-amber-600" />
               </div>
 
@@ -283,7 +283,7 @@ export default function MatrimonialDetailPage() {
     return (
       <div className="min-h-screen bg-surface">
         {/* Mock Hero Banner */}
-        <div className="bg-gradient-to-r from-primary via-primary-dark to-[#7a2d14] py-6">
+        <div className="bg-primary py-6">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <Link href="/community/matrimonial" className="inline-flex items-center gap-2 text-sm text-white/70 hover:text-white transition-colors mb-4">
               <ArrowLeft className="w-4 h-4" /> Back to profiles
@@ -297,7 +297,7 @@ export default function MatrimonialDetailPage() {
             <div className="absolute -bottom-20 -left-20 w-48 h-48 rounded-full bg-accent/10 blur-3xl" />
 
             <div className="relative z-10 flex flex-col items-center">
-              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary-light to-accent-light flex items-center justify-center mb-6 shadow-md ring-4 ring-primary/10 animate-bounce">
+              <div className="w-20 h-20 rounded-full bg-primary-light flex items-center justify-center mb-6 shadow-md ring-4 ring-primary/10 animate-bounce">
                 <Lock className="w-8 h-8 text-primary" />
               </div>
 
@@ -403,7 +403,7 @@ export default function MatrimonialDetailPage() {
   return (
     <div className="min-h-screen bg-surface bg-alpana">
       {/* Hero Banner */}
-      <div className="bg-gradient-to-r from-primary via-primary-dark to-[#7a2d14] py-6">
+      <div className="bg-primary py-6">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <Link href="/community/matrimonial" className="inline-flex items-center gap-2 text-sm text-white/70 hover:text-white transition-colors mb-4">
             <ArrowLeft className="w-4 h-4" /> Back to profiles
@@ -478,7 +478,7 @@ export default function MatrimonialDetailPage() {
                 </div>
               ) : (
                 <div className="flex flex-col sm:flex-row items-start gap-5 pt-2">
-                  <div className={`w-24 h-24 sm:w-28 sm:h-36 rounded-2xl flex flex-col items-center justify-center text-3xl font-bold shrink-0 relative overflow-hidden bg-gradient-to-br ${
+                  <div className={`w-24 h-24 sm:w-28 sm:h-36 rounded-2xl flex flex-col items-center justify-center text-3xl font-bold shrink-0 relative overflow-hidden ${
                     profile.gender === 'male'
                       ? 'from-blue-50 via-blue-100 to-blue-200 text-blue-600'
                       : 'from-pink-50 via-pink-100 to-pink-200 text-pink-600'
@@ -657,10 +657,10 @@ export default function MatrimonialDetailPage() {
                 )}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6">
                   {(profile.pref_age_min || profile.pref_age_max) && (
-                    <InfoRow icon={User} label="Preferred Age" value={`${profile.pref_age_min || '—'} to ${profile.pref_age_max || '—'} years`} />
+                    <InfoRow icon={User} label="Preferred Age" value={`${profile.pref_age_min || '-'} to ${profile.pref_age_max || '-'} years`} />
                   )}
                   {(profile.pref_height_min || profile.pref_height_max) && (
-                    <InfoRow icon={Ruler} label="Preferred Height" value={`${profile.pref_height_min || '—'} to ${profile.pref_height_max || '—'}`} />
+                    <InfoRow icon={Ruler} label="Preferred Height" value={`${profile.pref_height_min || '-'} to ${profile.pref_height_max || '-'}`} />
                   )}
                   <InfoRow icon={GraduationCap} label="Preferred Education" value={profile.pref_education} />
                   <InfoRow icon={Briefcase} label="Preferred Profession" value={profile.pref_profession} />
@@ -726,7 +726,7 @@ export default function MatrimonialDetailPage() {
             )}
 
             {/* Contact Card */}
-            <Card hover={false} className="bg-gradient-to-br from-pink-50 to-white sticky top-4">
+            <Card hover={false} className="bg-pink-50 sticky top-4">
               <h3 className="text-lg font-bold mb-4">Contact Information</h3>
               <div className="space-y-3 text-sm text-text-primary">
                 {profile.phone && (

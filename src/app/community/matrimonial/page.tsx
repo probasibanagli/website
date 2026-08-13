@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/Skeleton';
 import { Button } from '@/components/ui/button';
 import { CustomSelect } from '@/components/ui/CustomSelect';
 
@@ -45,8 +46,8 @@ function ProfileCardAvatar({ profile, className = "w-16 h-16" }: { profile: any;
   return (
     <div className={`${className} rounded-2xl flex items-center justify-center text-xl font-bold shrink-0 shadow-sm ${
       profile.gender === 'male'
-        ? 'bg-gradient-to-br from-blue-100 to-blue-200 text-blue-600'
-        : 'bg-gradient-to-br from-pink-100 to-pink-200 text-pink-600'
+        ? 'bg-blue-100 text-blue-600'
+        : 'bg-pink-100 text-pink-600'
     }`}>
       {profile.full_name?.split(' ').map((n: string) => n[0]).join('').slice(0, 2)}
     </div>
@@ -176,7 +177,7 @@ export default function MatrimonialPage() {
   return (
     <div className="min-h-screen bg-surface bg-alpana">
       {/* Hero Section */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-primary via-primary-dark to-[#7a2d14] border-b border-border/10">
+      <div className="relative overflow-hidden bg-primary border-b border-border/10">
         <div className="absolute inset-0 bg-[url('/images/bengali_wedding_background.png')] bg-cover bg-center opacity-25 mix-blend-overlay" />
         <div className="absolute inset-0 opacity-15">
           <div className="absolute top-10 left-10 w-40 h-40 rounded-full bg-white/20 blur-3xl" />
@@ -266,9 +267,29 @@ export default function MatrimonialPage() {
       </div>
 
       {hasProfile === null || authLoading ? (
-        <div className="max-w-[1536px] mx-auto px-4 py-20 flex flex-col items-center justify-center gap-4">
-          <div className="w-10 h-10 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
-          <p className="text-sm text-text-muted">Loading profile status...</p>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <div className="lg:col-span-1 space-y-6">
+              <div className="bg-white rounded-2xl border border-border p-6">
+                <Skeleton className="w-32 h-6 mb-4" />
+                <div className="space-y-4">
+                  <Skeleton className="w-full h-10 rounded-xl" />
+                  <Skeleton className="w-full h-10 rounded-xl" />
+                </div>
+              </div>
+            </div>
+            <div className="lg:col-span-3 space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {[1, 2, 3, 4].map((i) => (
+                  <div key={i} className="bg-white rounded-2xl border border-border p-6 text-center">
+                    <Skeleton className="w-24 h-24 rounded-full mx-auto mb-4" />
+                    <Skeleton className="w-48 h-6 mx-auto mb-2" />
+                    <Skeleton className="w-full h-10 rounded-xl mt-4" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       ) : !firebaseUser ? (
         <div className="max-w-4xl mx-auto px-4 py-16 animate-fade-in">
@@ -279,7 +300,7 @@ export default function MatrimonialPage() {
 
             <div className="relative z-10 flex flex-col items-center">
               {/* Animated Lock Badge */}
-              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary-light to-accent-light flex items-center justify-center mb-6 shadow-md ring-4 ring-primary/10 animate-bounce">
+              <div className="w-20 h-20 rounded-full bg-primary-light flex items-center justify-center mb-6 shadow-md ring-4 ring-primary/10 animate-bounce">
                 <Lock className="w-8 h-8 text-primary" />
               </div>
 
@@ -335,7 +356,7 @@ export default function MatrimonialPage() {
 
             <div className="relative z-10 flex flex-col items-center">
               {/* Animated Warning Badge */}
-              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-amber-100 to-orange-100 flex items-center justify-center mb-6 shadow-md ring-4 ring-amber-500/10 animate-pulse">
+              <div className="w-20 h-20 rounded-full bg-amber-100 flex items-center justify-center mb-6 shadow-md ring-4 ring-amber-500/10 animate-pulse">
                 <AlertCircle className="w-8 h-8 text-amber-600" />
               </div>
 
@@ -385,7 +406,7 @@ export default function MatrimonialPage() {
 
             <div className="relative z-10 flex flex-col items-center">
               {/* Animated Lock Badge */}
-              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary-light to-accent-light flex items-center justify-center mb-6 shadow-md ring-4 ring-primary/10 animate-bounce">
+              <div className="w-20 h-20 rounded-full bg-primary-light flex items-center justify-center mb-6 shadow-md ring-4 ring-primary/10 animate-bounce">
                 <Lock className="w-8 h-8 text-primary" />
               </div>
 
@@ -664,7 +685,7 @@ export default function MatrimonialPage() {
                 <Card key={profile.id} padding="none" className="rounded-[24px] overflow-hidden group flex flex-col justify-between hover:shadow-lg transition-all border border-gray-100 shadow-[0_4px_25px_-4px_rgba(0,0,0,0.05)] bg-white relative">
                   <div>
                     {/* Header Background & Centered Avatar */}
-                    <div className="pt-6 pb-3 flex flex-col items-center justify-center bg-gradient-to-b from-[#FFF5F2] to-white relative">
+                    <div className="pt-6 pb-3 flex flex-col items-center justify-center bg-[#FFF5F2] relative">
                       <div className="relative">
                         <ProfileCardAvatar profile={profile} className="w-16 h-16 shadow-md rounded-[16px]" />
                         {profile.verified && (
@@ -838,7 +859,7 @@ export default function MatrimonialPage() {
 
             {/* Bottom CTA */}
             {filtered.length > 0 && (
-              <div className="mt-12 bg-gradient-to-r from-primary-light via-white to-accent-light rounded-2xl p-8 text-center border border-border">
+              <div className="mt-12 bg-primary-light rounded-2xl p-8 text-center border border-border">
                 <h3 className="text-2xl font-bold font-display mb-2">
                   Didn&apos;t find what you&apos;re looking for?
                 </h3>

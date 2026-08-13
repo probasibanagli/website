@@ -29,7 +29,7 @@ const TYPE_STYLES: Record<string, { gradient: string; icon: React.ReactNode }> =
 };
 
 /**
- * PlaceImage — shows a real Google Places photo with elegant fallback.
+ * PlaceImage - shows a real Google Places photo with elegant fallback.
  *
  * Usage: <PlaceImage name="Kolkata Home PG" city="Chennai" type="pg" className="h-48" />
  */
@@ -43,7 +43,7 @@ export function PlaceImage({ name, city, type = 'stay', mapsUrl, className = 'h-
   }
 
   return (
-    <div className={`relative w-full overflow-hidden bg-gradient-to-br ${style.gradient} ${className}`}>
+    <div className={`relative w-full overflow-hidden ${style.gradient} ${className}`}>
       {/* Skeleton / fallback layer (always behind the image) */}
       <div className="absolute inset-0 flex items-center justify-center">
         {status === 'loading' && (
@@ -76,7 +76,7 @@ export function PlaceImage({ name, city, type = 'stay', mapsUrl, className = 'h-
 
       {/* Subtle bottom gradient for text readability */}
       {status === 'loaded' && (
-        <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/30 to-transparent" />
+        <div className="absolute inset-x-0 bottom-0 h-16 bg-black/30" />
       )}
     </div>
   );

@@ -713,7 +713,7 @@ export default function MatrimonialRegisterPage() {
       <div className="min-h-screen bg-surface bg-alpana flex items-center justify-center px-4">
         <div className="max-w-md w-full animate-fade-in">
           <Card className="border border-primary/20 shadow-xl bg-white/95 backdrop-blur-md p-8 text-center">
-            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary-light to-accent-light flex items-center justify-center mx-auto mb-6 shadow-md">
+            <div className="w-16 h-16 rounded-full bg-primary-light flex items-center justify-center mx-auto mb-6 shadow-md">
               <Lock className="w-7 h-7 text-primary" />
             </div>
             <h1 className="text-2xl font-bold font-display mb-3">Sign Up Required</h1>
@@ -743,7 +743,7 @@ export default function MatrimonialRegisterPage() {
       <div className="min-h-screen bg-surface bg-alpana flex items-center justify-center px-4">
         <div className="max-w-md w-full animate-fade-in">
           <Card className="border border-amber-200 shadow-xl bg-white/95 backdrop-blur-md p-8 text-center">
-            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-amber-100 to-orange-100 flex items-center justify-center mx-auto mb-6 shadow-md animate-pulse">
+            <div className="w-16 h-16 rounded-full bg-amber-100 flex items-center justify-center mx-auto mb-6 shadow-md animate-pulse">
               <AlertCircleIcon className="w-7 h-7 text-amber-600" />
             </div>
             <h1 className="text-2xl font-bold font-display mb-3">Verification Required</h1>
@@ -818,7 +818,7 @@ export default function MatrimonialRegisterPage() {
           {/* Progress bar */}
           <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-primary to-accent rounded-full transition-all duration-500"
+              className="h-full bg-primary rounded-full transition-all duration-500"
               style={{ width: `${((step + 1) / steps.length) * 100}%` }}
             />
           </div>

@@ -249,7 +249,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-80px)] bg-gradient-to-br from-accent-light/30 via-white to-primary-light/20 flex justify-center pt-20 pb-12 px-4">
+    <div className="min-h-[calc(100vh-80px)] bg-accent-light/30 flex justify-center pt-20 pb-12 px-4">
       <div className="w-full max-w-md">
         {/* Header */}
         <div className="text-center mb-6 pt-4">

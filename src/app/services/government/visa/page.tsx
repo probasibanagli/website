@@ -20,7 +20,7 @@ export default function VisaPage() {
   return (
     <div className="min-h-screen bg-surface">
       {/* Header */}
-      <div className="bg-gradient-to-br from-indigo-800 via-indigo-900 to-slate-950 py-8 text-white">
+      <div className="bg-indigo-800 py-8 text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
           <Link href="/services/government" className="inline-flex items-center gap-2 text-sm text-white/70 hover:text-white transition-colors mb-6">
             <ArrowLeft className="w-4 h-4" /> Back to Government Services
@@ -36,7 +36,7 @@ export default function VisaPage() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 space-y-8">
         
         {/* Destination Country Selection Card */}
-        <Card className="border-border p-6 bg-gradient-to-br from-indigo-50/50 to-white">
+        <Card className="border-border p-6 bg-indigo-50/50">
           <label className="block text-sm font-bold text-text-primary mb-2 uppercase tracking-wider">
             Select Destination Country / Region
           </label>

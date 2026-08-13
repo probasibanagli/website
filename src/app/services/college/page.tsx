@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { Search, MapPin, Phone, GraduationCap, Globe, ExternalLink, Navigation, ChevronDown, ChevronUp, Lock, ShieldAlert, Mail, ArrowRight, Loader2, Map, X } from 'lucide-react';
+import { Skeleton } from '@/components/ui/Skeleton';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/card';
@@ -206,9 +207,21 @@ export default function CollegePage() {
 
       <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {loading ? (
-          <div className="flex flex-col items-center justify-center py-32 gap-3">
-            <Loader2 className="w-10 h-10 text-primary animate-spin" />
-            <p className="text-text-muted text-sm font-medium">Loading colleges database...</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+              <div key={i} className="bg-white rounded-[24px] border border-border overflow-hidden">
+                <Skeleton className="w-full h-44" />
+                <div className="p-5 space-y-3">
+                  <Skeleton className="w-3/4 h-6" />
+                  <Skeleton className="w-full h-4" />
+                  <Skeleton className="w-5/6 h-4" />
+                  <div className="flex gap-2 pt-2">
+                    <Skeleton className="w-16 h-6 rounded-full" />
+                    <Skeleton className="w-16 h-6 rounded-full" />
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         ) : (
           <>
@@ -216,23 +229,23 @@ export default function CollegePage() {
               {filtered.map((college) => {
                 const theme = CATEGORY_THEMES[college.type || 'arts_science'] || CATEGORY_THEMES.arts_science;
                   return (
-                    <Card key={college.id} padding="none" className="overflow-hidden group flex flex-col h-full bg-white border border-gray-100 shadow-[0_4px_25px_-4px_rgba(0,0,0,0.05)] rounded-[24px]">
-                      {/* Image header with text overlay — matches hospital card style */}
-                      <div className="relative h-56 bg-slate-100 overflow-hidden">
-                        <CollegeCoverImage
-                          name={college.name}
-                          city={college.city}
-                          mapsUrl={college.google_maps_url}
-                          imageUrl={college.image_url}
-                          isSchool={college.category === 'school'}
-                        />
-
-                        {/* Gradient Shadow Overlay with Name + Location */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-5 z-10 pointer-events-none">
-                          <h3 className="text-lg font-bold text-white leading-tight font-display">{college.name}</h3>
-                          <div className="flex items-center gap-1.5 mt-2 text-sm text-white/90">
-                            <MapPin className="w-4 h-4 text-white shrink-0" />
-                            <span>{college.area ? `${college.area}, ` : ''}{college.city}</span>
+                    <Card key={college.id} padding="none" className="rounded-[24px] overflow-hidden group flex flex-col justify-between hover:shadow-lg transition-all border border-gray-100 shadow-[0_4px_25px_-4px_rgba(0,0,0,0.05)] bg-white">
+                      <div>
+                        {/* Image banner with floating badge */}
+                        <div className="relative w-full h-44 bg-slate-100 overflow-hidden">
+                          {college.image_url ? (
+                            <img src={college.image_url} alt={college.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                          ) : (
+                            <div className="w-full h-full bg-gradient-to-br from-indigo-50 to-blue-50 flex items-center justify-center">
+                              <GraduationCap className="w-12 h-12 text-primary opacity-30 animate-pulse" />
+                            </div>
+                          )}
+                          
+                          {/* Floating Type/Category Badge (Top Right) */}
+                          <div className="absolute top-4 right-4 shadow-sm z-10">
+                            <span className="bg-[#EAF6F0]/90 backdrop-blur-md text-[#0A6C4A] text-xs font-bold px-3 py-1.5 rounded-full shadow-sm tracking-wide capitalize">
+                              {CATEGORY_LABELS[college.type || '']?.replace(' Colleges', '') || college.type}
+                            </span>
                           </div>
                         </div>
 

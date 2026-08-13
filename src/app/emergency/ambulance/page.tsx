@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { default as Link } from 'next/link';
 import { Phone, Siren, Shield, Flame, MapPin, AlertTriangle, Loader2 } from 'lucide-react';
+import { Skeleton } from '@/components/ui/Skeleton';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import type { Ambulance } from '@/types';
@@ -49,9 +50,30 @@ export default function AmbulancePage() {
     async function fetchAmbulances() {
       try {
         const res = await fetch('/api/public/firestore?collection=ambulances');
-        if (!res.ok) throw new Error('Failed to fetch ambulances');
         const data = await res.json();
-        setAmbulances(data.items || []);
+        const items = data.items || [];
+        const sorted = items.sort((a: Ambulance, b: Ambulance) => {
+          const getScore = (item: Ambulance) => {
+            let score = 0;
+            if (item.name?.trim()) score++;
+            if (item.sub_category?.trim()) score++;
+            if (item.type_mode?.trim()) score++;
+            if (item.city?.trim()) score++;
+            if (item.phone?.trim()) score++;
+            if (item.address?.trim()) score++;
+            if (item.source_notes?.trim()) score++;
+            return score;
+          };
+
+          const scoreA = getScore(a);
+          const scoreB = getScore(b);
+
+          if (scoreA !== scoreB) {
+            return scoreB - scoreA; // More details first
+          }
+          return (a.name || '').localeCompare(b.name || '');
+        });
+        setAmbulances(sorted);
       } catch (e) {
         console.error('Error fetching ambulances:', e);
       } finally {
@@ -63,7 +85,7 @@ export default function AmbulancePage() {
 
   return (
     <div className="min-h-screen bg-surface">
-      <div className="bg-gradient-to-br from-red-600 to-red-800 text-white">
+      <div className="bg-red-600 text-white">
         <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-12 text-center">
           <div className="flex items-center justify-center gap-2 text-sm text-white/80 mb-6">
             <Link href="/" className="hover:text-white">Home</Link><span>/</span>
@@ -127,8 +149,17 @@ export default function AmbulancePage() {
         {/* Private Ambulances */}
         <h2 className="text-2xl font-bold font-display mb-6">Private Ambulance Services</h2>
         {loading ? (
-          <div className="flex justify-center items-center py-10">
-            <Loader2 className="w-8 h-8 animate-spin text-red-600" />
+          <div className="grid grid-cols-1 gap-4">
+            {[1, 2, 3, 4, 5].map((i) => (
+              <div key={i} className="flex flex-col md:flex-row items-start md:items-center justify-between p-6 gap-6 bg-white rounded-3xl border border-border">
+                <div className="flex-1 space-y-3">
+                  <Skeleton className="w-24 h-6 rounded-full" />
+                  <Skeleton className="w-64 h-8" />
+                  <Skeleton className="w-48 h-4" />
+                </div>
+                <Skeleton className="w-full md:w-40 h-12 rounded-xl" />
+              </div>
+            ))}
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-4">

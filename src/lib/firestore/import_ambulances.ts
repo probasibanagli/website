@@ -18,11 +18,11 @@ if (getApps().length === 0) {
 const db = getFirestore();
 
 async function importCsv() {
-  const csvPath = 'c:/Users/balaj/AppData/Local/Packages/5319275A.51895FA4EA97F_cv1g1gvanyjgm/LocalState/sessions/957E8B8FEAC73DFF69649C40CFF7614A34B1A769/transfers/2026-30/ambulance.csv';
+  const csvPath = process.argv[2] || './ambulance.csv';
   console.log(`Reading CSV from ${csvPath}...`);
   
   if (!fs.existsSync(csvPath)) {
-    console.error('CSV file not found!');
+    console.error(`CSV file not found at ${csvPath}! Please place 'ambulance.csv' in the project root or specify the path as an argument.`);
     return;
   }
 
@@ -76,14 +76,15 @@ async function importCsv() {
 
   for (let idx = 1; idx < lines.length; idx++) {
     const cols = lines[idx];
-    if (cols.length < 7) continue;
+    if (cols.length < 2) continue;
 
-    const subCategory = cols[1];
-    const name = cols[2];
-    const cityRoute = cols[3];
-    const contact = cols[4];
-    const typeMode = cols[5];
-    const addressDetails = cols[6];
+    const subCategory = cols[0];
+    const name = cols[1];
+    const cityRoute = cols[2];
+    const contact = cols[3];
+    const typeMode = cols[4];
+    const addressDetails = cols[5];
+    const sourceNotes = cols[6];
 
     if (!name) continue;
 
@@ -91,9 +92,12 @@ async function importCsv() {
     const newAmbulance = {
       id,
       name,
-      city: cityRoute,
+      city: cityRoute || 'Chennai',
       phone: contact ? contact.replace(/^-/, '').trim() : '',
-      address: `${subCategory ? `[${subCategory}] ` : ''}${addressDetails}${typeMode ? ` (${typeMode})` : ''}`,
+      address: addressDetails || '',
+      sub_category: subCategory || '',
+      type_mode: typeMode || '',
+      source_notes: sourceNotes || '',
       created_at: now,
       updated_at: now
     };

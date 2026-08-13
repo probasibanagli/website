@@ -170,7 +170,7 @@ export default function MatrimonialDashboard() {
           </Link>
           <div className="text-center py-16 animate-fade-in flex flex-col items-center">
             <Card className="border border-primary/20 shadow-xl bg-white/95 backdrop-blur-md p-8 text-center max-w-md mx-auto">
-              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary-light to-accent-light flex items-center justify-center mx-auto mb-6 shadow-md">
+              <div className="w-16 h-16 rounded-full bg-primary-light flex items-center justify-center mx-auto mb-6 shadow-md">
                 <Lock className="w-7 h-7 text-primary" />
               </div>
               <h1 className="text-2xl font-bold font-display mb-3">Sign Up Required</h1>
@@ -205,7 +205,7 @@ export default function MatrimonialDashboard() {
           </Link>
           <div className="text-center py-16 animate-fade-in flex flex-col items-center">
             <Card className="border border-amber-200 shadow-xl bg-white/95 backdrop-blur-md p-8 text-center max-w-md mx-auto">
-              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-amber-100 to-orange-100 flex items-center justify-center mx-auto mb-6 shadow-md animate-pulse">
+              <div className="w-16 h-16 rounded-full bg-amber-100 flex items-center justify-center mx-auto mb-6 shadow-md animate-pulse">
                 <AlertTriangle className="w-7 h-7 text-amber-600" />
               </div>
               <h1 className="text-2xl font-bold font-display mb-3">Verification Required</h1>

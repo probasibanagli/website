@@ -36,7 +36,7 @@ function ListingCoverImage({ name, city, mapsUrl, imageUrl, type, mapEmbedCode, 
 
   if (error || !imgSrc) {
     return (
-      <div className="absolute inset-0 bg-gradient-to-br from-primary-light to-accent-light flex items-center justify-center">
+      <div className="absolute inset-0 bg-primary-light flex items-center justify-center">
         <div className="text-primary opacity-40 scale-[3]">
           {fallbackIcon}
         </div>
@@ -107,53 +107,45 @@ export default function StayDetailPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          {/* Main Content */}
-          <div className="lg:col-span-2 space-y-6">
-            <div>
-              <div className="flex items-start justify-between gap-4">
-                <h1 className="text-3xl font-bold font-display text-text-primary">{listing.name}</h1>
-                {listing.rating && (
-                  <div className="flex items-center gap-1.5 bg-white border border-[#E4E9F2] px-3 py-1.5 rounded-full shadow-sm whitespace-nowrap">
-                    <Star className="w-4 h-4 fill-[#B06000] text-[#B06000]" />
-                    <span className="font-bold text-gray-900">{listing.rating}</span>
-                  </div>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          {/* Left Column: About & Details */}
+          <div className="lg:col-span-7 space-y-6">
+            {/* About & Details Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <Card className="p-5 flex flex-col justify-between">
+                <div>
+                  <h3 className="text-lg font-bold mb-3">About this place</h3>
+                  <p className="text-sm text-text-muted leading-relaxed">{listing.description}</p>
+                </div>
+              </Card>
+
+              <div className="space-y-4">
+                {(listing.room_type || listing.gender || listing.deposit_amount || listing.available_rooms) && (
+                  <Card className="p-4">
+                    <h3 className="text-sm font-bold mb-3 text-text-primary">Details</h3>
+                    <div className="grid grid-cols-2 gap-3 text-sm">
+                      {listing.room_type && <div className="flex items-center gap-2"><Bed className="w-4 h-4 text-primary" /><span className="font-semibold capitalize truncate">{listing.room_type}</span></div>}
+                      {listing.gender && <div className="flex items-center gap-2"><Users className="w-4 h-4 text-primary" /><span className="font-semibold capitalize truncate">{listing.gender}</span></div>}
+                      {listing.deposit_amount !== undefined && <div className="flex items-center gap-2"><IndianRupee className="w-4 h-4 text-primary" /><span className="font-semibold truncate">Dep: {formatPrice(listing.deposit_amount)}</span></div>}
+                      {listing.available_rooms !== undefined && <div className="flex items-center gap-2"><Shield className="w-4 h-4 text-primary" /><span className="font-semibold truncate">Rooms: {listing.available_rooms}</span></div>}
+                    </div>
+                  </Card>
+                )}
+
+                {((listing.amenities && listing.amenities.length > 0) || listing.bengali_food || listing.bengali_friendly) && (
+                  <Card className="p-4">
+                    <h3 className="text-sm font-bold mb-3 text-text-primary">Amenities</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {(listing.amenities || []).map((a: string) => (
+                        <Badge key={a} variant="teal">{a}</Badge>
+                      ))}
+                      {listing.bengali_food && <Badge variant="bengali">🍛 Bengali Food Available</Badge>}
+                      {listing.bengali_friendly && <Badge variant="bengali">🤝 Bengali-Friendly</Badge>}
+                    </div>
+                  </Card>
                 )}
               </div>
-              <div className="flex items-center gap-1.5 mt-2 text-text-muted">
-                <MapPin className="w-4 h-4" /> {listing.address || `${listing.area}, ${listing.city}`}
-              </div>
             </div>
-
-            <Card>
-              <h3 className="text-lg font-bold mb-3">About this place</h3>
-              <p className="text-text-muted leading-relaxed">{listing.description}</p>
-            </Card>
-
-            {(listing.room_type || listing.gender || listing.deposit_amount || listing.available_rooms) && (
-            <Card>
-              <h3 className="text-lg font-bold mb-4">Details</h3>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                {listing.room_type && <div className="flex items-center gap-3"><Bed className="w-5 h-5 text-primary" /><div><p className="text-xs text-text-muted">Room Type</p><p className="text-sm font-semibold capitalize">{listing.room_type}</p></div></div>}
-                {listing.gender && <div className="flex items-center gap-3"><Users className="w-5 h-5 text-primary" /><div><p className="text-xs text-text-muted">For</p><p className="text-sm font-semibold capitalize">{listing.gender}</p></div></div>}
-                {listing.deposit_amount !== undefined && <div className="flex items-center gap-3"><IndianRupee className="w-5 h-5 text-primary" /><div><p className="text-xs text-text-muted">Deposit</p><p className="text-sm font-semibold">{formatPrice(listing.deposit_amount)}</p></div></div>}
-                {listing.available_rooms !== undefined && <div className="flex items-center gap-3"><Shield className="w-5 h-5 text-primary" /><div><p className="text-xs text-text-muted">Available Rooms</p><p className="text-sm font-semibold">{listing.available_rooms}</p></div></div>}
-              </div>
-            </Card>
-            )}
-
-            {((listing.amenities && listing.amenities.length > 0) || listing.bengali_food || listing.bengali_friendly) && (
-            <Card>
-              <h3 className="text-lg font-bold mb-3">Amenities</h3>
-              <div className="flex flex-wrap gap-2">
-                {(listing.amenities || []).map((a: string) => (
-                  <Badge key={a} variant="teal">{a}</Badge>
-                ))}
-                {listing.bengali_food && <Badge variant="bengali">🍛 Bengali Food Available</Badge>}
-                {listing.bengali_friendly && <Badge variant="bengali">🤝 Bengali-Friendly</Badge>}
-              </div>
-            </Card>
-            )}
           </div>
 
           {/* Sidebar */}
@@ -171,29 +163,21 @@ export default function StayDetailPage() {
                   </p>
                 )}
               </div>
-              <div className="mt-6 space-y-3">
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 {(listing.contact_phone || listing.owner_phone) && (
-                  <a href={`tel:${listing.contact_phone || listing.owner_phone}`}><Button variant="primary" className="w-full"><Phone className="w-4 h-4" /> Call Owner</Button></a>
-                )}
-                {(listing.contact_whatsapp || listing.owner_whatsapp) && (
-                  <a href={getWhatsAppUrl(listing.contact_whatsapp || listing.owner_whatsapp, `Hi, I'm interested in "${listing.name}" from ProbasiBangali.in`)} target="_blank" rel="noopener noreferrer">
-                    <Button variant="secondary" className="w-full mt-2"><MessageCircle className="w-4 h-4" /> WhatsApp</Button>
+                  <a href={`tel:${listing.contact_phone || listing.owner_phone}`} className="w-full">
+                    <Button variant="primary" className="w-full"><Phone className="w-4 h-4" /> Call Owner</Button>
                   </a>
                 )}
-                <a href={listing.google_maps_url || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${listing.name}, ${listing.address ? `${listing.address}, ` : ''}${listing.area}, ${listing.city}`)}`} target="_blank" rel="noopener noreferrer">
-                  <Button variant="outline" className="w-full mt-2"><MapPin className="w-4 h-4" /> Open in Google Maps</Button>
+                {(listing.contact_whatsapp || listing.owner_whatsapp) && (
+                  <a href={getWhatsAppUrl(listing.contact_whatsapp || listing.owner_whatsapp, `Hi, I'm interested in "${listing.name}" from ProbasiBangali.in`)} target="_blank" rel="noopener noreferrer" className="w-full">
+                    <Button variant="secondary" className="w-full"><MessageCircle className="w-4 h-4" /> WhatsApp</Button>
+                  </a>
+                )}
+                <a href={listing.google_maps_url || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${listing.name}, ${listing.address ? `${listing.address}, ` : ''}${listing.area}, ${listing.city}`)}`} target="_blank" rel="noopener noreferrer" className="w-full">
+                  <Button variant="outline" className="w-full"><MapPin className="w-4 h-4" /> Open in Maps</Button>
                 </a>
-              </div>
-              
-              <div className="mt-6 rounded-xl overflow-hidden border border-border h-48 bg-surface">
-                <MapEmbed 
-                  name={listing.name}
-                  address={listing.address}
-                  area={listing.area}
-                  city={listing.city}
-                  googleMapsUrl={listing.google_maps_url}
-                  mapEmbedCode={listing.map_embed_code}
-                />
               </div>
             </Card>
           </div>

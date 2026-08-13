@@ -93,14 +93,27 @@ function AmbulancePageContent() {
         }
 
         const headers = lines[0].map(h => h.toLowerCase().replace(/[^a-z0-9]/g, ''));
-        const nameIdx = headers.findIndex(h => h.includes('name') || h.includes('title') || h.includes('service'));
-        const cityIdx = headers.findIndex(h => h.includes('district') || h.includes('city') || h.includes('area'));
-        const addressIdx = headers.findIndex(h => h.includes('address') || h.includes('location'));
-        const phoneIdx = headers.findIndex(h => h.includes('phone') || h.includes('mobile') || h.includes('contact'));
+        console.log("Ambulance CSV Headers parsed:", headers);
+        
+        let nameIdx = headers.findIndex(h => h.includes('name') || h.includes('title') || h.includes('provider') || h.includes('service'));
+        let cityIdx = headers.findIndex(h => h.includes('district') || h.includes('city') || h.includes('route') || h.includes('area'));
+        let addressIdx = headers.findIndex(h => h.includes('address') || h.includes('location') || h.includes('details'));
+        let phoneIdx = headers.findIndex(h => h.includes('phone') || h.includes('mobile') || h.includes('contact') || h.includes('number'));
+        let subCategoryIdx = headers.findIndex(h => h.includes('subcategory') || h.includes('sub-category') || h.includes('sub'));
+        let typeModeIdx = headers.findIndex(h => h.includes('typemode') || h.includes('type/mode') || h.includes('mode'));
+        let notesIdx = headers.findIndex(h => h.includes('notes') || h.includes('source') || h.includes('sourcenotes') || h.includes('source/notes'));
 
+        // Fallback to strict index ordering (Sub-Category, Name, City/Route, Contact, Type/Mode, Address, Notes)
+        // if the crucial 'Name/Provider' field is not detected by string matching
         if (nameIdx === -1) {
-          alert('Could not find "Ambulance" or "Name" column in CSV.');
-          return;
+          console.warn("Could not match columns by header name, falling back to standard column positions.");
+          subCategoryIdx = 0;
+          nameIdx = 1;
+          cityIdx = 2;
+          phoneIdx = 3;
+          typeModeIdx = 4;
+          addressIdx = 5;
+          notesIdx = 6;
         }
 
         const batch: Ambulance[] = [];
@@ -108,17 +121,21 @@ function AmbulancePageContent() {
 
         for (let idx = 1; idx < lines.length; idx++) {
           const cols = lines[idx];
-          if (cols.length <= Math.max(nameIdx, cityIdx, addressIdx, phoneIdx)) continue;
+          if (cols.length <= nameIdx) continue;
 
           const name = cols[nameIdx];
           if (!name) continue;
 
-          const rawCity = cityIdx !== -1 ? cols[cityIdx] : 'Chennai';
-          const matchedCity = CITIES.find(c => c.toLowerCase() === rawCity.toLowerCase()) || 'Chennai';
+          const rawCity = (cityIdx !== -1 && cols[cityIdx]) ? cols[cityIdx] : 'Chennai';
+          const matchedCity = CITIES.find(c => c.toLowerCase() === (rawCity || '').toLowerCase()) || rawCity || 'Chennai';
 
-          const address = addressIdx !== -1 ? cols[addressIdx] : '';
-          const rawPhone = phoneIdx !== -1 ? cols[phoneIdx] : '';
+          const address = (addressIdx !== -1 && cols[addressIdx]) ? cols[addressIdx] : '';
+          const rawPhone = (phoneIdx !== -1 && cols[phoneIdx]) ? cols[phoneIdx] : '';
           const phoneVal = (rawPhone === 'NA' || rawPhone === '-' || !rawPhone) ? '' : rawPhone.replace(/^-/, '').trim();
+
+          const subCategory = (subCategoryIdx !== -1 && cols[subCategoryIdx]) ? cols[subCategoryIdx] : '';
+          const typeMode = (typeModeIdx !== -1 && cols[typeModeIdx]) ? cols[typeModeIdx] : '';
+          const sourceNotes = (notesIdx !== -1 && cols[notesIdx]) ? cols[notesIdx] : '';
 
           const id = `amb-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
           const newAmbulance: Ambulance = {
@@ -127,6 +144,9 @@ function AmbulancePageContent() {
             city: matchedCity,
             address,
             phone: phoneVal,
+            sub_category: subCategory,
+            type_mode: typeMode,
+            source_notes: sourceNotes,
             created_at: now,
             updated_at: now
           };
@@ -219,14 +239,36 @@ function AmbulancePageContent() {
     }
   }
 
-  const filtered = ambulances.filter(b => {
-    if (cityFilter && b.city !== cityFilter) return false;
-    if (searchQuery) {
-      const q = searchQuery.toLowerCase();
-      return b.name?.toLowerCase().includes(q) || b.address?.toLowerCase().includes(q);
-    }
-    return true;
-  });
+  const filtered = ambulances
+    .filter(b => {
+      if (cityFilter && b.city !== cityFilter) return false;
+      if (searchQuery) {
+        const q = searchQuery.toLowerCase();
+        return b.name?.toLowerCase().includes(q) || b.address?.toLowerCase().includes(q);
+      }
+      return true;
+    })
+    .sort((a, b) => {
+      const getScore = (item: Ambulance) => {
+        let score = 0;
+        if (item.name?.trim()) score++;
+        if (item.sub_category?.trim()) score++;
+        if (item.type_mode?.trim()) score++;
+        if (item.city?.trim()) score++;
+        if (item.phone?.trim()) score++;
+        if (item.address?.trim()) score++;
+        if (item.source_notes?.trim()) score++;
+        return score;
+      };
+
+      const scoreA = getScore(a);
+      const scoreB = getScore(b);
+
+      if (scoreA !== scoreB) {
+        return scoreB - scoreA; // More details first
+      }
+      return (a.name || '').localeCompare(b.name || '');
+    });
 
   if (!canView) return (
     <div className="text-center py-20"><Shield className="w-12 h-12 text-red-500 mx-auto mb-4" /><h2 className="text-xl font-bold text-text-primary mb-2">No Access</h2><p className="text-text-muted">You don't have permission to access this module.</p></div>
@@ -241,7 +283,7 @@ function AmbulancePageContent() {
           </h1>
           <p className="text-text-muted text-sm mt-1">Manage Ambulance directories and emergency contacts</p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           {canEdit && (
             <label className="inline-flex items-center gap-2 px-4 py-2.5 bg-surface border border-border hover:bg-border/50 text-text-primary rounded-xl text-sm font-medium transition-colors shadow-sm active:scale-95 cursor-pointer">
               <Upload className="w-4 h-4 text-primary" /> Import CSV
@@ -290,6 +332,8 @@ function AmbulancePageContent() {
               <thead>
                 <tr className="border-b border-border bg-surface/50 text-text-muted text-xs font-bold uppercase tracking-wider">
                   <th className="p-4">Ambulance Service Name</th>
+                  <th className="p-4">Sub-Category</th>
+                  <th className="p-4">Type/Mode</th>
                   <th className="p-4">City</th>
                   <th className="p-4">Phone</th>
                   <th className="p-4">Address</th>
@@ -299,10 +343,25 @@ function AmbulancePageContent() {
               <tbody className="divide-y divide-border text-sm text-text-primary">
                 {filtered.map(item => (
                   <tr key={item.id} className="hover:bg-surface/30 transition-colors">
-                    <td className="p-4 font-bold">{item.name}</td>
+                    <td className="p-4 font-bold">
+                      <div>{item.name}</div>
+                      {item.source_notes && (
+                        <div className="text-[10px] font-normal text-text-muted mt-0.5" title="Source/Notes">
+                          Note: {item.source_notes}
+                        </div>
+                      )}
+                    </td>
+                    <td className="p-4">
+                      {item.sub_category || <span className="text-text-muted text-xs">-</span>}
+                    </td>
+                    <td className="p-4 text-xs font-semibold">{item.type_mode || '-'}</td>
                     <td className="p-4">{item.city}</td>
                     <td className="p-4 font-semibold text-text-primary">{item.phone || '-'}</td>
-                    <td className="p-4 max-w-xs truncate" title={item.address}>{item.address || '-'}</td>
+                     <td className="p-4 max-w-[240px] whitespace-normal break-words" title={item.address}>
+                      <div className="line-clamp-2">
+                        {item.address || '-'}
+                      </div>
+                    </td>
                     {canEdit && (
                       <td className="p-4 text-right">
                         <div className="flex items-center justify-end gap-1.5">
@@ -352,17 +411,22 @@ function AmbulancePageContent() {
                   <label className="block text-sm font-semibold text-text-primary mb-1.5">Phone *</label>
                   <input type="text" value={formData.phone || ''} onChange={e => setFormData({...formData, phone: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
                 </div>
+
                 <div>
-                  <label className="block text-sm font-semibold text-text-primary mb-1.5">Website</label>
-                  <input type="text" value={formData.website || ''} onChange={e => setFormData({...formData, website: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
+                  <label className="block text-sm font-semibold text-text-primary mb-1.5">Sub-Category</label>
+                  <input type="text" value={formData.sub_category || ''} onChange={e => setFormData({...formData, sub_category: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" placeholder="e.g. Private Ambulance" />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-text-primary mb-1.5">Type/Mode</label>
+                  <input type="text" value={formData.type_mode || ''} onChange={e => setFormData({...formData, type_mode: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" placeholder="e.g. Road ALS/BLS" />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-text-primary mb-1.5">Source/Notes</label>
+                  <input type="text" value={formData.source_notes || ''} onChange={e => setFormData({...formData, source_notes: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" placeholder="e.g. GVK EMRI operated" />
                 </div>
                 <div className="md:col-span-2">
                   <label className="block text-sm font-semibold text-text-primary mb-1.5">Full Address</label>
                   <input type="text" value={formData.address || ''} onChange={e => setFormData({...formData, address: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
-                </div>
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-semibold text-text-primary mb-1.5">Google Maps Link</label>
-                  <input type="text" value={formData.google_maps_url || ''} onChange={e => setFormData({...formData, google_maps_url: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
                 </div>
               </div>
             </div>

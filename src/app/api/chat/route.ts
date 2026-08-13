@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const SYSTEM_PROMPT = `You are ProbasiBangali AI, a helpful assistant for ProbasiBangali.in — a community platform for Bengali people living in Tamil Nadu, India.
+const SYSTEM_PROMPT = `You are ProbasiBangali AI, a helpful assistant for ProbasiBangali.in - a community platform for Bengali people living in Tamil Nadu, India.
 
 You help users find:
 - Bengali-friendly PG accommodation, hotels, and rental houses
@@ -13,24 +13,24 @@ You help users find:
 - College information and government services
 
 Rules:
-1. ALWAYS respond in the same language the user writes in — Bengali (বাংলা), Tamil (தமிழ்), Hindi, or English.
+1. ALWAYS respond in the same language the user writes in - Bengali (বাংলা), Tamil (தமிழ்), Hindi, or English.
 2. Be warm, concise, and culturally aware.
 3. If asked about specific listings, guide them to the relevant section on probasibangali.in.
 4. For emergencies, immediately suggest calling 112 (all emergency), 108 (ambulance), or visiting /emergency/ambulance on the website.
 5. Keep responses under 200 words unless the user asks for detail.
 
 Key website sections:
-- /explore/stay — PG, Hotels, Rentals
-- /explore/food — Bengali Restaurants & Sweets
-- /explore/travel — Bus, Metro, Train routes
-- /community/groups — WhatsApp & Telegram groups
-- /community/matrimonial — Bengali Matrimony
-- /community/events — Festivals & Events
-- /emergency/hospitals — Hospital finder with Bengali doctor filter
-- /emergency/blood — Blood bank search
-- /emergency/ambulance — Emergency SOS (112, 108, 100, 101)
-- /services/college — College finder
-- /services/government — Government portals`;
+- /explore/stay - PG, Hotels, Rentals
+- /explore/food - Bengali Restaurants & Sweets
+- /explore/travel - Bus, Metro, Train routes
+- /community/groups - WhatsApp & Telegram groups
+- /community/matrimonial - Bengali Matrimony
+- /community/events - Festivals & Events
+- /emergency/hospitals - Hospital finder with Bengali doctor filter
+- /emergency/blood - Blood bank search
+- /emergency/ambulance - Emergency SOS (112, 108, 100, 101)
+- /services/college - College finder
+- /services/government - Government portals`;
 
 export async function POST(req: NextRequest) {
   try {
@@ -106,11 +106,11 @@ function getDemoResponse(query: string): string {
   const q = query.toLowerCase();
 
   if (q.includes('pg') || q.includes('accommodation') || q.includes('stay') || q.includes('room') || q.includes('থাকা') || q.includes('পিজি')) {
-    return "🏠 Looking for accommodation? We have verified Bengali-friendly PGs, hotels, and rental houses across Tamil Nadu!\n\n➡️ Visit our **Stay & Accommodation** page: /explore/stay\n\nPopular options:\n• Kolkata Home PG, Guindy — ₹8,500/mo\n• Bengal Nest Ladies PG, Anna Nagar — ₹9,500/mo\n• Bangla Bhavan PG, Vellore — ₹7,000/mo\n\nAll listings include Bengali food availability, WiFi, and WhatsApp contact.";
+    return "🏠 Looking for accommodation? We have verified Bengali-friendly PGs, hotels, and rental houses across Tamil Nadu!\n\n➡️ Visit our **Stay & Accommodation** page: /explore/stay\n\nPopular options:\n• Kolkata Home PG, Guindy - ₹8,500/mo\n• Bengal Nest Ladies PG, Anna Nagar - ₹9,500/mo\n• Bangla Bhavan PG, Vellore - ₹7,000/mo\n\nAll listings include Bengali food availability, WiFi, and WhatsApp contact.";
   }
 
   if (q.includes('food') || q.includes('restaurant') || q.includes('খাবার') || q.includes('রেস্তোরাঁ') || q.includes('mishti') || q.includes('sweet')) {
-    return "🍛 Craving Bengali food? Here are top spots:\n\n• **Kolkata Kitchen** (T. Nagar) — Hilsa, Kosha Mangsho\n• **Mishti Hub** (Anna Nagar) — Rosogolla, Sandesh\n• **Banglar Rannaghar** (Guindy) — Home-style Bengali thali\n• **Bong Bites** — Delivery via Zomato/Swiggy\n\n➡️ See all: /explore/food";
+    return "🍛 Craving Bengali food? Here are top spots:\n\n• **Kolkata Kitchen** (T. Nagar) - Hilsa, Kosha Mangsho\n• **Mishti Hub** (Anna Nagar) - Rosogolla, Sandesh\n• **Banglar Rannaghar** (Guindy) - Home-style Bengali thali\n• **Bong Bites** - Delivery via Zomato/Swiggy\n\n➡️ See all: /explore/food";
   }
 
   if (q.includes('hospital') || q.includes('doctor') || q.includes('ডাক্তার') || q.includes('হাসপাতাল') || q.includes('emergency')) {
@@ -126,7 +126,7 @@ function getDemoResponse(query: string): string {
   }
 
   if (q.includes('durga') || q.includes('puja') || q.includes('festival') || q.includes('event') || q.includes('পুজো') || q.includes('উৎসব')) {
-    return "🎉 Bengali festivals in Tamil Nadu:\n\n• **Durga Puja 2025** — Chennai, T.Nagar (October)\n• **Saraswati Puja** — Anna Nagar Bengali Club\n• **Poila Boishakh** — Kalaivanar Arangam\n• **Rabindra Jayanti** — VIT Vellore\n\n➡️ Full calendar: /community/events";
+    return "🎉 Bengali festivals in Tamil Nadu:\n\n• **Durga Puja 2025** - Chennai, T.Nagar (October)\n• **Saraswati Puja** - Anna Nagar Bengali Club\n• **Poila Boishakh** - Kalaivanar Arangam\n• **Rabindra Jayanti** - VIT Vellore\n\n➡️ Full calendar: /community/events";
   }
 
   if (q.includes('matrimon') || q.includes('বিয়ে') || q.includes('marriage')) {

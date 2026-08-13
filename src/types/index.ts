@@ -25,6 +25,10 @@ export interface UserProfile {
   email: string;
   phone?: string;
   full_name: string;
+  dob?: string;
+  gender?: string;
+  address?: string;
+  assigned_hospitals?: string[];
   bengali_name?: string;
   avatar_url?: string;
   role: UserRole;
@@ -247,6 +251,9 @@ export interface Ambulance {
   eta?: string;
   equipment?: string;
   base_rate?: string;
+  sub_category?: string;
+  type_mode?: string;
+  source_notes?: string;
   created_at?: string;
   updated_at?: string;
 }

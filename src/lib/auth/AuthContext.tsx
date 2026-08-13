@@ -56,21 +56,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const data = snap.data() as UserProfile;
         const phoneClean = (data.phone || user.phoneNumber || '').replace(/\D/g, '');
         const emailLower = data.email?.trim().toLowerCase() || '';
-        
-        if (emailLower === 'vigneshayyanar134@gmail.com' || emailLower === 'admin@probasibangali.in' || phoneClean.includes('9626855406')) {
-          if (data.role !== 'superadmin') {
-            const superAdminPerms = getDefaultPermissions('superadmin');
-            await updateDoc(docRef, {
-              role: 'superadmin',
-              permissions: superAdminPerms,
-              is_active: true,
-              updated_at: new Date().toISOString()
-            });
-            data.permissions = superAdminPerms;
-          }
-          data.role = 'superadmin';
-          data.is_active = true;
-        }
         return data;
       }
       return null;
@@ -216,7 +201,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await setDoc(doc(db, 'users', user.uid), profile);
   };
 
-  /* ── Phone OTP Login ── */
+  /* -- Phone OTP Login -- */
   const getRecaptchaVerifier = (containerId: string) => {
     const win = window as unknown as { recaptchaVerifier?: RecaptchaVerifier };
     if (!win.recaptchaVerifier) {
@@ -308,7 +293,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return { user, profile: existingProfile };
   };
 
-  /* ── Link Phone to Existing Account ── */
+  /* -- Link Phone to Existing Account -- */
   const linkPhoneToAccount = async (phoneNumber: string, recaptchaContainerId: string): Promise<ConfirmationResult> => {
     const res = await fetch('/api/auth/otp', {
       method: 'POST',
@@ -354,7 +339,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  /* ── Email Verification ── */
+  /* -- Email Verification -- */
   const sendVerificationEmail = async (): Promise<void> => {
     const user = auth.currentUser;
     if (user) {

@@ -87,14 +87,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       { key: 'user-mgmt', label: 'User Management', href: '/admin/users?tab=users', icon: <Users className="w-4 h-4" /> },
       { key: 'activity-log', label: 'Activity Tracking', href: '/admin/users?tab=activities', icon: <Activity className="w-4 h-4" /> },
     ] : []),
-    ...accessibleModules
+    ...(isSuperAdmin ? [] : accessibleModules
       .filter((mod) => mod !== 'users' && MODULE_LABELS[mod])
       .map((mod) => ({
         key: mod,
         label: MODULE_LABELS[mod],
         href: `/admin/${mod === 'blood_bank' ? 'blood-bank' : mod === 'government_services' ? 'government-services' : mod}`,
         icon: moduleIcons[mod],
-      })),
+      }))),
   ];
 
   const handleLogout = async () => {
@@ -133,7 +133,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       )}
 
       {/* Main content */}
-      <div className="flex-1 lg:ml-64">
+      <div className="flex-1 lg:ml-64 min-w-0">
         {/* Header (Search, Notifications & Profile) */}
         <AdminHeader
           profile={profile}
@@ -142,7 +142,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
         {/* Page content */}
         <main className="p-4 lg:p-6">
-          {children}
+          <div key={pathname} className="animate-fade-in">
+            {children}
+          </div>
         </main>
       </div>
     </div>

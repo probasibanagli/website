@@ -12,7 +12,7 @@ export default function HomePage() {
   return (
     <div className="overflow-hidden bg-alpana">
       {/* ====== HERO SECTION ====== */}
-      <section className="relative bg-gradient-to-br from-white/90 via-primary-light/40 to-accent-light/30 pt-10 pb-20 sm:pt-12 sm:pb-24 lg:pt-16 lg:pb-32 border-b border-border/50">
+      <section className="relative bg-white/90 pt-10 pb-20 sm:pt-12 sm:pb-24 lg:pt-16 lg:pb-32 border-b border-border/50">
         {/* Decorative blobs */}
         <div className="absolute top-10 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl" />
         <div className="absolute bottom-10 right-10 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />
@@ -116,7 +116,7 @@ export default function HomePage() {
       </section>
 
       {/* ====== EMERGENCY STRIP ====== */}
-      <section className="bg-gradient-to-r from-primary to-primary-dark py-14 lg:py-20 relative overflow-hidden">
+      <section className="bg-primary py-14 lg:py-20 relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSA2MCAwIEwgMCAwIDAgNjAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNTUsMjU1LDI1NSwwLjA1KSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')] opacity-30" />
         <div className="relative max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl sm:text-4xl font-bold font-display text-white mb-3">
@@ -200,8 +200,8 @@ export default function HomePage() {
             ].map((item) => (
               <Link key={item.title} href={item.href}>
                 <Card className="h-full group border-2 border-transparent hover:border-primary/20 transition-all relative overflow-hidden" padding="lg">
-                  <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${item.color} opacity-10 rounded-bl-full group-hover:opacity-20 transition-opacity`} />
-                  <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${item.color} text-white flex items-center justify-center mb-5 group-hover:scale-110 transition-transform shadow-lg`}>
+                  <div className={`absolute top-0 right-0 w-32 h-32 ${item.color} opacity-10 rounded-bl-full group-hover:opacity-20 transition-opacity`} />
+                  <div className={`w-16 h-16 rounded-2xl ${item.color} text-white flex items-center justify-center mb-5 group-hover:scale-110 transition-transform shadow-lg`}>
                     {item.icon}
                   </div>
                   <h3 className="text-xl font-bold text-text-primary mb-2">{item.title}</h3>
@@ -218,7 +218,7 @@ export default function HomePage() {
 
 
       {/* ====== CTA SECTION ====== */}
-      <section className="py-20 bg-gradient-to-br from-accent-light via-white to-primary-light">
+      <section className="py-20 bg-accent-light">
         <div className="max-w-3xl mx-auto px-4 text-center">
           <h2 className="text-3xl sm:text-4xl font-bold font-display text-text-primary mb-4">
             <T>Join the ProbasiBangali Community</T>
