@@ -6,7 +6,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import {
   LayoutDashboard, Home, UtensilsCrossed, Bus, AlertTriangle,
   Users, GraduationCap, FileText, UserCog, LogOut, Menu, X,
-  ChevronRight, Crown, Shield, Heart, Activity, Droplets, Truck, Landmark
+  ChevronRight, Crown, Shield, Heart, Activity, Droplets, Truck, Landmark, Scale
 } from 'lucide-react';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { getAccessibleModules } from '@/lib/permissions';
@@ -30,6 +30,7 @@ const moduleIcons: Record<ModuleKey, React.ReactNode> = {
   events: <Activity className="w-4 h-4" />,
   ambulance: <Truck className="w-4 h-4" />,
   government_services: <Landmark className="w-4 h-4" />,
+  legal: <Scale className="w-4 h-4" />,
 };
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {

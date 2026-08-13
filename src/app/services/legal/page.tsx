@@ -7,186 +7,25 @@ import {
   Search, Clock, Navigation, X, ChevronDown, AlertTriangle,
   Gavel, BookOpen, Users, Home, Briefcase, Heart,
   Globe, CheckCircle, HelpCircle, ArrowRight, PhoneCall,
-  BadgeCheck, Landmark,
+  BadgeCheck, Landmark, Loader2,
 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { db } from '@/lib/firebase';
+import { collection, getDocs } from 'firebase/firestore';
+import type { LegalAidCentre, LegalCategory, LegalHelpline, LegalPortal } from '@/types';
 
-/* ─── Types ─── */
-interface LegalAid {
-  id: number;
-  name: string;
-  address: string;
-  city: string;
-  district?: string;
-  phone?: string;
-  timings?: string;
-  type: string;
-  google_maps_url?: string;
-}
-
-interface LegalCategory {
-  id: string;
-  label: string;
-  icon: React.ReactNode;
-  color: string;
-  description: string;
-  steps: { title: string; desc: string }[];
-  portals: { label: string; url: string; desc: string }[];
-  helplines?: { label: string; number: string }[];
-}
-
-/* ─── Real Data: Tamil Nadu Legal Aid Centres ─── */
-const LEGAL_AID_CENTRES: LegalAid[] = [
-  { id: 1, name: 'Tamil Nadu State Legal Services Authority (TNSLSA)', address: 'No. 1, Kamarajar Salai, Royapettah, Chennai - 600 004', city: 'Chennai', district: 'Chennai', phone: '044-28513290', timings: 'Mon–Sat: 10AM–5PM', type: 'State Authority', google_maps_url: 'https://maps.google.com/?q=Tamil+Nadu+State+Legal+Services+Authority+Chennai' },
-  { id: 2, name: 'District Legal Services Authority (DLSA) – Chennai', address: 'City Civil Court Complex, High Court Premises, Chennai - 600 104', city: 'Chennai', district: 'Chennai', phone: '044-25354400', timings: 'Mon–Sat: 10AM–5PM', type: 'District Authority', google_maps_url: 'https://maps.google.com/?q=District+Legal+Services+Authority+Chennai' },
-  { id: 3, name: 'Madurai District Legal Services Authority', address: 'District Court Campus, Madurai - 625 020', city: 'Madurai', district: 'Madurai', phone: '0452-2531230', timings: 'Mon–Sat: 10AM–5PM', type: 'District Authority', google_maps_url: 'https://maps.google.com/?q=District+Legal+Services+Authority+Madurai' },
-  { id: 4, name: 'Coimbatore District Legal Services Authority', address: 'District Sessions Court Campus, Coimbatore - 641 018', city: 'Coimbatore', district: 'Coimbatore', phone: '0422-2391800', timings: 'Mon–Sat: 10AM–5PM', type: 'District Authority', google_maps_url: 'https://maps.google.com/?q=District+Legal+Services+Authority+Coimbatore' },
-  { id: 5, name: 'Trichy District Legal Services Authority', address: 'District Court Campus, Tiruchirappalli - 620 001', city: 'Trichy', district: 'Tiruchirappalli', phone: '0431-2700290', timings: 'Mon–Sat: 10AM–5PM', type: 'District Authority', google_maps_url: 'https://maps.google.com/?q=District+Legal+Services+Authority+Trichy' },
-  { id: 6, name: 'Salem District Legal Services Authority', address: 'District Court Premises, Salem - 636 001', city: 'Salem', district: 'Salem', phone: '0427-2315390', timings: 'Mon–Sat: 10AM–5PM', type: 'District Authority', google_maps_url: 'https://maps.google.com/?q=District+Legal+Services+Authority+Salem' },
-  { id: 7, name: 'Vellore District Legal Services Authority', address: 'District Court Complex, Vellore - 632 001', city: 'Vellore', district: 'Vellore', phone: '0416-2220490', timings: 'Mon–Sat: 10AM–5PM', type: 'District Authority', google_maps_url: 'https://maps.google.com/?q=District+Legal+Services+Authority+Vellore' },
-  { id: 8, name: 'Tirunelveli District Legal Services Authority', address: 'District Court Premises, Tirunelveli - 627 001', city: 'Tirunelveli', district: 'Tirunelveli', phone: '0462-2501150', timings: 'Mon–Sat: 10AM–5PM', type: 'District Authority', google_maps_url: 'https://maps.google.com/?q=District+Legal+Services+Authority+Tirunelveli' },
-  { id: 9, name: 'Madras High Court Legal Services Committee', address: 'High Court of Madras, Chennai - 600 104', city: 'Chennai', district: 'Chennai', phone: '044-25306000', timings: 'Mon–Fri: 10AM–5PM', type: 'High Court Committee', google_maps_url: 'https://maps.google.com/?q=Madras+High+Court+Chennai' },
-  { id: 10, name: 'Tamil Nadu Legal Aid Clinic – Tambaram', address: 'Tambaram Court Complex, Tambaram, Chennai - 600 045', city: 'Chennai', district: 'Chengalpattu', phone: '044-22264390', timings: 'Mon–Sat: 10AM–4PM', type: 'Legal Aid Clinic', google_maps_url: 'https://maps.google.com/?q=Tambaram+Court+Complex+Chennai' },
-  { id: 11, name: 'Erode District Legal Services Authority', address: 'District Court Campus, Erode - 638 001', city: 'Erode', district: 'Erode', phone: '0424-2225295', timings: 'Mon–Sat: 10AM–5PM', type: 'District Authority', google_maps_url: 'https://maps.google.com/?q=District+Legal+Services+Authority+Erode' },
-  { id: 12, name: 'Thanjavur District Legal Services Authority', address: 'District Court Premises, Thanjavur - 613 001', city: 'Thanjavur', district: 'Thanjavur', phone: '04362-276890', timings: 'Mon–Sat: 10AM–5PM', type: 'District Authority', google_maps_url: 'https://maps.google.com/?q=District+Legal+Services+Authority+Thanjavur' },
-];
-
-/* ─── Legal Categories with real portals ─── */
-const LEGAL_CATEGORIES: LegalCategory[] = [
-  {
-    id: 'labour',
-    label: 'Labour & Employment',
-    icon: <Briefcase className="w-5 h-5" />,
-    color: 'blue',
-    description: 'Unpaid wages, wrongful termination, workplace harassment, PF/ESI disputes, contract violations.',
-    steps: [
-      { title: 'File a complaint online', desc: 'Use the Shram Suvidha portal or TN Labour Dept portal to file online.' },
-      { title: 'Labour Commissioner Office', desc: 'Visit the nearest Labour Commissioner Office with employment documents.' },
-      { title: 'Labour Court', desc: 'For unresolved disputes, file a case with the Labour Court.' },
-    ],
-    portals: [
-      { label: 'Shram Suvidha (Central)', url: 'https://www.shramlegal.labour.gov.in/login', desc: 'File labour complaints online' },
-      { label: 'TN Labour Department', url: 'https://www.labour.tn.gov.in/', desc: 'Tamil Nadu state labour portal' },
-      { label: 'EPF Portal', url: 'https://unifiedportal-mem.epfindia.gov.in/', desc: 'Provident fund grievances & claims' },
-      { label: 'ESIC Portal', url: 'https://esic.in/', desc: 'Employee State Insurance Corporation' },
-    ],
-    helplines: [
-      { label: 'Labour Helpline', number: '1800-11-0001' },
-      { label: 'EPF Helpline', number: '1800-118-005' },
-    ],
-  },
-  {
-    id: 'tenant',
-    label: 'Tenant Rights',
-    icon: <Home className="w-5 h-5" />,
-    color: 'green',
-    description: 'Illegal eviction, rent disputes, security deposit recovery, uninhabitable conditions, rent increase disputes.',
-    steps: [
-      { title: 'Get a Rental Agreement', desc: 'Always register your rental agreement. Unregistered agreements have limited legal standing.' },
-      { title: 'Rent Controller Court', desc: 'File disputes at the Rent Controller Court (part of the district civil court).' },
-      { title: 'Legal Aid', desc: 'If income is below Rs 3 lakh/year, you are entitled to free legal aid from DLSA.' },
-    ],
-    portals: [
-      { label: 'TN Registration Dept', url: 'https://www.tnreginet.gov.in/', desc: 'Register rental agreement online' },
-      { label: 'RERA Tamil Nadu', url: 'https://www.tnrera.in/', desc: 'Real estate disputes & builder complaints' },
-      { label: 'NALSA Portal', url: 'https://nalsa.gov.in/', desc: 'National Legal Services Authority' },
-    ],
-    helplines: [
-      { label: 'NALSA Helpline', number: '15100' },
-    ],
-  },
-  {
-    id: 'consumer',
-    label: 'Consumer Rights',
-    icon: <Shield className="w-5 h-5" />,
-    color: 'purple',
-    description: 'Product defects, fake goods, overcharging, service failures, online shopping fraud, insurance claims.',
-    steps: [
-      { title: 'File on National Consumer Helpline', desc: 'Register your complaint online at consumerhelpline.gov.in.' },
-      { title: 'Consumer Forum', desc: 'File a case at the District Consumer Disputes Redressal Commission (DCDRC).' },
-      { title: 'No Lawyer Needed', desc: 'For claims under Rs 1 crore you can represent yourself.' },
-    ],
-    portals: [
-      { label: 'National Consumer Helpline', url: 'https://consumerhelpline.gov.in/', desc: 'File consumer complaints online' },
-      { label: 'E-DAAKHIL Portal', url: 'https://edaakhil.nic.in/', desc: 'File consumer forum cases online' },
-      { label: 'IRDAI (Insurance)', url: 'https://www.bimabharosa.irdai.gov.in/', desc: 'Insurance complaints portal' },
-    ],
-    helplines: [
-      { label: 'National Consumer Helpline', number: '1915' },
-    ],
-  },
-  {
-    id: 'civil',
-    label: 'Civil Disputes',
-    icon: <Gavel className="w-5 h-5" />,
-    color: 'amber',
-    description: 'Property disputes, money recovery, agreements, family property partition, injunctions, debt recovery.',
-    steps: [
-      { title: 'Try Mediation First', desc: 'Use Lok Adalat for fast, free settlement of civil disputes.' },
-      { title: 'File in Civil Court', desc: 'Hire a lawyer and file a civil suit in the appropriate court based on claim value.' },
-      { title: 'Lok Adalat', desc: 'Lok Adalats offer binding settlements — free of cost and faster than courts.' },
-    ],
-    portals: [
-      { label: 'eCourt Services', url: 'https://services.ecourts.gov.in/', desc: 'Track court cases, get e-copies' },
-      { label: 'Lok Adalat Portal', url: 'https://nalsa.gov.in/lsams/', desc: 'Find Lok Adalat dates & file' },
-      { label: 'TN Judiciary', url: 'https://www.hcmadras.tn.nic.in/', desc: 'Madras High Court portal' },
-    ],
-  },
-  {
-    id: 'domestic',
-    label: 'Domestic Violence',
-    icon: <Heart className="w-5 h-5" />,
-    color: 'red',
-    description: 'Protection orders, shelter support, legal aid for women and children facing domestic abuse.',
-    steps: [
-      { title: 'Contact a Protection Officer', desc: 'Every district has a Protection Officer under the PWDVA 2005. Contact your District Collector office.' },
-      { title: 'File a DV Application', desc: 'File for a protection order at the nearest Magistrate court.' },
-      { title: 'Emergency Shelter', desc: 'Call 181 for emergency shelter and immediate support.' },
-    ],
-    portals: [
-      { label: 'WCD Ministry Portal', url: 'https://wcd.nic.in/', desc: 'Women & Child Development resources' },
-      { label: 'One Stop Centre (Sakhi)', url: 'https://oscm.wcd.gov.in/', desc: 'Find nearest Sakhi Centre' },
-      { label: 'NCW Complaint Portal', url: 'https://ncwapps.nic.in/', desc: 'National Commission for Women' },
-    ],
-    helplines: [
-      { label: 'Women Helpline (TN)', number: '181' },
-      { label: 'Childline', number: '1098' },
-      { label: 'NCW Helpline', number: '7827-170-170' },
-    ],
-  },
-  {
-    id: 'police',
-    label: 'FIR & Police Matters',
-    icon: <BadgeCheck className="w-5 h-5" />,
-    color: 'slate',
-    description: 'Filing an FIR, complaint against police, bail applications, custody rights, cyber crime.',
-    steps: [
-      { title: 'File an FIR', desc: 'Any police station must register your FIR (First Information Report) free of charge. They cannot refuse.' },
-      { title: 'Online FIR (TN Police)', desc: 'Use the Tamil Nadu Police online complaint portal for non-cognizable offences.' },
-      { title: 'Complaint about Police', desc: 'File a complaint with the Superintendent of Police or State Police Complaints Authority.' },
-    ],
-    portals: [
-      { label: 'TN Police Online Complaint', url: 'https://www.eservices.tnpolice.gov.in/', desc: 'File online FIR / complaint' },
-      { label: 'CBI Complaints', url: 'https://cbi.gov.in/', desc: 'Central Bureau of Investigation' },
-      { label: 'Cyber Crime Portal', url: 'https://cybercrime.gov.in/', desc: 'Report cybercrime / online fraud' },
-    ],
-    helplines: [
-      { label: 'Police Emergency', number: '100' },
-      { label: 'Cyber Crime', number: '1930' },
-    ],
-  },
-];
+// Dynamic data loaded from Firebase
 
 /* ─── Centre Row ─── */
-function AidCentreRow({ centre }: { centre: LegalAid }) {
+function AidCentreRow({ centre }: { centre: LegalAidCentre }) {
   const mapUrl = centre.google_maps_url
     || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${centre.name}, ${centre.city}`)}`;
   return (
     <div className="p-4 bg-surface/60 border border-border rounded-xl hover:border-primary/40 hover:bg-white hover:shadow-sm transition-all">
       <div className="flex items-start justify-between gap-2">
         <h5 className="font-semibold text-sm text-text-primary leading-tight flex-1">{centre.name}</h5>
-        <span className="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full whitespace-nowrap shrink-0">{centre.type}</span>
+        <span className="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full whitespace-nowrap shrink-0">{centre.centre_type || 'Centre'}</span>
       </div>
       <p className="text-xs text-text-muted mt-2 flex items-start gap-1.5">
         <MapPin className="w-3.5 h-3.5 shrink-0 mt-0.5 text-primary/60" />
@@ -215,16 +54,16 @@ function AidCentreRow({ centre }: { centre: LegalAid }) {
 }
 
 /* ─── Centres Modal ─── */
-function AidCentresModal({ open, onClose }: { open: boolean; onClose: () => void }) {
+function AidCentresModal({ open, onClose, centres }: { open: boolean; onClose: () => void, centres: LegalAidCentre[] }) {
   const [query, setQuery] = useState('');
   const filtered = useMemo(() => {
-    if (!query.trim()) return LEGAL_AID_CENTRES;
+    if (!query.trim()) return centres;
     const q = query.toLowerCase();
-    return LEGAL_AID_CENTRES.filter(c =>
+    return centres.filter(c =>
       c.name.toLowerCase().includes(q) || c.city.toLowerCase().includes(q) ||
       (c.address || '').toLowerCase().includes(q) || (c.district || '').toLowerCase().includes(q)
     );
-  }, [query]);
+  }, [query, centres]);
 
   const mapsUrl = `https://www.google.com/maps/search/${encodeURIComponent('District Legal Services Authority' + (query.trim() ? ' ' + query.trim() : ' Tamil Nadu'))}`;
 
@@ -285,14 +124,29 @@ const colorMap: Record<string, { bg: string; iconCls: string; border: string; ba
   slate:  { bg: 'bg-slate-50',  iconCls: 'text-slate-600 bg-slate-100', border: 'border-slate-200/60 hover:border-slate-400', badge: 'text-slate-700 bg-slate-100' },
 };
 
+/* ─── Icon Mapping ─── */
+const ICONS: Record<string, React.ReactNode> = {
+  Briefcase: <Briefcase className="w-5 h-5" />,
+  Home: <Home className="w-5 h-5" />,
+  Shield: <Shield className="w-5 h-5" />,
+  Gavel: <Gavel className="w-5 h-5" />,
+  Heart: <Heart className="w-5 h-5" />,
+  BadgeCheck: <BadgeCheck className="w-5 h-5" />,
+  Scale: <Scale className="w-5 h-5" />,
+  Users: <Users className="w-5 h-5" />,
+  Landmark: <Landmark className="w-5 h-5" />,
+  AlertTriangle: <AlertTriangle className="w-5 h-5" />,
+};
+
 /* ─── Category Card ─── */
 function CategoryCard({ cat }: { cat: LegalCategory }) {
   const [expanded, setExpanded] = useState(false);
   const c = colorMap[cat.color] || colorMap.blue;
+  const icon = ICONS[cat.icon_name] || <BookOpen className="w-5 h-5" />;
   return (
     <Card padding="none" className={`flex flex-col border ${c.border} ${c.bg} hover:shadow-lg transition-all duration-300 h-full`}>
       <div className="flex items-start gap-3 p-5 pb-3">
-        <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${c.iconCls}`}>{cat.icon}</div>
+        <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${c.iconCls}`}>{icon}</div>
         <div className="flex-1 min-w-0">
           <h3 className="text-sm font-bold text-text-primary leading-snug">{cat.label}</h3>
           <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full mt-1.5 inline-block ${c.badge}`}>Legal Rights</span>
@@ -354,18 +208,51 @@ function CategoryCard({ cat }: { cat: LegalCategory }) {
 export default function LegalServicesPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [search, setSearch] = useState('');
+  
+  const [centres, setCentres] = useState<LegalAidCentre[]>([]);
+  const [categories, setCategories] = useState<LegalCategory[]>([]);
+  const [helplines, setHelplines] = useState<LegalHelpline[]>([]);
+  const [portals, setPortals] = useState<LegalPortal[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const snap = await getDocs(collection(db, 'legal_services'));
+        const items = snap.docs.map(d => ({ id: d.id, ...d.data() } as any));
+        
+        setCentres(items.filter(i => i.type === 'centre'));
+        setCategories(items.filter(i => i.type === 'category'));
+        setHelplines(items.filter(i => i.type === 'helpline'));
+        setPortals(items.filter(i => i.type === 'portal'));
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadData();
+  }, []);
 
   const filteredCategories = useMemo(() => {
-    if (!search.trim()) return LEGAL_CATEGORIES;
+    if (!search.trim()) return categories;
     const q = search.toLowerCase();
-    return LEGAL_CATEGORIES.filter(c =>
+    return categories.filter(c =>
       c.label.toLowerCase().includes(q) || c.description.toLowerCase().includes(q)
     );
-  }, [search]);
+  }, [search, categories]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-surface flex items-center justify-center">
+        <Loader2 className="w-10 h-10 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-surface">
-      <AidCentresModal open={modalOpen} onClose={() => setModalOpen(false)} />
+      <AidCentresModal open={modalOpen} onClose={() => setModalOpen(false)} centres={centres} />
 
       {/* Header */}
       <div className="bg-white border-b border-border">
@@ -425,16 +312,9 @@ export default function LegalServicesPage() {
             <PhoneCall className="w-5 h-5 text-primary shrink-0" /> Emergency Legal Helplines
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-            {[
-              { label: 'NALSA Helpline', number: '15100', color: 'bg-blue-50 border-blue-200 text-blue-700' },
-              { label: 'Women Helpline', number: '181', color: 'bg-rose-50 border-rose-200 text-rose-700' },
-              { label: 'Police Emergency', number: '100', color: 'bg-slate-50 border-slate-200 text-slate-700' },
-              { label: 'Cyber Crime', number: '1930', color: 'bg-orange-50 border-orange-200 text-orange-700' },
-              { label: 'Consumer Helpline', number: '1915', color: 'bg-purple-50 border-purple-200 text-purple-700' },
-              { label: 'Labour Helpline', number: '1800-11-0001', color: 'bg-green-50 border-green-200 text-green-700' },
-            ].map(h => (
-              <a key={h.number} href={`tel:${h.number}`}
-                className={`flex flex-col items-center justify-center p-4 rounded-2xl border text-center gap-1 hover:shadow-md transition-all cursor-pointer ${h.color}`}>
+            {helplines.map(h => (
+              <a key={h.id} href={`tel:${h.number}`}
+                className={`flex flex-col items-center justify-center p-4 rounded-2xl border text-center gap-1 hover:shadow-md transition-all cursor-pointer ${h.color || 'bg-slate-50 border-slate-200 text-slate-700'}`}>
                 <PhoneCall className="w-5 h-5 mb-1" />
                 <span className="text-xs font-medium opacity-80">{h.label}</span>
                 <span className="text-lg font-extrabold tracking-tight">{h.number}</span>
@@ -512,26 +392,22 @@ export default function LegalServicesPage() {
             <Globe className="w-5 h-5 text-primary shrink-0" /> Important Legal Portals
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {[
-              { label: 'eCourts Services', url: 'https://services.ecourts.gov.in/', desc: 'Track case status, get orders, find courts', icon: <Gavel className="w-5 h-5" /> },
-              { label: 'NALSA – Legal Services', url: 'https://nalsa.gov.in/', desc: 'National Legal Services Authority portal', icon: <Scale className="w-5 h-5" /> },
-              { label: 'Lok Adalat – NALSA', url: 'https://nalsa.gov.in/lsams/', desc: 'Free fast settlement via Lok Adalat', icon: <Users className="w-5 h-5" /> },
-              { label: 'TN Judiciary Portal', url: 'https://www.hcmadras.tn.nic.in/', desc: 'Madras High Court case information', icon: <Landmark className="w-5 h-5" /> },
-              { label: 'eDaakhil – Consumer', url: 'https://edaakhil.nic.in/', desc: 'File consumer forum cases online', icon: <Shield className="w-5 h-5" /> },
-              { label: 'Cyber Crime Portal', url: 'https://cybercrime.gov.in/', desc: 'Report online fraud & cyber offences', icon: <AlertTriangle className="w-5 h-5" /> },
-            ].map(p => (
-              <a key={p.url} href={p.url} target="_blank" rel="noopener noreferrer"
-                className="flex items-center gap-4 p-4 bg-white border border-border rounded-xl hover:border-primary/40 hover:shadow-md transition-all group">
-                <div className="w-10 h-10 rounded-xl bg-primary/5 text-primary flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
-                  {p.icon}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-bold text-text-primary group-hover:text-primary transition-colors">{p.label}</p>
-                  <p className="text-xs text-text-muted">{p.desc}</p>
-                </div>
-                <ExternalLink className="w-4 h-4 text-text-muted group-hover:text-primary transition-colors shrink-0" />
-              </a>
-            ))}
+            {portals.map(p => {
+              const icon = ICONS[p.icon_name] || <ExternalLink className="w-5 h-5" />;
+              return (
+                <a key={p.id} href={p.url} target="_blank" rel="noopener noreferrer"
+                  className="flex items-center gap-4 p-4 bg-white border border-border rounded-xl hover:border-primary/40 hover:shadow-md transition-all group">
+                  <div className="w-10 h-10 rounded-xl bg-primary/5 text-primary flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+                    {icon}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-bold text-text-primary group-hover:text-primary transition-colors">{p.label}</p>
+                    <p className="text-xs text-text-muted">{p.desc}</p>
+                  </div>
+                  <ExternalLink className="w-4 h-4 text-text-muted group-hover:text-primary transition-colors shrink-0" />
+                </a>
+              );
+            })}
           </div>
         </section>
 

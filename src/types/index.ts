@@ -16,7 +16,8 @@ export type ModuleKey =
   | 'blood_bank'
   | 'events'
   | 'ambulance'
-  | 'government_services';
+  | 'government_services'
+  | 'legal';
 
 export type ModulePermissions = Record<ModuleKey, PermissionLevel>;
 
@@ -57,6 +58,7 @@ export const MODULE_LABELS: Record<ModuleKey, string> = {
   events: 'Events & Festivals',
   ambulance: 'Ambulance Directory',
   government_services: 'Government Services',
+  legal: 'Legal Services',
 };
 
 /* ──────────────── Government Service Data Model ──────────────── */
@@ -78,6 +80,56 @@ export interface GovernmentServiceItem {
 }
 
 /* ──────────────── Data Models ──────────────── */
+
+export type LegalItemType = 'centre' | 'helpline' | 'category' | 'portal';
+
+export interface LegalServiceBase {
+  id: string;
+  type: LegalItemType;
+  created_at?: string;
+  updated_at?: string;
+  is_active?: boolean;
+}
+
+export interface LegalAidCentre extends LegalServiceBase {
+  type: 'centre';
+  name: string;
+  address: string;
+  city: string;
+  district?: string;
+  phone?: string;
+  timings?: string;
+  centre_type: string;
+  google_maps_url?: string;
+}
+
+export interface LegalHelpline extends LegalServiceBase {
+  type: 'helpline';
+  label: string;
+  number: string;
+  color?: string;
+}
+
+export interface LegalCategory extends LegalServiceBase {
+  type: 'category';
+  label: string;
+  icon_name: string;
+  color: string;
+  description: string;
+  steps: { title: string; desc: string }[];
+  portals: { label: string; url: string; desc: string }[];
+  helplines?: { label: string; number: string }[];
+}
+
+export interface LegalPortal extends LegalServiceBase {
+  type: 'portal';
+  label: string;
+  url: string;
+  desc: string;
+  icon_name: string;
+}
+
+export type LegalServiceItem = LegalAidCentre | LegalHelpline | LegalCategory | LegalPortal;
 
 export interface Listing {
   id: string;

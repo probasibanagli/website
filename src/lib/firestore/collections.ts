@@ -22,6 +22,7 @@ export const COLLECTIONS = {
   otps: 'otps',
   ambulances: 'ambulances',
   government_services: 'government_services',
+  legal: 'legal_services',
 } as const;
 
 /**
@@ -40,4 +41,5 @@ export const MODULE_TO_COLLECTION: Record<ModuleKey, string> = {
   events: COLLECTIONS.events,
   ambulance: COLLECTIONS.ambulances,
   government_services: COLLECTIONS.government_services,
+  legal: COLLECTIONS.legal,
 };
