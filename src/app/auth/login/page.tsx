@@ -174,7 +174,7 @@ export default function LoginPage() {
       if (emailLower === 'vigneshayyanar134@gmail.com' || emailLower === 'admin@probasibangali.in') {
         if (userProfile) {
           userProfile.is_active = true;
-          userProfile.role = 'superadmin';
+          userProfile.role = 'admin';
         }
       }
 

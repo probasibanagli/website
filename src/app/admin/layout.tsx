@@ -133,7 +133,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       )}
 
       {/* Main content */}
-      <div className="flex-1 lg:ml-64">
+      <div className="flex-1 lg:ml-64 min-w-0">
         {/* Header (Search, Notifications & Profile) */}
         <AdminHeader
           profile={profile}

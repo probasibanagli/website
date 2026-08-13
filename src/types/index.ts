@@ -251,6 +251,9 @@ export interface Ambulance {
   eta?: string;
   equipment?: string;
   base_rate?: string;
+  sub_category?: string;
+  type_mode?: string;
+  source_notes?: string;
   created_at?: string;
   updated_at?: string;
 }
