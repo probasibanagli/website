@@ -50,9 +50,30 @@ export default function AmbulancePage() {
     async function fetchAmbulances() {
       try {
         const res = await fetch('/api/public/firestore?collection=ambulances');
-        if (!res.ok) throw new Error('Failed to fetch ambulances');
         const data = await res.json();
-        setAmbulances(data.items || []);
+        const items = data.items || [];
+        const sorted = items.sort((a: Ambulance, b: Ambulance) => {
+          const getScore = (item: Ambulance) => {
+            let score = 0;
+            if (item.name?.trim()) score++;
+            if (item.sub_category?.trim()) score++;
+            if (item.type_mode?.trim()) score++;
+            if (item.city?.trim()) score++;
+            if (item.phone?.trim()) score++;
+            if (item.address?.trim()) score++;
+            if (item.source_notes?.trim()) score++;
+            return score;
+          };
+
+          const scoreA = getScore(a);
+          const scoreB = getScore(b);
+
+          if (scoreA !== scoreB) {
+            return scoreB - scoreA; // More details first
+          }
+          return (a.name || '').localeCompare(b.name || '');
+        });
+        setAmbulances(sorted);
       } catch (e) {
         console.error('Error fetching ambulances:', e);
       } finally {
