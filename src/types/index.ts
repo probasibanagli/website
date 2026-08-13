@@ -50,7 +50,7 @@ export const MODULE_LABELS: Record<ModuleKey, string> = {
   food: 'Bengali Food & Sweets',
   emergency: 'Hospital Management',
   community: 'Community',
-  services: 'Campus & Government',
+  services: 'Colleges and Schools',
   blog: 'Blog Posts',
   users: 'User Management',
   matrimony: 'Matrimonial',

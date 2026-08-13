@@ -128,7 +128,7 @@ export default function VisaPage() {
                 )}
               </div>
               <a
-                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(country.vacAddress)}`}
+                href={country.vacGoogleMapsUrl || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(country.vacAddress)}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="shrink-0"

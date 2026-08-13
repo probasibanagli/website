@@ -29,6 +29,8 @@ import {
   Palette,
   Heart,
   Clock,
+  Plus,
+  Edit,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/card';
@@ -36,6 +38,9 @@ import { Button } from '@/components/ui/button';
 import { CITIES } from '@/lib/constants';
 import { useFirestore } from '@/lib/hooks/useFirestore';
 import { CommunityEvent, CommunityGroup } from '@/types';
+import { useAuth } from '@/lib/auth/AuthContext';
+import { canAccess } from '@/lib/permissions';
+import { AdminEventDialog } from '@/components/admin/AdminEventDialog';
 
 const categoryColors: Record<string, string> = { 
   festival: 'bg-amber-100 text-amber-700', 
@@ -472,6 +477,12 @@ export default function EventsPage() {
   const { data: firestoreEvents } = useFirestore<CommunityEvent>('events');
   const { data: firestoreGroups } = useFirestore<CommunityGroup>('community_groups');
 
+  const { profile } = useAuth();
+  const isAdmin = canAccess(profile?.role || 'user', profile?.permissions, 'events', 'edit');
+  
+  const [adminDialogOpen, setAdminDialogOpen] = useState(false);
+  const [editingEvent, setEditingEvent] = useState<CommunityEvent | undefined>(undefined);
+
   const [city, setCity] = useState('');
   const [category, setCategory] = useState('');
   const [activeTab, setActiveTab] = useState<'events' | 'panjika' | 'annual' | 'converter'>('events');
@@ -846,9 +857,16 @@ export default function EventsPage() {
 
             {/* Upcoming Community Events Section */}
             <div>
-              <h2 className="text-2xl font-bold font-display text-text-primary mb-2 flex items-center gap-2">
-                <PartyPopper className="w-6 h-6 text-primary shrink-0" /> All Community Events & Celebrations
-              </h2>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-2 gap-4">
+                <h2 className="text-2xl font-bold font-display text-text-primary flex items-center gap-2">
+                  <PartyPopper className="w-6 h-6 text-primary shrink-0" /> All Community Events & Celebrations
+                </h2>
+                {isAdmin && (
+                  <Button variant="primary" onClick={() => { setEditingEvent(undefined); setAdminDialogOpen(true); }}>
+                    <Plus className="w-4 h-4 mr-2" /> Add Event
+                  </Button>
+                )}
+              </div>
               <p className="text-sm text-text-muted mb-6">Events from all community groups across Tamil Nadu. Click on any event to view its community group.</p>
 
               {/* Filters */}
@@ -904,7 +922,17 @@ export default function EventsPage() {
                         )}
                       </div>
                       <div className="p-5">
-                        <h3 className="text-lg font-bold text-text-primary group-hover:text-primary transition-colors">{event.title}</h3>
+                        <div className="flex justify-between items-start">
+                          <h3 className="text-lg font-bold text-text-primary group-hover:text-primary transition-colors">{event.title}</h3>
+                          {isAdmin && (
+                            <button 
+                              onClick={(e) => { e.preventDefault(); setEditingEvent(event); setAdminDialogOpen(true); }}
+                              className="p-1.5 text-text-muted hover:bg-primary/10 hover:text-primary rounded-lg transition-colors"
+                            >
+                              <Edit className="w-4 h-4" />
+                            </button>
+                          )}
+                        </div>
                         <div className="space-y-2 mt-3 text-sm text-text-muted">
                           <div className="flex items-center gap-2"><CalendarIcon className="w-4 h-4 text-primary" />{event.event_date ? new Date(event.event_date + 'T12:00:00').toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }) : 'TBA'}</div>
                           <div className="flex items-center gap-2"><MapPin className="w-4 h-4 text-primary" />{event.venue}, {event.city}</div>
@@ -931,7 +959,7 @@ export default function EventsPage() {
                               onClick={() => { setAnnualCommunityFilter(event.community_group_id || ''); setActiveTab('annual'); }}
                               className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-surface text-text-primary text-xs font-bold hover:bg-primary/10 hover:text-primary border border-border transition-colors cursor-pointer"
                             >
-                              📆 Calendar
+                              <CalendarIcon className="w-3.5 h-3.5" /> Calendar
                             </button>
                           </div>
                         </div>
@@ -1370,7 +1398,17 @@ export default function EventsPage() {
                                         })()}
                                       </div>
                                       <div className="flex-1">
-                                        <h4 className="font-bold text-text-primary group-hover:text-primary transition-colors">{event.title}</h4>
+                                        <div className="flex items-start justify-between">
+                                          <h4 className="font-bold text-text-primary group-hover:text-primary transition-colors">{event.title}</h4>
+                                          {isAdmin && (
+                                            <button 
+                                              onClick={(e) => { e.preventDefault(); setEditingEvent(event); setAdminDialogOpen(true); }}
+                                              className="p-1 text-text-muted hover:bg-primary/10 hover:text-primary rounded transition-colors"
+                                            >
+                                              <Edit className="w-3.5 h-3.5" />
+                                            </button>
+                                          )}
+                                        </div>
                                         <div className="flex flex-wrap items-center gap-2 mt-1.5">
                                           <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${categoryColors[event.category || 'festival']}`}>
                                             {event.category}
@@ -1572,6 +1610,19 @@ export default function EventsPage() {
           </div>
         )}
       </div>
+
+      {adminDialogOpen && (
+        <AdminEventDialog
+          existingEvent={editingEvent}
+          onClose={() => setAdminDialogOpen(false)}
+          onSaved={() => {
+            setAdminDialogOpen(false);
+          }}
+          onDeleted={() => {
+            setAdminDialogOpen(false);
+          }}
+        />
+      )}
     </div>
   );
 }

@@ -37,7 +37,9 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Sender name is required' }, { status: 400 });
     }
 
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://probasibangali.in';
+    const host = request.headers.get('host') || 'probasibangali.in';
+    const protocol = host.includes('localhost') ? 'http' : 'https';
+    const baseUrl = `${protocol}://${host}`;
     const senderProfileLink = `${baseUrl}/community/matrimonial/${senderProfilePageId}`;
     const recipientProfileLink = `${baseUrl}/community/matrimonial/${recipientProfilePageId}`;
 
