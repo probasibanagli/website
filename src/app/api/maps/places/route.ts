@@ -11,8 +11,26 @@ export async function GET(request: Request) {
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
   
   if (!apiKey) {
-    console.error('NEXT_PUBLIC_GOOGLE_MAPS_API_KEY is not defined in environment variables.');
-    return NextResponse.json({ error: 'Google Maps API key is not configured' }, { status: 500 });
+    console.warn('NEXT_PUBLIC_GOOGLE_MAPS_API_KEY is not defined. Returning mock data for testing.');
+    return NextResponse.json({
+      status: 'OK',
+      results: [
+        {
+          name: 'e-Seva Centre (Mock Result 1)',
+          formatted_address: `123 Main Street, ${query}`,
+          rating: 4.5,
+          google_maps_url: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`,
+          location: { latitude: 13.0827, longitude: 80.2707 }
+        },
+        {
+          name: 'Taluk Office e-Seva (Mock Result 2)',
+          formatted_address: `456 Government Road, ${query}`,
+          rating: 4.2,
+          google_maps_url: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`,
+          location: { latitude: 13.0927, longitude: 80.2807 }
+        }
+      ]
+    });
   }
 
   try {

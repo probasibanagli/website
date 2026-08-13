@@ -14,6 +14,49 @@ import { COLLECTIONS } from '@/lib/firestore/collections';
 import { useAuth } from '@/lib/auth/AuthContext';
 import type { College } from '@/types';
 
+/* ─── Cover Image (fetches real Google Places photos like hospital cards) ─── */
+function CollegeCoverImage({ name, city, mapsUrl, imageUrl, isSchool }: {
+  name: string;
+  city?: string;
+  mapsUrl?: string;
+  imageUrl?: string;
+  isSchool?: boolean;
+}) {
+  // Ignore generic unsplash stock photos in favor of real Google Places campus photos
+  const isStockImage = imageUrl?.includes('unsplash.com');
+  const customImageUrl = !isStockImage ? imageUrl : null;
+
+  const imgSrc = customImageUrl || (mapsUrl
+    ? `/api/public/place-photo?name=${encodeURIComponent(name)}&city=${encodeURIComponent(city || '')}&mapsUrl=${encodeURIComponent(mapsUrl)}&v=5`
+    : (name && city)
+      ? `/api/public/place-photo?name=${encodeURIComponent(name)}&city=${encodeURIComponent(city)}&v=5`
+      : imageUrl
+  );
+  const [error, setError] = React.useState(false);
+
+  React.useEffect(() => {
+    setError(false);
+  }, [imgSrc]);
+
+  if (error || !imgSrc) {
+    return (
+      <div className={`absolute inset-0 bg-gradient-to-br ${isSchool ? 'from-indigo-50 to-violet-50' : 'from-blue-50 to-emerald-50'} flex items-center justify-center`}>
+        <GraduationCap className={`w-16 h-16 ${isSchool ? 'text-indigo-200' : 'text-emerald-200'} opacity-60`} />
+      </div>
+    );
+  }
+
+  return (
+    <img
+      src={imgSrc}
+      alt={name}
+      onError={() => setError(true)}
+      className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+      loading="lazy"
+    />
+  );
+}
+
 const CATEGORY_LABELS: Record<string, string> = {
   engineering: 'Engineering Colleges',
   medical: 'Medical Colleges',
@@ -91,7 +134,7 @@ export default function CollegePage() {
             <span className="text-text-primary font-medium">College & School Finder</span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-bold font-display text-text-primary">College & School Finder</h1>
-          <p className="mt-2 text-text-muted">Find Engineering, Medical, Arts & Science colleges, and top schools in major districts of Tamil Nadu.</p>
+          <p className="mt-2 text-text-muted">Find Engineering, Medical, Arts & Science colleges, and top schools in Tamil Nadu — sorted by official NIRF & National Rankings.</p>
 
           <div className="mt-8 flex border-b border-border mb-6">
             <button
@@ -138,11 +181,25 @@ export default function CollegePage() {
             <select 
               value={city} 
               onChange={(e) => setCity(e.target.value)} 
-              className="px-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+              className="px-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 bg-white cursor-pointer"
             >
               <option value="">All Districts</option>
               {CITIES.map((c) => <option key={c} value={c}>{c}</option>)}
             </select>
+
+            {/* Google Maps Search Link */}
+            <a
+              href={`https://www.google.com/maps/search/${encodeURIComponent(
+                `${type ? (CATEGORY_LABELS[type] || type) : (activeTab === 'colleges' ? 'Colleges' : 'Schools')} ${city || 'Tamil Nadu'} ${search}`.trim()
+              )}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary/10 hover:bg-primary/15 text-primary text-sm font-semibold transition-colors border border-primary/20"
+            >
+              <Navigation className="w-4 h-4" />
+              <span>Search on Google Maps</span>
+              <ExternalLink className="w-3.5 h-3.5" />
+            </a>
           </div>
         </div>
       </div>
@@ -159,50 +216,59 @@ export default function CollegePage() {
               {filtered.map((college) => {
                 const theme = CATEGORY_THEMES[college.type || 'arts_science'] || CATEGORY_THEMES.arts_science;
                   return (
-                    <Card key={college.id} padding="none" className="rounded-[24px] overflow-hidden group flex flex-col justify-between hover:shadow-lg transition-all border border-gray-100 shadow-[0_4px_25px_-4px_rgba(0,0,0,0.05)] bg-white">
-                      <div>
-                        {/* Image banner with floating badge */}
-                        <div className="relative w-full h-44 bg-slate-100 overflow-hidden">
-                          {college.image_url ? (
-                            <img src={college.image_url} alt={college.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                          ) : (
-                            <div className="w-full h-full bg-gradient-to-br from-indigo-50 to-blue-50 flex items-center justify-center">
-                              <GraduationCap className="w-12 h-12 text-primary opacity-30 animate-pulse" />
-                            </div>
-                          )}
-                          
-                          {/* Floating Type/Category Badge (Top Right) */}
-                          <div className="absolute top-4 right-4 shadow-sm z-10">
-                            <span className="bg-[#EAF6F0]/90 backdrop-blur-md text-[#0A6C4A] text-xs font-bold px-3 py-1.5 rounded-full shadow-sm tracking-wide capitalize">
-                              {CATEGORY_LABELS[college.type || '']?.replace(' Colleges', '') || college.type}
-                            </span>
+                    <Card key={college.id} padding="none" className="overflow-hidden group flex flex-col h-full bg-white border border-gray-100 shadow-[0_4px_25px_-4px_rgba(0,0,0,0.05)] rounded-[24px]">
+                      {/* Image header with text overlay — matches hospital card style */}
+                      <div className="relative h-56 bg-slate-100 overflow-hidden">
+                        <CollegeCoverImage
+                          name={college.name}
+                          city={college.city}
+                          mapsUrl={college.google_maps_url}
+                          imageUrl={college.image_url}
+                          isSchool={college.category === 'school'}
+                        />
+
+                        {/* Gradient Shadow Overlay with Name + Location */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-5 z-10 pointer-events-none">
+                          <h3 className="text-lg font-bold text-white leading-tight font-display">{college.name}</h3>
+                          <div className="flex items-center gap-1.5 mt-2 text-sm text-white/90">
+                            <MapPin className="w-4 h-4 text-white shrink-0" />
+                            <span>{college.area ? `${college.area}, ` : ''}{college.city}</span>
                           </div>
                         </div>
 
-                        {/* Card Content Panel */}
-                        <div className="p-5">
-                          <div className="flex justify-between items-start gap-3">
-                            <h3 className="text-lg font-bold text-gray-900 leading-tight font-display group-hover:text-primary transition-colors">
-                              {college.name}
-                            </h3>
-                            {college.ranking !== undefined && college.ranking !== null && (
-                              <span className="bg-amber-50 text-amber-700 font-extrabold text-[10px] px-2 py-0.5 rounded-md border border-amber-200/30 shrink-0">
-                                Rank #{college.ranking}
-                              </span>
-                            )}
-                          </div>
+                        {/* Top-left Floating Badges */}
+                        <div className="absolute top-4 left-4 flex flex-wrap gap-1.5 z-20">
+                          <span className={`text-[10px] font-extrabold px-2.5 py-1 rounded-full uppercase tracking-wider text-white shadow-sm ${
+                            college.type === 'engineering' ? 'bg-blue-600' :
+                            college.type === 'medical' ? 'bg-rose-600' :
+                            college.type === 'arts_science' ? 'bg-emerald-600' :
+                            college.type === 'cbse' ? 'bg-indigo-600' :
+                            college.type === 'icse' ? 'bg-violet-600' :
+                            college.type === 'kv' ? 'bg-orange-600' :
+                            'bg-gray-600'
+                          }`}>
+                            {CATEGORY_LABELS[college.type || '']?.replace(' Colleges', '').replace(' Schools', '') || college.type}
+                          </span>
+                        </div>
 
-                          {/* Address Info */}
-                          <div className="flex items-start gap-2 mt-3 text-sm text-[#5F6368] leading-relaxed">
-                            <MapPin className="w-4 h-4 text-[#A63A13] shrink-0 mt-0.5" />
-                            <span>{college.address || `${college.area}, ${college.city}`}</span>
+                        {/* Top-right Ranking Badge */}
+                        {college.ranking !== undefined && college.ranking !== null && (
+                          <div className="absolute top-4 right-4 z-20">
+                            <span className="bg-amber-500 text-white text-[10px] font-extrabold px-2.5 py-1 rounded-full shadow-sm uppercase tracking-wider">
+                              {college.category === 'school' ? `Rank #${college.ranking}` : `NIRF #${college.ranking}`}
+                            </span>
                           </div>
+                        )}
+                      </div>
 
+                      {/* Card Content Panel */}
+                      <div className="p-5 flex-1 flex flex-col justify-between">
+                        <div>
                           {/* Helpline Info */}
                           {college.phone && (
-                            <div className="flex items-center gap-2 mt-2.5 text-sm text-[#3C4043] font-medium">
+                            <div className="flex items-center gap-2 text-sm text-[#3C4043] font-medium">
                               <Phone className="w-4 h-4 text-[#0A6C4A] shrink-0" />
-                              <span>Contact Helpline: <span className="font-bold text-gray-900">{college.phone}</span></span>
+                              <span>Contact: <span className="font-bold text-gray-900">{college.phone}</span></span>
                             </div>
                           )}
 
@@ -241,23 +307,23 @@ export default function CollegePage() {
                             </Button>
                           </div>
                         </div>
-                      </div>
 
-                      {/* Side-by-Side Action Buttons */}
-                      <div className="flex items-center gap-3 mt-1 pt-4 border-t border-gray-100 p-5 pt-0">
-                        <a href={college.website || '#'} target="_blank" rel="noopener noreferrer" className="flex-1">
-                          <button className="w-full bg-[#d85a30] hover:bg-[#60210A] text-white font-bold py-3 px-4 rounded-xl text-sm flex items-center justify-center gap-2 shadow-sm transition-all active:scale-[0.98]">
-                            <Globe className="w-4 h-4" />
-                            <span>Visit Website</span>
-                          </button>
-                        </a>
-                        
-                        <a href={college.google_maps_url || college.website || '#'} target="_blank" rel="noopener noreferrer" className="flex-1">
-                          <button className="w-full bg-white hover:bg-slate-50 border border-[#E4E9F2] text-[#d85a30] font-bold py-3 px-4 rounded-xl text-sm flex items-center justify-center gap-2 shadow-sm transition-all active:scale-[0.98]">
-                            <Map className="w-4 h-4" />
-                            <span>View on Map</span>
-                          </button>
-                        </a>
+                        {/* Side-by-Side Action Buttons */}
+                        <div className="flex items-center gap-3 mt-4 pt-4 border-t border-gray-100">
+                          <a href={college.website || '#'} target="_blank" rel="noopener noreferrer" className="flex-1">
+                            <button className="w-full bg-[#d85a30] hover:bg-[#60210A] text-white font-bold py-2.5 px-4 rounded-xl text-sm flex items-center justify-center gap-2 shadow-sm transition-all active:scale-[0.98]">
+                              <Globe className="w-4 h-4" />
+                              <span>Website</span>
+                            </button>
+                          </a>
+                          
+                          <a href={college.google_maps_url || college.website || '#'} target="_blank" rel="noopener noreferrer" className="flex-1">
+                            <button className="w-full bg-white hover:bg-slate-50 border border-[#E4E9F2] text-[#d85a30] font-bold py-2.5 px-4 rounded-xl text-sm flex items-center justify-center gap-2 shadow-sm transition-all active:scale-[0.98]">
+                              <Map className="w-4 h-4" />
+                              <span>View Map</span>
+                            </button>
+                          </a>
+                        </div>
                       </div>
                     </Card>
                   );

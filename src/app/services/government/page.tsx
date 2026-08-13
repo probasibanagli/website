@@ -86,6 +86,7 @@ function CentresModal({
   mapsSearchQuery: string; // e.g. "Aadhaar Seva Kendra"
 }) {
   const [query, setQuery] = useState('');
+  const [showDirectory, setShowDirectory] = useState(false);
 
   const filtered = useMemo(() => {
     if (!query.trim()) return centres;
@@ -98,10 +99,14 @@ function CentresModal({
     );
   }, [query, centres]);
 
-  // Generate Google Maps search URL for typed city
-  const mapsUrl = query.trim()
-    ? `https://www.google.com/maps/search/${encodeURIComponent(mapsSearchQuery + ' ' + query.trim())}`
-    : `https://www.google.com/maps/search/${encodeURIComponent(mapsSearchQuery + ' Tamil Nadu')}`;
+  // Google Maps search URL — opens full Maps with all results + clickable pins
+  const mapsSearchTerm = query.trim()
+    ? `${mapsSearchQuery} ${query.trim()}`
+    : `${mapsSearchQuery} Tamil Nadu`;
+  const mapsUrl = `https://www.google.com/maps/search/${encodeURIComponent(mapsSearchTerm)}`;
+
+  // Embed URL — shows interactive map with all results inside the modal
+  const embedUrl = `https://maps.google.com/maps?q=${encodeURIComponent(mapsSearchTerm)}&output=embed&z=10`;
 
   useEffect(() => {
     if (open) document.body.style.overflow = 'hidden';
@@ -114,12 +119,12 @@ function CentresModal({
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative bg-white w-full sm:max-w-lg rounded-t-2xl sm:rounded-2xl shadow-2xl flex flex-col max-h-[90vh]">
+      <div className="relative bg-white w-full sm:max-w-2xl rounded-t-2xl sm:rounded-2xl shadow-2xl flex flex-col max-h-[92vh]">
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-border shrink-0">
           <div>
             <h3 className="text-sm font-bold text-text-primary">{title}</h3>
-            <p className="text-xs text-text-muted mt-0.5">{filtered.length} result{filtered.length !== 1 ? 's' : ''} from our directory</p>
+            <p className="text-xs text-text-muted mt-0.5">Click any pin on the map to view the exact location</p>
           </div>
           <button onClick={onClose} className="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-surface transition-colors cursor-pointer">
             <X className="w-4 h-4 text-text-muted" />
@@ -133,34 +138,68 @@ function CentresModal({
             <input
               autoFocus
               type="text"
-              placeholder="Search by city, area or name..."
+              placeholder="Type a city to find centres (e.g. Chennai, Coimbatore...)"
               value={query}
               onChange={e => setQuery(e.target.value)}
               className="w-full pl-9 pr-3 py-2.5 border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
             />
           </div>
-          {/* Google Maps live search CTA */}
-          <a
-            href={mapsUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-2 w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-primary text-white text-sm font-semibold rounded-xl hover:bg-primary/90 transition-colors"
-          >
-            <Navigation className="w-4 h-4" />
-            Search &quot;{mapsSearchQuery}{query.trim() ? ` in ${query.trim()}` : ' near me'}&quot; on Google Maps
-            <ExternalLink className="w-3.5 h-3.5 ml-auto" />
-          </a>
         </div>
 
-        {/* Centre list */}
-        <div className="overflow-y-auto flex-1 px-5 py-4 space-y-3">
-          {filtered.length === 0 ? (
-            <div className="text-center py-10">
-              <MapPin className="w-10 h-10 text-border mx-auto mb-3" />
-              <p className="text-sm font-medium text-text-muted">No results in our directory</p>
-              <p className="text-xs text-text-muted mt-1">Use the Google Maps button above to find centres near you</p>
+        {/* Embedded Google Maps — shows ALL results with clickable pins */}
+        <div className="shrink-0 border-b border-border">
+          <div className="relative w-full" style={{ height: '320px' }}>
+            <iframe
+              key={mapsSearchTerm}
+              src={embedUrl}
+              width="100%"
+              height="100%"
+              style={{ border: 0 }}
+              allowFullScreen
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              title={`Google Maps - ${mapsSearchQuery}`}
+              className="w-full h-full"
+            />
+          </div>
+          {/* Open in full Google Maps */}
+          <div className="px-5 py-3 flex gap-2">
+            <a
+              href={mapsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 bg-primary text-white text-sm font-semibold rounded-xl hover:bg-primary/90 transition-colors"
+            >
+              <Navigation className="w-4 h-4" />
+              Open in Google Maps
+              <ExternalLink className="w-3.5 h-3.5 ml-1" />
+            </a>
+          </div>
+        </div>
+
+        {/* Curated directory toggle */}
+        <div className="overflow-y-auto flex-1 px-5 py-3 space-y-3">
+          {centres.length > 0 && (
+            <button
+              onClick={() => setShowDirectory(!showDirectory)}
+              className="w-full flex items-center justify-between p-3 bg-surface/80 border border-border rounded-xl hover:bg-surface transition-colors cursor-pointer"
+            >
+              <span className="text-xs font-bold text-text-primary flex items-center gap-1.5">
+                <MapPin className="w-3.5 h-3.5 text-primary" />
+                Our Curated Directory ({filtered.length} entries)
+              </span>
+              {showDirectory ? <ChevronUp className="w-4 h-4 text-text-muted" /> : <ChevronDown className="w-4 h-4 text-text-muted" />}
+            </button>
+          )}
+          {showDirectory && (
+            <div className="space-y-3 animate-fade-in">
+              {filtered.length === 0 ? (
+                <div className="text-center py-6">
+                  <p className="text-xs text-text-muted">No matching entries in our directory. Use the map above.</p>
+                </div>
+              ) : filtered.map(c => <CentreRow key={c.id} centre={c} />)}
             </div>
-          ) : filtered.map(c => <CentreRow key={c.id} centre={c} />)}
+          )}
         </div>
       </div>
     </div>
@@ -520,7 +559,7 @@ function VisaCard() {
                 </p>
               )}
               <div className="mt-2.5 pt-2 border-t border-border/60">
-                <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(country.vacAddress)}`}
+                <a href={country.vacGoogleMapsUrl || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(country.vacAddress)}`}
                   target="_blank" rel="noopener noreferrer"
                   className="text-xs font-semibold text-primary inline-flex items-center gap-1 bg-primary/5 hover:bg-primary/10 px-2.5 py-1.5 rounded-lg transition-colors">
                   <Navigation className="w-3.5 h-3.5" /> View on Google Maps <ExternalLink className="w-3 h-3" />

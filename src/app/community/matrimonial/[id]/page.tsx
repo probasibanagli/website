@@ -225,7 +225,7 @@ export default function MatrimonialDetailPage() {
           </div>
         </div>
 
-        <div className="max-w-4xl mx-auto px-4 -mt-8 pb-12 animate-fade-in">
+        <div className="max-w-4xl mx-auto px-4 py-8 animate-fade-in">
           <Card className="relative overflow-hidden border border-amber-200/60 shadow-xl bg-white/95 backdrop-blur-md p-8 sm:p-12 text-center">
             <div className="absolute -top-20 -right-20 w-48 h-48 rounded-full bg-amber-100/30 blur-3xl" />
             <div className="absolute -bottom-20 -left-20 w-48 h-48 rounded-full bg-orange-100/20 blur-3xl" />
@@ -291,7 +291,7 @@ export default function MatrimonialDetailPage() {
           </div>
         </div>
 
-        <div className="max-w-4xl mx-auto px-4 -mt-8 pb-12 animate-fade-in">
+        <div className="max-w-4xl mx-auto px-4 py-8 animate-fade-in">
           <Card className="relative overflow-hidden border border-primary/20 shadow-xl bg-white/95 backdrop-blur-md p-8 sm:p-12 text-center">
             <div className="absolute -top-20 -right-20 w-48 h-48 rounded-full bg-primary/10 blur-3xl" />
             <div className="absolute -bottom-20 -left-20 w-48 h-48 rounded-full bg-accent/10 blur-3xl" />
@@ -411,8 +411,8 @@ export default function MatrimonialDetailPage() {
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 pb-12">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
             {/* Profile Header Card */}
@@ -750,7 +750,7 @@ export default function MatrimonialDetailPage() {
                 variant="primary"
                 className="w-full"
                 onClick={handleSendInterest}
-                disabled={interestSent || sendingInterest}
+                disabled={sendingInterest}
               >
                 {sendingInterest ? (
                   <><Loader2 className="w-4 h-4 animate-spin" /> Sending...</>
