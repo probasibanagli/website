@@ -418,7 +418,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Stats Cards: Metrics Center & System Status Grid Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Column 1: Metrics Center card */}
         <div className="lg:col-span-1">
           <div 
@@ -574,7 +574,7 @@ export default function AdminDashboard() {
 
 
       {/* Bottom Section: Quick Actions & Recent Activity */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
         {/* Quick Actions Card Grid */}
         <div className="lg:col-span-2">

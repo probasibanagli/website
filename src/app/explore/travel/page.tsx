@@ -927,9 +927,9 @@ export default function TravelPage() {
         </div>
       </div>
 
-      <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Main Dashboard Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left/Middle Content Area based on Selected Tab */}
           <div className="lg:col-span-2 space-y-6">
 
@@ -2523,7 +2523,7 @@ export default function TravelPage() {
                         {/* Middle Row: Chip & Wireless Indicators */}
                         <div className="flex justify-between items-center z-10 w-full mt-2">
                           {/* EMV Chip */}
-                          <div className="w-9 h-7 rounded-md bg-gradient-to-br from-yellow-300 via-amber-400 to-yellow-600 p-[1.5px] border border-amber-300 shadow-sm relative overflow-hidden shrink-0">
+                          <div className="w-9 h-7 rounded-md bg-amber-400 p-[1.5px] border border-amber-300 shadow-sm relative overflow-hidden shrink-0">
                             <div className="w-full h-full border border-yellow-700/20 rounded-[4px] relative">
                               <div className="absolute top-1/2 left-0 right-0 h-[1px] bg-yellow-700/30 -translate-y-1/2" />
                               <div className="absolute top-0 bottom-0 left-1/2 w-[1px] bg-yellow-700/30 -translate-x-1/2" />
@@ -2570,7 +2570,7 @@ export default function TravelPage() {
                           </div>
 
                           {/* Bottom Right: Silver/Grey Base Strip */}
-                          <div className="w-[55%] h-8 bg-gradient-to-r from-slate-100 to-slate-350 rounded-br-3xl rounded-tl-xl flex flex-col justify-center items-center shadow-inner border-t border-l border-white/40 -mr-5 -mb-5 pr-5">
+                          <div className="w-[55%] h-8 bg-slate-200 rounded-br-3xl rounded-tl-xl flex flex-col justify-center items-center shadow-inner border-t border-l border-white/40 -mr-5 -mb-5 pr-5">
                             <div className="flex items-center">
                               <span className="text-xs font-black tracking-tighter text-blue-900 italic font-sans leading-none">RuPay</span>
                               <svg className="w-4 h-2.5 ml-0.5 shrink-0" viewBox="0 0 20 12" fill="none">
@@ -2584,7 +2584,7 @@ export default function TravelPage() {
                       </div>
                       
                       {/* Back Side */}
-                      <div className="flip-card-back absolute inset-0 w-full h-full backface-hidden rounded-3xl p-5 text-white flex flex-col justify-between shadow-xl select-none bg-gradient-to-br from-slate-900/60 to-slate-950/60 backdrop-blur-xl border border-white/20">
+                      <div className="flip-card-back absolute inset-0 w-full h-full backface-hidden rounded-3xl p-5 text-white flex flex-col justify-between shadow-xl select-none bg-slate-900/80 backdrop-blur-xl border border-white/20">
                         <div className="h-4 bg-slate-900 -mx-5 -mt-1 mb-2" />
                         
                         <div className="flex gap-4 items-center flex-1">
@@ -2687,7 +2687,7 @@ export default function TravelPage() {
                       </div>
                       
                       {/* 20% savings badge */}
-                      <div className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-black text-[8px] px-2.5 py-0.5 rounded-full border border-emerald-400/20 flex items-center gap-1 shadow-sm leading-none uppercase tracking-wide">
+                      <div className="bg-emerald-500 text-white font-black text-[8px] px-2.5 py-0.5 rounded-full border border-emerald-400/20 flex items-center gap-1 shadow-sm leading-none uppercase tracking-wide">
                         <span>Save 20%</span>
                         <span className="text-[7.5px] font-bold opacity-85">&bull; QR</span>
                       </div>

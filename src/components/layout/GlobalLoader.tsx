@@ -70,7 +70,7 @@ export function GlobalLoader() {
             }
           `}</style>
           <div className="fixed top-0 left-0 right-0 h-[3px] z-[9999] bg-primary/10 overflow-hidden">
-            <div className="h-full bg-gradient-to-r from-primary via-accent to-primary w-full nav-progress-bar" />
+            <div className="h-full bg-primary w-full nav-progress-bar" />
           </div>
         </>
       )}

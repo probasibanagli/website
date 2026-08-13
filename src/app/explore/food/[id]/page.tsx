@@ -37,7 +37,7 @@ function ListingCoverImage({ name, city, mapsUrl, imageUrl, type, mapEmbedCode, 
 
   if (error || !imgSrc) {
     return (
-      <div className="absolute inset-0 bg-gradient-to-br from-orange-50 to-amber-50 flex items-center justify-center">
+      <div className="absolute inset-0 bg-orange-50 flex items-center justify-center">
         <div className="text-primary opacity-40 scale-[3]">
           {fallbackIcon}
         </div>
@@ -114,7 +114,7 @@ export default function FoodDetailPage() {
           <ArrowLeft className="w-4 h-4" /> Back to food listings
         </Link>
 
-        <div className="relative h-64 sm:h-80 bg-gradient-to-br from-orange-50 to-amber-50 rounded-2xl flex items-center justify-center mb-8 overflow-hidden">
+        <div className="relative h-64 sm:h-80 bg-orange-50 rounded-2xl flex items-center justify-center mb-8 overflow-hidden">
           <ListingCoverImage
             name={food.name}
             city={food.city}
@@ -180,7 +180,7 @@ export default function FoodDetailPage() {
           </div>
 
           <div className="space-y-4">
-            <Card className="bg-gradient-to-br from-orange-50 to-white border-orange-100">
+            <Card className="bg-orange-50 border-orange-100">
               <h3 className="text-lg font-bold mb-4">Contact & Order</h3>
               <div className="space-y-3">
                 {food.phone && <a href={`tel:${food.phone}`} className="block"><Button variant="primary" className="w-full h-12 text-base shadow-sm"><Phone className="w-4 h-4" /> Call to Order</Button></a>}

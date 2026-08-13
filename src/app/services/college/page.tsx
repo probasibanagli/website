@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { Search, MapPin, Phone, GraduationCap, Globe, ExternalLink, Navigation, ChevronDown, ChevronUp, Lock, ShieldAlert, Mail, ArrowRight, Loader2, Map, X } from 'lucide-react';
+import { Skeleton } from '@/components/ui/Skeleton';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/card';
@@ -149,9 +150,21 @@ export default function CollegePage() {
 
       <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {loading ? (
-          <div className="flex flex-col items-center justify-center py-32 gap-3">
-            <Loader2 className="w-10 h-10 text-primary animate-spin" />
-            <p className="text-text-muted text-sm font-medium">Loading colleges database...</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+              <div key={i} className="bg-white rounded-[24px] border border-border overflow-hidden">
+                <Skeleton className="w-full h-44" />
+                <div className="p-5 space-y-3">
+                  <Skeleton className="w-3/4 h-6" />
+                  <Skeleton className="w-full h-4" />
+                  <Skeleton className="w-5/6 h-4" />
+                  <div className="flex gap-2 pt-2">
+                    <Skeleton className="w-16 h-6 rounded-full" />
+                    <Skeleton className="w-16 h-6 rounded-full" />
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         ) : (
           <>
@@ -166,7 +179,7 @@ export default function CollegePage() {
                           {college.image_url ? (
                             <img src={college.image_url} alt={college.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                           ) : (
-                            <div className="w-full h-full bg-gradient-to-br from-indigo-50 to-blue-50 flex items-center justify-center">
+                            <div className="w-full h-full bg-indigo-50 flex items-center justify-center">
                               <GraduationCap className="w-12 h-12 text-primary opacity-30 animate-pulse" />
                             </div>
                           )}

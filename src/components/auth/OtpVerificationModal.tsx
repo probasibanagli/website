@@ -148,7 +148,7 @@ export function OtpVerificationModal({ isOpen, onClose, onSuccess, doctorId }: O
 
       <div className="relative bg-white rounded-3xl w-full max-w-md overflow-hidden shadow-2xl animate-fade-in">
         {/* Top accent bar */}
-        <div className="h-1.5 bg-gradient-to-r from-primary via-blue-500 to-emerald-500" />
+        <div className="h-1.5 bg-primary" />
 
         {/* Header */}
         <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-border">

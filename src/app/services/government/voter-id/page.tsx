@@ -111,7 +111,7 @@ export default function VoterIdPage() {
   return (
     <div className="min-h-screen bg-surface">
       {/* Header */}
-      <div className="bg-gradient-to-br from-primary via-primary-dark to-[#7a2d14] py-8">
+      <div className="bg-primary py-8">
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
           <Link href="/services/government" className="inline-flex items-center gap-2 text-sm text-white/70 hover:text-white transition-colors mb-6">
             <ArrowLeft className="w-4 h-4" /> Back to Government Services

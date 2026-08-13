@@ -86,9 +86,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <AlertProvider>
             <AuthProvider>
               <BlockedCheck>
-                <Suspense fallback={null}>
-                  <GlobalLoader />
-                </Suspense>
+
                 <Navbar />
                 <main className="flex-1">{children}</main>
                 <Footer />

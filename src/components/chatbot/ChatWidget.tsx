@@ -334,7 +334,7 @@ export function ChatWidget() {
             'fixed bottom-5 right-4 sm:right-6 z-50 w-14 h-14 rounded-full shadow-2xl shadow-primary/25 flex items-center justify-center transition-all duration-300 cursor-pointer ring-1 ring-primary/10 hover:ring-primary/20',
             isOpen
               ? 'bg-primary-dark rotate-90 text-white'
-              : 'bg-gradient-to-br from-primary via-primary to-accent text-white hover:scale-110'
+              : 'bg-primary text-white hover:scale-110'
           )}
         >
           {isOpen ? (

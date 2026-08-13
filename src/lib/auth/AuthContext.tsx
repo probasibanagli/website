@@ -56,21 +56,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const data = snap.data() as UserProfile;
         const phoneClean = (data.phone || user.phoneNumber || '').replace(/\D/g, '');
         const emailLower = data.email?.trim().toLowerCase() || '';
-        
-        if (emailLower === 'vigneshayyanar134@gmail.com' || emailLower === 'admin@probasibangali.in' || phoneClean.includes('9626855406')) {
-          if (data.role !== 'superadmin') {
-            const superAdminPerms = getDefaultPermissions('superadmin');
-            await updateDoc(docRef, {
-              role: 'superadmin',
-              permissions: superAdminPerms,
-              is_active: true,
-              updated_at: new Date().toISOString()
-            });
-            data.permissions = superAdminPerms;
-          }
-          data.role = 'superadmin';
-          data.is_active = true;
-        }
         return data;
       }
       return null;

@@ -210,7 +210,7 @@ function ServiceCard({
   footer: React.ReactNode;
 }) {
   return (
-    <Card padding="none" className="flex flex-col border-amber-200/60 bg-gradient-to-br from-amber-50/30 to-white hover:border-amber-400 hover:shadow-lg transition-all duration-300 h-full">
+    <Card padding="none" className="flex flex-col border-amber-200/60 bg-amber-50/30 hover:border-amber-400 hover:shadow-lg transition-all duration-300 h-full">
       {/* Header */}
       <div className="flex items-start gap-3 p-5 pb-3">
         <div className="w-11 h-11 rounded-xl bg-amber-100/70 flex items-center justify-center shrink-0">
@@ -416,7 +416,7 @@ function VisaCard() {
   const country = useMemo(() => VISA_COUNTRIES.find(c => c.code === selectedCountry), [selectedCountry]);
 
   return (
-    <Card padding="none" className="flex flex-col border-amber-200/60 bg-gradient-to-br from-amber-50/30 to-white hover:border-amber-400 hover:shadow-lg transition-all duration-300 lg:col-span-2 h-full">
+    <Card padding="none" className="flex flex-col border-amber-200/60 bg-amber-50/30 hover:border-amber-400 hover:shadow-lg transition-all duration-300 lg:col-span-2 h-full">
       {/* Header */}
       <div className="flex items-start gap-3 p-5 pb-3">
         <div className="w-11 h-11 rounded-xl bg-amber-100/70 flex items-center justify-center shrink-0">

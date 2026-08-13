@@ -14,32 +14,12 @@ export function Skeleton({ className, ...props }: React.HTMLAttributes<HTMLDivEl
 
 export function PageSkeleton() {
   return (
-    <div className="fixed inset-0 z-[9999] bg-white flex flex-col overflow-hidden animate-fade-in">
-      {/* Navbar Skeleton */}
-      <div className="h-16 border-b border-border flex items-center justify-between px-4 sm:px-6 lg:px-8 bg-white/80 backdrop-blur-sm">
-        <div className="flex items-center gap-2.5">
-          <Skeleton className="w-9 h-9 rounded-xl" />
-          <div className="hidden sm:flex items-center gap-1">
-            <Skeleton className="w-24 h-5" />
-            <Skeleton className="w-16 h-5 opacity-60" />
-          </div>
-        </div>
-        <div className="hidden lg:flex items-center gap-8">
-          <Skeleton className="w-16 h-4" />
-          <Skeleton className="w-20 h-4" />
-          <Skeleton className="w-16 h-4" />
-          <Skeleton className="w-16 h-4" />
-        </div>
-        <div className="flex items-center gap-2">
-          <Skeleton className="w-24 h-8 rounded-full" />
-          <Skeleton className="w-28 h-9 rounded-lg" />
-        </div>
-      </div>
+    <div className="flex flex-col animate-fade-in w-full">
 
       {/* Main Content Area */}
       <div className="flex-1 overflow-y-auto">
         {/* Hero Section Skeleton */}
-        <div className="relative py-20 sm:py-28 lg:py-36 bg-gradient-to-br from-surface to-white px-4 sm:px-6 lg:px-8 text-center">
+        <div className="relative py-20 sm:py-28 lg:py-36 bg-surface px-4 sm:px-6 lg:px-8 text-center">
           <div className="max-w-[1536px] mx-auto flex flex-col items-center">
             <Skeleton className="w-40 h-6 rounded-full mb-8 bg-primary/10" />
             <Skeleton className="w-full max-w-3xl h-16 sm:h-20 mb-6" />

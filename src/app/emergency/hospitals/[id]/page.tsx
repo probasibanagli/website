@@ -162,7 +162,7 @@ export default function HospitalDetailsPage({ params }: { params: Promise<{ id: 
             <div className="relative">
               <div className="aspect-[21/9] md:aspect-[3/1] w-full bg-black relative">
                 <img src={hospital.images[activeImage]} alt={hospital.name} className="w-full h-full object-cover opacity-90" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                <div className="absolute inset-0 bg-black/80" />
               </div>
               <div className="absolute bottom-6 left-6 flex items-end gap-4">
                 <div className="w-20 h-20 bg-white p-2 rounded-xl shadow-lg border border-border/50 shrink-0">

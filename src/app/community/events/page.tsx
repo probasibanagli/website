@@ -623,7 +623,7 @@ export default function EventsPage() {
           <p className="mt-2 text-text-muted">Celebrate Bengali culture — Panjika, calendar tools, community events, and annual festival calendar.</p>
 
           {/* ── Today's Bengali Date Banner ── */}
-          <div className="mt-5 p-4 bg-gradient-to-r from-amber-50 via-orange-50 to-red-50 rounded-2xl border border-amber-200/50 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-6">
+          <div className="mt-5 p-4 bg-amber-50 rounded-2xl border border-amber-200/50 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-6">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-xl bg-surface border border-border/40 flex items-center justify-center text-primary shrink-0 shadow-sm">
                 <CalendarIcon className="w-6 h-6" />
@@ -706,7 +706,7 @@ export default function EventsPage() {
                       onClick={() => setSelectedFestivalId(isSelected ? null : fest.id)}
                       className={`p-5 rounded-2xl border text-left transition-all duration-300 relative overflow-hidden group cursor-pointer ${
                         isSelected 
-                          ? 'border-primary ring-2 ring-primary/20 bg-gradient-to-br from-amber-50/60 to-orange-50/60' 
+                          ? 'border-primary ring-2 ring-primary/20 bg-amber-50/60' 
                           : 'border-border bg-white hover:border-primary/50 hover:shadow-md'
                       }`}
                     >
@@ -871,7 +871,7 @@ export default function EventsPage() {
                   const communityGroup = event.community_group_id ? firestoreGroups.find((g: any) => g.id === event.community_group_id) : null;
                   return (
                     <Card key={event.id} className="group overflow-hidden p-0 bg-white hover:shadow-lg transition-shadow">
-                      <div className="h-36 overflow-hidden bg-gradient-to-br from-amber-50 to-orange-50 flex items-center justify-center relative">
+                      <div className="h-36 overflow-hidden bg-amber-50 flex items-center justify-center relative">
                         {(() => {
                           const img = event.image_url || getEventImage(event.title, event.category || '');
                           if (img) {
@@ -1082,7 +1082,7 @@ export default function EventsPage() {
                 </Card>
 
                 {/* BENGALI CALENDAR */}
-                <Card className="p-5 bg-gradient-to-br from-amber-50/30 to-orange-50/20">
+                <Card className="p-5 bg-amber-50/30">
                   <div className="flex items-center gap-2 mb-4 pb-3 border-b border-amber-200/50">
                     <div className="w-8 h-8 rounded-lg bg-surface border border-border/40 flex items-center justify-center text-primary text-xs font-extrabold shadow-sm bengali-text">
                       বা
@@ -1154,11 +1154,11 @@ export default function EventsPage() {
                 const ymd = `${cell.date.getFullYear()}-${String(cell.date.getMonth() + 1).padStart(2, '0')}-${String(cell.date.getDate()).padStart(2, '0')}`;
                 const observance = BENGALI_OBSERVANCES[ymd];
                 return (
-                  <div className="mt-6 p-5 border border-amber-200/50 bg-gradient-to-r from-amber-50/30 to-orange-50/20 rounded-2xl animate-fade-in">
+                  <div className="mt-6 p-5 border border-amber-200/50 bg-amber-50/30 rounded-2xl animate-fade-in">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       {/* English Date */}
                       <div className="flex items-start gap-4">
-                        <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex flex-col items-center justify-center text-white shadow-md shrink-0">
+                        <div className="w-14 h-14 rounded-xl bg-blue-500 flex flex-col items-center justify-center text-white shadow-md shrink-0">
                           <span className="text-lg font-bold leading-none">{cell.date.getDate()}</span>
                           <span className="text-[8px] font-semibold uppercase">{cell.date.toLocaleDateString('en-US', { month: 'short' })}</span>
                         </div>
@@ -1175,7 +1175,7 @@ export default function EventsPage() {
                       
                       {/* Bengali Date */}
                       <div className="flex items-start gap-4">
-                        <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-orange-500 to-red-600 flex flex-col items-center justify-center text-white shadow-md shrink-0 bengali-text">
+                        <div className="w-14 h-14 rounded-xl bg-orange-500 flex flex-col items-center justify-center text-white shadow-md shrink-0 bengali-text">
                           <span className="text-lg font-bold leading-none">{toBengaliDigits(cell.bengaliDate.day)}</span>
                           <span className="text-[8px] font-semibold">{BENGALI_MONTHS[cell.bengaliDate.month - 1].substring(0, 4)}</span>
                         </div>
@@ -1228,7 +1228,7 @@ export default function EventsPage() {
               </h3>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
                 {BENGALI_MONTHS.map((month, i) => (
-                  <div key={month} className="p-3 bg-gradient-to-br from-surface to-white rounded-xl border border-border text-center hover:shadow-md transition-shadow">
+                  <div key={month} className="p-3 bg-surface rounded-xl border border-border text-center hover:shadow-md transition-shadow">
                     <p className="text-lg font-bold bengali-text text-text-primary">{month}</p>
                     <p className="text-xs text-text-muted mt-1">{BENGALI_MONTHS_EN[i]}</p>
                     <p className="text-[10px] text-primary font-semibold mt-0.5">Month {i + 1}</p>
@@ -1326,7 +1326,7 @@ export default function EventsPage() {
                   <div key={month} id={`month-${monthIndex}`} className="scroll-mt-24">
                     {/* Month Header */}
                     <div className="flex items-center gap-4 mb-4">
-                      <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-accent flex flex-col items-center justify-center text-white shadow-lg shrink-0">
+                      <div className="w-16 h-16 rounded-2xl bg-primary flex flex-col items-center justify-center text-white shadow-lg shrink-0">
                         <span className="text-xl font-bold leading-none">{month.substring(0, 3).toUpperCase()}</span>
                         <span className="text-[9px] font-semibold opacity-80">{currentYear}</span>
                       </div>
@@ -1359,7 +1359,7 @@ export default function EventsPage() {
                                 <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
                                   <div className="flex-1">
                                     <div className="flex items-start gap-3">
-                                      <div className="w-12 h-12 rounded-xl overflow-hidden bg-gradient-to-br from-amber-50 to-orange-50 flex items-center justify-center shrink-0 border border-amber-100">
+                                      <div className="w-12 h-12 rounded-xl overflow-hidden bg-amber-50 flex items-center justify-center shrink-0 border border-amber-100">
                                         {(() => {
                                           const img = event.image_url || getEventImage(event.title, event.category || '');
                                           if (img) {
@@ -1435,7 +1435,7 @@ export default function EventsPage() {
             </div>
 
             {/* Summary Stats */}
-            <Card className="bg-gradient-to-r from-primary/5 to-accent/5 p-6">
+            <Card className="bg-primary/5 p-6">
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
                 <div>
                   <p className="text-2xl font-bold text-primary">{firestoreEvents.length}</p>
@@ -1486,7 +1486,7 @@ export default function EventsPage() {
                     const d = new Date(converterDate + 'T12:00:00');
                     const festivals = getFestivalsForDate(d);
                     return (
-                      <div className="p-6 bg-gradient-to-br from-amber-50 via-orange-50 to-red-50 rounded-2xl border border-amber-200/50">
+                      <div className="p-6 bg-amber-50 rounded-2xl border border-amber-200/50">
                         <p className="text-[10px] font-semibold text-amber-700 uppercase tracking-wider mb-3">Bengali Date Result</p>
 
                         {/* Bengali Script */}

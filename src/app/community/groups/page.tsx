@@ -4,6 +4,7 @@ import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { MapPin, Users, Globe, ArrowRight, ExternalLink, Search, Building, Globe2 } from 'lucide-react';
 import { FaWhatsapp, FaFacebook, FaDiscord, FaTelegram, FaLink } from 'react-icons/fa';
+import { Skeleton } from '@/components/ui/Skeleton';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -41,7 +42,9 @@ const REGIONS = [
 ];
 
 function getPlatformConfig(key: string) {
-  return PLATFORMS.find(p => p.key === key) || PLATFORMS[0];
+  const normalizedKey = (key || '').toLowerCase();
+  if (!normalizedKey) return PLATFORMS[0]; // Empty defaults to WhatsApp
+  return PLATFORMS.find(p => p.key === normalizedKey) || PLATFORMS.find(p => p.key === 'website') || PLATFORMS[0];
 }
 
 function getPlatformLink(group: CommunityGroup) {
@@ -74,8 +77,22 @@ export default function GroupsPage() {
 
   const filtered = useMemo(() => {
     return combinedGroups.filter((g) => {
-      if (selectedPlatform && g.platform !== selectedPlatform) return false;
-      if (selectedRegion && g.region !== selectedRegion) return false;
+      // Handle platform filtering (default to website if not explicitly supported, but whatsapp if empty)
+      const rawPlatform = (g.platform || '').toLowerCase();
+      let groupPlatform = 'website';
+      if (!rawPlatform) {
+        groupPlatform = 'whatsapp';
+      } else if (PLATFORMS.some(p => p.key === rawPlatform)) {
+        groupPlatform = rawPlatform;
+      }
+      if (selectedPlatform && groupPlatform !== selectedPlatform) return false;
+      
+      // Handle region filtering (normalize spaces and cases)
+      if (selectedRegion && selectedRegion !== 'all') {
+        const groupRegion = (g.region || '').toLowerCase().replace(/\s+/g, '_');
+        if (groupRegion !== selectedRegion) return false;
+      }
+
       if (search && !g.name.toLowerCase().includes(search.toLowerCase()) && !(g.description || '').toLowerCase().includes(search.toLowerCase())) return false;
       return true;
     });
@@ -118,40 +135,38 @@ export default function GroupsPage() {
             </div>
 
             {/* Regions & Search */}
-            {selectedPlatform && (
-              <div className="flex flex-col md:flex-row flex-wrap items-start md:items-center gap-3 animate-fade-in relative z-20">
-                <div className="relative flex-1 min-w-[200px] max-w-sm">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
-                  <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search groups..." className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
-                </div>
-                
-                <div className="flex flex-wrap gap-2">
+            <div className="flex flex-col md:flex-row flex-wrap items-start md:items-center gap-3 relative z-20 mt-4">
+              <div className="relative flex-1 min-w-[200px] max-w-sm">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
+                <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search groups..." className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+              </div>
+              
+              <div className="flex flex-wrap gap-2">
+                <button
+                  onClick={() => setSelectedRegion('')}
+                  className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${
+                    !selectedRegion
+                      ? 'bg-primary text-white shadow-sm'
+                      : 'bg-white text-text-primary border border-border hover:border-primary'
+                  }`}
+                >
+                  All Regions
+                </button>
+                {REGIONS.map((r) => (
                   <button
-                    onClick={() => setSelectedRegion('')}
-                    className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${
-                      !selectedRegion
+                    key={r.key}
+                    onClick={() => setSelectedRegion(r.key === selectedRegion ? '' : r.key)}
+                    className={`flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${
+                      selectedRegion === r.key
                         ? 'bg-primary text-white shadow-sm'
                         : 'bg-white text-text-primary border border-border hover:border-primary'
                     }`}
                   >
-                    All Regions
+                    <span>{r.icon}</span> {r.label}
                   </button>
-                  {REGIONS.map((r) => (
-                    <button
-                      key={r.key}
-                      onClick={() => setSelectedRegion(r.key === selectedRegion ? '' : r.key)}
-                      className={`flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${
-                        selectedRegion === r.key
-                          ? 'bg-primary text-white shadow-sm'
-                          : 'bg-white text-text-primary border border-border hover:border-primary'
-                      }`}
-                    >
-                      <span>{r.icon}</span> {r.label}
-                    </button>
-                  ))}
-                </div>
+                ))}
               </div>
-            )}
+            </div>
           </div>
         </div>
       </div>
@@ -165,7 +180,25 @@ export default function GroupsPage() {
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {filtered.map((group) => {
+          {loading ? (
+            [1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+              <div key={i} className="bg-white rounded-[24px] border border-border overflow-hidden">
+                <Skeleton className="w-full h-40" />
+                <div className="p-6 space-y-3">
+                  <div className="flex gap-2">
+                    <Skeleton className="w-20 h-5 rounded-md" />
+                    <Skeleton className="w-24 h-5 rounded-md" />
+                  </div>
+                  <Skeleton className="w-full h-6" />
+                  <div className="flex gap-4">
+                    <Skeleton className="w-16 h-4" />
+                    <Skeleton className="w-24 h-4" />
+                  </div>
+                </div>
+              </div>
+            ))
+          ) : (
+            filtered.map((group) => {
             const pConfig = getPlatformConfig(group.platform || 'whatsapp');
             const link = getPlatformLink(group);
 
@@ -255,10 +288,11 @@ export default function GroupsPage() {
                  </div>
                </Card>
              );
-          })}
+          })
+          )}
         </div>
 
-        {filtered.length === 0 && (
+        {filtered.length === 0 && !loading && (
           <div className="text-center py-20">
             <Users className="w-12 h-12 mx-auto text-text-muted mb-4 opacity-50" />
             <h3 className="text-xl font-bold mb-2">No groups found</h3>

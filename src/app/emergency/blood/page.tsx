@@ -3,6 +3,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import { Droplets, MapPin, Phone, Globe, Loader2, ArrowRight, Search } from 'lucide-react';
+import { Skeleton } from '@/components/ui/Skeleton';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { db } from '@/lib/firebase';
@@ -92,9 +93,20 @@ export default function BloodPage() {
 
       <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {loading ? (
-          <div className="flex flex-col justify-center items-center py-20 gap-3">
-            <Loader2 className="w-8 h-8 animate-spin text-red-500" />
-            <p className="text-text-muted text-sm font-medium">Loading blood banks...</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+              <div key={i} className="bg-white rounded-[28px] border border-border p-6 text-center space-y-4">
+                <Skeleton className="w-12 h-12 rounded-full mx-auto" />
+                <Skeleton className="w-3/4 h-6 mx-auto" />
+                <Skeleton className="w-1/2 h-4 mx-auto mb-6" />
+                <div className="space-y-2 text-left">
+                  <Skeleton className="w-full h-4" />
+                  <Skeleton className="w-full h-4" />
+                  <Skeleton className="w-full h-4" />
+                </div>
+                <Skeleton className="w-full h-12 rounded-2xl mt-4" />
+              </div>
+            ))}
           </div>
         ) : (
           <>

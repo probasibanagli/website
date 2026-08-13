@@ -6,7 +6,9 @@ import { MapPin, Phone, MessageCircle, Search, CheckCircle2, ExternalLink, Home,
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/card';
-import { CITIES, FOOD_AREAS } from '@/lib/constants';
+import { Skeleton } from '@/components/ui/Skeleton';
+import { CITIES, FOOD_AREAS, FOOD_TAMIL_WORDS } from '@/lib/constants';
+import { WordHelper } from '@/components/ui/WordHelper';
 import { getWhatsAppUrl } from '@/lib/utils';
 import { useFirestore } from '@/lib/hooks/useFirestore';
 import { FoodListing } from '@/types';
@@ -50,7 +52,7 @@ function ListingCoverImage({ name, city, mapsUrl, imageUrl, type, mapEmbedCode, 
 
   if (error || !imgSrc) {
     return (
-      <div className="absolute inset-0 bg-gradient-to-br from-orange-50 to-amber-50 flex items-center justify-center">
+      <div className="absolute inset-0 bg-orange-50 flex items-center justify-center">
         <div className="text-black opacity-45">
           {fallbackIcon}
         </div>
@@ -125,7 +127,9 @@ export default function FoodPage() {
     <div className="min-h-screen bg-surface">
       <div className="bg-white border-b border-border">
         <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="flex items-center gap-2 text-sm text-text-muted mb-4">
+          <div className="flex flex-col lg:flex-row gap-8 justify-between">
+            <div className="flex-1">
+              <div className="flex items-center gap-2 text-sm text-text-muted mb-4">
             <Link href="/" className="hover:text-primary">Home</Link><span>/</span>
             <Link href="/explore/food" className="hover:text-primary">Explore</Link><span>/</span>
             <span className="text-text-primary font-medium">Food</span>
@@ -243,15 +247,27 @@ export default function FoodPage() {
               </button>
             )}
           </div>
+            </div>
+            
+            {/* Right Sidebar for Word Helper */}
+            <div className="w-full lg:w-[450px] xl:w-[500px] shrink-0 flex items-center">
+              <WordHelper 
+                words={FOOD_TAMIL_WORDS} 
+                title="Food Word Helper" 
+                subtitle="Essential food and dining phrases in Tamil & Bengali"
+                variant="horizontal"
+              />
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Results */}
       <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <p className="text-sm text-text-muted mb-6"><span className="font-semibold text-text-primary">{filtered.length}</span> places found</p>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filtered.map((food) => {
-            // Dynamic mock details matching mockup style
+                // Dynamic mock details matching mockup style
             const reviewsCount = 50 + (food.name.charCodeAt(1) % 150);
             
             // Build custom tags
@@ -360,12 +376,24 @@ export default function FoodPage() {
           </div>
         )}
         {loading && (
-          <div className="text-center py-20 flex flex-col items-center gap-4">
-            <div className="w-10 h-10 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
-            <p className="text-text-muted text-sm font-medium animate-pulse">Fetching fresh listings...</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+              <div key={i} className="bg-white rounded-2xl shadow-sm border border-border overflow-hidden">
+                <Skeleton className="w-full h-48" />
+                <div className="p-4 space-y-3">
+                  <Skeleton className="w-3/4 h-6" />
+                  <Skeleton className="w-1/2 h-4" />
+                  <div className="flex gap-2 pt-2">
+                     <Skeleton className="w-16 h-6 rounded-full" />
+                     <Skeleton className="w-16 h-6 rounded-full" />
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         )}
       </div>
     </div>
   );
 }
+
