@@ -90,110 +90,125 @@ export default function StayDetailPage() {
           <ArrowLeft className="w-4 h-4" /> Back to listings
         </Link>
 
-        {/* Image */}
-        <div className="relative h-64 sm:h-80 bg-gradient-to-br from-primary-light to-accent-light rounded-2xl flex items-center justify-center mb-8 overflow-hidden border border-border/40 shadow-inner">
-          <ListingCoverImage
-            name={listing.name}
-            city={listing.city}
-            mapsUrl={listing.google_maps_url}
-            imageUrl={listing.image_url}
-            type={listing.accommodation_type?.toLowerCase() || listing.type}
-            mapEmbedCode={listing.map_embed_code}
-            fallbackIcon={<Home className="w-24 h-24" />}
-          />
-          <div className="absolute top-4 left-4 flex gap-2">
-            <Badge variant={(listing.accommodation_type?.toLowerCase() || listing.type) as 'pg' | 'hotel' | 'rental'}>{(listing.accommodation_type || listing.type || 'STAY').toUpperCase()}</Badge>
-            {listing.verified && <Badge variant="verified"><CheckCircle2 className="w-3 h-3 mr-1" /> Verified</Badge>}
+        {/* Header Info */}
+        <div className="mb-6">
+          <div className="flex items-start justify-between gap-4">
+            <h1 className="text-2xl sm:text-3xl font-bold font-display text-text-primary">{listing.name}</h1>
+            {listing.rating && (
+              <div className="flex items-center gap-1.5 bg-white border border-[#E4E9F2] px-3 py-1.5 rounded-full shadow-sm whitespace-nowrap text-sm">
+                <Star className="w-4 h-4 fill-[#B06000] text-[#B06000]" />
+                <span className="font-bold text-gray-900">{listing.rating}</span>
+              </div>
+            )}
+          </div>
+          <div className="flex items-center gap-1.5 mt-2 text-sm text-text-muted">
+            <MapPin className="w-4 h-4" /> {listing.address || `${listing.area}, ${listing.city}`}
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          {/* Main Content */}
-          <div className="lg:col-span-2 space-y-6">
-            <div>
-              <div className="flex items-start justify-between gap-4">
-                <h1 className="text-3xl font-bold font-display text-text-primary">{listing.name}</h1>
-                {listing.rating && (
-                  <div className="flex items-center gap-1.5 bg-white border border-[#E4E9F2] px-3 py-1.5 rounded-full shadow-sm whitespace-nowrap">
-                    <Star className="w-4 h-4 fill-[#B06000] text-[#B06000]" />
-                    <span className="font-bold text-gray-900">{listing.rating}</span>
-                  </div>
+        {/* Image & Map row (75% Image / 25% Map) */}
+        <div className="flex flex-col lg:flex-row gap-4 mb-8 w-full">
+          <div className="relative w-full lg:w-[calc(75%-12px)] lg:flex-none h-72 sm:h-[400px] bg-gradient-to-br from-primary-light to-accent-light rounded-2xl flex items-center justify-center overflow-hidden border border-border/40 shadow-inner">
+            <ListingCoverImage
+              name={listing.name}
+              city={listing.city}
+              mapsUrl={listing.google_maps_url}
+              imageUrl={listing.image_url}
+              type={listing.accommodation_type?.toLowerCase() || listing.type}
+              mapEmbedCode={listing.map_embed_code}
+              fallbackIcon={<Home className="w-20 h-20" />}
+            />
+            <div className="absolute top-4 left-4 flex gap-2">
+              <Badge variant={(listing.accommodation_type?.toLowerCase() || listing.type) as 'pg' | 'hotel' | 'rental'}>{(listing.accommodation_type || listing.type || 'STAY').toUpperCase()}</Badge>
+              {listing.verified && <Badge variant="verified"><CheckCircle2 className="w-3.5 h-3.5 mr-1" /> Verified</Badge>}
+            </div>
+          </div>
+          <div className="w-full lg:w-[calc(25%-4px)] lg:flex-none rounded-2xl overflow-hidden border border-border h-72 sm:h-[400px] bg-surface">
+            <MapEmbed 
+              name={listing.name}
+              address={listing.address}
+              area={listing.area}
+              city={listing.city}
+              googleMapsUrl={listing.google_maps_url}
+              mapEmbedCode={listing.map_embed_code}
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          {/* Left Column: About & Details */}
+          <div className="lg:col-span-7 space-y-6">
+            {/* About & Details Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <Card className="p-5 flex flex-col justify-between">
+                <div>
+                  <h3 className="text-lg font-bold mb-3">About this place</h3>
+                  <p className="text-sm text-text-muted leading-relaxed">{listing.description}</p>
+                </div>
+              </Card>
+
+              <div className="space-y-4">
+                {(listing.room_type || listing.gender || listing.deposit_amount || listing.available_rooms) && (
+                  <Card className="p-4">
+                    <h3 className="text-sm font-bold mb-3 text-text-primary">Details</h3>
+                    <div className="grid grid-cols-2 gap-3 text-sm">
+                      {listing.room_type && <div className="flex items-center gap-2"><Bed className="w-4 h-4 text-primary" /><span className="font-semibold capitalize truncate">{listing.room_type}</span></div>}
+                      {listing.gender && <div className="flex items-center gap-2"><Users className="w-4 h-4 text-primary" /><span className="font-semibold capitalize truncate">{listing.gender}</span></div>}
+                      {listing.deposit_amount !== undefined && <div className="flex items-center gap-2"><IndianRupee className="w-4 h-4 text-primary" /><span className="font-semibold truncate">Dep: {formatPrice(listing.deposit_amount)}</span></div>}
+                      {listing.available_rooms !== undefined && <div className="flex items-center gap-2"><Shield className="w-4 h-4 text-primary" /><span className="font-semibold truncate">Rooms: {listing.available_rooms}</span></div>}
+                    </div>
+                  </Card>
                 )}
-              </div>
-              <div className="flex items-center gap-1.5 mt-2 text-text-muted">
-                <MapPin className="w-4 h-4" /> {listing.address || `${listing.area}, ${listing.city}`}
+
+                {((listing.amenities && listing.amenities.length > 0) || listing.bengali_food || listing.bengali_friendly) && (
+                  <Card className="p-4">
+                    <h3 className="text-sm font-bold mb-3 text-text-primary">Amenities</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {(listing.amenities || []).map((a: string) => (
+                        <Badge key={a} variant="teal">{a}</Badge>
+                      ))}
+                      {listing.bengali_food && <Badge variant="bengali">🍛 Bengali Food Available</Badge>}
+                      {listing.bengali_friendly && <Badge variant="bengali">🤝 Bengali-Friendly</Badge>}
+                    </div>
+                  </Card>
+                )}
               </div>
             </div>
-
-            <Card>
-              <h3 className="text-lg font-bold mb-3">About this place</h3>
-              <p className="text-text-muted leading-relaxed">{listing.description}</p>
-            </Card>
-
-            {(listing.room_type || listing.gender || listing.deposit_amount || listing.available_rooms) && (
-            <Card>
-              <h3 className="text-lg font-bold mb-4">Details</h3>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                {listing.room_type && <div className="flex items-center gap-3"><Bed className="w-5 h-5 text-primary" /><div><p className="text-xs text-text-muted">Room Type</p><p className="text-sm font-semibold capitalize">{listing.room_type}</p></div></div>}
-                {listing.gender && <div className="flex items-center gap-3"><Users className="w-5 h-5 text-primary" /><div><p className="text-xs text-text-muted">For</p><p className="text-sm font-semibold capitalize">{listing.gender}</p></div></div>}
-                {listing.deposit_amount !== undefined && <div className="flex items-center gap-3"><IndianRupee className="w-5 h-5 text-primary" /><div><p className="text-xs text-text-muted">Deposit</p><p className="text-sm font-semibold">{formatPrice(listing.deposit_amount)}</p></div></div>}
-                {listing.available_rooms !== undefined && <div className="flex items-center gap-3"><Shield className="w-5 h-5 text-primary" /><div><p className="text-xs text-text-muted">Available Rooms</p><p className="text-sm font-semibold">{listing.available_rooms}</p></div></div>}
-              </div>
-            </Card>
-            )}
-
-            {((listing.amenities && listing.amenities.length > 0) || listing.bengali_food || listing.bengali_friendly) && (
-            <Card>
-              <h3 className="text-lg font-bold mb-3">Amenities</h3>
-              <div className="flex flex-wrap gap-2">
-                {(listing.amenities || []).map((a: string) => (
-                  <Badge key={a} variant="teal">{a}</Badge>
-                ))}
-                {listing.bengali_food && <Badge variant="bengali">🍛 Bengali Food Available</Badge>}
-                {listing.bengali_friendly && <Badge variant="bengali">🤝 Bengali-Friendly</Badge>}
-              </div>
-            </Card>
-            )}
           </div>
 
-          {/* Sidebar */}
-          <div className="space-y-4">
-            <Card className="bg-gradient-to-br from-primary-light to-white border-primary/20">
-              <p className="text-3xl font-bold text-primary">{formatPrice(listing.price_monthly || listing.price_per_month || listing.price_daily || 0)}</p>
-              <p className="text-sm text-text-muted">{listing.price_daily ? 'per day' : 'per month'}</p>
-              {listing.price_range && <p className="text-xs text-text-muted mt-1">{listing.price_range}</p>}
-              <div className="mt-4 space-y-2">
-                <p className="text-sm"><span className="font-medium">Contact:</span> {listing.contact_person_name || listing.owner_name}</p>
-                {(listing.contact_phone || listing.owner_phone) && (
-                  <p className="flex items-center gap-1.5 text-sm font-medium">
-                    <Phone className="w-4 h-4 text-primary" /> +91 {listing.contact_phone || listing.owner_phone}
-                    {listing.verified && <CheckCircle2 className="w-4 h-4 text-green-500" />}
-                  </p>
-                )}
+          {/* Right Column: Pricing & Contact Actions */}
+          <div className="lg:col-span-5 space-y-6">
+            <Card className="bg-gradient-to-br from-primary-light to-white border-primary/20 p-6 space-y-6">
+              <div className="flex justify-between items-start gap-4">
+                <div>
+                  <p className="text-3xl font-bold text-primary">{formatPrice(listing.price_monthly || listing.price_per_month || listing.price_daily || 0)}</p>
+                  <p className="text-sm text-text-muted">{listing.price_daily ? 'per day' : 'per month'}</p>
+                  {listing.price_range && <p className="text-xs text-text-muted mt-1">{listing.price_range}</p>}
+                </div>
+                <div className="text-right text-sm">
+                  <p className="font-semibold text-text-primary">{listing.contact_person_name || listing.owner_name}</p>
+                  {(listing.contact_phone || listing.owner_phone) && (
+                    <p className="flex items-center justify-end gap-1 mt-1.5 font-medium text-text-muted">
+                      <Phone className="w-4 h-4 text-primary" /> +91 {listing.contact_phone || listing.owner_phone}
+                    </p>
+                  )}
+                </div>
               </div>
-              <div className="mt-6 space-y-3">
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 {(listing.contact_phone || listing.owner_phone) && (
-                  <a href={`tel:${listing.contact_phone || listing.owner_phone}`}><Button variant="primary" className="w-full"><Phone className="w-4 h-4" /> Call Owner</Button></a>
-                )}
-                {(listing.contact_whatsapp || listing.owner_whatsapp) && (
-                  <a href={getWhatsAppUrl(listing.contact_whatsapp || listing.owner_whatsapp, `Hi, I'm interested in "${listing.name}" from ProbasiBangali.in`)} target="_blank" rel="noopener noreferrer">
-                    <Button variant="secondary" className="w-full mt-2"><MessageCircle className="w-4 h-4" /> WhatsApp</Button>
+                  <a href={`tel:${listing.contact_phone || listing.owner_phone}`} className="w-full">
+                    <Button variant="primary" className="w-full"><Phone className="w-4 h-4" /> Call Owner</Button>
                   </a>
                 )}
-                <a href={listing.google_maps_url || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${listing.name}, ${listing.address ? `${listing.address}, ` : ''}${listing.area}, ${listing.city}`)}`} target="_blank" rel="noopener noreferrer">
-                  <Button variant="outline" className="w-full mt-2"><MapPin className="w-4 h-4" /> Open in Google Maps</Button>
+                {(listing.contact_whatsapp || listing.owner_whatsapp) && (
+                  <a href={getWhatsAppUrl(listing.contact_whatsapp || listing.owner_whatsapp, `Hi, I'm interested in "${listing.name}" from ProbasiBangali.in`)} target="_blank" rel="noopener noreferrer" className="w-full">
+                    <Button variant="secondary" className="w-full"><MessageCircle className="w-4 h-4" /> WhatsApp</Button>
+                  </a>
+                )}
+                <a href={listing.google_maps_url || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${listing.name}, ${listing.address ? `${listing.address}, ` : ''}${listing.area}, ${listing.city}`)}`} target="_blank" rel="noopener noreferrer" className="w-full">
+                  <Button variant="outline" className="w-full"><MapPin className="w-4 h-4" /> Open in Maps</Button>
                 </a>
-              </div>
-              
-              <div className="mt-6 rounded-xl overflow-hidden border border-border h-48 bg-surface">
-                <MapEmbed 
-                  name={listing.name}
-                  address={listing.address}
-                  area={listing.area}
-                  city={listing.city}
-                  googleMapsUrl={listing.google_maps_url}
-                  mapEmbedCode={listing.map_embed_code}
-                />
               </div>
             </Card>
           </div>
