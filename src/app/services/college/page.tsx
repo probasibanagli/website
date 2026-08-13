@@ -233,13 +233,7 @@ export default function CollegePage() {
                       <div>
                         {/* Image banner with floating badge */}
                         <div className="relative w-full h-44 bg-slate-100 overflow-hidden">
-                          {college.image_url ? (
-                            <img src={college.image_url} alt={college.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                          ) : (
-                            <div className="w-full h-full bg-gradient-to-br from-indigo-50 to-blue-50 flex items-center justify-center">
-                              <GraduationCap className="w-12 h-12 text-primary opacity-30 animate-pulse" />
-                            </div>
-                          )}
+                          <CollegeCoverImage name={college.name} city={college.city} mapsUrl={college.google_maps_url} imageUrl={college.image_url} isSchool={college.category === 'school'} />
                           
                           {/* Floating Type/Category Badge (Top Right) */}
                           <div className="absolute top-4 right-4 shadow-sm z-10">
@@ -277,6 +271,19 @@ export default function CollegePage() {
                       {/* Card Content Panel */}
                       <div className="p-5 flex-1 flex flex-col justify-between">
                         <div>
+                          {/* College / School Title & Location */}
+                          <div className="mb-3">
+                            <h3 className="text-base font-bold font-display text-text-primary line-clamp-2 group-hover:text-primary transition-colors">
+                              {college.name}
+                            </h3>
+                            {college.city && (
+                              <p className="text-xs text-text-muted mt-1 flex items-center gap-1 font-medium">
+                                <MapPin className="w-3.5 h-3.5 text-primary shrink-0" />
+                                <span>{college.city}{college.area ? `, ${college.area}` : ''}</span>
+                              </p>
+                            )}
+                          </div>
+
                           {/* Helpline Info */}
                           {college.phone && (
                             <div className="flex items-center gap-2 text-sm text-[#3C4043] font-medium">

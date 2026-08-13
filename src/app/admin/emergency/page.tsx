@@ -9,7 +9,7 @@ import { canAccess } from '@/lib/permissions';
 import { COLLECTIONS } from '@/lib/firestore/collections';
 import type { Hospital, BengaliDoctor, BengaliStaff } from '@/types';
 import ImageUpload from '@/components/admin/ImageUpload';
-import { Plus, Pencil, Trash2, X, Loader2, Shield, Building2, UserRound, PhoneCall, CheckCircle, Users } from 'lucide-react';
+import { Plus, Pencil, Trash2, X, Loader2, Shield, Building2, UserRound, PhoneCall, CheckCircle, Users, ArrowLeft, Save } from 'lucide-react';
 
 const CHENNAI_AREAS = ['Adyar', 'Alandur', 'Ambattur', 'Anna Nagar', 'Ashok Nagar', 'Aminjikarai', 'Avadi', 'Besant Nagar', 'Broadway', 'Chromepet', 'Egmore', 'Guindy', 'Kilpauk', 'Kodambakkam', 'Kolathur', 'Madipakkam', 'Madhavaram', 'Mambalam', 'Manapakkam', 'Medavakkam', 'Mogappair', 'Nanganallur', 'OMR', 'Pallavaram', 'Perambur', 'Porur', 'Royapettah', 'Saidapet', 'Sholinganallur', 'Tambaram', 'T Nagar', 'Thiruvanmiyur', 'Triplicane', 'Vadapalani', 'Velachery', 'Villivakkam', 'Virugambakkam', 'West Mambalam', 'Greams Road', 'Gandhi Nagar', 'Koyembedu', 'Mylapore', 'Perungudi'].sort();
 const LANGUAGES = ['Bengali', 'Tamil', 'English', 'Hindi', 'Telugu', 'Malayalam', 'Kannada', 'Urdu'];
@@ -145,6 +145,7 @@ function AdminEmergencyPageContent() {
           : { languages: ['Bengali'], department: 'Reception', otp_required: true }
     );
     setShowForm(true);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   function openEdit(item: any) {
@@ -168,6 +169,7 @@ function AdminEmergencyPageContent() {
     }
     setFormData(data);
     setShowForm(true);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   async function handleSave() {
@@ -261,6 +263,292 @@ function AdminEmergencyPageContent() {
   if (!canView) return (
     <div className="text-center py-20"><Shield className="w-12 h-12 text-red-500 mx-auto mb-4" /><h2 className="text-xl font-bold text-text-primary mb-2">No Access</h2><p className="text-text-muted">You don't have permission to access this module.</p></div>
   );
+
+  if (showForm) {
+    return (
+      <div className="space-y-6 animate-fade-in">
+        <div className="flex items-center gap-4">
+          <button
+            type="button"
+            onClick={() => setShowForm(false)}
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-surface hover:bg-surface/80 border border-border text-text-muted hover:text-text-primary transition-colors text-sm font-medium cursor-pointer"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to List
+          </button>
+          <div>
+            <h1 className="text-2xl font-bold text-text-primary">
+              {editId ? 'Edit' : 'Add New'} {activeTab === 'hospitals' ? 'Hospital' : activeTab === 'doctors' ? 'Doctor' : 'Staff'}
+            </h1>
+            <p className="text-text-muted text-sm mt-0.5">Fill in the fields below to update records.</p>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-3xl border border-border shadow-sm overflow-hidden">
+          <form className="p-6 md:p-8 space-y-6" onSubmit={(e) => { e.preventDefault(); handleSave(); }}>
+            {activeTab === 'hospitals' ? (
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Hospital Name *</label>
+                    <input type="text" value={formData.name || ''} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-text-primary mb-1.5">City *</label>
+                    <input type="text" value={formData.city || ''} onChange={e => setFormData({...formData, city: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Area/Location *</label>
+                    <select value={formData.area || ''} onChange={e => setFormData({...formData, area: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm cursor-pointer">
+                      <option value="">Select Area...</option>
+                      {CHENNAI_AREAS.map(a => <option key={a} value={a}>{a}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Category *</label>
+                    <select value={formData.category || 'Private'} onChange={e => setFormData({...formData, category: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm cursor-pointer">
+                      <option value="Private">Private</option>
+                      <option value="Government">Government</option>
+                      <option value="Trust/Charity">Trust/Charity</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Emergency Helpline *</label>
+                    <input type="text" value={formData.emergency_phone || ''} onChange={e => setFormData({...formData, emergency_phone: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-text-primary mb-1.5">General Phone</label>
+                    <input type="text" value={formData.phone || ''} onChange={e => setFormData({...formData, phone: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Full Address</label>
+                    <input type="text" value={formData.address || ''} onChange={e => setFormData({...formData, address: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Google Maps Link</label>
+                    <input type="text" value={formData.google_maps_url || ''} onChange={e => setFormData({...formData, google_maps_url: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" placeholder="https://maps.google.com/..." />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Hospital Cover Image</label>
+                    <ImageUpload value={formData.image_url || ''} onChange={(url) => setFormData({...formData, image_url: url})} folder="admin_uploads/hospitals" />
+                  </div>
+                </div>
+
+                <div className="pt-4 border-t border-border space-y-3">
+                  <label className="block text-sm font-semibold text-text-primary">Key Specializations</label>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    {PREDEFINED_SPECIALIZATIONS.map(spec => (
+                      <label key={spec} className="flex items-center gap-2 cursor-pointer">
+                        <input 
+                          type="checkbox" 
+                          checked={(formData.specializations || []).includes(spec)}
+                          onChange={(e) => {
+                            const current = formData.specializations || [];
+                            if (e.target.checked) {
+                              setFormData({ ...formData, specializations: [...current, spec] });
+                            } else {
+                              setFormData({ ...formData, specializations: current.filter((s: string) => s !== spec) });
+                            }
+                          }}
+                          className="w-4 h-4 rounded border-border"
+                        />
+                        <span className="text-sm text-text-primary">{spec}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="pt-4 border-t border-border grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" checked={!!formData.is_24_7} onChange={e => setFormData({...formData, is_24_7: e.target.checked})} className="w-4 h-4 rounded border-border" />
+                    <span className="text-sm font-semibold text-text-primary">24/7 Emergency Care</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" checked={!!formData.has_bengali_doctor} onChange={e => setFormData({...formData, has_bengali_doctor: e.target.checked})} className="w-4 h-4 rounded border-border" />
+                    <span className="text-sm font-semibold text-text-primary">Bengali Speaking Doctor</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" checked={!!formData.main_branch} onChange={e => setFormData({...formData, main_branch: e.target.checked})} className="w-4 h-4 rounded border-border" />
+                    <span className="text-sm font-semibold text-text-primary">Main Branch</span>
+                  </label>
+                </div>
+              </>
+            ) : activeTab === 'doctors' ? (
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Doctor Name *</label>
+                    <input type="text" value={formData.doctor_name || ''} onChange={e => setFormData({...formData, doctor_name: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" placeholder="e.g. Dr. Sourav Ganguly" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Specialization *</label>
+                    <select value={formData.specialization || 'Cardiology'} onChange={e => setFormData({...formData, specialization: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm cursor-pointer">
+                      {PREDEFINED_SPECIALIZATIONS.map(s => <option key={s} value={s}>{s}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Designation</label>
+                    <input type="text" value={formData.designation || ''} onChange={e => setFormData({...formData, designation: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" placeholder="e.g. Senior Consultant" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Experience</label>
+                    <input type="text" value={formData.experience || ''} onChange={e => setFormData({...formData, experience: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" placeholder="e.g. 15 Years" />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Associated Hospitals (Multi-select) *</label>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 p-3 bg-surface rounded-xl border border-border max-h-40 overflow-y-auto">
+                      {hospitals.map(h => {
+                        const isChecked = (formData.hospital_ids || []).includes(h.id);
+                        return (
+                          <label key={h.id} className="flex items-center gap-2 text-sm cursor-pointer hover:bg-white/50 p-1.5 rounded-lg transition-colors">
+                            <input
+                              type="checkbox"
+                              checked={isChecked}
+                              onChange={(e) => {
+                                const current = formData.hospital_ids || [];
+                                const next = e.target.checked ? [...current, h.id] : current.filter((id: string) => id !== h.id);
+                                setFormData({ ...formData, hospital_ids: next, hospital_id: next[0] || '' });
+                              }}
+                              className="w-4 h-4 rounded border-border"
+                            />
+                            <span className="truncate">{h.name} ({h.city})</span>
+                          </label>
+                        );
+                      })}
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Contact Phone *</label>
+                    <input type="text" value={formData.phone || ''} onChange={e => setFormData({...formData, phone: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-text-primary mb-1.5">OPD Timings</label>
+                    <input type="text" value={formData.opd_timings || ''} onChange={e => setFormData({...formData, opd_timings: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" placeholder="e.g. Mon-Sat 10:00 AM - 2:00 PM" />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Languages Spoken</label>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                      {LANGUAGES.map(lang => (
+                        <label key={lang} className="flex items-center gap-2 cursor-pointer">
+                          <input 
+                            type="checkbox" 
+                            checked={(formData.languages || []).includes(lang)}
+                            onChange={(e) => {
+                              const current = formData.languages || [];
+                              if (e.target.checked) {
+                                setFormData({ ...formData, languages: [...current, lang] });
+                              } else {
+                                setFormData({ ...formData, languages: current.filter((l: string) => l !== lang) });
+                              }
+                            }}
+                            className="w-4 h-4 rounded border-border"
+                          />
+                          <span className="text-sm text-text-primary">{lang}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="md:col-span-2 flex items-center gap-3 mt-2">
+                    <input 
+                      type="checkbox" 
+                      id="otp_required" 
+                      checked={formData.otp_required !== false} 
+                      onChange={e => setFormData({...formData, otp_required: e.target.checked})} 
+                      className="w-5 h-5 rounded border-border" 
+                    />
+                    <label htmlFor="otp_required" className="text-sm font-semibold text-text-primary cursor-pointer">
+                      Require OTP verification to view doctor contact number
+                    </label>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Staff Name *</label>
+                    <input type="text" value={formData.name || ''} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Role/Title *</label>
+                    <input type="text" value={formData.role || ''} onChange={e => setFormData({...formData, role: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" placeholder="e.g. Senior Nurse / Translator" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Department *</label>
+                    <select value={formData.department || 'Reception'} onChange={e => setFormData({...formData, department: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm cursor-pointer">
+                      {PREDEFINED_DEPARTMENTS.map(d => <option key={d} value={d}>{d}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Hospital *</label>
+                    <select value={formData.hospital_id || ''} onChange={e => setFormData({...formData, hospital_id: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm cursor-pointer">
+                      <option value="">Select Hospital...</option>
+                      {hospitals.map(h => <option key={h.id} value={h.id}>{h.name} ({h.city})</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Phone Number *</label>
+                    <input type="text" value={formData.phone || ''} onChange={e => setFormData({...formData, phone: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Shift/Availability</label>
+                    <input type="text" value={formData.shift || ''} onChange={e => setFormData({...formData, shift: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" placeholder="e.g. Day Shift 8 AM - 4 PM" />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Languages Spoken</label>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                      {LANGUAGES.map(lang => (
+                        <label key={lang} className="flex items-center gap-2 cursor-pointer">
+                          <input 
+                            type="checkbox" 
+                            checked={(formData.languages || []).includes(lang)}
+                            onChange={(e) => {
+                              const current = formData.languages || [];
+                              if (e.target.checked) {
+                                setFormData({ ...formData, languages: [...current, lang] });
+                              } else {
+                                setFormData({ ...formData, languages: current.filter((l: string) => l !== lang) });
+                              }
+                            }}
+                            className="w-4 h-4 rounded border-border"
+                          />
+                          <span className="text-sm text-text-primary">{lang}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="md:col-span-2 flex items-center gap-3 mt-2">
+                    <input 
+                      type="checkbox" 
+                      id="staff_otp_required" 
+                      checked={formData.otp_required !== false} 
+                      onChange={e => setFormData({...formData, otp_required: e.target.checked})} 
+                      className="w-5 h-5 rounded border-border" 
+                    />
+                    <label htmlFor="staff_otp_required" className="text-sm font-semibold text-text-primary cursor-pointer">
+                      Require OTP verification to view staff profile details
+                    </label>
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Description</label>
+                    <textarea rows={3} value={formData.description || ''} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm resize-none" />
+                  </div>
+                </div>
+              </>
+            )}
+
+            <div className="flex items-center justify-end gap-3 pt-4 border-t border-border">
+              <button type="button" onClick={() => setShowForm(false)} className="px-6 py-2.5 rounded-xl text-sm font-semibold text-text-muted hover:text-text-primary hover:bg-surface border border-border transition-colors cursor-pointer">Cancel</button>
+              <button type="submit" disabled={saving} className="inline-flex items-center gap-2 px-8 py-2.5 bg-primary hover:bg-primary-dark text-white rounded-xl text-sm font-bold disabled:opacity-50 transition-all shadow-md active:scale-95 cursor-pointer">
+                {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                {saving ? 'Saving...' : 'Save Changes'}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -454,319 +742,6 @@ function AdminEmergencyPageContent() {
         </div>
       )}
 
-      {/* Form Modal */}
-      {showForm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setShowForm(false)} />
-          <div className="relative bg-white rounded-3xl border border-border w-full max-w-2xl max-h-[85vh] overflow-hidden flex flex-col shadow-2xl animate-fade-in">
-            <div className="flex items-center justify-between p-6 border-b border-border">
-              <h3 className="text-xl font-bold text-text-primary">{editId ? 'Edit' : 'Add'} {activeTab === 'hospitals' ? 'Hospital' : activeTab === 'doctors' ? 'Doctor' : 'Staff'}</h3>
-              <button onClick={() => setShowForm(false)} className="p-2 rounded-xl hover:bg-surface text-text-muted transition-colors cursor-pointer"><X className="w-5 h-5" /></button>
-            </div>
-            
-            <div className="flex-1 p-6 overflow-y-auto space-y-5">
-              {activeTab === 'hospitals' ? (
-                <>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Hospital Name *</label>
-                      <input type="text" value={formData.name || ''} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">State *</label>
-                      <input type="text" value={formData.state || 'Tamil Nadu'} onChange={e => setFormData({...formData, state: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">District *</label>
-                      <input type="text" value={formData.district || 'Chennai'} onChange={e => setFormData({...formData, district: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Area</label>
-                      <select value={formData.area || ''} onChange={e => setFormData({...formData, area: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm cursor-pointer">
-                        <option value="">Select Area...</option>
-                        {CHENNAI_AREAS.map(a => <option key={a} value={a}>{a}</option>)}
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">City *</label>
-                      <input type="text" value={formData.city || ''} onChange={e => setFormData({...formData, city: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Full Address</label>
-                      <input type="text" value={formData.address || ''} onChange={e => setFormData({...formData, address: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Phone</label>
-                      <input type="text" value={formData.phone || ''} onChange={e => setFormData({...formData, phone: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Emergency Phone</label>
-                      <input type="text" value={formData.emergency_phone || ''} onChange={e => setFormData({...formData, emergency_phone: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Email</label>
-                      <input type="email" value={formData.email || ''} onChange={e => setFormData({...formData, email: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Website</label>
-                      <input type="text" value={formData.website || ''} onChange={e => setFormData({...formData, website: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Google Maps Link</label>
-                      <input type="text" value={formData.google_maps_url || ''} onChange={e => setFormData({...formData, google_maps_url: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Image URL (Optional)</label>
-                      <ImageUpload 
-                        value={formData.image_url || ''} 
-                        onChange={(url) => setFormData({...formData, image_url: url})}
-                        folder="admin_uploads/emergency"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Hospital Category *</label>
-                      <select value={formData.category || 'Private'} onChange={e => setFormData({...formData, category: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm cursor-pointer">
-                        <option value="Private">Private Hospital</option>
-                        <option value="Government">Government Hospital</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Status *</label>
-                      <select value={formData.status || 'Active'} onChange={e => setFormData({...formData, status: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm cursor-pointer">
-                        <option value="Active">Active</option>
-                        <option value="Inactive">Inactive</option>
-                      </select>
-                    </div>
-                    <div className="md:col-span-2 flex flex-col gap-3">
-                      <div className="flex items-center gap-3">
-                        <input type="checkbox" id="is_24_7" checked={!!formData.is_24_7} onChange={e => setFormData({...formData, is_24_7: e.target.checked})} className="w-5 h-5 rounded border-border" />
-                        <label htmlFor="is_24_7" className="text-sm font-semibold text-text-primary cursor-pointer">24/7 Service</label>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <input type="checkbox" id="has_bengali_doctor" checked={!!formData.has_bengali_doctor} onChange={e => setFormData({...formData, has_bengali_doctor: e.target.checked})} className="w-5 h-5 rounded border-border" />
-                        <label htmlFor="has_bengali_doctor" className="text-sm font-semibold text-text-primary cursor-pointer">Has Bengali Doctor</label>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <input type="checkbox" id="has_bengali_staff" checked={!!formData.has_bengali_staff} onChange={e => setFormData({...formData, has_bengali_staff: e.target.checked})} className="w-5 h-5 rounded border-border" />
-                        <label htmlFor="has_bengali_staff" className="text-sm font-semibold text-text-primary cursor-pointer">Has Bengali Staff</label>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <input type="checkbox" id="main_branch" checked={!!formData.main_branch} onChange={e => setFormData({...formData, main_branch: e.target.checked})} className="w-5 h-5 rounded border-border" />
-                        <label htmlFor="main_branch" className="text-sm font-semibold text-text-primary cursor-pointer">Main Branch</label>
-                      </div>
-                    </div>
-                    <div className="md:col-span-2">
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Specializations</label>
-                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-2">
-                        {PREDEFINED_SPECIALIZATIONS.map(spec => (
-                          <label key={spec} className="flex items-center gap-2 cursor-pointer">
-                            <input 
-                              type="checkbox" 
-                              checked={(formData.specializations || []).includes(spec)}
-                              onChange={(e) => {
-                                const current = formData.specializations || [];
-                                if (e.target.checked) {
-                                  setFormData({ ...formData, specializations: [...current, spec] });
-                                } else {
-                                  setFormData({ ...formData, specializations: current.filter((s: string) => s !== spec) });
-                                }
-                              }}
-                              className="w-4 h-4 rounded border-border"
-                            />
-                            <span className="text-sm text-text-primary">{spec}</span>
-                          </label>
-                        ))}
-                      </div>
-                    </div>
-                    <div className="md:col-span-2">
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Description</label>
-                      <textarea rows={3} value={formData.description || ''} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm resize-none" />
-                    </div>
-                  </div>
-                </>
-              ) : activeTab === 'doctors' ? (
-                <>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Doctor Name *</label>
-                      <input type="text" value={formData.doctor_name || ''} onChange={e => setFormData({...formData, doctor_name: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Specialization *</label>
-                      <select value={formData.specialization || ''} onChange={e => setFormData({...formData, specialization: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm cursor-pointer">
-                        <option value="">Select Specialization...</option>
-                        {PREDEFINED_SPECIALIZATIONS.map(spec => (
-                          <option key={spec} value={spec}>{spec}</option>
-                        ))}
-                      </select>
-                    </div>
-                    <div className="md:col-span-2">
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Assign to Hospitals *</label>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-2 max-h-48 overflow-y-auto p-3 bg-surface rounded-xl border border-border">
-                        {hospitals.map(h => (
-                          <label key={h.id} className="flex items-center gap-2 cursor-pointer">
-                            <input 
-                              type="checkbox" 
-                              checked={(formData.hospital_ids || []).includes(h.id)}
-                              onChange={(e) => {
-                                const current = formData.hospital_ids || [];
-                                if (e.target.checked) {
-                                  setFormData({ ...formData, hospital_ids: [...current, h.id] });
-                                } else {
-                                  setFormData({ ...formData, hospital_ids: current.filter((hid: string) => hid !== h.id) });
-                                }
-                              }}
-                              className="w-4 h-4 rounded border-border"
-                            />
-                            <span className="text-sm text-text-primary">{h.name} ({h.city})</span>
-                          </label>
-                        ))}
-                      </div>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Experience (e.g. 10 years)</label>
-                      <input type="text" value={formData.experience || ''} onChange={e => setFormData({...formData, experience: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
-                    </div>
-                    <div className="md:col-span-2">
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Languages Spoken</label>
-                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-2">
-                        {LANGUAGES.map(lang => (
-                          <label key={lang} className="flex items-center gap-2 cursor-pointer">
-                            <input 
-                              type="checkbox" 
-                              checked={(formData.languages || []).includes(lang)}
-                              onChange={(e) => {
-                                const current = formData.languages || [];
-                                if (e.target.checked) {
-                                  setFormData({ ...formData, languages: [...current, lang] });
-                                } else {
-                                  setFormData({ ...formData, languages: current.filter((l: string) => l !== lang) });
-                                }
-                              }}
-                              className="w-4 h-4 rounded border-border"
-                            />
-                            <span className="text-sm text-text-primary">{lang}</span>
-                          </label>
-                        ))}
-                      </div>
-                    </div>
-                    <div className="md:col-span-2 flex items-center gap-3 mt-2">
-                      <input 
-                        type="checkbox" 
-                        id="otp_required" 
-                        checked={formData.otp_required !== false} 
-                        onChange={e => setFormData({...formData, otp_required: e.target.checked})} 
-                        className="w-5 h-5 rounded border-border" 
-                      />
-                      <label htmlFor="otp_required" className="text-sm font-semibold text-text-primary cursor-pointer">
-                        Require OTP verification to view doctor profile details
-                      </label>
-                    </div>
-                    <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4 mt-2 p-4 bg-surface/50 rounded-xl border border-border">
-                      <h4 className="md:col-span-2 text-sm font-bold text-text-primary">Social Media Profiles</h4>
-                      <div>
-                        <label className="block text-xs font-semibold text-text-primary mb-1.5">LinkedIn URL</label>
-                        <input type="url" value={formData.social_links?.linkedin || ''} onChange={e => setFormData({...formData, social_links: {...formData.social_links, linkedin: e.target.value}})} className="w-full px-4 py-2 bg-white border border-border rounded-lg text-sm" />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-semibold text-text-primary mb-1.5">Facebook URL</label>
-                        <input type="url" value={formData.social_links?.facebook || ''} onChange={e => setFormData({...formData, social_links: {...formData.social_links, facebook: e.target.value}})} className="w-full px-4 py-2 bg-white border border-border rounded-lg text-sm" />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-semibold text-text-primary mb-1.5">Instagram URL</label>
-                        <input type="url" value={formData.social_links?.instagram || ''} onChange={e => setFormData({...formData, social_links: {...formData.social_links, instagram: e.target.value}})} className="w-full px-4 py-2 bg-white border border-border rounded-lg text-sm" />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-semibold text-text-primary mb-1.5">X (Twitter) URL</label>
-                        <input type="url" value={formData.social_links?.x || ''} onChange={e => setFormData({...formData, social_links: {...formData.social_links, x: e.target.value}})} className="w-full px-4 py-2 bg-white border border-border rounded-lg text-sm" />
-                      </div>
-                    </div>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Staff Name *</label>
-                      <input type="text" value={formData.name || ''} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Designation *</label>
-                      <input type="text" value={formData.role || ''} onChange={e => setFormData({...formData, role: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Department *</label>
-                      <select value={formData.department || ''} onChange={e => setFormData({...formData, department: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm cursor-pointer">
-                        <option value="">Select Department...</option>
-                        {PREDEFINED_DEPARTMENTS.map(dept => (
-                          <option key={dept} value={dept}>{dept}</option>
-                        ))}
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Assign to Hospital *</label>
-                      <select value={formData.hospital_id || ''} onChange={e => setFormData({...formData, hospital_id: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm cursor-pointer">
-                        <option value="">Select Hospital...</option>
-                        {hospitals.map(h => <option key={h.id} value={h.id}>{h.name} ({h.city})</option>)}
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Phone</label>
-                      <input type="text" value={formData.phone || ''} onChange={e => setFormData({...formData, phone: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
-                    </div>
-                    <div className="md:col-span-2">
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Languages Spoken</label>
-                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-2">
-                        {LANGUAGES.map(lang => (
-                          <label key={lang} className="flex items-center gap-2 cursor-pointer">
-                            <input 
-                              type="checkbox" 
-                              checked={(formData.languages || []).includes(lang)}
-                              onChange={(e) => {
-                                const current = formData.languages || [];
-                                if (e.target.checked) {
-                                  setFormData({ ...formData, languages: [...current, lang] });
-                                } else {
-                                  setFormData({ ...formData, languages: current.filter((l: string) => l !== lang) });
-                                }
-                              }}
-                              className="w-4 h-4 rounded border-border"
-                            />
-                            <span className="text-sm text-text-primary">{lang}</span>
-                          </label>
-                        ))}
-                      </div>
-                    </div>
-                    <div className="md:col-span-2 flex items-center gap-3 mt-2">
-                      <input 
-                        type="checkbox" 
-                        id="staff_otp_required" 
-                        checked={formData.otp_required !== false} 
-                        onChange={e => setFormData({...formData, otp_required: e.target.checked})} 
-                        className="w-5 h-5 rounded border-border" 
-                      />
-                      <label htmlFor="staff_otp_required" className="text-sm font-semibold text-text-primary cursor-pointer">
-                        Require OTP verification to view staff profile details
-                      </label>
-                    </div>
-                    <div className="md:col-span-2">
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Description</label>
-                      <textarea rows={3} value={formData.description || ''} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm resize-none" />
-                    </div>
-                  </div>
-                </>
-              )}
-            </div>
-            
-            <div className="p-6 border-t border-border flex justify-end gap-3 bg-surface/30">
-              <button onClick={() => setShowForm(false)} className="px-6 py-2.5 rounded-xl text-sm font-semibold text-text-muted hover:text-text-primary hover:bg-surface transition-colors cursor-pointer">Cancel</button>
-              <button onClick={handleSave} disabled={saving} className="inline-flex items-center gap-2 px-8 py-2.5 bg-primary hover:bg-primary-dark text-white rounded-xl text-sm font-bold disabled:opacity-50 transition-all shadow-md active:scale-95 cursor-pointer">
-                {saving && <Loader2 className="w-4 h-4 animate-spin" />} {saving ? 'Saving...' : 'Save Changes'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

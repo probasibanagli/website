@@ -280,7 +280,7 @@ export interface BloodBank {
   city: string;
   address?: string;
   phone?: string;
-  available_groups: string[];
+  available_groups?: string[];
   google_maps_url?: string;
   website?: string;
   coordinator_name?: string;
@@ -288,6 +288,8 @@ export interface BloodBank {
   lat?: number;
   lng?: number;
   image_url?: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface Ambulance {

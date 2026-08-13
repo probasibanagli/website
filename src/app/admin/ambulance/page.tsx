@@ -7,7 +7,7 @@ import { useAuth } from '@/lib/auth/AuthContext';
 import { canAccess } from '@/lib/permissions';
 import { COLLECTIONS } from '@/lib/firestore/collections';
 import type { Ambulance } from '@/types';
-import { Plus, Pencil, Trash2, X, Loader2, Shield, Truck, Upload, Phone, Globe, MapPin } from 'lucide-react';
+import { Plus, Pencil, Trash2, X, Loader2, Shield, Truck, Upload, Phone, Globe, MapPin, ArrowLeft, Save } from 'lucide-react';
 import { CITIES } from '@/lib/constants';
 
 function AmbulancePageContent() {
@@ -38,14 +38,20 @@ function AmbulancePageContent() {
     try {
       const snap = await getDocs(collection(db, COLLECTIONS.ambulances || 'ambulances'));
       setAmbulances(snap.docs.map(d => ({ id: d.id, ...d.data() } as Ambulance)));
-    } catch (e: any) {
+    } catch (e) {
       console.error(e);
     } finally {
       setLoading(false);
     }
   }
 
-  async function handleCsvImport(e: React.ChangeEvent<HTMLInputElement>) {
+  function handleDelete(id: string) {
+    if (!confirm('Are you sure you want to delete this ambulance listing?')) return;
+    setAmbulances(prev => prev.filter(item => item.id !== id));
+    deleteDoc(doc(db, COLLECTIONS.ambulances || 'ambulances', id)).catch(e => console.error(e));
+  }
+
+  function handleCsvImport(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -93,7 +99,6 @@ function AmbulancePageContent() {
         }
 
         const headers = lines[0].map(h => h.toLowerCase().replace(/[^a-z0-9]/g, ''));
-        console.log("Ambulance CSV Headers parsed:", headers);
         
         let nameIdx = headers.findIndex(h => h.includes('name') || h.includes('title') || h.includes('provider') || h.includes('service'));
         let cityIdx = headers.findIndex(h => h.includes('district') || h.includes('city') || h.includes('route') || h.includes('area'));
@@ -103,8 +108,6 @@ function AmbulancePageContent() {
         let typeModeIdx = headers.findIndex(h => h.includes('typemode') || h.includes('type/mode') || h.includes('mode'));
         let notesIdx = headers.findIndex(h => h.includes('notes') || h.includes('source') || h.includes('sourcenotes') || h.includes('source/notes'));
 
-        // Fallback to strict index ordering (Sub-Category, Name, City/Route, Contact, Type/Mode, Address, Notes)
-        // if the crucial 'Name/Provider' field is not detected by string matching
         if (nameIdx === -1) {
           console.warn("Could not match columns by header name, falling back to standard column positions.");
           subCategoryIdx = 0;
@@ -116,63 +119,48 @@ function AmbulancePageContent() {
           notesIdx = 6;
         }
 
-        const batch: Ambulance[] = [];
+        const newItems: Ambulance[] = [];
         const now = new Date().toISOString();
 
-        for (let idx = 1; idx < lines.length; idx++) {
-          const cols = lines[idx];
-          if (cols.length <= nameIdx) continue;
-
-          const name = cols[nameIdx];
+        for (let i = 1; i < lines.length; i++) {
+          const r = lines[i];
+          const name = nameIdx !== -1 && r[nameIdx] ? r[nameIdx] : '';
           if (!name) continue;
 
-          const rawCity = (cityIdx !== -1 && cols[cityIdx]) ? cols[cityIdx] : 'Chennai';
-          const matchedCity = CITIES.find(c => c.toLowerCase() === (rawCity || '').toLowerCase()) || rawCity || 'Chennai';
+          const rawCity = cityIdx !== -1 && r[cityIdx] ? r[cityIdx] : '';
+          let matchedCity = CITIES.find(c => rawCity.toLowerCase().includes(c.toLowerCase())) || 'Chennai';
 
-          const address = (addressIdx !== -1 && cols[addressIdx]) ? cols[addressIdx] : '';
-          const rawPhone = (phoneIdx !== -1 && cols[phoneIdx]) ? cols[phoneIdx] : '';
-          const phoneVal = (rawPhone === 'NA' || rawPhone === '-' || !rawPhone) ? '' : rawPhone.replace(/^-/, '').trim();
-
-          const subCategory = (subCategoryIdx !== -1 && cols[subCategoryIdx]) ? cols[subCategoryIdx] : '';
-          const typeMode = (typeModeIdx !== -1 && cols[typeModeIdx]) ? cols[typeModeIdx] : '';
-          const sourceNotes = (notesIdx !== -1 && cols[notesIdx]) ? cols[notesIdx] : '';
-
-          const id = `amb-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
-          const newAmbulance: Ambulance = {
-            id,
+          const itemData: Ambulance = {
+            id: `amb-${Date.now()}-${i}-${Math.random().toString(36).slice(2, 6)}`,
             name,
+            sub_category: subCategoryIdx !== -1 && r[subCategoryIdx] ? r[subCategoryIdx] : '',
+            type_mode: typeModeIdx !== -1 && r[typeModeIdx] ? r[typeModeIdx] : '',
             city: matchedCity,
-            address,
-            phone: phoneVal,
-            sub_category: subCategory,
-            type_mode: typeMode,
-            source_notes: sourceNotes,
+            phone: phoneIdx !== -1 && r[phoneIdx] ? r[phoneIdx] : '',
+            address: addressIdx !== -1 && r[addressIdx] ? r[addressIdx] : '',
+            source_notes: notesIdx !== -1 && r[notesIdx] ? r[notesIdx] : '',
             created_at: now,
-            updated_at: now
+            updated_at: now,
           };
 
-          batch.push(newAmbulance);
+          newItems.push(itemData);
         }
 
-        const token = firebaseUser ? await firebaseUser.getIdToken() : 'mock-bypass-token';
-        const res = await fetch('/api/admin/import-csv', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify({ collection: 'ambulances', items: batch })
-        });
-
-        if (!res.ok) {
-          throw new Error('Failed to import CSV server-side');
+        if (newItems.length === 0) {
+          alert('No valid rows found in CSV file.');
+          return;
         }
 
-        setAmbulances(prev => [...batch, ...prev]);
-        alert(`Successfully imported ${batch.length} ambulances from CSV!`);
+        setAmbulances(prev => [...newItems, ...prev]);
+
+        for (const item of newItems) {
+          await setDoc(doc(db, COLLECTIONS.ambulances || 'ambulances', item.id), item);
+        }
+
+        alert(`Successfully imported ${newItems.length} ambulance records!`);
       } catch (err) {
         console.error(err);
-        alert('Failed to parse or import CSV.');
+        alert('Error parsing CSV file. Please make sure format is valid.');
       } finally {
         setLoading(false);
       }
@@ -184,12 +172,14 @@ function AmbulancePageContent() {
     setEditId(null);
     setFormData({});
     setShowForm(true);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   function openEdit(item: Ambulance) {
     setEditId(item.id);
     setFormData({ ...item });
     setShowForm(true);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   async function handleSave() {
@@ -228,51 +218,94 @@ function AmbulancePageContent() {
     }
   }
 
-  async function handleDelete(id: string) {
-    if (!confirm('Are you sure you want to delete this ambulance?')) return;
-    try {
-      setAmbulances(prev => prev.filter(i => i.id !== id));
-      await deleteDoc(doc(db, COLLECTIONS.ambulances || 'ambulances', id));
-    } catch (e) {
-      console.error(e);
-      alert('Error deleting ambulance.');
-    }
-  }
-
   const filtered = ambulances
-    .filter(b => {
-      if (cityFilter && b.city !== cityFilter) return false;
-      if (searchQuery) {
-        const q = searchQuery.toLowerCase();
-        return b.name?.toLowerCase().includes(q) || b.address?.toLowerCase().includes(q);
-      }
-      return true;
+    .filter(item => {
+      const matchCity = !cityFilter || item.city === cityFilter;
+      const q = searchQuery.toLowerCase();
+      const matchQuery = !searchQuery || 
+        (item.name || '').toLowerCase().includes(q) ||
+        (item.address || '').toLowerCase().includes(q) ||
+        (item.phone || '').toLowerCase().includes(q) ||
+        (item.sub_category || '').toLowerCase().includes(q);
+      return matchCity && matchQuery;
     })
     .sort((a, b) => {
-      const getScore = (item: Ambulance) => {
-        let score = 0;
-        if (item.name?.trim()) score++;
-        if (item.sub_category?.trim()) score++;
-        if (item.type_mode?.trim()) score++;
-        if (item.city?.trim()) score++;
-        if (item.phone?.trim()) score++;
-        if (item.address?.trim()) score++;
-        if (item.source_notes?.trim()) score++;
-        return score;
-      };
-
-      const scoreA = getScore(a);
-      const scoreB = getScore(b);
-
-      if (scoreA !== scoreB) {
-        return scoreB - scoreA; // More details first
-      }
       return (a.name || '').localeCompare(b.name || '');
     });
 
   if (!canView) return (
     <div className="text-center py-20"><Shield className="w-12 h-12 text-red-500 mx-auto mb-4" /><h2 className="text-xl font-bold text-text-primary mb-2">No Access</h2><p className="text-text-muted">You don't have permission to access this module.</p></div>
   );
+
+  if (showForm) {
+    return (
+      <div className="space-y-6 animate-fade-in">
+        <div className="flex items-center gap-4">
+          <button
+            type="button"
+            onClick={() => setShowForm(false)}
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-surface hover:bg-surface/80 border border-border text-text-muted hover:text-text-primary transition-colors text-sm font-medium cursor-pointer"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to List
+          </button>
+          <div>
+            <h1 className="text-2xl font-bold text-text-primary">
+              {editId ? 'Edit Ambulance Details' : 'Add New Ambulance Service'}
+            </h1>
+            <p className="text-text-muted text-sm mt-0.5">Fill in the fields below to update directories.</p>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-3xl border border-border shadow-sm overflow-hidden">
+          <form className="p-6 md:p-8 space-y-6" onSubmit={(e) => { e.preventDefault(); handleSave(); }}>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-semibold text-text-primary mb-1.5">Ambulance Name *</label>
+                <input type="text" value={formData.name || ''} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-text-primary mb-1.5">City *</label>
+                <select value={formData.city || ''} onChange={e => setFormData({...formData, city: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm cursor-pointer">
+                  <option value="">Select City...</option>
+                  {CITIES.map(c => <option key={c} value={c}>{c}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-text-primary mb-1.5">Phone *</label>
+                <input type="text" value={formData.phone || ''} onChange={e => setFormData({...formData, phone: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-text-primary mb-1.5">Sub-Category</label>
+                <input type="text" value={formData.sub_category || ''} onChange={e => setFormData({...formData, sub_category: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" placeholder="e.g. Private Ambulance" />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-text-primary mb-1.5">Type/Mode</label>
+                <input type="text" value={formData.type_mode || ''} onChange={e => setFormData({...formData, type_mode: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" placeholder="e.g. Road ALS/BLS" />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-text-primary mb-1.5">Source/Notes</label>
+                <input type="text" value={formData.source_notes || ''} onChange={e => setFormData({...formData, source_notes: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" placeholder="e.g. GVK EMRI operated" />
+              </div>
+              <div className="md:col-span-2">
+                <label className="block text-sm font-semibold text-text-primary mb-1.5">Full Address</label>
+                <input type="text" value={formData.address || ''} onChange={e => setFormData({...formData, address: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
+              </div>
+            </div>
+            
+            <div className="flex items-center justify-end gap-3 pt-4 border-t border-border">
+              <button type="button" onClick={() => setShowForm(false)} className="px-6 py-2.5 rounded-xl text-sm font-semibold text-text-muted hover:text-text-primary hover:bg-surface border border-border transition-colors cursor-pointer">Cancel</button>
+              <button type="submit" disabled={saving} className="inline-flex items-center gap-2 px-8 py-2.5 bg-primary hover:bg-primary-dark text-white rounded-xl text-sm font-bold disabled:opacity-50 transition-all shadow-md active:scale-95 cursor-pointer">
+                {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                {saving ? 'Saving...' : 'Save Changes'}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -374,69 +407,11 @@ function AmbulancePageContent() {
                 ))}
                 {filtered.length === 0 && (
                   <tr>
-                    <td colSpan={canEdit ? 5 : 4} className="p-8 text-center text-text-muted">No ambulances found.</td>
+                    <td colSpan={canEdit ? 7 : 6} className="p-8 text-center text-text-muted">No ambulances found.</td>
                   </tr>
                 )}
               </tbody>
             </table>
-          </div>
-        </div>
-      )}
-
-      {showForm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-          <div className="w-full max-w-2xl bg-white rounded-3xl border border-border shadow-2xl flex flex-col max-h-[90vh] animate-scale-up">
-            <div className="p-6 border-b border-border flex items-center justify-between">
-              <div>
-                <h2 className="text-xl font-bold text-text-primary">{editId ? 'Edit Ambulance Details' : 'Add New Ambulance Service'}</h2>
-                <p className="text-text-muted text-xs mt-0.5">Fill in the fields below to update directories.</p>
-              </div>
-              <button onClick={() => setShowForm(false)} className="p-2 text-text-muted hover:text-text-primary hover:bg-surface rounded-xl transition-colors cursor-pointer"><X className="w-5 h-5" /></button>
-            </div>
-            
-            <div className="p-6 overflow-y-auto flex-1 space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-semibold text-text-primary mb-1.5">Ambulance Name *</label>
-                  <input type="text" value={formData.name || ''} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-text-primary mb-1.5">City *</label>
-                  <select value={formData.city || ''} onChange={e => setFormData({...formData, city: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm cursor-pointer">
-                    <option value="">Select City...</option>
-                    {CITIES.map(c => <option key={c} value={c}>{c}</option>)}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-text-primary mb-1.5">Phone *</label>
-                  <input type="text" value={formData.phone || ''} onChange={e => setFormData({...formData, phone: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-semibold text-text-primary mb-1.5">Sub-Category</label>
-                  <input type="text" value={formData.sub_category || ''} onChange={e => setFormData({...formData, sub_category: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" placeholder="e.g. Private Ambulance" />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-text-primary mb-1.5">Type/Mode</label>
-                  <input type="text" value={formData.type_mode || ''} onChange={e => setFormData({...formData, type_mode: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" placeholder="e.g. Road ALS/BLS" />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-text-primary mb-1.5">Source/Notes</label>
-                  <input type="text" value={formData.source_notes || ''} onChange={e => setFormData({...formData, source_notes: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" placeholder="e.g. GVK EMRI operated" />
-                </div>
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-semibold text-text-primary mb-1.5">Full Address</label>
-                  <input type="text" value={formData.address || ''} onChange={e => setFormData({...formData, address: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
-                </div>
-              </div>
-            </div>
-            
-            <div className="p-6 border-t border-border flex justify-end gap-3 bg-surface/30">
-              <button onClick={() => setShowForm(false)} className="px-6 py-2.5 rounded-xl text-sm font-semibold text-text-muted hover:text-text-primary hover:bg-surface transition-colors cursor-pointer">Cancel</button>
-              <button onClick={handleSave} disabled={saving} className="inline-flex items-center gap-2 px-8 py-2.5 bg-primary hover:bg-primary-dark text-white rounded-xl text-sm font-bold disabled:opacity-50 transition-all shadow-md active:scale-95 cursor-pointer">
-                {saving && <Loader2 className="w-4 h-4 animate-spin" />} {saving ? 'Saving...' : 'Save Changes'}
-              </button>
-            </div>
           </div>
         </div>
       )}

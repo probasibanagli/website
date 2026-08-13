@@ -249,7 +249,7 @@ export default function MatrimonialAdminPage() {
         </div>
 
         {/* Profile Detail Moderation Panel */}
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-2 xl:col-span-3">
           {selectedProfile ? (
             <Card className="p-6 space-y-6 bg-white border-border">
               {/* Profile Card Header */}
@@ -457,13 +457,13 @@ export default function MatrimonialAdminPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
                   <div className="p-3 bg-white border border-border/60 rounded-xl">
                     <h5 className="text-xs font-bold text-pink-600 mb-1.5">About Me Description</h5>
-                    <p className="text-xs text-text-muted leading-relaxed whitespace-pre-line bg-surface p-2.5 rounded-lg border border-border/30">
+                    <p className="text-xs text-text-muted leading-relaxed whitespace-pre-line bg-surface p-2.5 rounded-lg border border-border/30 break-words break-all overflow-hidden">
                       {selectedProfile.about_me || 'No description provided.'}
                     </p>
                   </div>
                   <div className="p-3 bg-white border border-border/60 rounded-xl">
                     <h5 className="text-xs font-bold text-pink-600 mb-1.5">Partner Preferences Description</h5>
-                    <p className="text-xs text-text-muted leading-relaxed whitespace-pre-line bg-surface p-2.5 rounded-lg border border-border/30">
+                    <p className="text-xs text-text-muted leading-relaxed whitespace-pre-line bg-surface p-2.5 rounded-lg border border-border/30 break-words break-all overflow-hidden">
                       {selectedProfile.partner_preference || 'No expectations description specified.'}
                     </p>
                   </div>
