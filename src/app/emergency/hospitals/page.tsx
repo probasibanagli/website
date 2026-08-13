@@ -6,6 +6,7 @@ import { Search, MapPin, Phone, Clock, CheckCircle2, Stethoscope, Ambulance, Lif
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/Skeleton';
 import { sampleHospitals } from '@/data/sample-data';
 import { CITIES } from '@/lib/constants';
 import { db } from '@/lib/firebase';
@@ -58,7 +59,7 @@ function ListingCoverImage({ name, city, mapsUrl, imageUrl, fallbackIcon }: {
 
   if (error || !imgSrc) {
     return (
-      <div className="absolute inset-0 bg-gradient-to-br from-red-50 to-orange-50 flex items-center justify-center">
+      <div className="absolute inset-0 bg-red-50 flex items-center justify-center">
         <div className="text-red-500 opacity-40 scale-[2.5]">
           {fallbackIcon}
         </div>
@@ -228,7 +229,7 @@ export default function EmergencyHospitalsPage() {
   return (
     <div className="min-h-screen bg-surface">
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-red-50/70 to-orange-50/50 border-b border-red-100/50">
+      <div className="bg-red-50/70 border-b border-red-100/50">
         <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-10">
           <div className="flex items-center gap-2 text-sm text-red-600/70 mb-4 font-medium">
             <Link href="/" className="hover:text-red-600 transition-colors">Home</Link><span>/</span>
@@ -399,10 +400,21 @@ export default function EmergencyHospitalsPage() {
       {/* Main Grid Content */}
       <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {loading ? (
-          <div className="text-center py-20 animate-pulse">
-            <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-            <p className="text-text-muted font-medium">Loading records...</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+              <div key={i} className="bg-white rounded-2xl shadow-sm border border-border p-4 space-y-4">
+                <div className="flex gap-4">
+                  <Skeleton className="w-16 h-16 rounded-xl shrink-0" />
+                  <div className="flex-1 space-y-2">
+                    <Skeleton className="w-3/4 h-6" />
+                    <Skeleton className="w-1/2 h-4" />
+                  </div>
+                </div>
+                <Skeleton className="w-full h-10 rounded-xl" />
+              </div>
+            ))}
           </div>
+
         ) : (
           <>
             {/* ── HOSPITALS SEARCH RESULTS ── */}
@@ -422,7 +434,7 @@ export default function EmergencyHospitalsPage() {
                         />
                         
                         {/* Gradient Shadow Overlay */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-5 z-10 pointer-events-none">
+                        <div className="absolute inset-0 bg-black/80 flex flex-col justify-end p-5 z-10 pointer-events-none">
                           <h3 className="text-xl font-bold text-white leading-tight font-display">{hospital.name}</h3>
                           <div className="flex items-center gap-1.5 mt-2 text-sm text-white/90">
                             <MapPin className="w-4 h-4 text-white shrink-0" />

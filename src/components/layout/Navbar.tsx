@@ -188,7 +188,7 @@ export function Navbar() {
                     onClick={() => setUserMenuOpen(!userMenuOpen)}
                     className="flex items-center gap-2 px-2 py-1.5 rounded-full border border-border hover:border-primary/40 transition-all cursor-pointer"
                   >
-                    <div className="w-7 h-7 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white text-xs font-bold">
+                    <div className="w-7 h-7 rounded-full bg-primary flex items-center justify-center text-white text-xs font-bold">
                       {profile.full_name?.charAt(0).toUpperCase()}
                     </div>
                     <span className="text-sm font-medium text-text-primary max-w-[100px] truncate">

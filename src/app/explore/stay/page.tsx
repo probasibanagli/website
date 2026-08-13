@@ -6,6 +6,7 @@ import { MapPin, Phone, MessageSquare, Wifi, Wind, CheckCircle2, Search, Sliders
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/Skeleton';
 import { useFirestore } from '@/lib/hooks/useFirestore';
 import { Listing } from '@/types';
 import { CITIES, CITY_HOSPITALS, CITY_COLLEGES, CITY_AREAS, METRO_ROUTES } from '@/lib/constants';
@@ -49,7 +50,7 @@ function ListingCoverImage({ name, city, mapsUrl, imageUrl, type, mapEmbedCode, 
 
   if (error || !imgSrc) {
     return (
-      <div className="absolute inset-0 bg-gradient-to-br from-primary-light to-accent-light flex items-center justify-center">
+      <div className="absolute inset-0 bg-primary-light flex items-center justify-center">
         <div className="text-primary opacity-40 scale-[3]">
           {fallbackIcon}
         </div>
@@ -398,7 +399,7 @@ export default function StayPage() {
             
             return (
               <Card key={listing.id} padding="none" className="rounded-[24px] overflow-hidden group border border-gray-100 shadow-[0_4px_25px_-4px_rgba(0,0,0,0.05)] bg-white">
-                <div className="relative h-60 bg-gradient-to-br from-primary-light to-accent-light overflow-hidden">
+                <div className="relative h-60 bg-primary-light overflow-hidden">
                   <ListingCoverImage
                     name={listing.name}
                     city={listing.city}
@@ -519,9 +520,20 @@ export default function StayPage() {
           </div>
         )}
         {loading && (
-          <div className="text-center py-20 flex flex-col items-center gap-4">
-            <div className="w-10 h-10 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
-            <p className="text-text-muted text-sm font-medium animate-pulse">Fetching fresh listings...</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+              <div key={i} className="bg-white rounded-2xl shadow-sm border border-border overflow-hidden">
+                <Skeleton className="w-full h-48" />
+                <div className="p-4 space-y-3">
+                  <Skeleton className="w-3/4 h-6" />
+                  <Skeleton className="w-1/2 h-4" />
+                  <div className="flex gap-2 pt-2">
+                     <Skeleton className="w-16 h-6 rounded-full" />
+                     <Skeleton className="w-16 h-6 rounded-full" />
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         )}
       </div>

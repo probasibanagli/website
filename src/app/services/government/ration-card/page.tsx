@@ -11,7 +11,7 @@ export default function RationCardPage() {
   return (
     <div className="min-h-screen bg-surface">
       {/* Header */}
-      <div className="bg-gradient-to-br from-emerald-800 via-emerald-900 to-slate-950 py-8 text-white">
+      <div className="bg-emerald-800 py-8 text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
           <Link href="/services/government" className="inline-flex items-center gap-2 text-sm text-white/70 hover:text-white transition-colors mb-6">
             <ArrowLeft className="w-4 h-4" /> Back to Government Services

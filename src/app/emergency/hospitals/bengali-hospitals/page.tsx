@@ -141,7 +141,7 @@ export default function BengaliHospitalsPage() {
             {filtered.map((hospital) => (
               <Card key={hospital.id} className="group flex flex-col h-full overflow-hidden hover:shadow-lg transition-all duration-300">
                 {/* Header Image Fallback */}
-                <div className="relative h-40 bg-gradient-to-br from-red-50 to-orange-50 overflow-hidden">
+                <div className="relative h-40 bg-red-50 overflow-hidden">
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="text-red-500 opacity-40 scale-[2.5]">
                       <Building className="w-8 h-8" />

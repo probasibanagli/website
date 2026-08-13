@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/Skeleton';
 import { Badge } from '@/components/ui/Badge';
 import { Input } from '@/components/ui/Input';
 import { useAuth } from '@/lib/auth/AuthContext';
@@ -208,8 +209,33 @@ export default function ProfilePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-surface flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      <div className="min-h-screen bg-surface">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <Skeleton className="w-48 h-10 mb-8" />
+          <Card padding="lg" className="mb-6">
+            <div className="flex items-center gap-5">
+              <Skeleton className="w-20 h-20 rounded-full" />
+              <div className="flex-1 space-y-2">
+                <div className="flex items-center gap-3">
+                  <Skeleton className="w-48 h-6" />
+                  <Skeleton className="w-20 h-6 rounded-full" />
+                </div>
+                <Skeleton className="w-64 h-4" />
+                <Skeleton className="w-32 h-4" />
+                <Skeleton className="w-40 h-3 mt-2" />
+              </div>
+            </div>
+          </Card>
+          <div className="mb-6 space-y-4">
+            <Skeleton className="w-40 h-6" />
+            <Skeleton className="w-full h-24 rounded-2xl" />
+            <Skeleton className="w-full h-24 rounded-2xl" />
+          </div>
+          <div className="space-y-4">
+            <Skeleton className="w-40 h-6" />
+            <Skeleton className="w-full h-40 rounded-2xl" />
+          </div>
+        </div>
       </div>
     );
   }
@@ -221,7 +247,7 @@ export default function ProfilePage() {
           <h1 className="text-3xl font-bold font-display text-text-primary mb-8">My Profile</h1>
           <Card padding="lg" className="mb-6">
             <div className="flex items-center gap-5">
-              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-3xl text-white">
+              <div className="w-20 h-20 rounded-full bg-primary flex items-center justify-center text-3xl text-white">
                 <User className="w-10 h-10" />
               </div>
               <div>
@@ -248,7 +274,7 @@ export default function ProfilePage() {
 
         <Card padding="lg" className="mb-6">
           <div className="flex items-center gap-5">
-            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-3xl text-white">
+            <div className="w-20 h-20 rounded-full bg-primary flex items-center justify-center text-3xl text-white">
               {profile.avatar_url ? (
                 <img src={profile.avatar_url} alt="" className="w-full h-full rounded-full object-cover" />
               ) : (

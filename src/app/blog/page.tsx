@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Calendar, User, ArrowRight, Tag, Plus, Loader2, CheckCircle2, ShieldAlert, X } from 'lucide-react';
+import { BookOpen, User, Calendar, Plus, Loader2, X, Upload, ArrowRight, Tag, CheckCircle2, ShieldAlert } from 'lucide-react';
+import { Skeleton } from '@/components/ui/Skeleton';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/Badge';
@@ -226,13 +227,27 @@ export default function BlogPage() {
       {/* Main Grid */}
       <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {loading ? (
-          <div className="flex justify-center py-20"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+              <div key={i} className="bg-white rounded-2xl shadow-sm border border-border overflow-hidden">
+                <Skeleton className="w-full h-48" />
+                <div className="p-4 space-y-3">
+                  <div className="flex gap-2">
+                    <Skeleton className="w-16 h-5 rounded-md" />
+                    <Skeleton className="w-24 h-5 rounded-md" />
+                  </div>
+                  <Skeleton className="w-full h-6 mt-2" />
+                  <Skeleton className="w-3/4 h-6" />
+                </div>
+              </div>
+            ))}
+          </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {blogs.map((post) => (
               <Link key={post.id} href={`/blog/${post.slug}`}>
                 <Card className="h-full group p-0 overflow-hidden hover:border-primary/20 transition-all hover:shadow-lg">
-                  <div className="h-48 bg-gradient-to-br from-primary-light to-accent-light flex items-center justify-center relative overflow-hidden">
+                  <div className="h-48 bg-primary-light flex items-center justify-center relative overflow-hidden">
                     {post.image ? (
                       /* eslint-disable-next-line @next/next/no-img-element */
                       <img src={post.image} alt={post.title} className="w-full h-full object-cover" />

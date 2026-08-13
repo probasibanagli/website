@@ -224,7 +224,7 @@ export default function EditUserPage() {
 
       {/* Hospital Permissions Delegation Section */}
       <div className="bg-white rounded-2xl border border-border overflow-hidden shadow-sm">
-        <div className="p-5 border-b border-border bg-gradient-to-r from-blue-50/50 to-indigo-50/30 flex items-center justify-between">
+        <div className="p-5 border-b border-border bg-blue-50/50 flex items-center justify-between">
           <div>
             <div className="flex items-center gap-2">
               <Building2 className="w-5 h-5 text-primary" />

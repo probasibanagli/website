@@ -36,7 +36,7 @@ function ListingCoverImage({ name, city, mapsUrl, imageUrl, type, mapEmbedCode, 
 
   if (error || !imgSrc) {
     return (
-      <div className="absolute inset-0 bg-gradient-to-br from-primary-light to-accent-light flex items-center justify-center">
+      <div className="absolute inset-0 bg-primary-light flex items-center justify-center">
         <div className="text-primary opacity-40 scale-[3]">
           {fallbackIcon}
         </div>
@@ -91,7 +91,7 @@ export default function StayDetailPage() {
         </Link>
 
         {/* Image */}
-        <div className="relative h-64 sm:h-80 bg-gradient-to-br from-primary-light to-accent-light rounded-2xl flex items-center justify-center mb-8 overflow-hidden border border-border/40 shadow-inner">
+        <div className="relative h-64 sm:h-80 bg-primary-light rounded-2xl flex items-center justify-center mb-8 overflow-hidden border border-border/40 shadow-inner">
           <ListingCoverImage
             name={listing.name}
             city={listing.city}
@@ -158,7 +158,7 @@ export default function StayDetailPage() {
 
           {/* Sidebar */}
           <div className="space-y-4">
-            <Card className="bg-gradient-to-br from-primary-light to-white border-primary/20">
+            <Card className="bg-primary-light border-primary/20">
               <p className="text-3xl font-bold text-primary">{formatPrice(listing.price_monthly || listing.price_per_month || listing.price_daily || 0)}</p>
               <p className="text-sm text-text-muted">{listing.price_daily ? 'per day' : 'per month'}</p>
               {listing.price_range && <p className="text-xs text-text-muted mt-1">{listing.price_range}</p>}

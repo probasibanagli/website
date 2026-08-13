@@ -117,7 +117,7 @@ export default function BlogDetailPage() {
             <img src={post.image} alt={post.title} className="w-full h-full object-cover" />
           </div>
         ) : (
-          <div className="h-64 bg-gradient-to-br from-primary-light to-accent-light rounded-2xl my-8 flex items-center justify-center">
+          <div className="h-64 bg-primary-light rounded-2xl my-8 flex items-center justify-center">
             <span className="text-6xl opacity-30">📜</span>
           </div>
         )}
@@ -146,7 +146,7 @@ export default function BlogDetailPage() {
             {suggestedPosts.map((sp) => (
               <Link key={sp.id} href={`/blog/${sp.slug}`}>
                 <Card className="h-full group p-0 overflow-hidden hover:border-primary/20 transition-all hover:shadow-lg">
-                  <div className="h-48 bg-gradient-to-br from-primary-light to-accent-light flex items-center justify-center relative overflow-hidden">
+                  <div className="h-48 bg-primary-light flex items-center justify-center relative overflow-hidden">
                     {sp.image ? (
                       /* eslint-disable-next-line @next/next/no-img-element */
                       <img src={sp.image} alt={sp.title} className="w-full h-full object-cover" />

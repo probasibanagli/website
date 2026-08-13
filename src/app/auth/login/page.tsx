@@ -171,12 +171,6 @@ export default function LoginPage() {
 
       const snap = await getDoc(doc(db, 'users', currentUser.uid));
       const userProfile = snap.data();
-      if (emailLower === 'vigneshayyanar134@gmail.com' || emailLower === 'admin@probasibangali.in') {
-        if (userProfile) {
-          userProfile.is_active = true;
-          userProfile.role = 'superadmin';
-        }
-      }
 
       // Check if blocked
       if (userProfile?.is_active === false) {
@@ -604,7 +598,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-80px)] bg-gradient-to-br from-primary-light/30 via-white to-accent-light/20 flex justify-center pt-20 pb-12 px-4">
+    <div className="min-h-[calc(100vh-80px)] bg-primary-light/30 flex justify-center pt-20 pb-12 px-4">
       <div className="w-full max-w-md">
         {/* Header */}
         <div className="text-center mb-6 pt-4">
@@ -630,7 +624,7 @@ export default function LoginPage() {
           {superAdminVerify && (
             <form onSubmit={handleSuperAdminOtpVerify} className="space-y-6">
               <div className="text-center mb-2">
-                <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-amber-100 to-yellow-100 flex items-center justify-center relative">
+                <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-amber-100 flex items-center justify-center relative">
                   <Shield className="w-8 h-8 text-amber-600" />
                 </div>
                 <h3 className="text-lg font-bold text-text-primary mb-1">
@@ -902,7 +896,7 @@ export default function LoginPage() {
                   {phoneStep === 'otp' && (
                     <>
                       <div className="text-center mb-2">
-                        <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center relative">
+                        <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-primary/10 flex items-center justify-center relative">
                           <Shield className="w-8 h-8 text-primary" />
                           <div className="absolute inset-0 rounded-2xl border-2 border-primary/20 animate-pulse" />
                         </div>
@@ -942,7 +936,7 @@ export default function LoginPage() {
                   {phoneStep === 'email-verify' && (
                     <>
                       <div className="text-center mb-2">
-                        <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-amber-100 to-yellow-100 flex items-center justify-center relative">
+                        <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-amber-100 flex items-center justify-center relative">
                           <Shield className="w-8 h-8 text-amber-600" />
                         </div>
                         <h3 className="text-lg font-bold text-text-primary mb-1">Admin Authentication</h3>
