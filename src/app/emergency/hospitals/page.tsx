@@ -6,8 +6,7 @@ import { Search, MapPin, Phone, Clock, CheckCircle2, Stethoscope, Ambulance, Lif
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/Skeleton';
-import { sampleHospitals } from '@/data/sample-data';
+import { sampleHospitals, sampleDoctors, sampleStaff } from '@/data/sample-data';
 import { CITIES } from '@/lib/constants';
 import { db } from '@/lib/firebase';
 import { collection, getDocs } from 'firebase/firestore';
@@ -50,16 +49,43 @@ function ListingCoverImage({ name, city, mapsUrl, imageUrl, fallbackIcon }: {
   imageUrl?: string;
   fallbackIcon: React.ReactNode;
 }) {
-  const imgSrc = imageUrl || (mapsUrl ? `/api/public/place-photo?name=${encodeURIComponent(name)}&city=${encodeURIComponent(city || '')}&mapsUrl=${encodeURIComponent(mapsUrl)}&v=3` : null);
+  const getFallbackImg = (hName: string) => {
+    const lower = hName.toLowerCase();
+    if (lower.includes('apollo')) return 'https://images.unsplash.com/photo-1587351021759-3e566b6af7cc?w=800&auto=format&fit=crop&q=80';
+    if (lower.includes('mgm')) return 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=800&auto=format&fit=crop&q=80';
+    if (lower.includes('miot')) return 'https://images.unsplash.com/photo-1516549655169-df83a0774514?w=800&auto=format&fit=crop&q=80';
+    if (lower.includes('fortis')) return 'https://images.unsplash.com/photo-1538108149393-fbbd81895907?w=800&auto=format&fit=crop&q=80';
+    if (lower.includes('kauvery')) return 'https://images.unsplash.com/photo-1586773860418-d37222d8fce3?w=800&auto=format&fit=crop&q=80';
+    if (lower.includes('rela')) return 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=800&auto=format&fit=crop&q=80';
+    if (lower.includes('ramachandra')) return 'https://images.unsplash.com/photo-1587351021759-3e566b6af7cc?w=800&auto=format&fit=crop&q=80';
+    if (lower.includes('cmc')) return 'https://images.unsplash.com/photo-1516549655169-df83a0774514?w=800&auto=format&fit=crop&q=80';
+    if (lower.includes('cancer') || lower.includes('adyar')) return 'https://images.unsplash.com/photo-1538108149393-fbbd81895907?w=800&auto=format&fit=crop&q=80';
+    return 'https://images.unsplash.com/photo-1587351021759-3e566b6af7cc?w=800&auto=format&fit=crop&q=80';
+  };
+
+  const primarySrc = imageUrl || (mapsUrl ? `/api/public/place-photo?name=${encodeURIComponent(name)}&city=${encodeURIComponent(city || '')}&mapsUrl=${encodeURIComponent(mapsUrl)}&v=3` : getFallbackImg(name));
+  const [currentSrc, setCurrentSrc] = useState(primarySrc);
+  const [failedOnce, setFailedOnce] = useState(false);
   const [error, setError] = useState(false);
 
   React.useEffect(() => {
+    setCurrentSrc(imageUrl || getFallbackImg(name));
     setError(false);
-  }, [imgSrc]);
+    setFailedOnce(false);
+  }, [imageUrl, name]);
 
-  if (error || !imgSrc) {
+  const handleImgError = () => {
+    if (!failedOnce) {
+      setFailedOnce(true);
+      setCurrentSrc(getFallbackImg(name));
+    } else {
+      setError(true);
+    }
+  };
+
+  if (error || !currentSrc) {
     return (
-      <div className="absolute inset-0 bg-red-50 flex items-center justify-center">
+      <div className="absolute inset-0 bg-gradient-to-br from-red-50 to-orange-50 flex items-center justify-center">
         <div className="text-red-500 opacity-40 scale-[2.5]">
           {fallbackIcon}
         </div>
@@ -69,9 +95,9 @@ function ListingCoverImage({ name, city, mapsUrl, imageUrl, fallbackIcon }: {
 
   return (
     <img
-      src={imgSrc}
+      src={currentSrc}
       alt={name}
-      onError={() => setError(true)}
+      onError={handleImgError}
       className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
       loading="lazy"
     />
@@ -152,13 +178,13 @@ export default function EmergencyHospitalsPage() {
         }
 
         setHospitals(hData.length > 0 ? hData : sampleHospitals);
-        setDoctors(dData.length > 0 ? dData : SAMPLE_DOCTORS);
-        setStaff(sData.length > 0 ? sData : SAMPLE_STAFF);
+        setDoctors(dData.length > 0 ? dData : sampleDoctors);
+        setStaff(sData.length > 0 ? sData : sampleStaff);
       } catch (err) {
         console.error("Error fetching database documents", err);
         setHospitals(sampleHospitals);
-        setDoctors(SAMPLE_DOCTORS);
-        setStaff(SAMPLE_STAFF);
+        setDoctors(sampleDoctors);
+        setStaff(sampleStaff);
       } finally {
         setLoading(false);
       }
@@ -229,8 +255,8 @@ export default function EmergencyHospitalsPage() {
   return (
     <div className="min-h-screen bg-surface">
       {/* Hero Section */}
-      <div className="bg-red-50/70 border-b border-red-100/50">
-        <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <div className="bg-gradient-to-r from-red-50/70 to-orange-50/50 border-b border-red-100/50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
           <div className="flex items-center gap-2 text-sm text-red-600/70 mb-4 font-medium">
             <Link href="/" className="hover:text-red-600 transition-colors">Home</Link><span>/</span>
             <Link href="/emergency" className="hover:text-red-600 transition-colors">Emergency</Link><span>/</span>
@@ -249,45 +275,96 @@ export default function EmergencyHospitalsPage() {
               
               <div className="mt-8 flex flex-wrap gap-4">
                 <a href="tel:108">
-                  <Button variant="danger" size="lg" className="font-semibold h-12 px-6 bg-[#B81D18]">
+                  <Button variant="danger" size="lg" className="shadow-lg shadow-red-500/20 font-semibold h-12 px-6">
                     <Phone className="w-5 h-5 mr-2" /> Quick Call (108)
                   </Button>
                 </a>
                 <Link href="/emergency/ambulance">
-                  <Button variant="outline" size="lg" className="border-[#B81D18] text-[#B81D18] hover:bg-red-50/50 h-12 px-6">
+                  <Button variant="outline" size="lg" className="border-red-200 text-red-600 hover:bg-red-50/50 h-12 px-6">
                     <Ambulance className="w-5 h-5 mr-2" /> Ambulance services
                   </Button>
                 </Link>
               </div>
             </div>
             
-            <div className="flex flex-col sm:flex-row gap-4 lg:w-96">
-              <div className="bg-white/80 backdrop-blur-md p-6 rounded-2xl border border-red-100 shadow-sm flex-1 flex flex-col justify-between">
+            <div className="flex flex-col sm:flex-row gap-4 lg:w-[480px]">
+              {/* Govt. Facilities Card */}
+              <div className="bg-white/90 backdrop-blur-md p-5 rounded-2xl border border-blue-100 shadow-sm hover:shadow-md transition-shadow duration-300 flex-1 flex flex-col justify-between relative overflow-hidden">
                 <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200 uppercase tracking-wider">
+                      <Building2 className="w-3 h-3 text-blue-600" /> Public Health
+                    </span>
+                    <Building2 className="w-4 h-4 text-blue-600 opacity-80" />
+                  </div>
+                  
                   <h3 className="font-bold text-text-primary text-base flex items-center gap-2">
-                    <Building2 className="w-5 h-5 text-primary" /> Govt. Facilities
+                    <Building2 className="w-5 h-5 text-blue-600 shrink-0" />
+                    <span>Govt. Facilities</span>
                   </h3>
-                  <p className="text-xs text-text-muted mt-2">
-                    Direct access to state medical colleges and general hospitals.
+                  
+                  <p className="text-xs text-text-muted mt-1.5 leading-relaxed">
+                    Direct access to state medical colleges, general hospitals & public health centers.
                   </p>
                 </div>
-                <button onClick={() => { setSearchTab('hospitals'); setCategoryFilter('Government'); }} className="text-primary text-xs font-bold flex items-center mt-4 hover:underline">
-                  View Govt. Hospitals <ArrowRight className="w-3.5 h-3.5 ml-1" />
-                </button>
+
+                <div>
+                  <div className="mt-3 pt-2.5 border-t border-blue-100/60 space-y-1 text-[11px] text-blue-800 font-medium">
+                    <div className="flex items-center gap-1.5">
+                      <CheckCircle2 className="w-3 h-3 text-blue-600 shrink-0" /> State Medical Colleges
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <CheckCircle2 className="w-3 h-3 text-blue-600 shrink-0" /> Free / Low Cost Care
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <CheckCircle2 className="w-3 h-3 text-blue-600 shrink-0" /> 24/7 Emergency Services
+                    </div>
+                  </div>
+
+                  <button 
+                    onClick={() => { setSearchTab('hospitals'); setCategoryFilter('Government'); }} 
+                    className="mt-3 pt-2 border-t border-blue-100/40 w-full text-blue-700 hover:text-blue-800 text-xs font-bold flex items-center justify-between group transition-colors cursor-pointer"
+                  >
+                    <span>View Govt. Hospitals</span>
+                    <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                  </button>
+                </div>
               </div>
               
-              <div className="bg-white/80 backdrop-blur-md p-6 rounded-2xl border border-red-100 shadow-sm flex-1 flex flex-col justify-between">
+              {/* Informational Verified Doctors Card (Non-clickable) */}
+              <div className="bg-white/90 backdrop-blur-md p-5 rounded-2xl border border-emerald-100 shadow-sm hover:shadow-md transition-shadow duration-300 flex-1 flex flex-col justify-between relative overflow-hidden">
                 <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 uppercase tracking-wider">
+                      <ShieldCheck className="w-3 h-3 text-emerald-600" /> Verified
+                    </span>
+                    <Stethoscope className="w-4 h-4 text-emerald-600 opacity-80" />
+                  </div>
+                  
                   <h3 className="font-bold text-text-primary text-base flex items-center gap-2">
-                    <UserRound className="w-5 h-5 text-primary" /> Verified Doctors
+                    <UserRound className="w-5 h-5 text-emerald-600 shrink-0" />
+                    <span>Verified Doctors</span>
                   </h3>
-                  <p className="text-xs text-text-muted mt-2">
-                    Verified Bengali-speaking experts with multi-hospital associations.
+                  
+                  <p className="text-xs text-text-muted mt-1.5 leading-relaxed">
+                    Trusted Bengali-speaking doctors from verified hospital records.
                   </p>
+
+                  <div className="mt-3.5 pt-3 border-t border-emerald-100/60 space-y-2 text-xs text-emerald-900 font-medium">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                      <span>Verified Doctor Profiles</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                      <span>Hospital Affiliations</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                      <span>Specializations & Experience</span>
+                    </div>
+                  </div>
                 </div>
-                <button onClick={() => setSearchTab('doctors')} className="text-primary text-xs font-bold flex items-center mt-4 hover:underline">
-                  View Doctors <ArrowRight className="w-3.5 h-3.5 ml-1" />
-                </button>
               </div>
             </div>
           </div>
@@ -296,7 +373,7 @@ export default function EmergencyHospitalsPage() {
 
       {/* Tabs Switcher */}
       <div className="bg-white border-b border-border sticky top-0 z-20">
-        <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex gap-4">
             <button
               onClick={() => { setSearchTab('hospitals'); setSearchQuery(''); setSpecializationFilter(''); }}
@@ -324,10 +401,10 @@ export default function EmergencyHospitalsPage() {
 
       {/* Search and Filters Header */}
       <div className="bg-white border-b border-border shadow-xs">
-        <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-wrap items-center gap-4">
             {/* Search Query Input */}
-            <div className="relative flex-1 min-w-[200px] md:max-w-xs">
+            <div className="relative flex-1 min-w-[240px]">
               <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-text-muted" />
               <input
                 value={searchQuery}
@@ -398,29 +475,18 @@ export default function EmergencyHospitalsPage() {
       </div>
 
       {/* Main Grid Content */}
-      <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-              <div key={i} className="bg-white rounded-2xl shadow-sm border border-border p-4 space-y-4">
-                <div className="flex gap-4">
-                  <Skeleton className="w-16 h-16 rounded-xl shrink-0" />
-                  <div className="flex-1 space-y-2">
-                    <Skeleton className="w-3/4 h-6" />
-                    <Skeleton className="w-1/2 h-4" />
-                  </div>
-                </div>
-                <Skeleton className="w-full h-10 rounded-xl" />
-              </div>
-            ))}
+          <div className="text-center py-20 animate-pulse">
+            <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-text-muted font-medium">Loading records...</p>
           </div>
-
         ) : (
           <>
             {/* ── HOSPITALS SEARCH RESULTS ── */}
             {searchTab === 'hospitals' && (
               <>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {filteredHospitals.map((hospital) => (
                     <Card key={hospital.id} padding="none" className="overflow-hidden group flex flex-col h-full bg-white border border-gray-100 shadow-[0_4px_25px_-4px_rgba(0,0,0,0.05)] rounded-[24px]">
                       {/* Image header with text overlay */}
@@ -434,7 +500,7 @@ export default function EmergencyHospitalsPage() {
                         />
                         
                         {/* Gradient Shadow Overlay */}
-                        <div className="absolute inset-0 bg-black/80 flex flex-col justify-end p-5 z-10 pointer-events-none">
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-5 z-10 pointer-events-none">
                           <h3 className="text-xl font-bold text-white leading-tight font-display">{hospital.name}</h3>
                           <div className="flex items-center gap-1.5 mt-2 text-sm text-white/90">
                             <MapPin className="w-4 h-4 text-white shrink-0" />
@@ -478,17 +544,13 @@ export default function EmergencyHospitalsPage() {
 
                         {/* Side-by-Side Action Buttons */}
                         <div className="flex items-center gap-3 w-full">
-                          <a href={`tel:${hospital.emergency_phone || hospital.phone || '108'}`} className="flex-1">
-                            <button className="w-full bg-[#B81D18] hover:bg-[#9E1612] text-white font-bold py-2.5 px-4 rounded-xl text-sm flex items-center justify-center gap-2 shadow-sm transition-all active:scale-[0.98]">
-                              <Phone className="w-4 h-4" />
-                              <span>Emergency</span>
-                            </button>
+                          <a href={`tel:${hospital.emergency_phone || hospital.phone || '108'}`} className="flex-1 w-full bg-[#B81D18] hover:bg-[#9E1612] text-white font-bold py-2.5 px-4 rounded-xl text-sm flex items-center justify-center gap-2 shadow-sm transition-all active:scale-[0.98]">
+                            <Phone className="w-4 h-4" />
+                            <span>Emergency</span>
                           </a>
                           
-                          <Link href={`/emergency/hospitals/${hospital.id}`} className="flex-1">
-                            <button className="w-full bg-white hover:bg-slate-50 border border-[#E4E9F2] text-gray-800 font-bold py-2.5 px-4 rounded-xl text-sm flex items-center justify-center shadow-sm transition-all active:scale-[0.98]">
-                              <span>Details</span>
-                            </button>
+                          <Link href={`/emergency/hospitals/${hospital.id}`} className="flex-1 w-full bg-white hover:bg-slate-50 border border-[#E4E9F2] text-gray-800 font-bold py-2.5 px-4 rounded-xl text-sm flex items-center justify-center shadow-sm transition-all active:scale-[0.98]">
+                            <span>Details</span>
                           </Link>
                         </div>
                       </div>
@@ -508,7 +570,7 @@ export default function EmergencyHospitalsPage() {
             {/* ── DOCTORS SEARCH RESULTS ── */}
             {searchTab === 'doctors' && (
               <>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {filteredDoctors.map((doctor) => {
                     const docHospitals = doctor.hospital_ids?.map(hid => hospitals.find(h => h.id === hid)).filter(Boolean) || [hospitals.find(h => h.id === doctor.hospital_id)].filter(Boolean);
                     const otpRequired = doctor.otp_required !== false;
@@ -633,7 +695,7 @@ export default function EmergencyHospitalsPage() {
             {/* ── STAFF SEARCH RESULTS ── */}
             {searchTab === 'staff' && (
               <>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {filteredStaff.map((s) => {
                     const hospital = hospitals.find((h) => h.id === s.hospital_id);
                     const otpRequired = s.otp_required !== false;

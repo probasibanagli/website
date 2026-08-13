@@ -11,9 +11,12 @@ import { Search, Phone, ChevronRight, UserRound, Award, Languages, Building2, St
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useAuth } from '@/lib/auth/AuthContext';
-const SAMPLE_HOSPITALS: Record<string, Hospital> = {};
+import { sampleHospitals, sampleDoctors } from '@/data/sample-data';
 
-const SAMPLE_DOCTORS: BengaliDoctor[] = [];
+const sampleHospitalsMap: Record<string, Hospital> = sampleHospitals.reduce((acc, h) => {
+  acc[h.id] = h;
+  return acc;
+}, {} as Record<string, Hospital>);
 
 export default function BengaliDoctorsPage() {
   const [doctors, setDoctors] = useState<BengaliDoctor[]>([]);
@@ -64,7 +67,7 @@ export default function BengaliDoctorsPage() {
           hospList = hospSnap.docs.map(d => ({ id: d.id, ...d.data() } as Hospital));
         }
 
-        setDoctors(docsData.length > 0 ? docsData : SAMPLE_DOCTORS);
+        setDoctors(docsData.length > 0 ? docsData : sampleDoctors);
         
         const hospData: Record<string, Hospital> = {};
         hospList.forEach((d: Hospital) => {
@@ -73,18 +76,18 @@ export default function BengaliDoctorsPage() {
         
         let finalHospitals = { ...hospData };
         if (docsData.length === 0) {
-           finalHospitals = { ...SAMPLE_HOSPITALS, ...finalHospitals };
+           finalHospitals = { ...sampleHospitalsMap, ...finalHospitals };
         }
         
         if (Object.keys(finalHospitals).length > 0) {
           setHospitals(finalHospitals);
         } else {
-          setHospitals(SAMPLE_HOSPITALS);
+          setHospitals(sampleHospitalsMap);
         }
       } catch (err) {
         console.error(err);
-        setDoctors(SAMPLE_DOCTORS);
-        setHospitals(SAMPLE_HOSPITALS);
+        setDoctors(sampleDoctors);
+        setHospitals(sampleHospitalsMap);
       } finally {
         setLoading(false);
       }
@@ -112,7 +115,7 @@ export default function BengaliDoctorsPage() {
     <div className="min-h-screen bg-surface">
       {/* Header */}
       <div className="bg-white border-b border-border">
-        <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex items-center gap-2 text-sm text-text-muted mb-4">
             <Link href="/" className="hover:text-primary">Home</Link><span>/</span>
             <Link href="/emergency/hospitals" className="hover:text-primary">Hospitals</Link><span>/</span>
@@ -172,9 +175,9 @@ export default function BengaliDoctorsPage() {
         </div>
       </div>
 
-      <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
              {[1, 2, 3, 4, 5, 6].map(i => (
                <Card key={i} className="animate-pulse p-6">
                  <div className="flex items-center gap-4 mb-4">
@@ -207,7 +210,7 @@ export default function BengaliDoctorsPage() {
             </Card>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filtered.map((doctor) => {
               const hospital = doctor.hospital_id ? hospitals[doctor.hospital_id] : undefined;
               return (
