@@ -20,8 +20,6 @@ export default function EditUserPage() {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [permissions, setPermissions] = useState<Record<ModuleKey, PermissionLevel>>({} as Record<ModuleKey, PermissionLevel>);
-  const [assignedHospitals, setAssignedHospitals] = useState<string[]>([]);
-  const [allHospitals, setAllHospitals] = useState<Hospital[]>([]);
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -32,14 +30,7 @@ export default function EditUserPage() {
   useEffect(() => {
     async function load() {
       try {
-        const [res, hSnap] = await Promise.all([
-          fetch(`/api/admin/users/${userId}`),
-          getDocs(collection(db, COLLECTIONS.hospitals))
-        ]);
-
-        if (hSnap) {
-          setAllHospitals(hSnap.docs.map(d => ({ id: d.id, ...d.data() } as Hospital)));
-        }
+        const res = await fetch(`/api/admin/users/${userId}`);
 
         if (res.ok) {
           const data = await res.json();
@@ -53,7 +44,6 @@ export default function EditUserPage() {
             }
             setPhone(rawPhone);
             setPermissions(data.user.permissions || {} as Record<ModuleKey, PermissionLevel>);
-            setAssignedHospitals(Array.isArray(data.user.assigned_hospitals) ? data.user.assigned_hospitals : []);
           }
         }
       } catch (err) {
@@ -65,19 +55,6 @@ export default function EditUserPage() {
     if (userId) load();
   }, [userId]);
 
-  const toggleHospitalAssignment = (hospId: string) => {
-    setAssignedHospitals(prev =>
-      prev.includes(hospId) ? prev.filter(id => id !== hospId) : [...prev, hospId]
-    );
-  };
-
-  const selectAllHospitals = () => {
-    setAssignedHospitals(allHospitals.map(h => h.id));
-  };
-
-  const clearAllHospitals = () => {
-    setAssignedHospitals([]);
-  };
 
   async function handleSave() {
     if (!user || !firebaseUser) return;
@@ -103,7 +80,6 @@ export default function EditUserPage() {
         },
         body: JSON.stringify({
           permissions,
-          assigned_hospitals: assignedHospitals,
           full_name: fullName.trim(),
           email: email.trim(),
           phone: formattedPhone
@@ -119,10 +95,10 @@ export default function EditUserPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          action: 'Permissions & Hospital Grants Updated',
+          action: 'Permissions Updated',
           performed_by: myProfile?.full_name || 'Super Admin',
           user_role: 'superadmin',
-          details: `Updated permissions and assigned ${assignedHospitals.length} hospital(s) to ${fullName}`
+          details: `Updated permissions for ${fullName}`
         })
       }).catch(() => {});
 
@@ -180,7 +156,7 @@ export default function EditUserPage() {
           <div>
             <h2 className="text-base font-bold text-text-primary">Edit Account & Access Scope</h2>
             <span className={`inline-flex items-center gap-1 mt-0.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold ${user.role === 'admin' ? 'bg-primary/10 text-primary' : 'bg-amber-100 text-amber-700'}`}>
-              {user.role === 'admin' ? <><Shield className="w-2.5 h-2.5" /> Hospital / System Admin</> : <><Crown className="w-2.5 h-2.5" /> Super Admin</>}
+              {user.role === 'admin' ? <><Shield className="w-2.5 h-2.5" /> System Admin</> : <><Crown className="w-2.5 h-2.5" /> Super Admin</>}
             </span>
           </div>
         </div>
@@ -222,70 +198,7 @@ export default function EditUserPage() {
         </div>
       </div>
 
-      {/* Hospital Permissions Delegation Section */}
-      <div className="bg-white rounded-2xl border border-border overflow-hidden shadow-sm">
-        <div className="p-5 border-b border-border bg-blue-50/50 flex items-center justify-between">
-          <div>
-            <div className="flex items-center gap-2">
-              <Building2 className="w-5 h-5 text-primary" />
-              <h2 className="text-lg font-bold text-text-primary">Hospital Management Delegation</h2>
-            </div>
-            <p className="text-xs text-text-muted mt-1">
-              Select which specific hospitals this administrator is granted permission to manage.
-            </p>
-          </div>
-          <div className="flex gap-2">
-            <button
-              type="button"
-              onClick={selectAllHospitals}
-              className="text-xs text-primary font-semibold hover:underline cursor-pointer"
-            >
-              Grant All
-            </button>
-            <span className="text-text-muted text-xs">|</span>
-            <button
-              type="button"
-              onClick={clearAllHospitals}
-              className="text-xs text-red-500 font-semibold hover:underline cursor-pointer"
-            >
-              Clear All
-            </button>
-          </div>
-        </div>
 
-        <div className="p-5">
-          {allHospitals.length === 0 ? (
-            <p className="text-sm text-text-muted italic">No hospitals registered in the database yet.</p>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {allHospitals.map(h => {
-                const isAssigned = assignedHospitals.includes(h.id);
-                return (
-                  <div
-                    key={h.id}
-                    onClick={() => toggleHospitalAssignment(h.id)}
-                    className={`flex items-center justify-between p-3.5 rounded-xl border transition-all cursor-pointer ${
-                      isAssigned
-                        ? 'bg-primary/5 border-primary/40 text-text-primary'
-                        : 'bg-surface/30 border-border text-text-muted hover:border-gray-300'
-                    }`}
-                  >
-                    <div className="min-w-0 flex-1 pr-2">
-                      <p className="text-sm font-semibold truncate text-text-primary">{h.name}</p>
-                      <p className="text-xs text-text-muted">{h.area ? `${h.area}, ` : ''}{h.city}</p>
-                    </div>
-                    {isAssigned ? (
-                      <CheckSquare className="w-5 h-5 text-primary shrink-0" />
-                    ) : (
-                      <Square className="w-5 h-5 text-gray-300 shrink-0" />
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
-      </div>
 
       {/* Permission Matrix */}
       <div className="bg-white rounded-2xl border border-border overflow-hidden shadow-sm">
