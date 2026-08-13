@@ -44,7 +44,7 @@ const USER_DEFAULT_PERMISSIONS = {
 const AVAILABLE_MODULES = [
   { key: 'stay', label: 'Stay & Accommodation' },
   { key: 'food', label: 'Bengali Food' },
-  { key: 'emergency', label: 'Emergency Help' },
+  { key: 'emergency', label: 'Hospital Management' },
   { key: 'community', label: 'Community Groups' },
   { key: 'services', label: 'Services' },
   { key: 'blog', label: 'Blog' },
