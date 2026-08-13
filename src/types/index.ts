@@ -17,7 +17,8 @@ export type ModuleKey =
   | 'events'
   | 'ambulance'
   | 'government_services'
-  | 'legal';
+  | 'legal'
+  | 'travel';
 
 export type ModulePermissions = Record<ModuleKey, PermissionLevel>;
 
@@ -59,6 +60,7 @@ export const MODULE_LABELS: Record<ModuleKey, string> = {
   ambulance: 'Ambulance Directory',
   government_services: 'Government Services',
   legal: 'Legal Services',
+  travel: 'Travel',
 };
 
 /* ──────────────── Government Service Data Model ──────────────── */

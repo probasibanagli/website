@@ -42,4 +42,5 @@ export const MODULE_TO_COLLECTION: Record<ModuleKey, string> = {
   ambulance: COLLECTIONS.ambulances,
   government_services: COLLECTIONS.government_services,
   legal: COLLECTIONS.legal,
+  travel: COLLECTIONS.travel_info,
 };
