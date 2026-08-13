@@ -480,7 +480,7 @@ export default function StayPage() {
                   <div className="flex items-center justify-between mt-6 pt-5 border-t border-gray-100">
                     <div className="flex items-center gap-2">
                       <Link href={`/explore/stay/${listing.id}`}>
-                        <button className="bg-[#d85a30] hover:bg-[#b84a00] text-white font-bold px-5 py-2.5 rounded-[12px] transition-colors text-sm shadow-sm">
+                        <button className="bg-[#d85a30] hover:bg-[#b84a00] text-white font-bold px-5 py-2.5 rounded-[12px] transition-colors text-sm shadow-sm whitespace-nowrap">
                           Book Visit
                         </button>
                       </Link>
@@ -490,7 +490,7 @@ export default function StayPage() {
                           target="_blank"
                           rel="noopener noreferrer"
                         >
-                          <button className="bg-white hover:bg-slate-50 border border-[#E4E9F2] text-slate-700 font-bold px-4 py-2.5 rounded-[12px] transition-all text-sm flex items-center gap-2">
+                          <button className="bg-white hover:bg-slate-50 border border-[#E4E9F2] text-slate-700 font-bold px-4 py-2.5 rounded-[12px] transition-all text-sm flex items-center gap-2 whitespace-nowrap">
                             <MessageSquare className="w-4 h-4 text-slate-500" />
                             Chat
                           </button>
