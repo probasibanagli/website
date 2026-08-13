@@ -931,7 +931,7 @@ export default function EventsPage() {
                               onClick={() => { setAnnualCommunityFilter(event.community_group_id || ''); setActiveTab('annual'); }}
                               className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-surface text-text-primary text-xs font-bold hover:bg-primary/10 hover:text-primary border border-border transition-colors cursor-pointer"
                             >
-                              📆 Calendar
+                              <CalendarIcon className="w-3.5 h-3.5" /> Calendar
                             </button>
                           </div>
                         </div>

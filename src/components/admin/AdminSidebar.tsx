@@ -90,7 +90,7 @@ export function AdminSidebar({
               href={item.href}
               onClick={onClose}
               className={`
-                flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-300 whitespace-nowrap
+                flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-200 ease-in-out whitespace-nowrap group
                 ${isActive
                   ? 'bg-[#D85A30] text-white shadow-md shadow-[#D85A30]/10 scale-[1.01]'
                   : 'text-[#85736E] hover:text-[#D85A30] hover:bg-[#F3E6E0] border border-transparent'
@@ -110,16 +110,16 @@ export function AdminSidebar({
       <div className="p-4 border-t border-[#EADED9] space-y-2.5">
         <Link
           href="/"
-          className="flex items-center gap-3.5 px-4 py-3 rounded-2xl text-sm font-semibold text-[#85736E] hover:text-[#D85A30] hover:bg-[#F3E6E0] transition-all"
+          className="flex items-center gap-3.5 px-4 py-3 rounded-2xl text-sm font-semibold text-[#85736E] hover:text-[#D85A30] hover:bg-[#F3E6E0] transition-all group"
         >
-          <Home className="w-4 h-4" />
+          <Home className="w-4 h-4 transition-colors text-[#85736E] group-hover:text-[#D85A30]" />
           Back to Website
         </Link>
         <button
           onClick={onLogout}
-          className="w-full flex items-center gap-3.5 px-4 py-3 rounded-2xl text-sm font-semibold text-red-600 hover:bg-red-50 hover:text-red-700 transition-all cursor-pointer"
+          className="w-full flex items-center gap-3.5 px-4 py-3 rounded-2xl text-sm font-semibold text-red-600 hover:bg-red-50 hover:text-red-700 transition-all cursor-pointer group"
         >
-          <LogOut className="w-4 h-4" />
+          <LogOut className="w-4 h-4 transition-colors text-red-600 group-hover:text-red-700" />
           Logout
         </button>
       </div>
