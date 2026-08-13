@@ -2,11 +2,14 @@
 
 import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+import { COLLECTIONS } from '@/lib/firestore/collections';
 import { useAuth } from '@/lib/auth/AuthContext';
-import type { UserProfile, ModuleKey, PermissionLevel } from '@/types';
+import type { UserProfile, ModuleKey, PermissionLevel, Hospital } from '@/types';
 import { MODULE_LABELS } from '@/types';
 import { ALL_MODULES, ALL_PERMISSION_LEVELS } from '@/lib/permissions';
-import { ArrowLeft, Save, Loader2, Shield, Crown } from 'lucide-react';
+import { ArrowLeft, Save, Loader2, Shield, Crown, Building2, CheckSquare, Square } from 'lucide-react';
 
 export default function EditUserPage() {
   const params = useParams();
@@ -17,6 +20,9 @@ export default function EditUserPage() {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [permissions, setPermissions] = useState<Record<ModuleKey, PermissionLevel>>({} as Record<ModuleKey, PermissionLevel>);
+  const [assignedHospitals, setAssignedHospitals] = useState<string[]>([]);
+  const [allHospitals, setAllHospitals] = useState<Hospital[]>([]);
+
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -26,29 +32,52 @@ export default function EditUserPage() {
   useEffect(() => {
     async function load() {
       try {
-        const res = await fetch(`/api/admin/users/${userId}`);
-        if (!res.ok) throw new Error('Failed to load user profile');
-        const data = await res.json();
-        if (data.user) {
-          setUser(data.user);
-          setFullName(data.user.full_name || '');
-          setEmail(data.user.email || '');
-          // Strip +91 prefix for visual editing convenience if present
-          let rawPhone = data.user.phone || '';
-          if (rawPhone.startsWith('+91')) {
-            rawPhone = rawPhone.slice(3);
+        const [res, hSnap] = await Promise.all([
+          fetch(`/api/admin/users/${userId}`),
+          getDocs(collection(db, COLLECTIONS.hospitals))
+        ]);
+
+        if (hSnap) {
+          setAllHospitals(hSnap.docs.map(d => ({ id: d.id, ...d.data() } as Hospital)));
+        }
+
+        if (res.ok) {
+          const data = await res.json();
+          if (data.user) {
+            setUser(data.user);
+            setFullName(data.user.full_name || '');
+            setEmail(data.user.email || '');
+            let rawPhone = data.user.phone || '';
+            if (rawPhone.startsWith('+91')) {
+              rawPhone = rawPhone.slice(3);
+            }
+            setPhone(rawPhone);
+            setPermissions(data.user.permissions || {} as Record<ModuleKey, PermissionLevel>);
+            setAssignedHospitals(Array.isArray(data.user.assigned_hospitals) ? data.user.assigned_hospitals : []);
           }
-          setPhone(rawPhone);
-          setPermissions(data.user.permissions || {} as Record<ModuleKey, PermissionLevel>);
         }
       } catch (err) {
-        console.error('Error fetching user:', err);
+        console.error('Error fetching user details:', err);
       } finally {
         setLoading(false);
       }
     }
     if (userId) load();
   }, [userId]);
+
+  const toggleHospitalAssignment = (hospId: string) => {
+    setAssignedHospitals(prev =>
+      prev.includes(hospId) ? prev.filter(id => id !== hospId) : [...prev, hospId]
+    );
+  };
+
+  const selectAllHospitals = () => {
+    setAssignedHospitals(allHospitals.map(h => h.id));
+  };
+
+  const clearAllHospitals = () => {
+    setAssignedHospitals([]);
+  };
 
   async function handleSave() {
     if (!user || !firebaseUser) return;
@@ -74,6 +103,7 @@ export default function EditUserPage() {
         },
         body: JSON.stringify({
           permissions,
+          assigned_hospitals: assignedHospitals,
           full_name: fullName.trim(),
           email: email.trim(),
           phone: formattedPhone
@@ -83,6 +113,19 @@ export default function EditUserPage() {
         const data = await res.json();
         throw new Error(data.error || 'Failed to update user profile');
       }
+
+      // Log activity
+      await fetch('/api/admin/activities', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'Permissions & Hospital Grants Updated',
+          performed_by: myProfile?.full_name || 'Super Admin',
+          user_role: 'superadmin',
+          details: `Updated permissions and assigned ${assignedHospitals.length} hospital(s) to ${fullName}`
+        })
+      }).catch(() => {});
+
       setSaved(true);
       setTimeout(() => setSaved(false), 2000);
     } catch (e: any) {
@@ -120,7 +163,7 @@ export default function EditUserPage() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
+    <div className="max-w-4xl mx-auto space-y-6">
       <button
         onClick={() => router.back()}
         className="inline-flex items-center gap-2 text-sm text-text-muted hover:text-primary transition-colors cursor-pointer"
@@ -135,9 +178,9 @@ export default function EditUserPage() {
             {fullName?.charAt(0) || 'U'}
           </div>
           <div>
-            <h2 className="text-base font-bold text-text-primary">Edit Account Profile</h2>
+            <h2 className="text-base font-bold text-text-primary">Edit Account & Access Scope</h2>
             <span className={`inline-flex items-center gap-1 mt-0.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold ${user.role === 'admin' ? 'bg-primary/10 text-primary' : 'bg-amber-100 text-amber-700'}`}>
-              {user.role === 'admin' ? <><Shield className="w-2.5 h-2.5" /> Admin</> : <><Crown className="w-2.5 h-2.5" /> Super Admin</>}
+              {user.role === 'admin' ? <><Shield className="w-2.5 h-2.5" /> Hospital / System Admin</> : <><Crown className="w-2.5 h-2.5" /> Super Admin</>}
             </span>
           </div>
         </div>
@@ -179,11 +222,76 @@ export default function EditUserPage() {
         </div>
       </div>
 
+      {/* Hospital Permissions Delegation Section */}
+      <div className="bg-white rounded-2xl border border-border overflow-hidden shadow-sm">
+        <div className="p-5 border-b border-border bg-gradient-to-r from-blue-50/50 to-indigo-50/30 flex items-center justify-between">
+          <div>
+            <div className="flex items-center gap-2">
+              <Building2 className="w-5 h-5 text-primary" />
+              <h2 className="text-lg font-bold text-text-primary">Hospital Management Delegation</h2>
+            </div>
+            <p className="text-xs text-text-muted mt-1">
+              Select which specific hospitals this administrator is granted permission to manage.
+            </p>
+          </div>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={selectAllHospitals}
+              className="text-xs text-primary font-semibold hover:underline cursor-pointer"
+            >
+              Grant All
+            </button>
+            <span className="text-text-muted text-xs">|</span>
+            <button
+              type="button"
+              onClick={clearAllHospitals}
+              className="text-xs text-red-500 font-semibold hover:underline cursor-pointer"
+            >
+              Clear All
+            </button>
+          </div>
+        </div>
+
+        <div className="p-5">
+          {allHospitals.length === 0 ? (
+            <p className="text-sm text-text-muted italic">No hospitals registered in the database yet.</p>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {allHospitals.map(h => {
+                const isAssigned = assignedHospitals.includes(h.id);
+                return (
+                  <div
+                    key={h.id}
+                    onClick={() => toggleHospitalAssignment(h.id)}
+                    className={`flex items-center justify-between p-3.5 rounded-xl border transition-all cursor-pointer ${
+                      isAssigned
+                        ? 'bg-primary/5 border-primary/40 text-text-primary'
+                        : 'bg-surface/30 border-border text-text-muted hover:border-gray-300'
+                    }`}
+                  >
+                    <div className="min-w-0 flex-1 pr-2">
+                      <p className="text-sm font-semibold truncate text-text-primary">{h.name}</p>
+                      <p className="text-xs text-text-muted">{h.area ? `${h.area}, ` : ''}{h.city}</p>
+                    </div>
+                    {isAssigned ? (
+                      <CheckSquare className="w-5 h-5 text-primary shrink-0" />
+                    ) : (
+                      <Square className="w-5 h-5 text-gray-300 shrink-0" />
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      </div>
+
       {/* Permission Matrix */}
       <div className="bg-white rounded-2xl border border-border overflow-hidden shadow-sm">
         <div className="p-5 border-b border-border bg-surface/30">
-          <h2 className="text-lg font-bold text-text-primary">Module Permissions</h2>
-          <p className="text-sm text-text-muted mt-0.5">Set what this admin can do in each module</p>
+          <h2 className="text-lg font-bold text-text-primary">System Module Permissions</h2>
+          <p className="text-sm text-text-muted mt-0.5">Set general access levels for system modules</p>
         </div>
 
         <div className="p-5 space-y-3">
@@ -234,7 +342,7 @@ export default function EditUserPage() {
             className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary-dark text-white rounded-xl text-sm font-semibold transition-colors disabled:opacity-50 cursor-pointer shadow-md active:scale-95"
           >
             {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-            {saving ? 'Saving...' : 'Save Permissions'}
+            {saving ? 'Saving...' : 'Save Permissions & Hospital Scope'}
           </button>
         </div>
       </div>

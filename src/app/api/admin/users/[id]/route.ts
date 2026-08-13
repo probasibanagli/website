@@ -51,9 +51,9 @@ export async function PATCH(request: Request, ctx: any) {
   const isSuperAdmin = caller.role === 'superadmin';
   const hasUserEdit = caller.role === 'admin' && (caller.permissions?.users === 'edit' || caller.permissions?.users === 'manage');
 
-  // Only Super Admin can change roles or permissions
-  if ((body.role || body.permissions) && !isSuperAdmin) {
-    return NextResponse.json({ error: 'Only Super Admin can update roles and permissions.' }, { status: 403 });
+  // Only Super Admin can change roles, permissions, or assigned_hospitals
+  if ((body.role || body.permissions || body.assigned_hospitals) && !isSuperAdmin) {
+    return NextResponse.json({ error: 'Only Super Admin can update roles, permissions, and assigned hospitals.' }, { status: 403 });
   }
 
   // To block/unblock (change is_active), must be Super Admin or Admin with user edit/manage permissions
@@ -66,6 +66,7 @@ export async function PATCH(request: Request, ctx: any) {
   const updates: Record<string, unknown> = { updated_at: new Date().toISOString() };
   if (body.role) updates.role = body.role;
   if (body.permissions) updates.permissions = body.permissions;
+  if (Array.isArray(body.assigned_hospitals)) updates.assigned_hospitals = body.assigned_hospitals;
   if (typeof body.is_active === 'boolean') updates.is_active = body.is_active;
   if (body.full_name) updates.full_name = body.full_name;
   if (body.phone) updates.phone = body.phone;
