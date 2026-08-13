@@ -216,7 +216,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await setDoc(doc(db, 'users', user.uid), profile);
   };
 
-  /* ── Phone OTP Login ── */
+  /* -- Phone OTP Login -- */
   const getRecaptchaVerifier = (containerId: string) => {
     const win = window as unknown as { recaptchaVerifier?: RecaptchaVerifier };
     if (!win.recaptchaVerifier) {
@@ -308,7 +308,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return { user, profile: existingProfile };
   };
 
-  /* ── Link Phone to Existing Account ── */
+  /* -- Link Phone to Existing Account -- */
   const linkPhoneToAccount = async (phoneNumber: string, recaptchaContainerId: string): Promise<ConfirmationResult> => {
     const res = await fetch('/api/auth/otp', {
       method: 'POST',
@@ -354,7 +354,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  /* ── Email Verification ── */
+  /* -- Email Verification -- */
   const sendVerificationEmail = async (): Promise<void> => {
     const user = auth.currentUser;
     if (user) {

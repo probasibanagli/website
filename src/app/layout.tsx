@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   keywords: ['Bengali PG Chennai', 'Bengali food Tamil Nadu', 'Bengali community Chennai', 'Probasi Bangali', 'Bengali in Tamil Nadu'],
   openGraph: {
     title: 'ProbasiBangali.in',
-    description: 'One-stop platform for Bengalis in Tamil Nadu — accommodation, food, travel, emergency & community.',
+    description: 'One-stop platform for Bengalis in Tamil Nadu - accommodation, food, travel, emergency & community.',
     url: 'https://probasibangali.in',
     siteName: 'ProbasiBangali',
     locale: 'en_IN',
