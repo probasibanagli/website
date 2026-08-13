@@ -31,6 +31,7 @@ const moduleIcons: Record<ModuleKey, React.ReactNode> = {
   ambulance: <Truck className="w-4 h-4" />,
   government_services: <Landmark className="w-4 h-4" />,
   legal: <Scale className="w-4 h-4" />,
+  travel: <Bus className="w-4 h-4" />,
 };
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {

@@ -1,4 +1,4 @@
-import { Listing, FoodListing, Hospital, BloodBank, CommunityGroup, MatrimonialProfile, College, CommunityEvent, BlogPost } from '@/types';
+import { Listing, FoodListing, Hospital, BloodBank, CommunityGroup, MatrimonialProfile, College, CommunityEvent, BlogPost, BengaliDoctor, BengaliStaff } from '@/types';
 
 export const cityRestaurants: Record<string, string[]> = {};
 export const sampleStayListings: Listing[] = [];
@@ -1516,3 +1516,158 @@ export const sampleEvents: CommunityEvent[] = [
   }
 ];
 export const sampleBlogPosts: BlogPost[] = [];
+
+export const sampleDoctors: BengaliDoctor[] = [
+  {
+    id: 'doc-1',
+    doctor_name: 'Dr. Anirban Roy',
+    specialization: 'Cardiology',
+    department: 'Cardiology',
+    hospital_id: 'hosp-apollo',
+    hospital_ids: ['hosp-apollo'],
+    experience: '15 years',
+    qualifications: ['MBBS', 'MD (General Medicine)', 'DM (Cardiology)'],
+    languages: ['Bengali', 'English', 'Hindi'],
+    consultation_timings: 'Mon - Sat: 10:00 AM - 4:00 PM',
+    photo: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=400&auto=format&fit=crop&q=80',
+    phone: '+91 98765 43210',
+    email: 'dr.anirban@apollohospitals.com',
+    created_at: new Date().toISOString(),
+    otp_required: false
+  },
+  {
+    id: 'doc-2',
+    doctor_name: 'Dr. Saptarshi Chatterjee',
+    specialization: 'Neurology',
+    department: 'Neurology',
+    hospital_id: 'hosp-mgm',
+    hospital_ids: ['hosp-mgm'],
+    experience: '12 years',
+    qualifications: ['MBBS', 'MD', 'DM (Neurology)'],
+    languages: ['Bengali', 'English'],
+    consultation_timings: 'Mon - Fri: 11:00 AM - 5:00 PM',
+    photo: 'https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=400&auto=format&fit=crop&q=80',
+    phone: '+91 98765 43211',
+    email: 'saptarshi.c@mgmhealthcare.in',
+    created_at: new Date().toISOString(),
+    otp_required: false
+  },
+  {
+    id: 'doc-3',
+    doctor_name: 'Dr. Debasish Banerjee',
+    specialization: 'Orthopedics',
+    department: 'Orthopedics',
+    hospital_id: 'hosp-miot',
+    hospital_ids: ['hosp-miot'],
+    experience: '20 years',
+    qualifications: ['MBBS', 'MS (Orthopedics)', 'FRCS'],
+    languages: ['Bengali', 'English', 'Tamil'],
+    consultation_timings: 'Mon - Sat: 9:00 AM - 2:00 PM',
+    photo: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400&auto=format&fit=crop&q=80',
+    phone: '+91 98765 43212',
+    email: 'debasish.b@miotinternational.com',
+    created_at: new Date().toISOString(),
+    otp_required: false
+  },
+  {
+    id: 'doc-4',
+    doctor_name: 'Dr. Swati Mukherjee',
+    specialization: 'Pediatrics',
+    department: 'Pediatrics',
+    hospital_id: 'hosp-fortis',
+    hospital_ids: ['hosp-fortis'],
+    experience: '10 years',
+    qualifications: ['MBBS', 'MD (Pediatrics)'],
+    languages: ['Bengali', 'English'],
+    consultation_timings: 'Mon - Fri: 10:00 AM - 3:00 PM',
+    photo: 'https://images.unsplash.com/photo-1594824813566-88855ce78907?w=400&auto=format&fit=crop&q=80',
+    phone: '+91 98765 43213',
+    email: 'swati.m@fortis.com',
+    created_at: new Date().toISOString(),
+    otp_required: false
+  },
+  {
+    id: 'doc-5',
+    doctor_name: 'Dr. Partha Sarathi Sen',
+    specialization: 'Oncology',
+    department: 'Oncology',
+    hospital_id: 'hosp-kauvery',
+    hospital_ids: ['hosp-kauvery'],
+    experience: '18 years',
+    qualifications: ['MBBS', 'MD', 'DM (Oncology)'],
+    languages: ['Bengali', 'English', 'Hindi'],
+    consultation_timings: 'Mon - Sat: 11:30 AM - 4:30 PM',
+    photo: 'https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=400&auto=format&fit=crop&q=80',
+    phone: '+91 98765 43214',
+    email: 'partha.s@kauvery.com',
+    created_at: new Date().toISOString(),
+    otp_required: false
+  }
+];
+
+export const sampleStaff: BengaliStaff[] = [
+  {
+    id: 'staff-1',
+    name: 'Subhashis Ganguly',
+    photo: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&auto=format&fit=crop&q=80',
+    hospital_id: 'hosp-apollo',
+    department: 'Reception',
+    role: 'Patient Care Executive',
+    languages: ['Bengali', 'English', 'Tamil'],
+    phone: '+91 98123 45671',
+    email: 'subhashis.g@apollo.com',
+    experience: '8 years',
+    availability: '24/7 Rotational Shift',
+    description: 'Assists Bengali patients with registration, admission procedures, and local language translation.',
+    created_at: new Date().toISOString(),
+    otp_required: false
+  },
+  {
+    id: 'staff-2',
+    name: 'Rina Das',
+    photo: 'https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?w=400&auto=format&fit=crop&q=80',
+    hospital_id: 'hosp-mgm',
+    department: 'Nursing',
+    role: 'Senior Nurse',
+    languages: ['Bengali', 'English', 'Hindi'],
+    phone: '+91 98123 45672',
+    email: 'rina.das@mgm.com',
+    experience: '11 years',
+    availability: 'Day Shift (8 AM - 4 PM)',
+    description: 'Dedicated ICU nurse specializing in patient care coordination and family communications.',
+    created_at: new Date().toISOString(),
+    otp_required: false
+  },
+  {
+    id: 'staff-3',
+    name: 'Prosenjit Majumdar',
+    photo: 'https://images.unsplash.com/photo-1562774053-701939374585?w=400&auto=format&fit=crop&q=80',
+    hospital_id: 'hosp-miot',
+    department: 'Pharmacy',
+    role: 'Pharmacist',
+    languages: ['Bengali', 'English'],
+    phone: '+91 98123 45673',
+    email: 'prosenjit.m@miot.com',
+    experience: '6 years',
+    availability: '24/7 Emergency Pharmacy',
+    description: 'Helps Bengali patients understand dosage instructions and medication administration.',
+    created_at: new Date().toISOString(),
+    otp_required: false
+  },
+  {
+    id: 'staff-4',
+    name: 'Tanushree Mondal',
+    photo: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&auto=format&fit=crop&q=80',
+    hospital_id: 'hosp-fortis',
+    department: 'Billing',
+    role: 'Billing Desk Executive',
+    languages: ['Bengali', 'English', 'Tamil'],
+    phone: '+91 98123 45674',
+    email: 'tanushree.m@fortis.com',
+    experience: '5 years',
+    availability: '9 AM - 6 PM',
+    description: 'Guides Bengali families through insurance claim documentation and billing queries.',
+    created_at: new Date().toISOString(),
+    otp_required: false
+  }
+];

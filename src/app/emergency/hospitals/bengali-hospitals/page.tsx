@@ -10,8 +10,7 @@ import { Search, MapPin, Phone, ChevronRight, Star, Globe, Building2, Building, 
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/card';
-
-const SAMPLE_HOSPITALS: Hospital[] = [];
+import { sampleHospitals } from '@/data/sample-data';
 
 export default function BengaliHospitalsPage() {
   const [hospitals, setHospitals] = useState<Hospital[]>([]);
@@ -44,10 +43,10 @@ export default function BengaliHospitalsPage() {
         // Only show hospitals that have a bengali doctor OR bengali staff OR are explicitly bengali hospitals
         const bengaliHospitals = data.filter(h => h.has_bengali_doctor || h.has_bengali_staff);
         
-        setHospitals(bengaliHospitals.length > 0 ? bengaliHospitals : (data.length > 0 ? data : SAMPLE_HOSPITALS));
+        setHospitals(bengaliHospitals.length > 0 ? bengaliHospitals : (data.length > 0 ? data : sampleHospitals));
       } catch (err) {
         console.error(err);
-        setHospitals(SAMPLE_HOSPITALS);
+        setHospitals(sampleHospitals);
       } finally {
         setLoading(false);
       }
@@ -69,7 +68,7 @@ export default function BengaliHospitalsPage() {
     <div className="min-h-screen bg-surface">
       {/* Header */}
       <div className="bg-white border-b border-border">
-        <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex items-center gap-2 text-sm text-text-muted mb-4">
             <Link href="/" className="hover:text-primary">Home</Link><span>/</span>
             <Link href="/emergency/hospitals" className="hover:text-primary">Hospitals</Link><span>/</span>
@@ -121,9 +120,9 @@ export default function BengaliHospitalsPage() {
         </div>
       </div>
 
-      <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
              {[1, 2, 3, 4, 5, 6].map(i => (
                <Card key={i} className="animate-pulse flex flex-col h-[350px]">
                  <div className="h-40 bg-border/50" />
@@ -137,11 +136,11 @@ export default function BengaliHospitalsPage() {
              ))}
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filtered.map((hospital) => (
               <Card key={hospital.id} className="group flex flex-col h-full overflow-hidden hover:shadow-lg transition-all duration-300">
                 {/* Header Image Fallback */}
-                <div className="relative h-40 bg-red-50 overflow-hidden">
+                <div className="relative h-40 bg-gradient-to-br from-red-50 to-orange-50 overflow-hidden">
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="text-red-500 opacity-40 scale-[2.5]">
                       <Building className="w-8 h-8" />

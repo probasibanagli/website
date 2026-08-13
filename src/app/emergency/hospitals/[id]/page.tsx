@@ -141,7 +141,7 @@ export default function HospitalDetailsPage({ params }: { params: Promise<{ id: 
     <div className="min-h-screen bg-surface pb-20">
       {/* Breadcrumb */}
       <div className="bg-white border-b border-border">
-        <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center gap-2 text-sm text-text-muted overflow-x-auto whitespace-nowrap">
             <Link href="/" className="hover:text-primary shrink-0">Home</Link><span>/</span>
             <Link href="/emergency" className="hover:text-primary shrink-0">Emergency</Link><span>/</span>
@@ -151,7 +151,7 @@ export default function HospitalDetailsPage({ params }: { params: Promise<{ id: 
         </div>
       </div>
 
-      <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Link href="/emergency/hospitals" className="inline-flex items-center gap-2 text-sm font-medium text-text-muted hover:text-primary transition-colors mb-6">
           <ArrowLeft className="w-4 h-4" /> Back to Directory
         </Link>
@@ -162,7 +162,7 @@ export default function HospitalDetailsPage({ params }: { params: Promise<{ id: 
             <div className="relative">
               <div className="aspect-[21/9] md:aspect-[3/1] w-full bg-black relative">
                 <img src={hospital.images[activeImage]} alt={hospital.name} className="w-full h-full object-cover opacity-90" />
-                <div className="absolute inset-0 bg-black/80" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
               </div>
               <div className="absolute bottom-6 left-6 flex items-end gap-4">
                 <div className="w-20 h-20 bg-white p-2 rounded-xl shadow-lg border border-border/50 shrink-0">
@@ -220,7 +220,7 @@ export default function HospitalDetailsPage({ params }: { params: Promise<{ id: 
           )}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-8">
             
             <div className="bg-white rounded-3xl border border-border p-6 sm:p-8 shadow-sm">
