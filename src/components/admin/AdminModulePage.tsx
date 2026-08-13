@@ -156,7 +156,7 @@ export default function AdminModulePage({ moduleKey, collectionName, columns, fo
                 });
               }).map(item => (
                 <tr key={item.id as string} className="hover:bg-surface transition-colors">
-                  {columns.map(c => <td key={c.key} className="px-5 py-4 text-sm text-text-primary max-w-[200px] truncate">{String(item[c.key] || '—')}</td>)}
+                  {columns.map(c => <td key={c.key} className="px-5 py-4 text-sm text-text-primary max-w-[200px] truncate">{String(item[c.key] || '-')}</td>)}
                   {(canEdit || canManage) && (
                     <td className="px-5 py-4 text-right">
                       <div className="flex items-center justify-end gap-1">

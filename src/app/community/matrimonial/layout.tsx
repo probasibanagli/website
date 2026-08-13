@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     'বাঙালি বিবাহ তামিলনাড়ু',
   ],
   openGraph: {
-    title: 'Bengali Matrimony — ProbasiBangali',
+    title: 'Bengali Matrimony - ProbasiBangali',
     description: 'Find verified Bengali brides & grooms in Tamil Nadu. Free registration, admin-verified profiles.',
     type: 'website',
   },
