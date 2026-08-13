@@ -43,10 +43,10 @@ export function WordHelper({
 
   if (variant === 'horizontal') {
     return (
-      <Card className="relative overflow-hidden border-primary/20 shadow-xs flex flex-wrap items-center p-4 gap-6">
+      <Card className="relative overflow-hidden border-primary/20 shadow-xs flex flex-col md:flex-row items-center p-4 gap-6">
         <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 pointer-events-none" />
         
-        <div className="flex-1 w-full min-w-[200px] flex flex-col justify-center">
+        <div className="flex-1 w-full flex flex-col justify-center">
           <h3 className="text-lg font-bold mb-1 inline-flex items-center gap-2 text-text-primary">
             <Megaphone className="w-5 h-5 text-primary" /> {title}
           </h3>
@@ -73,7 +73,7 @@ export function WordHelper({
           </div>
         </div>
 
-        <div className="flex-1 w-full min-w-[250px] bg-slate-50 border border-slate-150 rounded-2xl p-4 shadow-inner relative flex flex-col justify-center">
+        <div className="flex-1 w-full bg-slate-50 border border-slate-150 rounded-2xl p-4 shadow-inner relative flex flex-col justify-center">
           <div className="flex justify-between items-start mb-2">
             <div>
               <div className="text-xl font-extrabold text-slate-800">{currentWord.pronunciation}</div>
