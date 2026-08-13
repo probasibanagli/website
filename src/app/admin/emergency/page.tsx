@@ -8,8 +8,69 @@ import { useAuth } from '@/lib/auth/AuthContext';
 import { canAccess } from '@/lib/permissions';
 import { COLLECTIONS } from '@/lib/firestore/collections';
 import type { Hospital, BengaliDoctor, BengaliStaff } from '@/types';
+import { Building2, Plus, Pencil, Trash2, MapPin, Clock, X, Loader2, Shield, UserRound, PhoneCall, CheckCircle, Users, ArrowLeft, Save } from 'lucide-react';
 import ImageUpload from '@/components/admin/ImageUpload';
-import { Plus, Pencil, Trash2, X, Loader2, Shield, Building2, UserRound, PhoneCall, CheckCircle, Users, ArrowLeft, Save } from 'lucide-react';
+
+function ListingCoverImage({ name, city, mapsUrl, imageUrl, fallbackIcon }: { 
+  name: string; 
+  city?: string; 
+  mapsUrl?: string; 
+  imageUrl?: string;
+  fallbackIcon: React.ReactNode;
+}) {
+  const getFallbackImg = (hName: string) => {
+    const lower = hName.toLowerCase();
+    if (lower.includes('apollo')) return 'https://images.unsplash.com/photo-1587351021759-3e566b6af7cc?w=800&auto=format&fit=crop&q=80';
+    if (lower.includes('mgm')) return 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=800&auto=format&fit=crop&q=80';
+    if (lower.includes('miot')) return 'https://images.unsplash.com/photo-1516549655169-df83a0774514?w=800&auto=format&fit=crop&q=80';
+    if (lower.includes('fortis')) return 'https://images.unsplash.com/photo-1538108149393-fbbd81895907?w=800&auto=format&fit=crop&q=80';
+    if (lower.includes('kauvery')) return 'https://images.unsplash.com/photo-1586773860418-d37222d8fce3?w=800&auto=format&fit=crop&q=80';
+    if (lower.includes('rela')) return 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=800&auto=format&fit=crop&q=80';
+    if (lower.includes('ramachandra')) return 'https://images.unsplash.com/photo-1587351021759-3e566b6af7cc?w=800&auto=format&fit=crop&q=80';
+    if (lower.includes('cmc')) return 'https://images.unsplash.com/photo-1516549655169-df83a0774514?w=800&auto=format&fit=crop&q=80';
+    if (lower.includes('cancer') || lower.includes('adyar')) return 'https://images.unsplash.com/photo-1538108149393-fbbd81895907?w=800&auto=format&fit=crop&q=80';
+    return 'https://images.unsplash.com/photo-1587351021759-3e566b6af7cc?w=800&auto=format&fit=crop&q=80';
+  };
+
+  const primarySrc = imageUrl || (mapsUrl ? `/api/public/place-photo?name=${encodeURIComponent(name)}&city=${encodeURIComponent(city || '')}&mapsUrl=${encodeURIComponent(mapsUrl)}&v=3` : getFallbackImg(name));
+  const [currentSrc, setCurrentSrc] = useState(primarySrc);
+  const [failedOnce, setFailedOnce] = useState(false);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    setCurrentSrc(imageUrl || getFallbackImg(name));
+    setError(false);
+    setFailedOnce(false);
+  }, [imageUrl, name]);
+
+  const handleImgError = () => {
+    if (!failedOnce) {
+      setFailedOnce(true);
+      setCurrentSrc(getFallbackImg(name));
+    } else {
+      setError(true);
+    }
+  };
+
+  if (error || !currentSrc) {
+    return (
+      <div className="absolute inset-0 bg-gradient-to-br from-red-50 to-orange-50 flex items-center justify-center">
+        <div className="text-red-500 opacity-40 scale-[2.5]">
+          {fallbackIcon}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <img
+      src={currentSrc}
+      alt={name}
+      onError={handleImgError}
+      className="w-full h-full object-cover mix-blend-multiply opacity-90 transition-transform duration-700 group-hover:scale-105"
+    />
+  );
+}
 
 const CHENNAI_AREAS = ['Adyar', 'Alandur', 'Ambattur', 'Anna Nagar', 'Ashok Nagar', 'Aminjikarai', 'Avadi', 'Besant Nagar', 'Broadway', 'Chromepet', 'Egmore', 'Guindy', 'Kilpauk', 'Kodambakkam', 'Kolathur', 'Madipakkam', 'Madhavaram', 'Mambalam', 'Manapakkam', 'Medavakkam', 'Mogappair', 'Nanganallur', 'OMR', 'Pallavaram', 'Perambur', 'Porur', 'Royapettah', 'Saidapet', 'Sholinganallur', 'Tambaram', 'T Nagar', 'Thiruvanmiyur', 'Triplicane', 'Vadapalani', 'Velachery', 'Villivakkam', 'Virugambakkam', 'West Mambalam', 'Greams Road', 'Gandhi Nagar', 'Koyembedu', 'Mylapore', 'Perungudi'].sort();
 const LANGUAGES = ['Bengali', 'Tamil', 'English', 'Hindi', 'Telugu', 'Malayalam', 'Kannada', 'Urdu'];
@@ -203,11 +264,11 @@ function AdminEmergencyPageContent() {
 
       if (editId) {
         if (activeTab === 'hospitals') {
-          setHospitals(prev => prev.map(i => i.id === editId ? { ...i, ...payload } as Hospital : i));
+          setHospitals(prev => prev.map(i => i.id === editId ? { ...i, ...payload } as unknown as Hospital : i));
         } else if (activeTab === 'doctors') {
-          setDoctors(prev => prev.map(i => i.id === editId ? { ...i, ...payload } as BengaliDoctor : i));
+          setDoctors(prev => prev.map(i => i.id === editId ? { ...i, ...payload } as unknown as BengaliDoctor : i));
         } else {
-          setStaff(prev => prev.map(i => i.id === editId ? { ...i, ...payload } as BengaliStaff : i));
+          setStaff(prev => prev.map(i => i.id === editId ? { ...i, ...payload } as unknown as BengaliStaff : i));
         }
       } else {
         const id = `${activeTab === 'hospitals' ? 'hosp' : 'item'}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
@@ -215,11 +276,11 @@ function AdminEmergencyPageContent() {
         payload.created_at = now;
         
         if (activeTab === 'hospitals') {
-          setHospitals(prev => [{ ...payload } as Hospital, ...prev]);
+          setHospitals(prev => [{ ...payload } as unknown as Hospital, ...prev]);
         } else if (activeTab === 'doctors') {
-          setDoctors(prev => [{ ...payload } as BengaliDoctor, ...prev]);
+          setDoctors(prev => [{ ...payload } as unknown as BengaliDoctor, ...prev]);
         } else {
-          setStaff(prev => [{ ...payload } as BengaliStaff, ...prev]);
+          setStaff(prev => [{ ...payload } as unknown as BengaliStaff, ...prev]);
         }
       }
       
@@ -330,7 +391,7 @@ function AdminEmergencyPageContent() {
                   </div>
                   <div className="md:col-span-2">
                     <label className="block text-sm font-semibold text-text-primary mb-1.5">Hospital Cover Image</label>
-                    <ImageUpload value={formData.image_url || ''} onChange={(url) => setFormData({...formData, image_url: url})} folder="admin_uploads/hospitals" />
+                    <ImageUpload value={formData.image_url || ''} onChange={(url: string) => setFormData({...formData, image_url: url})} folder="admin_uploads/hospitals" />
                   </div>
                 </div>
 
@@ -609,136 +670,142 @@ function AdminEmergencyPageContent() {
       {loading ? (
         <div className="flex justify-center py-20"><Loader2 className="w-6 h-6 animate-spin text-primary" /></div>
       ) : (
-        <div className="bg-white rounded-2xl border border-border overflow-hidden shadow-sm">
-          <table className="w-full">
-            <thead>
-              <tr className="bg-surface/50 border-b border-border">
-                {activeTab === 'hospitals' ? (
-                  <>
-                    <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Hospital Name</th>
-                    <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">City</th>
-                    <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Phone</th>
-                    <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Emergency No</th>
-                    <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Branch</th>
-                  </>
-                ) : activeTab === 'doctors' ? (
-                  <>
-                    <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Doctor Name</th>
-                    <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Specialization</th>
-                    <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Hospitals</th>
-                  </>
-                ) : (
-                  <>
-                    <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Staff Name</th>
-                    <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Designation</th>
-                    <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Hospital</th>
-                  </>
-                )}
-                {canEdit && <th className="text-right px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Actions</th>}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {(activeTab === 'hospitals' 
-                 ? hospitals 
-                 : activeTab === 'doctors' 
-                   ? doctors.filter(d => selectedHospitalFilter === 'all' || d.hospital_ids?.includes(selectedHospitalFilter) || d.hospital_id === selectedHospitalFilter) 
-                   : staff.filter(s => selectedHospitalFilter === 'all' || s.hospital_id === selectedHospitalFilter)
-              ).map((item: any) => (
-                <tr key={item.id} className="hover:bg-surface transition-colors">
-                  {activeTab === 'hospitals' ? (
-                    <>
-                      <td className="px-5 py-4 text-sm text-text-primary font-medium">
-                        <div>{item.name}</div>
-                        <div className="flex gap-1.5 mt-1">
-                          {item.category && (
-                            <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${item.category === 'Government' ? 'bg-blue-100 text-blue-800' : 'bg-orange-100 text-orange-800'}`}>
-                              {item.category}
-                            </span>
-                          )}
-                          {item.status && (
-                            <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${item.status === 'Active' ? 'bg-emerald-100 text-emerald-800' : 'bg-gray-100 text-gray-800'}`}>
-                              {item.status}
-                            </span>
-                          )}
-                        </div>
-                      </td>
-                      <td className="px-5 py-4 text-sm text-text-muted">{item.city}</td>
-                      <td className="px-5 py-4 text-sm text-text-muted">{item.phone}</td>
-                      <td className="px-5 py-4 text-sm font-bold text-red-600">{item.emergency_phone || '-'}</td>
-                      <td className="px-5 py-4 text-sm text-text-muted">{item.main_branch ? <span className="text-emerald-600 font-semibold text-xs bg-emerald-50 px-2 py-1 rounded">Main</span> : <span className="text-text-muted text-xs">Branch</span>}</td>
-                    </>
-                  ) : activeTab === 'doctors' ? (
-                    <>
-                      <td className="px-5 py-4 text-sm text-text-primary font-medium">{item.doctor_name}</td>
-                      <td className="px-5 py-4 text-sm text-text-muted">{item.specialization}</td>
-                      <td className="px-5 py-4 text-sm text-text-muted max-w-xs truncate">
-                        {item.hospital_ids?.map((hid: string) => hospitals.find(h => h.id === hid)?.name).filter(Boolean).join(', ') || hospitals.find(h => h.id === item.hospital_id)?.name || 'Unknown'}
-                      </td>
-                    </>
-                  ) : (
-                    <>
-                      <td className="px-5 py-4 text-sm text-text-primary font-medium">{item.name}</td>
-                      <td className="px-5 py-4 text-sm text-text-muted">{item.role}</td>
-                      <td className="px-5 py-4 text-sm text-text-muted">{item.department}</td>
-                      <td className="px-5 py-4 text-sm text-text-muted">
-                        {hospitals.find(h => h.id === item.hospital_id)?.name || 'Unknown'}
-                      </td>
-                    </>
-                  )}
-                  {(canEdit || canManage) && (
-                    <td className="px-5 py-4 text-right">
-                      <div className="flex items-center justify-end gap-1">
-                        {canEdit && <button onClick={() => openEdit(item)} className="p-2 rounded-lg hover:bg-primary/10 text-text-muted hover:text-primary transition-colors cursor-pointer"><Pencil className="w-3.5 h-3.5" /></button>}
-                        {canManage && <button onClick={() => handleDelete(item.id)} className="p-2 rounded-lg hover:bg-red-50 text-text-muted hover:text-red-500 transition-colors cursor-pointer"><Trash2 className="w-3.5 h-3.5" /></button>}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-[30px]">
+          {(activeTab === 'hospitals' 
+             ? hospitals 
+             : activeTab === 'doctors' 
+               ? doctors.filter(d => selectedHospitalFilter === 'all' || d.hospital_ids?.includes(selectedHospitalFilter) || d.hospital_id === selectedHospitalFilter) 
+               : staff.filter(s => selectedHospitalFilter === 'all' || s.hospital_id === selectedHospitalFilter)
+          ).map((item: any) => (
+            <div key={item.id} className="bg-white rounded-[25px] border border-gray-100 shadow-[0_4px_25px_-4px_rgba(0,0,0,0.05)] flex flex-col justify-between hover:border-primary/20 hover:shadow-lg transition-all relative h-full group overflow-hidden min-h-[520px]">
+              {activeTab === 'hospitals' ? (
+                <>
+                  <div className="relative h-[255px] bg-slate-100 overflow-hidden shrink-0">
+                    <ListingCoverImage 
+                      name={item.name} 
+                      city={item.city} 
+                      mapsUrl={item.google_maps_url} 
+                      imageUrl={item.image_url}
+                      fallbackIcon={<Building2 className="w-12 h-12" />}
+                    />
+                    
+                    {/* Gradient Shadow Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-5 z-10 pointer-events-none">
+                      <h3 className="text-xl font-bold text-white leading-tight font-display">{item.name}</h3>
+                      <div className="flex items-center gap-1.5 mt-2 text-sm text-white/90">
+                        <MapPin className="w-4 h-4 text-white shrink-0" />
+                        <span>{item.area ? `${item.area}, ` : ''}{item.city}</span>
                       </div>
-                    </td>
-                  )}
-                </tr>
-              ))}
+                    </div>
 
-              {activeTab === 'doctors' && doctors.filter(d => selectedHospitalFilter === 'all' || d.hospital_id === selectedHospitalFilter).map(item => {
-                const hosp = hospitals.find(h => h.id === item.hospital_id);
-                return (
-                  <tr key={item.id} className="hover:bg-surface/30 transition-colors">
-                    <td className="px-5 py-4 font-bold">{item.doctor_name}</td>
-                    <td className="px-5 py-4">{item.specialization}</td>
-                    <td className="px-5 py-4">{hosp ? `${hosp.name} (${hosp.city})` : '-'}</td>
-                    {canEdit && (
-                      <td className="text-right px-5 py-4">
-                        <div className="flex items-center justify-end gap-1.5">
-                          <button onClick={() => openEdit(item)} className="p-2 text-text-muted hover:text-primary hover:bg-primary/5 rounded-lg transition-colors cursor-pointer"><Pencil className="w-4 h-4" /></button>
-                          <button onClick={() => handleDelete(item.id)} className="p-2 text-text-muted hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"><Trash2 className="w-4 h-4" /></button>
+                    {/* Top-left Badges */}
+                    <div className="absolute top-4 left-4 flex flex-wrap gap-1.5 z-20">
+                      {item.category && (
+                        <span className={`text-[10px] font-extrabold px-2.5 py-1 rounded-full uppercase tracking-wider text-white shadow-sm ${item.category === 'Government' ? 'bg-blue-600' : 'bg-orange-600'}`}>
+                          {item.category}
+                        </span>
+                      )}
+                      {item.is_24_7 && (
+                        <span className="bg-red-600 text-white text-[10px] font-extrabold px-2.5 py-1 rounded-full shadow-sm flex items-center gap-1 uppercase tracking-wider">
+                          <Clock className="w-3.5 h-3.5" /> 24/7
+                        </span>
+                      )}
+                      {item.has_bengali_doctor && (
+                        <span className="bg-emerald-600 text-white text-[10px] font-extrabold px-2.5 py-1 rounded-full shadow-sm uppercase tracking-wider">
+                          🩺 Bengali Doctor
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="p-[22px] flex-1 flex flex-col relative">
+                    <div className="flex-1">
+                      {item.specializations && item.specializations.length > 0 ? (
+                        <div className="flex flex-wrap gap-3 mb-5">
+                          {item.specializations.slice(0, 4).map((s: string) => (
+                            <span key={s} className="px-3 py-1.5 bg-[#FFF1F0] border border-[#FFA39E] rounded-lg text-xs font-semibold text-[#B81D18]">
+                              {s}
+                            </span>
+                          ))}
                         </div>
-                      </td>
-                    )}
-                  </tr>
-                );
-              })}
+                      ) : (
+                        <div className="text-sm text-text-muted italic mb-5">No specializations listed</div>
+                      )}
+                    </div>
 
-              {activeTab === 'staff' && staff.filter(s => selectedHospitalFilter === 'all' || s.hospital_id === selectedHospitalFilter).map(item => {
-                const hosp = hospitals.find(h => h.id === item.hospital_id);
-                return (
-                  <tr key={item.id} className="hover:bg-surface/30 transition-colors">
-                    <td className="px-5 py-4 font-bold">{item.name}</td>
-                    <td className="px-5 py-4">{item.role}</td>
-                    <td className="px-5 py-4">{hosp ? `${hosp.name} (${hosp.city})` : '-'}</td>
-                    {canEdit && (
-                      <td className="text-right px-5 py-4">
-                        <div className="flex items-center justify-end gap-1.5">
-                          <button onClick={() => openEdit(item)} className="p-2 text-text-muted hover:text-primary hover:bg-primary/5 rounded-lg transition-colors cursor-pointer"><Pencil className="w-4 h-4" /></button>
-                          <button onClick={() => handleDelete(item.id)} className="p-2 text-text-muted hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"><Trash2 className="w-4 h-4" /></button>
-                        </div>
-                      </td>
+                    <div className="flex justify-between items-center mt-auto border-t border-border/60 pt-4 mb-4">
+                      <div className="flex items-center gap-2">
+                        {item.status && (
+                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${item.status === 'Active' ? 'bg-emerald-100 text-emerald-800' : 'bg-gray-100 text-gray-800'}`}>
+                            {item.status}
+                          </span>
+                        )}
+                        {item.main_branch ? (
+                          <span className="shrink-0 text-emerald-600 font-bold text-[10px] bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">MAIN</span>
+                        ) : (
+                          <span className="shrink-0 text-text-muted font-bold text-[10px] border border-border px-2 py-0.5 rounded bg-gray-50">BRANCH</span>
+                        )}
+                      </div>
+                      <div className="text-xs font-mono font-medium text-text-muted truncate ml-2">
+                         {item.phone}
+                      </div>
+                    </div>
+                  </div>
+                </>
+              ) : activeTab === 'doctors' ? (
+                <div className="p-[22px] flex flex-col h-full">
+                  <div className="flex items-center gap-4 mb-4">
+                    {item.photo ? (
+                      <img src={item.photo} alt={item.doctor_name} className="w-16 h-16 rounded-full object-cover border-2 border-primary/10" />
+                    ) : (
+                      <div className="w-16 h-16 rounded-full bg-primary/5 flex items-center justify-center text-primary border-2 border-primary/10">
+                        <UserRound className="w-8 h-8" />
+                      </div>
                     )}
-                  </tr>
-                );
-              })}
-
-              {(activeTab === 'hospitals' ? hospitals : activeTab === 'doctors' ? doctors : staff).length === 0 && (
-                <tr><td colSpan={5} className="px-5 py-12 text-center text-text-muted text-sm italic">No data yet</td></tr>
+                    <div>
+                      <h3 className="font-bold text-text-primary text-lg leading-tight mb-1">{item.doctor_name}</h3>
+                      <p className="text-primary font-semibold text-sm">{item.specialization}</p>
+                    </div>
+                  </div>
+                  <div className="space-y-1.5 text-sm text-text-muted mb-4">
+                    <p><span className="font-semibold">Exp:</span> {item.experience}</p>
+                    <p><span className="font-semibold">Hospital:</span> {hospitals.find((h: any) => h.id === item.hospital_id)?.name || 'Unknown'}</p>
+                    {item.languages && item.languages.length > 0 && (
+                      <p><span className="font-semibold">Languages:</span> {item.languages.join(', ')}</p>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <div className="p-[22px] flex flex-col h-full">
+                  <h3 className="font-bold text-text-primary text-lg leading-tight mb-1">{item.name}</h3>
+                  <p className="text-primary font-semibold text-sm mb-3">{item.role || item.department}</p>
+                  <div className="space-y-1.5 text-sm text-text-muted mb-4">
+                    <p><span className="font-semibold">Dept:</span> {item.department}</p>
+                    <p><span className="font-semibold">Hospital:</span> {hospitals.find((h: any) => h.id === item.hospital_id)?.name || 'Unknown'}</p>
+                  </div>
+                </div>
               )}
-            </tbody>
-          </table>
+
+              <div className="mt-auto flex justify-end gap-[12px] px-[22px] pb-[22px]">
+                {canEdit && (
+                  <button onClick={() => openEdit(item)} className="h-[52px] w-[52px] flex items-center justify-center rounded-[16px] text-primary bg-primary/5 hover:bg-primary/10 transition-colors cursor-pointer" title="Edit">
+                    <Pencil className="w-5 h-5" />
+                  </button>
+                )}
+                {canManage && (
+                  <button onClick={() => handleDelete(item.id)} className="h-[52px] w-[52px] flex items-center justify-center rounded-[16px] text-red-600 bg-red-50 hover:bg-red-100 transition-colors cursor-pointer" title="Delete">
+                    <Trash2 className="w-5 h-5" />
+                  </button>
+                )}
+              </div>
+            </div>
+          ))}
+
+          {(activeTab === 'hospitals' ? hospitals : activeTab === 'doctors' ? doctors : staff).length === 0 && (
+            <div className="col-span-full py-12 text-center bg-white rounded-2xl border border-border shadow-sm text-text-muted text-sm italic">
+              No data yet
+            </div>
+          )}
         </div>
       )}
 

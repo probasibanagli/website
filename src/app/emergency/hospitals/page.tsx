@@ -486,11 +486,11 @@ export default function EmergencyHospitalsPage() {
             {/* ── HOSPITALS SEARCH RESULTS ── */}
             {searchTab === 'hospitals' && (
               <>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-[30px]">
                   {filteredHospitals.map((hospital) => (
-                    <Card key={hospital.id} padding="none" className="overflow-hidden group flex flex-col h-full bg-white border border-gray-100 shadow-[0_4px_25px_-4px_rgba(0,0,0,0.05)] rounded-[24px]">
+                    <Card key={hospital.id} padding="none" className="overflow-hidden group flex flex-col h-full bg-white border border-gray-100 shadow-[0_4px_25px_-4px_rgba(0,0,0,0.05)] rounded-[25px] min-h-[520px]">
                       {/* Image header with text overlay */}
-                      <div className="relative h-64 bg-slate-100 overflow-hidden">
+                      <div className="relative h-[255px] bg-slate-100 overflow-hidden shrink-0">
                         <ListingCoverImage 
                           name={hospital.name} 
                           city={hospital.city} 
@@ -528,11 +528,11 @@ export default function EmergencyHospitalsPage() {
                         </div>
                       </div>
 
-                      <div className="p-5 flex-1 flex flex-col justify-between">
+                      <div className="p-[22px] flex-1 flex flex-col justify-between relative">
                         {/* Specializations Tags */}
                         <div>
                           {hospital.specializations && hospital.specializations.length > 0 && (
-                            <div className="flex flex-wrap gap-2 mb-5">
+                            <div className="flex flex-wrap gap-3 mb-5">
                               {hospital.specializations.slice(0, 4).map((s) => (
                                 <span key={s} className="px-3 py-1.5 bg-[#FFF1F0] border border-[#FFA39E] rounded-lg text-xs font-semibold text-[#B81D18]">
                                   {s}
@@ -543,13 +543,13 @@ export default function EmergencyHospitalsPage() {
                         </div>
 
                         {/* Side-by-Side Action Buttons */}
-                        <div className="flex items-center gap-3 w-full">
-                          <a href={`tel:${hospital.emergency_phone || hospital.phone || '108'}`} className="flex-1 w-full bg-[#B81D18] hover:bg-[#9E1612] text-white font-bold py-2.5 px-4 rounded-xl text-sm flex items-center justify-center gap-2 shadow-sm transition-all active:scale-[0.98]">
+                        <div className="flex items-center gap-3 w-full mt-auto">
+                          <a href={`tel:${hospital.emergency_phone || hospital.phone || '108'}`} className="flex-1 w-full bg-[#B81D18] hover:bg-[#9E1612] text-white font-bold h-[52px] px-4 rounded-xl text-sm flex items-center justify-center gap-2 shadow-sm transition-all active:scale-[0.98]">
                             <Phone className="w-4 h-4" />
                             <span>Emergency</span>
                           </a>
                           
-                          <Link href={`/emergency/hospitals/${hospital.id}`} className="flex-1 w-full bg-white hover:bg-slate-50 border border-[#E4E9F2] text-gray-800 font-bold py-2.5 px-4 rounded-xl text-sm flex items-center justify-center shadow-sm transition-all active:scale-[0.98]">
+                          <Link href={`/emergency/hospitals/${hospital.id}`} className="flex-1 w-full bg-white hover:bg-slate-50 border border-[#E4E9F2] text-gray-800 font-bold h-[52px] px-4 rounded-xl text-sm flex items-center justify-center shadow-sm transition-all active:scale-[0.98]">
                             <span>Details</span>
                           </Link>
                         </div>
@@ -570,7 +570,7 @@ export default function EmergencyHospitalsPage() {
             {/* ── DOCTORS SEARCH RESULTS ── */}
             {searchTab === 'doctors' && (
               <>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                   {filteredDoctors.map((doctor) => {
                     const docHospitals = doctor.hospital_ids?.map(hid => hospitals.find(h => h.id === hid)).filter(Boolean) || [hospitals.find(h => h.id === doctor.hospital_id)].filter(Boolean);
                     const otpRequired = doctor.otp_required !== false;
@@ -695,7 +695,7 @@ export default function EmergencyHospitalsPage() {
             {/* ── STAFF SEARCH RESULTS ── */}
             {searchTab === 'staff' && (
               <>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                   {filteredStaff.map((s) => {
                     const hospital = hospitals.find((h) => h.id === s.hospital_id);
                     const otpRequired = s.otp_required !== false;

@@ -135,7 +135,7 @@ async function seed() {
   console.log(`✅ ${sampleColleges.length} colleges seeded`);
 
   // 8. Seed events
-  for (const item of sampleEvents) {
+  for (const item of sampleEvents as any[]) {
     await db.collection('events').doc(item.id).set(item);
   }
   console.log(`✅ ${sampleEvents.length} events seeded`);

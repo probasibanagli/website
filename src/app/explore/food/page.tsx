@@ -12,6 +12,7 @@ import { WordHelper } from '@/components/ui/WordHelper';
 import { getWhatsAppUrl } from '@/lib/utils';
 import { useFirestore } from '@/lib/hooks/useFirestore';
 import { FoodListing } from '@/types';
+import { sampleFoodListings } from '@/data/sample-data';
 
 const FOOD_TYPE_LABELS: Record<string, string> = {
   restaurant: 'Restaurants',
@@ -90,7 +91,14 @@ export default function FoodPage() {
     { key: 'uber_eats_url', label: 'Uber Eats', variant: 'red' },
   ] as const;
 
-  const combinedListings = firestoreListings;
+  const combinedListings = [...firestoreListings, ...sampleFoodListings].reduce((acc: any[], current: any) => {
+    const x = acc.find((item: any) => item.id === current.id);
+    if (!x) {
+      return acc.concat([current]);
+    } else {
+      return acc;
+    }
+  }, [] as any[]);
 
   const sortedCities = useMemo(() => {
     return Array.from(new Set(combinedListings.map((l) => l.city).filter(Boolean).map(c => {
@@ -277,7 +285,7 @@ export default function FoodPage() {
             if (food.type === 'tiffin') tagsToShow.push({ name: 'Tiffin Service', icon: null });
             
             // Add specialties
-            (food.specialties || []).slice(0, 2).forEach((s) => {
+            (food.specialties || []).slice(0, 2).forEach((s: string) => {
               tagsToShow.push({ name: s, icon: null });
             });
             

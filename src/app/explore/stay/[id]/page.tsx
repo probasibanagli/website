@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/card';
 import { formatPrice, getWhatsAppUrl } from '@/lib/utils';
 import { useFirestore } from '@/lib/hooks/useFirestore';
+import { sampleListings } from '@/data/sample-data';
 import { MapEmbed } from '@/components/ui/MapEmbed';
 
 function ListingCoverImage({ name, city, mapsUrl, imageUrl, type, mapEmbedCode, fallbackIcon }: { 
@@ -59,7 +60,11 @@ export default function StayDetailPage() {
   const params = useParams();
   const { data: firestoreListings, loading } = useFirestore('listings');
   
-  const combinedListings = firestoreListings;
+  const combinedListings = [...firestoreListings, ...sampleListings].reduce((acc: any[], current: any) => {
+    const x = acc.find((item: any) => item.id === current.id);
+    if (!x) return acc.concat([current]);
+    return acc;
+  }, [] as any[]);
 
   const listing: any = combinedListings.find((l: any) => l.id === params.id);
 

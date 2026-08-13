@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/card';
 import { getWhatsAppUrl, getZomatoSearchUrl, getSwiggySearchUrl, getMagicpinSearchUrl, getEatsureSearchUrl, getUberEatsSearchUrl } from '@/lib/utils';
 import { useFirestore } from '@/lib/hooks/useFirestore';
+import { sampleFoodListings } from '@/data/sample-data';
 import { FoodListing } from '@/types';
 import { MapEmbed } from '@/components/ui/MapEmbed';
 
@@ -67,7 +68,14 @@ export default function FoodDetailPage() {
   const params = useParams();
   const id = Array.isArray(params.id) ? params.id[0] : params.id;
   const { data: firestoreListings, loading } = useFirestore<FoodListing>('food_listings');
-  const food = firestoreListings.find((f) => f.id === id);
+
+  const combinedListings = [...firestoreListings, ...sampleFoodListings].reduce((acc, current) => {
+    const x = acc.find((item: any) => item.id === current.id);
+    if (!x) return acc.concat([current]);
+    return acc;
+  }, [] as any[]);
+
+  const food = combinedListings.find((f) => f.id === id);
 
   const FOOD_TYPE_LABELS: Record<string, string> = {
     restaurant: 'Restaurants',

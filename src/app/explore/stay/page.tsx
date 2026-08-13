@@ -11,6 +11,7 @@ import { useFirestore } from '@/lib/hooks/useFirestore';
 import { Listing } from '@/types';
 import { CITIES, CITY_HOSPITALS, CITY_COLLEGES, CITY_AREAS, METRO_ROUTES } from '@/lib/constants';
 import { formatPrice, getWhatsAppUrl } from '@/lib/utils';
+import { sampleListings } from '@/data/sample-data';
 
 const amenityIcons: Record<string, React.ReactNode> = {
   'WiFi': <Wifi className="w-3.5 h-3.5" />,
@@ -86,7 +87,14 @@ export default function StayPage() {
   const [selectedCollege, setSelectedCollege] = useState('');
   const [selectedMetroRoute, setSelectedMetroRoute] = useState('');
 
-  const combinedListings = firestoreListings;
+  const combinedListings = [...firestoreListings, ...sampleListings.filter(l => ['pg', 'hotel', 'rental'].includes(l.type || ''))].reduce((acc: any[], current: any) => {
+    const x = acc.find((item: any) => item.id === current.id);
+    if (!x) {
+      return acc.concat([current]);
+    } else {
+      return acc;
+    }
+  }, [] as any[]);
 
   const sortedCities = useMemo(() => {
     return Array.from(new Set(combinedListings.map((l) => l.city).filter(Boolean).map(c => {
