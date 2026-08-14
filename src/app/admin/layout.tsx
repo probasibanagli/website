@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import {
   LayoutDashboard, Home, UtensilsCrossed, Bus, AlertTriangle,
   Users, GraduationCap, FileText, UserCog, LogOut, Menu, X,
@@ -37,7 +37,6 @@ const moduleIcons: Record<ModuleKey, React.ReactNode> = {
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
-  const searchParams = useSearchParams();
   const { profile, loading, logOut } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [mfaChecked, setMfaChecked] = useState(false);

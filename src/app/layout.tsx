@@ -88,7 +88,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <BlockedCheck>
 
                 <Navbar />
-                <main className="flex-1">{children}</main>
+                <Suspense fallback={null}>
+                  <main className="flex-1">{children}</main>
+                </Suspense>
                 <Footer />
                 <ChatWidget />
               </BlockedCheck>
