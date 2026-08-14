@@ -264,7 +264,6 @@ export default function AdminUsersPage() {
   function openCreateModal() {
     setCreateForm({ full_name: '', email: '', password: '', phone: '' });
     setSelectedModules(AVAILABLE_MODULES.reduce((acc, m) => ({ ...acc, [m.key]: true }), {}));
-    setCreateAssignedHospitals([]);
     setCreateError('');
     setShowCreateModal(true);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -301,8 +300,7 @@ export default function AdminUsersPage() {
           full_name: createForm.full_name.trim(),
           phone: `+91${phoneDigits}`,
           role: 'admin',
-          permissions: perms,
-          assigned_hospitals: createAssignedHospitals
+          permissions: perms
         })
       });
 
