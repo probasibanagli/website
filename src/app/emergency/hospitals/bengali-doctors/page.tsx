@@ -7,10 +7,11 @@ import { collection, getDocs } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { COLLECTIONS } from '@/lib/firestore/collections';
 import type { BengaliDoctor, Hospital } from '@/types';
-import { Search, Phone, ChevronRight, UserRound, Award, Languages, Building2, Stethoscope, Mail, ArrowLeft, ShieldAlert } from 'lucide-react';
+import { Search, Phone, ChevronRight, UserRound, Award, Languages, Building2, Stethoscope, Mail, ArrowLeft, ShieldAlert, Star, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useAuth } from '@/lib/auth/AuthContext';
+import { OtpVerificationModal } from '@/components/auth/OtpVerificationModal';
 import { sampleHospitals, sampleDoctors } from '@/data/sample-data';
 
 const sampleHospitalsMap: Record<string, Hospital> = sampleHospitals.reduce((acc, h) => {
@@ -22,9 +23,30 @@ export default function BengaliDoctorsPage() {
   const [doctors, setDoctors] = useState<BengaliDoctor[]>([]);
   const [hospitals, setHospitals] = useState<Record<string, Hospital>>({});
   const [loading, setLoading] = useState(true);
+  const [showOtpModal, setShowOtpModal] = useState(false);
+  const [selectedDoctorId, setSelectedDoctorId] = useState<string | undefined>();
   const { firebaseUser: user } = useAuth();
-  const isVerified = !!user;
   const router = useRouter();
+  
+  const [isOtpVerified, setIsOtpVerified] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setIsOtpVerified(localStorage.getItem('directory_verified') === 'true');
+    }
+  }, [user]);
+
+  const canViewContact = !!user && isOtpVerified;
+
+  const handleSeeContact = (doctorId: string) => {
+    if (!user || !isOtpVerified) {
+      setSelectedDoctorId(doctorId);
+      setShowOtpModal(true);
+      return;
+    }
+
+    router.push(`/emergency/hospitals/bengali-doctors/${doctorId}`);
+  };
   
   const [search, setSearch] = useState('');
   const [specialtyFilter, setSpecialtyFilter] = useState('');
@@ -185,21 +207,6 @@ export default function BengaliDoctorsPage() {
                </Card>
              ))}
           </div>
-        ) : !isVerified ? (
-          <div className="max-w-xl mx-auto py-12 text-center">
-            <Card className="p-8 rounded-3xl border-border shadow-md bg-white">
-              <div className="w-16 h-16 bg-amber-500/10 rounded-2xl flex items-center justify-center mx-auto mb-5 text-amber-600">
-                <ShieldAlert className="w-8 h-8" />
-              </div>
-              <h2 className="text-2xl font-bold text-text-primary mb-2">Doctor Directory Locked</h2>
-              <p className="text-sm text-text-muted mb-6">
-                To protect practitioner privacy and maintain security, complete a quick OTP verification to unlock doctor profiles and contact details.
-              </p>
-              <Button onClick={() => router.push('/auth/login?redirect=/emergency/hospitals/bengali-doctors')} variant="primary" size="lg" className="w-full font-semibold">
-                Login to Access Directory
-              </Button>
-            </Card>
-          </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filtered.map((doctor) => {
@@ -258,19 +265,45 @@ export default function BengaliDoctorsPage() {
                     )}
                   </div>
 
-                  <div className="mt-6 pt-4 border-t border-border flex items-center gap-2">
-                    <Link href={`/emergency/hospitals/bengali-doctors/${doctor.id}`} className="flex-1">
-                      <Button variant="primary" size="sm" className="w-full">
-                        View Profile
+                  <div className="mt-6 pt-4 border-t border-border flex flex-wrap items-center gap-2">
+                    <Button
+                      onClick={() => handleSeeContact(doctor.id)}
+                      variant="primary"
+                      size="sm"
+                      className="flex-1 font-bold shadow-xs cursor-pointer flex items-center justify-center gap-1.5"
+                    >
+                      <Phone className="w-3.5 h-3.5" />
+                      <span>
+                        {!canViewContact 
+                          ? 'Register / Login to See Contact Details' 
+                          : 'See Contact Details'}
+                      </span>
+                    </Button>
+                    <Link href={`/emergency/hospitals/bengali-doctors/${doctor.id}`}>
+                      <Button variant="outline" size="sm" className="font-semibold cursor-pointer">
+                        Profile
                       </Button>
                     </Link>
+                    {doctor.google_review_link && (
+                      <a
+                        href={doctor.google_review_link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center justify-center gap-1.5 px-3 py-2 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 rounded-xl text-xs font-bold transition-colors shrink-0"
+                        title="Google Review"
+                      >
+                        <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-500" />
+                        <span>Review</span>
+                        <ExternalLink className="w-3 h-3 opacity-60" />
+                      </a>
+                    )}
                   </div>
                 </Card>
               );
             })}
           </div>
         )}
-        {isVerified && !loading && filtered.length === 0 && (
+        {!loading && filtered.length === 0 && (
           <div className="text-center py-20 bg-white rounded-3xl border border-border mt-8">
             <p className="text-5xl mb-4">👨‍⚕️</p>
             <h3 className="text-xl font-bold mb-2">No doctors found</h3>
@@ -279,6 +312,21 @@ export default function BengaliDoctorsPage() {
         )}
       </div>
 
+      <OtpVerificationModal
+        isOpen={showOtpModal}
+        onClose={() => setShowOtpModal(false)}
+        onSuccess={() => {
+          setShowOtpModal(false);
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('directory_verified', 'true');
+          }
+          setIsOtpVerified(true);
+          if (selectedDoctorId) {
+            router.push(`/emergency/hospitals/bengali-doctors/${selectedDoctorId}`);
+          }
+        }}
+        doctorId={selectedDoctorId}
+      />
     </div>
   );
 }

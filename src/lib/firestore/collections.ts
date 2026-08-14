@@ -24,6 +24,7 @@ export const COLLECTIONS = {
   ambulances: 'ambulances',
   government_services: 'government_services',
   legal: 'legal_services',
+  hospital_reviews: 'hospital_reviews',
 } as const;
 
 /**

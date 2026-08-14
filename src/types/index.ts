@@ -211,6 +211,7 @@ export interface Hospital {
   district?: string;
   area?: string;
   address?: string;
+  pincode?: string;
   phone?: string;
   emergency_phone?: string;
   specializations: string[];
@@ -237,6 +238,7 @@ export interface BengaliDoctor {
   id: string;
   doctor_name: string;
   specialization: string;
+  designation?: string;
   department?: string;
   hospital_id?: string; // Keep for compatibility but deprecating in favor of hospital_ids
   hospital_ids?: string[];
@@ -247,6 +249,7 @@ export interface BengaliDoctor {
   photo: string;
   phone: string;
   email: string;
+  google_review_link?: string;
   social_links?: {
     linkedin?: string;
     facebook?: string;
@@ -265,6 +268,7 @@ export interface BengaliStaff {
   hospital_id: string;
   department: string;
   role: string;
+  designation?: string;
   languages: string[];
   phone: string;
   email: string;
@@ -510,5 +514,19 @@ export interface Pharmacy {
   image_url?: string;
   google_maps_url?: string;
   created_at?: string;
+}
+
+export interface HospitalReview {
+  id: string;
+  hospital_id: string;
+  user_id?: string;
+  user_name: string;
+  user_avatar?: string;
+  is_verified?: boolean;
+  hospital_rating: number;
+  website_rating: number;
+  category: 'Hospital Services' | 'Doctors & Staff' | 'Cleanliness' | 'Facilities' | 'Website Experience' | 'Other';
+  comment: string;
+  created_at: string;
 }
 

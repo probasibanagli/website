@@ -38,6 +38,40 @@ const PREDEFINED_DEPARTMENTS = [
   'Security'
 ];
 
+const PREDEFINED_DESIGNATIONS = [
+  'Senior Consultant',
+  'Consultant',
+  'Junior Consultant',
+  'Associate Consultant',
+  'Chief Medical Officer',
+  'Medical Officer',
+  'Resident Doctor',
+  'Head of Department (HOD)',
+  'Surgeon',
+  'Physician',
+  'Senior Resident',
+  'Junior Resident',
+  'Superintendent',
+  'Nursing Superintendent',
+  'Head Nurse',
+  'Staff Nurse',
+  'Senior Nurse',
+  'Clinical Nurse Specialist',
+  'Chief Pharmacist',
+  'Senior Pharmacist',
+  'Pharmacist',
+  'Lab Technician',
+  'Senior Lab Technician',
+  'Radiologist',
+  'Radiology Technician',
+  'Receptionist',
+  'Front Desk Executive',
+  'Patient Care Coordinator',
+  'Medical Social Worker',
+  'Administrative Officer',
+  'Hospital Administrator'
+];
+
 function AdminEmergencyPageContent() {
   const { profile } = useAuth();
   const searchParams = useSearchParams();
@@ -295,6 +329,10 @@ function AdminEmergencyPageContent() {
                     <label className="block text-sm font-semibold text-text-primary mb-1.5">General Phone</label>
                     <input type="text" value={formData.phone || ''} onChange={e => setFormData({...formData, phone: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
                   </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Pincode</label>
+                    <input type="text" value={formData.pincode || ''} onChange={e => setFormData({...formData, pincode: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" placeholder="e.g. 600020" />
+                  </div>
                   <div className="md:col-span-2">
                     <label className="block text-sm font-semibold text-text-primary mb-1.5">Full Address</label>
                     <input type="text" value={formData.address || ''} onChange={e => setFormData({...formData, address: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
@@ -363,7 +401,13 @@ function AdminEmergencyPageContent() {
                   </div>
                   <div>
                     <label className="block text-sm font-semibold text-text-primary mb-1.5">Designation</label>
-                    <input type="text" value={formData.designation || ''} onChange={e => setFormData({...formData, designation: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" placeholder="e.g. Senior Consultant" />
+                    <select value={formData.designation || ''} onChange={e => setFormData({...formData, designation: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm cursor-pointer">
+                      <option value="">Select Designation...</option>
+                      {PREDEFINED_DESIGNATIONS.map(d => <option key={d} value={d}>{d}</option>)}
+                      {formData.designation && !PREDEFINED_DESIGNATIONS.includes(formData.designation) && (
+                        <option value={formData.designation}>{formData.designation}</option>
+                      )}
+                    </select>
                   </div>
                   <div>
                     <label className="block text-sm font-semibold text-text-primary mb-1.5">Experience</label>
@@ -399,6 +443,10 @@ function AdminEmergencyPageContent() {
                   <div>
                     <label className="block text-sm font-semibold text-text-primary mb-1.5">OPD Timings</label>
                     <input type="text" value={formData.opd_timings || ''} onChange={e => setFormData({...formData, opd_timings: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" placeholder="e.g. Mon-Sat 10:00 AM - 2:00 PM" />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Google Review Link</label>
+                    <input type="url" value={formData.google_review_link || ''} onChange={e => setFormData({...formData, google_review_link: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" placeholder="e.g. https://g.page/r/.../review or https://maps.google.com/..." />
                   </div>
                   <div className="md:col-span-2">
                     <label className="block text-sm font-semibold text-text-primary mb-1.5">Languages Spoken</label>
@@ -443,6 +491,16 @@ function AdminEmergencyPageContent() {
                   <div>
                     <label className="block text-sm font-semibold text-text-primary mb-1.5">Staff Name *</label>
                     <input type="text" value={formData.name || ''} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Designation</label>
+                    <select value={formData.designation || ''} onChange={e => setFormData({...formData, designation: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm cursor-pointer">
+                      <option value="">Select Designation...</option>
+                      {PREDEFINED_DESIGNATIONS.map(d => <option key={d} value={d}>{d}</option>)}
+                      {formData.designation && !PREDEFINED_DESIGNATIONS.includes(formData.designation) && (
+                        <option value={formData.designation}>{formData.designation}</option>
+                      )}
+                    </select>
                   </div>
                   <div>
                     <label className="block text-sm font-semibold text-text-primary mb-1.5">Role/Title *</label>
@@ -750,14 +808,20 @@ function AdminEmergencyPageContent() {
                           )}
                         </div>
                       </td>
-                      <td className="px-5 py-4 text-sm text-text-muted">{item.city}</td>
+                      <td className="px-5 py-4 text-sm text-text-muted">
+                        <div>{item.city}</div>
+                        {item.pincode && <div className="text-xs text-text-muted font-mono mt-0.5">PIN: {item.pincode}</div>}
+                      </td>
                       <td className="px-5 py-4 text-sm text-text-muted">{item.phone}</td>
                       <td className="px-5 py-4 text-sm font-bold text-red-600">{item.emergency_phone || '-'}</td>
                       <td className="px-5 py-4 text-sm text-text-muted">{item.main_branch ? <span className="text-emerald-600 font-semibold text-xs bg-emerald-50 px-2 py-1 rounded">Main</span> : <span className="text-text-muted text-xs">Branch</span>}</td>
                     </>
                   ) : activeTab === 'doctors' ? (
                     <>
-                      <td className="px-5 py-4 text-sm text-text-primary font-medium">{item.doctor_name}</td>
+                      <td className="px-5 py-4 text-sm text-text-primary font-medium">
+                        <div>{item.doctor_name}</div>
+                        {item.designation && <div className="text-xs text-text-muted font-normal mt-0.5">{item.designation}</div>}
+                      </td>
                       <td className="px-5 py-4 text-sm text-text-muted">{item.specialization}</td>
                       <td className="px-5 py-4 text-sm text-text-muted max-w-xs truncate">
                         {item.hospital_ids?.map((hid: string) => hospitals.find(h => h.id === hid)?.name).filter(Boolean).join(', ') || hospitals.find(h => h.id === item.hospital_id)?.name || 'Unknown'}
@@ -765,8 +829,11 @@ function AdminEmergencyPageContent() {
                     </>
                   ) : activeTab === 'staff' ? (
                     <>
-                      <td className="px-5 py-4 text-sm text-text-primary font-medium">{item.name}</td>
-                      <td className="px-5 py-4 text-sm text-text-muted">{item.role}</td>
+                      <td className="px-5 py-4 text-sm text-text-primary font-medium">
+                        <div>{item.name}</div>
+                        {item.role && <div className="text-xs text-text-muted font-normal mt-0.5">{item.role}</div>}
+                      </td>
+                      <td className="px-5 py-4 text-sm text-text-muted">{item.designation || item.role}</td>
                       <td className="px-5 py-4 text-sm text-text-muted">{item.department}</td>
                       <td className="px-5 py-4 text-sm text-text-muted">
                         {hospitals.find(h => h.id === item.hospital_id)?.name || 'Unknown'}

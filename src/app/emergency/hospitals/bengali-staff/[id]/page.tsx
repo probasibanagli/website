@@ -88,7 +88,8 @@ export default function StaffDetailsPage({ params }: { params: Promise<{ id: str
     loadStaffAndCheckOtp();
   }, [id, router]);
 
-  const canViewContact = isVerified;
+  const isOtpVerified = typeof window !== 'undefined' && localStorage.getItem('directory_verified') === 'true';
+  const canViewContact = !!user && isOtpVerified;
 
   if (loading) {
     return (
@@ -107,38 +108,6 @@ export default function StaffDetailsPage({ params }: { params: Promise<{ id: str
          <Link href="/emergency/hospitals/bengali-staff">
            <Button variant="primary">Back to Directory</Button>
          </Link>
-      </div>
-    );
-  }
-
-  if (!isVerified) {
-    return (
-      <div className="min-h-screen bg-surface pb-20">
-        <div className="bg-white border-b border-border">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-            <div className="flex items-center gap-2 text-sm text-text-muted overflow-x-auto whitespace-nowrap">
-              <Link href="/" className="hover:text-primary shrink-0">Home</Link><span>/</span>
-              <Link href="/emergency" className="hover:text-primary shrink-0">Emergency</Link><span>/</span>
-              <Link href="/emergency/hospitals/bengali-staff" className="hover:text-primary shrink-0">Bengali Staff</Link><span>/</span>
-              <span className="text-text-primary font-medium truncate">Verification Required</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="max-w-xl mx-auto px-4 py-16 text-center">
-          <Card className="p-8 rounded-3xl border-border shadow-md bg-white">
-            <div className="w-16 h-16 bg-amber-500/10 rounded-2xl flex items-center justify-center mx-auto mb-5 text-amber-600">
-              <ShieldAlert className="w-8 h-8" />
-            </div>
-            <h2 className="text-2xl font-bold text-text-primary mb-2">OTP Verification Required</h2>
-            <p className="text-sm text-text-muted mb-6">
-              Staff profile details and contact information are protected. Please complete a quick OTP verification to unlock full profile details.
-            </p>
-            <Button onClick={() => router.push(`/auth/login?redirect=/emergency/hospitals/bengali-staff/${id}`)} variant="primary" size="lg" className="w-full font-semibold">
-              Login to View Profile
-            </Button>
-          </Card>
-        </div>
       </div>
     );
   }
@@ -241,32 +210,65 @@ export default function StaffDetailsPage({ params }: { params: Promise<{ id: str
                 {canViewContact ? (
                   <div className="space-y-3">
                     {staff.phone && (
-                      <div className="flex items-center gap-3 text-sm">
-                        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                          <Phone className="w-4 h-4 text-primary" />
+                      <div className="flex items-center justify-between text-sm p-3 bg-white rounded-xl border border-border">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                            <Phone className="w-4 h-4 text-primary" />
+                          </div>
+                          <span className="font-bold text-text-primary">{staff.phone}</span>
                         </div>
-                        <a href={`tel:${staff.phone}`} className="font-medium text-text-primary hover:text-primary transition-colors">{staff.phone}</a>
+                        <a href={`tel:${staff.phone}`} className="px-3 py-1.5 bg-primary text-white rounded-lg text-xs font-bold hover:bg-primary/90 transition-colors">
+                          Call Now
+                        </a>
                       </div>
                     )}
                     {staff.email && (
-                      <div className="flex items-center gap-3 text-sm">
-                        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                          <Mail className="w-4 h-4 text-primary" />
+                      <div className="flex items-center justify-between text-sm p-3 bg-white rounded-xl border border-border">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                            <Mail className="w-4 h-4 text-primary" />
+                          </div>
+                          <span className="font-bold text-text-primary truncate max-w-[160px]">{staff.email}</span>
                         </div>
-                        <a href={`mailto:${staff.email}`} className="font-medium text-text-primary hover:text-primary transition-colors">{staff.email}</a>
+                        <a href={`mailto:${staff.email}`} className="px-3 py-1.5 bg-surface text-text-primary rounded-lg text-xs font-bold hover:bg-border transition-colors">
+                          Email
+                        </a>
                       </div>
                     )}
                     {!staff.phone && !staff.email && (
                       <p className="text-sm text-text-muted">No direct contact details provided.</p>
                     )}
                   </div>
-                ) : (
-                  <div className="text-center py-2">
+                ) : !user ? (
+                  <div className="text-center py-4 px-3 bg-white rounded-2xl border border-amber-200 shadow-xs">
                     <ShieldAlert className="w-8 h-8 text-amber-500 mx-auto mb-2" />
-                    <p className="text-sm text-text-primary font-medium mb-3">Verification Required</p>
-                    <p className="text-xs text-text-muted mb-4">Please verify your phone number to view direct contact details.</p>
-                    <Button onClick={() => setShowOtpModal(true)} variant="primary" size="sm" className="w-full">
-                      Verify to View Details
+                    <h4 className="text-sm font-bold text-text-primary mb-1">See Contact Details</h4>
+                    <p className="text-xs text-text-muted mb-4">
+                      Please register or log in first and complete OTP verification to view contact details.
+                    </p>
+                    <Button 
+                      onClick={() => router.push(`/auth/login?redirect=/emergency/hospitals/bengali-staff/${id}`)} 
+                      variant="primary" 
+                      size="sm" 
+                      className="w-full font-semibold cursor-pointer shadow-xs"
+                    >
+                      Register / Login to See Contact Details
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="text-center py-4 px-3 bg-white rounded-2xl border border-amber-200 shadow-xs">
+                    <ShieldAlert className="w-8 h-8 text-amber-500 mx-auto mb-2" />
+                    <h4 className="text-sm font-bold text-text-primary mb-1">See Contact Details</h4>
+                    <p className="text-xs text-text-muted mb-4">
+                      Account verification required through OTP before displaying contact details.
+                    </p>
+                    <Button 
+                      onClick={() => setShowOtpModal(true)} 
+                      variant="primary" 
+                      size="sm" 
+                      className="w-full font-semibold cursor-pointer shadow-xs"
+                    >
+                      Verify via OTP to See Contact Details
                     </Button>
                   </div>
                 )}

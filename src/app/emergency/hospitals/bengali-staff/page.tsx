@@ -11,6 +11,7 @@ import { Search, Phone, ChevronRight, Users, Award, Languages, Building2, Stetho
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useAuth } from '@/lib/auth/AuthContext';
+import { OtpVerificationModal } from '@/components/auth/OtpVerificationModal';
 import { sampleHospitals, sampleStaff } from '@/data/sample-data';
 
 const sampleHospitalsMap: Record<string, Hospital> = sampleHospitals.reduce((acc, h) => {
@@ -22,9 +23,30 @@ export default function BengaliStaffPage() {
   const [staffList, setStaffList] = useState<BengaliStaff[]>([]);
   const [hospitals, setHospitals] = useState<Record<string, Hospital>>({});
   const [loading, setLoading] = useState(true);
+  const [showOtpModal, setShowOtpModal] = useState(false);
+  const [selectedStaffId, setSelectedStaffId] = useState<string | undefined>();
   const { firebaseUser: user } = useAuth();
-  const isVerified = !!user;
   const router = useRouter();
+  
+  const [isOtpVerified, setIsOtpVerified] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setIsOtpVerified(localStorage.getItem('directory_verified') === 'true');
+    }
+  }, [user]);
+
+  const canViewContact = !!user && isOtpVerified;
+
+  const handleSeeContact = (staffId: string) => {
+    if (!user || !isOtpVerified) {
+      setSelectedStaffId(staffId);
+      setShowOtpModal(true);
+      return;
+    }
+
+    router.push(`/emergency/hospitals/bengali-staff/${staffId}`);
+  };
   
   const [search, setSearch] = useState('');
   const [roleFilter, setRoleFilter] = useState('');
@@ -185,21 +207,6 @@ export default function BengaliStaffPage() {
                </Card>
              ))}
           </div>
-        ) : !isVerified ? (
-          <div className="max-w-xl mx-auto py-12 text-center">
-            <Card className="p-8 rounded-3xl border-border shadow-md bg-white">
-              <div className="w-16 h-16 bg-amber-500/10 rounded-2xl flex items-center justify-center mx-auto mb-5 text-amber-600">
-                <ShieldAlert className="w-8 h-8" />
-              </div>
-              <h2 className="text-2xl font-bold text-text-primary mb-2">Staff Directory Locked</h2>
-              <p className="text-sm text-text-muted mb-6">
-                To protect staff privacy and maintain security, complete a quick OTP verification to unlock hospital staff profiles and contact details.
-              </p>
-              <Button onClick={() => router.push('/auth/login?redirect=/emergency/hospitals/bengali-staff')} variant="primary" size="lg" className="w-full font-semibold">
-                Login to Access Directory
-              </Button>
-            </Card>
-          </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filtered.map((staff) => {
@@ -258,10 +265,23 @@ export default function BengaliStaffPage() {
                     )}
                   </div>
 
-                  <div className="mt-6 pt-4 border-t border-border flex items-center gap-2">
-                    <Link href={`/emergency/hospitals/bengali-staff/${staff.id}`} className="flex-1">
-                      <Button variant="primary" size="sm" className="w-full">
-                        View Profile
+                  <div className="mt-6 pt-4 border-t border-border flex flex-wrap items-center gap-2">
+                    <Button
+                      onClick={() => handleSeeContact(staff.id)}
+                      variant="primary"
+                      size="sm"
+                      className="flex-1 font-bold shadow-xs cursor-pointer flex items-center justify-center gap-1.5"
+                    >
+                      <Phone className="w-3.5 h-3.5" />
+                      <span>
+                        {!canViewContact 
+                          ? 'Register / Login to See Contact Details' 
+                          : 'See Contact Details'}
+                      </span>
+                    </Button>
+                    <Link href={`/emergency/hospitals/bengali-staff/${staff.id}`}>
+                      <Button variant="outline" size="sm" className="font-semibold cursor-pointer">
+                        Profile
                       </Button>
                     </Link>
                   </div>
@@ -270,7 +290,7 @@ export default function BengaliStaffPage() {
             })}
           </div>
         )}
-        {isVerified && !loading && filtered.length === 0 && (
+        {!loading && filtered.length === 0 && (
           <div className="text-center py-20 bg-white rounded-3xl border border-border mt-8">
             <p className="text-5xl mb-4">👥</p>
             <h3 className="text-xl font-bold mb-2">No staff found</h3>
@@ -279,6 +299,20 @@ export default function BengaliStaffPage() {
         )}
       </div>
 
+      <OtpVerificationModal
+        isOpen={showOtpModal}
+        onClose={() => setShowOtpModal(false)}
+        onSuccess={() => {
+          setShowOtpModal(false);
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('directory_verified', 'true');
+          }
+          setIsOtpVerified(true);
+          if (selectedStaffId) {
+            router.push(`/emergency/hospitals/bengali-staff/${selectedStaffId}`);
+          }
+        }}
+      />
     </div>
   );
 }

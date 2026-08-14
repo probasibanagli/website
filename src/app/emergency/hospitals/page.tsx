@@ -210,6 +210,8 @@ export default function EmergencyHospitalsPage() {
     router.push('/auth/login?redirect=/emergency/hospitals');
   };
 
+  const hospitalMap = useMemo(() => new Map(hospitals.map(h => [h.id, h])), [hospitals]);
+
   // ── FILTER LOGIC ──
   
   // Hospital Filter
@@ -227,9 +229,18 @@ export default function EmergencyHospitalsPage() {
   // Doctor Filter (Display only one doctor for each hospital)
   const filteredDoctors = useMemo(() => {
     const list = doctors.filter((d) => {
-      const matchesSearch = !searchQuery || d.doctor_name.toLowerCase().includes(searchQuery.toLowerCase());
+      const docHospIds = d.hospital_ids || (d.hospital_id ? [d.hospital_id] : []);
+      const matchesSearch = !searchQuery || d.doctor_name.toLowerCase().includes(searchQuery.toLowerCase()) || docHospIds.some(id => {
+        const h = hospitalMap.get(id);
+        return h && (h.name.toLowerCase().includes(searchQuery.toLowerCase()) || (h.area && h.area.toLowerCase().includes(searchQuery.toLowerCase())));
+      });
       const matchesSpec = !specializationFilter || d.specialization === specializationFilter;
-      return matchesSearch && matchesSpec;
+      
+      const docHospitals = docHospIds.map(id => hospitalMap.get(id)).filter(Boolean);
+      const matchesCategory = !categoryFilter || (docHospitals.length > 0 ? docHospitals.some(h => h?.category === categoryFilter) : true);
+      const matchesCity = !cityFilter || (docHospitals.length > 0 ? docHospitals.some(h => h?.city === cityFilter) : true);
+
+      return matchesSearch && matchesSpec && matchesCategory && matchesCity;
     });
 
     const seenHospitals = new Set<string>();
@@ -255,16 +266,21 @@ export default function EmergencyHospitalsPage() {
       }
     }
     return uniqueList;
-  }, [doctors, searchQuery, specializationFilter]);
+  }, [doctors, searchQuery, specializationFilter, categoryFilter, cityFilter, hospitalMap]);
 
   // Staff Filter
   const filteredStaff = useMemo(() => {
     return staff.filter((s) => {
-      const matchesSearch = !searchQuery || s.name.toLowerCase().includes(searchQuery.toLowerCase()) || (s.role && s.role.toLowerCase().includes(searchQuery.toLowerCase()));
+      const staffHosp = hospitalMap.get(s.hospital_id);
+      const matchesSearch = !searchQuery || s.name.toLowerCase().includes(searchQuery.toLowerCase()) || (s.role && s.role.toLowerCase().includes(searchQuery.toLowerCase())) || (staffHosp && (staffHosp.name.toLowerCase().includes(searchQuery.toLowerCase()) || (staffHosp.area && staffHosp.area.toLowerCase().includes(searchQuery.toLowerCase()))));
       const matchesDept = !departmentFilter || s.department === departmentFilter;
-      return matchesSearch && matchesDept;
+      const matchesSpec = !specializationFilter || s.department === specializationFilter || (s.role && s.role.toLowerCase().includes(specializationFilter.toLowerCase()));
+      const matchesCategory = !categoryFilter || (staffHosp ? staffHosp.category === categoryFilter : true);
+      const matchesCity = !cityFilter || (staffHosp ? staffHosp.city === cityFilter : true);
+
+      return matchesSearch && matchesDept && matchesSpec && matchesCategory && matchesCity;
     });
-  }, [staff, searchQuery, departmentFilter]);
+  }, [staff, searchQuery, departmentFilter, specializationFilter, categoryFilter, cityFilter, hospitalMap]);
 
   // Pharmacy Filter
   const filteredPharmacies = useMemo(() => {
@@ -435,94 +451,75 @@ export default function EmergencyHospitalsPage() {
       <div className="bg-white border-b border-border shadow-xs">
         <div className="w-full max-w-none px-4 sm:px-6 lg:px-[38px] py-6">
           <div className="flex flex-wrap items-center gap-4">
-            {/* Search Query Input */}
-            <div className="relative flex-1 min-w-[240px]">
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-text-muted" />
-              <input
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder={
-                  searchTab === 'hospitals' ? "Search hospitals by name, area..." :
-                  searchTab === 'doctors' ? "Search doctors by name..." :
-                  searchTab === 'staff' ? "Search staff by name or role..." :
-                  "Search pharmacy by name or hospital..."
-                }
-                className="w-full pl-11 pr-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 bg-surface/30 font-medium"
-              />
-            </div>
-
-            {/* Specialization Filter (Hospitals/Doctors) */}
-            {(searchTab === 'hospitals' || searchTab === 'doctors') && (
+            {/* 1. All Categories Filter */}
+            <div className="min-w-[160px] flex-1 sm:flex-initial">
               <select
-                value={specializationFilter}
-                onChange={(e) => setSpecializationFilter(e.target.value)}
-                className="px-4 py-2.5 rounded-xl border border-border text-sm font-medium bg-white cursor-pointer min-w-[180px]"
-              >
-                <option value="">All Specializations</option>
-                {PREDEFINED_SPECIALIZATIONS.map((spec) => (
-                  <option key={spec} value={spec}>{spec}</option>
-                ))}
-              </select>
-            )}
-
-            {/* Department Filter (Staff only) */}
-            {searchTab === 'staff' && (
-              <select
-                value={departmentFilter}
-                onChange={(e) => setDepartmentFilter(e.target.value)}
-                className="px-4 py-2.5 rounded-xl border border-border text-sm font-medium bg-white cursor-pointer min-w-[180px]"
-              >
-                <option value="">All Departments</option>
-                {PREDEFINED_DEPARTMENTS.map((dept) => (
-                  <option key={dept} value={dept}>{dept}</option>
-                ))}
-              </select>
-            )}
-
-            {/* Category Filter (Hospitals only) */}
-            {searchTab === 'hospitals' && (
-              <select
+                aria-label="Category filter"
                 value={categoryFilter}
                 onChange={(e) => setCategoryFilter(e.target.value)}
-                className="px-4 py-2.5 rounded-xl border border-border text-sm font-medium bg-white cursor-pointer min-w-[160px]"
+                className="w-full px-4 py-2.5 rounded-xl border border-border text-sm font-medium bg-white cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/20 hover:border-gray-300 transition-colors shadow-xs"
               >
                 <option value="">All Categories</option>
                 <option value="Government">Government Hospitals</option>
                 <option value="Private">Private Hospitals</option>
               </select>
-            )}
+            </div>
 
-            {/* City Filter (Hospitals & Pharmacies) */}
-            {(searchTab === 'hospitals' || searchTab === 'pharmacies') && (
+            {/* 2. Specialization Filter */}
+            <div className="min-w-[180px] flex-1 sm:flex-initial">
+              {searchTab === 'staff' ? (
+                <select
+                  aria-label="Department filter"
+                  value={departmentFilter}
+                  onChange={(e) => setDepartmentFilter(e.target.value)}
+                  className="w-full px-4 py-2.5 rounded-xl border border-border text-sm font-medium bg-white cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/20 hover:border-gray-300 transition-colors shadow-xs"
+                >
+                  <option value="">All Departments</option>
+                  {PREDEFINED_DEPARTMENTS.map((dept) => (
+                    <option key={dept} value={dept}>{dept}</option>
+                  ))}
+                </select>
+              ) : (
+                <select
+                  aria-label="Specialization filter"
+                  value={specializationFilter}
+                  onChange={(e) => setSpecializationFilter(e.target.value)}
+                  className="w-full px-4 py-2.5 rounded-xl border border-border text-sm font-medium bg-white cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/20 hover:border-gray-300 transition-colors shadow-xs"
+                >
+                  <option value="">All Specializations</option>
+                  {PREDEFINED_SPECIALIZATIONS.map((spec) => (
+                    <option key={spec} value={spec}>{spec}</option>
+                  ))}
+                </select>
+              )}
+            </div>
+
+            {/* 3. All Cities Filter */}
+            <div className="min-w-[150px] flex-1 sm:flex-initial">
               <select
+                aria-label="City filter"
                 value={cityFilter}
                 onChange={(e) => setCityFilter(e.target.value)}
-                className="px-4 py-2.5 rounded-xl border border-border text-sm font-medium bg-white cursor-pointer min-w-[150px]"
+                className="w-full px-4 py-2.5 rounded-xl border border-border text-sm font-medium bg-white cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/20 hover:border-gray-300 transition-colors shadow-xs"
               >
                 <option value="">All Cities</option>
-                {CITIES.map((c) => <option key={c} value={c}>{c}</option>)}
+                {CITIES.map((c) => (
+                  <option key={c} value={c}>{c}</option>
+                ))}
               </select>
-            )}
+            </div>
 
-            {/* 24/7 & Home Delivery Toggles (Pharmacies only) */}
-            {searchTab === 'pharmacies' && (
-              <div className="flex items-center gap-3">
-                <button
-                  type="button"
-                  onClick={() => setTwentyFourSevenFilter(!twentyFourSevenFilter)}
-                  className={`px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer border ${twentyFourSevenFilter ? 'bg-red-50 text-red-600 border-red-300' : 'bg-white text-text-muted border-border'}`}
-                >
-                  24/7 Available
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setDeliveryFilter(!deliveryFilter)}
-                  className={`px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer border ${deliveryFilter ? 'bg-emerald-50 text-emerald-600 border-emerald-300' : 'bg-white text-text-muted border-border'}`}
-                >
-                  Home Delivery
-                </button>
-              </div>
-            )}
+            {/* 4. Search by Name and Area */}
+            <div className="relative flex-1 min-w-[240px]">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-text-muted" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search by Name and Area..."
+                className="w-full pl-11 pr-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 bg-surface/30 font-medium shadow-xs"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -727,7 +724,7 @@ export default function EmergencyHospitalsPage() {
                             </Link>
                           ) : (
                             <Button onClick={() => triggerVerification(doctor.id)} variant="danger" size="sm" className="w-full font-bold shadow-md shadow-red-500/10">
-                              <Lock className="w-4 h-4 mr-2" /> Verify OTP to View Profile
+                              <Lock className="w-4 h-4 mr-2" /> Register / Login to See Contact Details
                             </Button>
                           )}
                         </div>
@@ -811,7 +808,7 @@ export default function EmergencyHospitalsPage() {
                             </Link>
                           ) : (
                             <Button onClick={() => triggerVerification(s.id)} variant="danger" size="sm" className="w-full font-bold shadow-md shadow-red-500/10">
-                              <Lock className="w-4 h-4 mr-2" /> Verify OTP to View Staff Details
+                              <Lock className="w-4 h-4 mr-2" /> Register / Login to See Contact Details
                             </Button>
                           )}
                         </div>
