@@ -633,7 +633,7 @@ function AdminEmergencyPageContent() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-text-primary">Hospital Management</h1>
-          <p className="text-text-muted text-sm mt-1">Manage Bengali Hospitals, Doctors, and Emergency Contacts</p>
+          <p className="text-text-muted text-sm mt-1">Manage Hospitals, Doctors, Staff, and Pharmacy</p>
         </div>
         <div className="flex items-center gap-2">
           {canEdit && (
@@ -649,7 +649,7 @@ function AdminEmergencyPageContent() {
           onClick={() => setActiveTab('hospitals')}
           className={`px-4 py-3 text-sm font-semibold border-b-2 transition-colors cursor-pointer flex items-center gap-2 whitespace-nowrap ${activeTab === 'hospitals' ? 'border-primary text-primary' : 'border-transparent text-text-muted hover:text-text-primary'}`}
         >
-          <Building2 className="w-4 h-4" /> Bengali Hospitals
+          <Building2 className="w-4 h-4" /> Hospitals
         </button>
         <button
           onClick={() => setActiveTab('doctors')}
