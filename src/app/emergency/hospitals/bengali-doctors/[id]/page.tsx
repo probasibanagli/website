@@ -7,7 +7,7 @@ import { doc, getDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { COLLECTIONS } from '@/lib/firestore/collections';
 import type { BengaliDoctor, Hospital } from '@/types';
-import { Phone, Mail, ArrowLeft, Building2, UserRound, Award, Languages, ShieldAlert, CheckCircle2 } from 'lucide-react';
+import { Phone, Mail, ArrowLeft, Building2, UserRound, Award, Languages, ShieldAlert, CheckCircle2, Star, ExternalLink } from 'lucide-react';
 
 const LinkedinIcon = ({ className }: { className?: string }) => (
   <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -114,7 +114,8 @@ export default function DoctorDetailsPage({ params }: { params: Promise<{ id: st
     loadDoctorAndCheckOtp();
   }, [id, router]);
 
-  const canViewContact = isVerified;
+  const isOtpVerified = typeof window !== 'undefined' && localStorage.getItem('directory_verified') === 'true';
+  const canViewContact = !!user && isOtpVerified;
 
   if (loading) {
     return (
@@ -137,37 +138,7 @@ export default function DoctorDetailsPage({ params }: { params: Promise<{ id: st
     );
   }
 
-  if (!isVerified) {
-    return (
-      <div className="min-h-screen bg-surface pb-20">
-        <div className="bg-white border-b border-border">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-            <div className="flex items-center gap-2 text-sm text-text-muted overflow-x-auto whitespace-nowrap">
-              <Link href="/" className="hover:text-primary shrink-0">Home</Link><span>/</span>
-              <Link href="/emergency" className="hover:text-primary shrink-0">Emergency</Link><span>/</span>
-              <Link href="/emergency/hospitals/bengali-doctors" className="hover:text-primary shrink-0">Bengali Doctors</Link><span>/</span>
-              <span className="text-text-primary font-medium truncate">Verification Required</span>
-            </div>
-          </div>
-        </div>
 
-        <div className="max-w-xl mx-auto px-4 py-16 text-center">
-          <Card className="p-8 rounded-3xl border-border shadow-md bg-white">
-            <div className="w-16 h-16 bg-amber-500/10 rounded-2xl flex items-center justify-center mx-auto mb-5 text-amber-600">
-              <ShieldAlert className="w-8 h-8" />
-            </div>
-            <h2 className="text-2xl font-bold text-text-primary mb-2">OTP Verification Required</h2>
-            <p className="text-sm text-text-muted mb-6">
-              Doctor profile details and contact information are protected. Please complete a quick OTP verification to unlock full profile details.
-            </p>
-            <Button onClick={() => router.push(`/auth/login?redirect=/emergency/hospitals/bengali-doctors/${id}`)} variant="primary" size="lg" className="w-full font-semibold">
-              Login to View Profile
-            </Button>
-          </Card>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-surface pb-20">
@@ -224,6 +195,21 @@ export default function DoctorDetailsPage({ params }: { params: Promise<{ id: st
                     </div>
                   )}
                 </div>
+
+                {doctor.google_review_link && (
+                  <div className="mt-4">
+                    <a
+                      href={doctor.google_review_link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 px-4 py-2.5 bg-amber-50 hover:bg-amber-100/80 text-amber-800 border border-amber-200 rounded-xl text-sm font-bold shadow-xs transition-colors cursor-pointer"
+                    >
+                      <Star className="w-4 h-4 fill-amber-400 text-amber-500" />
+                      <span>Google Reviews & Ratings</span>
+                      <ExternalLink className="w-3.5 h-3.5 opacity-70 ml-0.5" />
+                    </a>
+                  </div>
+                )}
               </div>
               
               {/* Social Media Links */}
@@ -282,32 +268,65 @@ export default function DoctorDetailsPage({ params }: { params: Promise<{ id: st
                 {canViewContact ? (
                   <div className="space-y-3">
                     {doctor.phone && (
-                      <div className="flex items-center gap-3 text-sm">
-                        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                          <Phone className="w-4 h-4 text-primary" />
+                      <div className="flex items-center justify-between text-sm p-3 bg-white rounded-xl border border-border">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                            <Phone className="w-4 h-4 text-primary" />
+                          </div>
+                          <span className="font-bold text-text-primary">{doctor.phone}</span>
                         </div>
-                        <a href={`tel:${doctor.phone}`} className="font-medium text-text-primary hover:text-primary transition-colors">{doctor.phone}</a>
+                        <a href={`tel:${doctor.phone}`} className="px-3 py-1.5 bg-primary text-white rounded-lg text-xs font-bold hover:bg-primary/90 transition-colors">
+                          Call Now
+                        </a>
                       </div>
                     )}
                     {doctor.email && (
-                      <div className="flex items-center gap-3 text-sm">
-                        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                          <Mail className="w-4 h-4 text-primary" />
+                      <div className="flex items-center justify-between text-sm p-3 bg-white rounded-xl border border-border">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                            <Mail className="w-4 h-4 text-primary" />
+                          </div>
+                          <span className="font-bold text-text-primary truncate max-w-[160px]">{doctor.email}</span>
                         </div>
-                        <a href={`mailto:${doctor.email}`} className="font-medium text-text-primary hover:text-primary transition-colors">{doctor.email}</a>
+                        <a href={`mailto:${doctor.email}`} className="px-3 py-1.5 bg-surface text-text-primary rounded-lg text-xs font-bold hover:bg-border transition-colors">
+                          Email
+                        </a>
                       </div>
                     )}
                     {!doctor.phone && !doctor.email && (
                       <p className="text-sm text-text-muted">No direct contact details provided.</p>
                     )}
                   </div>
-                ) : (
-                  <div className="text-center py-2">
+                ) : !user ? (
+                  <div className="text-center py-4 px-3 bg-white rounded-2xl border border-amber-200 shadow-xs">
                     <ShieldAlert className="w-8 h-8 text-amber-500 mx-auto mb-2" />
-                    <p className="text-sm text-text-primary font-medium mb-3">Verification Required</p>
-                    <p className="text-xs text-text-muted mb-4">Please verify your phone number to view direct contact details.</p>
-                    <Button onClick={() => setShowOtpModal(true)} variant="primary" size="sm" className="w-full">
-                      Verify to View Details
+                    <h4 className="text-sm font-bold text-text-primary mb-1">See Contact Details</h4>
+                    <p className="text-xs text-text-muted mb-4">
+                      Please register or log in first and complete OTP verification to view contact details.
+                    </p>
+                    <Button 
+                      onClick={() => router.push(`/auth/login?redirect=/emergency/hospitals/bengali-doctors/${id}`)} 
+                      variant="primary" 
+                      size="sm" 
+                      className="w-full font-semibold cursor-pointer shadow-xs"
+                    >
+                      Register / Login to See Contact Details
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="text-center py-4 px-3 bg-white rounded-2xl border border-amber-200 shadow-xs">
+                    <ShieldAlert className="w-8 h-8 text-amber-500 mx-auto mb-2" />
+                    <h4 className="text-sm font-bold text-text-primary mb-1">See Contact Details</h4>
+                    <p className="text-xs text-text-muted mb-4">
+                      Account verification required through OTP before displaying contact details.
+                    </p>
+                    <Button 
+                      onClick={() => setShowOtpModal(true)} 
+                      variant="primary" 
+                      size="sm" 
+                      className="w-full font-semibold cursor-pointer shadow-xs"
+                    >
+                      Verify via OTP to See Contact Details
                     </Button>
                   </div>
                 )}

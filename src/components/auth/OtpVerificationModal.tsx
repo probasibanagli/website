@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { X, Loader2, Phone, Mail, CheckCircle2, ShieldAlert, Lock, BadgeCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
+import { useAuth } from '@/lib/auth/AuthContext';
+import { useRouter } from 'next/navigation';
+
 interface OtpVerificationModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -10,6 +13,9 @@ interface OtpVerificationModalProps {
 }
 
 export function OtpVerificationModal({ isOpen, onClose, onSuccess, doctorId }: OtpVerificationModalProps) {
+  const { firebaseUser: user } = useAuth();
+  const router = useRouter();
+
   const [step, setStep] = useState<'phone' | 'phoneOtp' | 'email' | 'emailOtp'>('phone');
   const [phone, setPhone] = useState('');
   const [phoneOtp, setPhoneOtp] = useState('');
@@ -31,6 +37,44 @@ export function OtpVerificationModal({ isOpen, onClose, onSuccess, doctorId }: O
   }, [isOpen]);
 
   if (!isOpen) return null;
+
+  if (!user) {
+    return (
+      <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+        <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
+
+        <div className="relative bg-white rounded-3xl w-full max-w-md overflow-hidden shadow-2xl animate-fade-in p-6 sm:p-8 text-center">
+          <button onClick={onClose} className="absolute top-4 right-4 p-2 rounded-xl hover:bg-surface text-text-muted transition-colors cursor-pointer">
+            <X className="w-5 h-5" />
+          </button>
+
+          <div className="w-16 h-16 bg-amber-500/10 rounded-2xl flex items-center justify-center mx-auto mb-5 text-amber-600">
+            <ShieldAlert className="w-8 h-8" />
+          </div>
+
+          <h3 className="text-xl font-bold text-text-primary mb-2">See Contact Details</h3>
+          <p className="text-sm text-text-muted mb-6 leading-relaxed font-medium">
+            Please register or log in first and complete OTP verification to view contact details.
+          </p>
+
+          <Button 
+            onClick={() => {
+              onClose();
+              const redirectPath = doctorId 
+                ? `/emergency/hospitals/bengali-doctors/${doctorId}` 
+                : '/emergency/hospitals/bengali-doctors';
+              router.push(`/auth/login?redirect=${encodeURIComponent(redirectPath)}`);
+            }} 
+            variant="primary" 
+            size="lg" 
+            className="w-full font-bold shadow-md cursor-pointer"
+          >
+            Register / Login to See Contact Details
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   const handleSendPhoneOtp = async (e: React.FormEvent) => {
     e.preventDefault();
