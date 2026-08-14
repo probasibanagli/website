@@ -98,8 +98,6 @@ export default function AdminUsersPage() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [createForm, setCreateForm] = useState({ full_name: '', email: '', password: '', phone: '' });
   const [selectedModules, setSelectedModules] = useState<Record<string, boolean>>({});
-  const [createAssignedHospitals, setCreateAssignedHospitals] = useState<string[]>([]);
-  const [allHospitals, setAllHospitals] = useState<any[]>([]);
   const [creating, setCreating] = useState(false);
   const [createError, setCreateError] = useState('');
 
@@ -123,22 +121,12 @@ export default function AdminUsersPage() {
       await Promise.all([
         loadUsers(),
         loadVisitors(),
-        loadHospitals(),
         isSuperAdmin ? loadActivities() : Promise.resolve()
       ]);
     } catch (e) {
       console.error(e);
     } finally {
       setLoading(false);
-    }
-  }
-
-  async function loadHospitals() {
-    try {
-      const snap = await getDocs(collection(db, 'hospitals'));
-      setAllHospitals(snap.docs.map(d => ({ id: d.id, ...d.data() })));
-    } catch (e) {
-      console.error('Error loading hospitals:', e);
     }
   }
 
