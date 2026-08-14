@@ -1,6 +1,6 @@
 import { initializeApp, getApps, cert, App } from 'firebase-admin/app';
-import { getAuth } from 'firebase-admin/auth';
-import { getFirestore } from 'firebase-admin/firestore';
+import { getAuth, Auth } from 'firebase-admin/auth';
+import { getFirestore, Firestore } from 'firebase-admin/firestore';
 import dotenv from 'dotenv';
 import path from 'path';
 
@@ -98,5 +98,6 @@ const adminAuthProxy = new Proxy({}, {
 });
 
 export const adminApp = getAdminApp();
-export const adminAuth = adminAuthProxy;
-export const adminDb = adminDbProxy;
+export const adminAuth = adminAuthProxy as unknown as Auth;
+export const adminDb = adminDbProxy as unknown as Firestore;
+

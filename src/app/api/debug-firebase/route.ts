@@ -35,7 +35,7 @@ export async function GET() {
 
     try {
       const adminModule = await import('@/lib/firebase-admin');
-      isAdminConfigured = adminModule.isAdminConfigured;
+      isAdminConfigured = adminModule.isAdminConfigured();
 
       if (isAdminConfigured) {
         // Test Firestore
