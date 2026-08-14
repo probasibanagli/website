@@ -67,27 +67,18 @@ export default function BengaliStaffPage() {
           hospList = hospSnap.docs.map(d => ({ id: d.id, ...d.data() } as Hospital));
         }
 
-        setStaffList(docsData.length > 0 ? docsData : sampleStaff);
+        setStaffList(docsData);
         
         const hospData: Record<string, Hospital> = {};
         hospList.forEach((d: Hospital) => {
           hospData[d.id] = d;
         });
         
-        let finalHospitals = { ...hospData };
-        if (docsData.length === 0) {
-           finalHospitals = { ...sampleHospitalsMap, ...finalHospitals };
-        }
-        
-        if (Object.keys(finalHospitals).length > 0) {
-          setHospitals(finalHospitals);
-        } else {
-          setHospitals(sampleHospitalsMap);
-        }
+        setHospitals(hospData);
       } catch (err) {
         console.error(err);
-        setStaffList(sampleStaff);
-        setHospitals(sampleHospitalsMap);
+        setStaffList([]);
+        setHospitals({});
       } finally {
         setLoading(false);
       }

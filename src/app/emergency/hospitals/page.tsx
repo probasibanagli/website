@@ -2,18 +2,18 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
-import { Search, MapPin, Phone, Clock, CheckCircle2, Stethoscope, Ambulance, LifeBuoy, Building2, UserRound, ArrowRight, ShieldAlert, Lock, Users, ShieldCheck, Mail, GraduationCap } from 'lucide-react';
+import { Search, MapPin, Phone, Clock, CheckCircle2, Stethoscope, Ambulance, LifeBuoy, Building2, UserRound, ArrowRight, ShieldAlert, Lock, Users, ShieldCheck, Mail, GraduationCap, Pill, Truck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/card';
-import { sampleHospitals, sampleDoctors, sampleStaff } from '@/data/sample-data';
 import { CITIES } from '@/lib/constants';
 import { db } from '@/lib/firebase';
 import { collection, getDocs } from 'firebase/firestore';
 import { COLLECTIONS } from '@/lib/firestore/collections';
-import type { Hospital, BengaliDoctor, BengaliStaff } from '@/types';
+import type { Hospital, BengaliDoctor, BengaliStaff, Pharmacy } from '@/types';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { useRouter } from 'next/navigation';
+
 const PREDEFINED_SPECIALIZATIONS = [
   'Cardiology',
   'Neurology',
@@ -39,7 +39,6 @@ const PREDEFINED_DEPARTMENTS = [
 ];
 
 const SAMPLE_DOCTORS: BengaliDoctor[] = [];
-
 const SAMPLE_STAFF: BengaliStaff[] = [];
 
 function ListingCoverImage({ name, city, mapsUrl, imageUrl, fallbackIcon }: { 
@@ -107,12 +106,13 @@ function ListingCoverImage({ name, city, mapsUrl, imageUrl, fallbackIcon }: {
 export default function EmergencyHospitalsPage() {
   const { firebaseUser: user } = useAuth();
   const router = useRouter();
-  const [searchTab, setSearchTab] = useState<'hospitals' | 'doctors' | 'staff'>('hospitals');
+  const [searchTab, setSearchTab] = useState<'hospitals' | 'doctors' | 'staff' | 'pharmacies'>('hospitals');
   
   // State lists
   const [hospitals, setHospitals] = useState<Hospital[]>([]);
   const [doctors, setDoctors] = useState<BengaliDoctor[]>([]);
   const [staff, setStaff] = useState<BengaliStaff[]>([]);
+  const [pharmacies, setPharmacies] = useState<Pharmacy[]>([]);
   const [loading, setLoading] = useState(true);
   
   // Filters
@@ -121,70 +121,84 @@ export default function EmergencyHospitalsPage() {
   const [categoryFilter, setCategoryFilter] = useState('');
   const [cityFilter, setCityFilter] = useState('');
   const [departmentFilter, setDepartmentFilter] = useState('');
+  const [twentyFourSevenFilter, setTwentyFourSevenFilter] = useState(false);
+  const [deliveryFilter, setDeliveryFilter] = useState(false);
 
   // OTP Gating
   const isVerified = !!user;
 
   useEffect(() => {
-    
-
     const fetchData = async () => {
       try {
         let hData: Hospital[] = [];
         let dData: BengaliDoctor[] = [];
         let sData: BengaliStaff[] = [];
+        let pData: Pharmacy[] = [];
 
         try {
-          const [hRes, dRes, sRes] = await Promise.all([
+          const [hRes, dRes, sRes, pRes] = await Promise.all([
             fetch(`/api/public/firestore?collection=hospitals`),
             fetch(`/api/public/firestore?collection=bengali_doctors`),
-            fetch(`/api/public/firestore?collection=bengali_staff`)
+            fetch(`/api/public/firestore?collection=bengali_staff`),
+            fetch(`/api/public/firestore?collection=pharmacies`).catch(() => null)
           ]);
 
-          if (hRes.ok) {
+          if (hRes && hRes.ok) {
             const hJson = await hRes.json();
-            if (!hJson.fallback && Array.isArray(hJson.items) && hJson.items.length > 0) {
+            if (!hJson.fallback && Array.isArray(hJson.items)) {
               hData = hJson.items;
             }
           }
-          if (dRes.ok) {
+          if (dRes && dRes.ok) {
             const dJson = await dRes.json();
-            if (!dJson.fallback && Array.isArray(dJson.items) && dJson.items.length > 0) {
+            if (!dJson.fallback && Array.isArray(dJson.items)) {
               dData = dJson.items;
             }
           }
-          if (sRes.ok) {
+          if (sRes && sRes.ok) {
             const sJson = await sRes.json();
-            if (!sJson.fallback && Array.isArray(sJson.items) && sJson.items.length > 0) {
+            if (!sJson.fallback && Array.isArray(sJson.items)) {
               sData = sJson.items;
+            }
+          }
+          if (pRes && pRes.ok) {
+            const pJson = await pRes.json();
+            if (!pJson.fallback && Array.isArray(pJson.items)) {
+              pData = pJson.items;
             }
           }
         } catch (apiErr) {
           console.warn("Public API fetch failed, falling back to client-side Firestore:", apiErr);
         }
 
-        // Fallback to client-side Firestore if API returned fallback or empty array
+        // Fallback to client-side Firestore query if array empty
         if (hData.length === 0) {
-          const hSnap = await getDocs(collection(db, COLLECTIONS.hospitals));
+          const hSnap = await getDocs(collection(db, COLLECTIONS.hospitals)).catch(() => ({ docs: [] }));
           hData = hSnap.docs.map(d => ({ id: d.id, ...d.data() } as Hospital));
         }
         if (dData.length === 0) {
-          const dSnap = await getDocs(collection(db, COLLECTIONS.bengali_doctors));
+          const dSnap = await getDocs(collection(db, COLLECTIONS.bengali_doctors)).catch(() => ({ docs: [] }));
           dData = dSnap.docs.map(d => ({ id: d.id, ...d.data() } as BengaliDoctor));
         }
         if (sData.length === 0) {
-          const sSnap = await getDocs(collection(db, COLLECTIONS.bengali_staff || 'bengali_staff'));
+          const sSnap = await getDocs(collection(db, COLLECTIONS.bengali_staff || 'bengali_staff')).catch(() => ({ docs: [] }));
           sData = sSnap.docs.map(d => ({ id: d.id, ...d.data() } as BengaliStaff));
         }
+        if (pData.length === 0) {
+          const pSnap = await getDocs(collection(db, COLLECTIONS.pharmacies || 'pharmacies')).catch(() => ({ docs: [] }));
+          pData = pSnap.docs.map(d => ({ id: d.id, ...d.data() } as Pharmacy));
+        }
 
-        setHospitals(hData.length > 0 ? hData : sampleHospitals);
-        setDoctors(dData.length > 0 ? dData : sampleDoctors);
-        setStaff(sData.length > 0 ? sData : sampleStaff);
+        setHospitals(hData);
+        setDoctors(dData);
+        setStaff(sData);
+        setPharmacies(pData);
       } catch (err) {
         console.error("Error fetching database documents", err);
-        setHospitals(sampleHospitals);
-        setDoctors(sampleDoctors);
-        setStaff(sampleStaff);
+        setHospitals([]);
+        setDoctors([]);
+        setStaff([]);
+        setPharmacies([]);
       } finally {
         setLoading(false);
       }
@@ -252,6 +266,17 @@ export default function EmergencyHospitalsPage() {
     });
   }, [staff, searchQuery, departmentFilter]);
 
+  // Pharmacy Filter
+  const filteredPharmacies = useMemo(() => {
+    return pharmacies.filter((p) => {
+      const matchesSearch = !searchQuery || p.name.toLowerCase().includes(searchQuery.toLowerCase()) || (p.area && p.area.toLowerCase().includes(searchQuery.toLowerCase())) || (p.hospital_name && p.hospital_name.toLowerCase().includes(searchQuery.toLowerCase()));
+      const matchesCity = !cityFilter || p.city === cityFilter;
+      const matches247 = !twentyFourSevenFilter || p.is_24_7;
+      const matchesDelivery = !deliveryFilter || p.home_delivery;
+      return matchesSearch && matchesCity && matches247 && matchesDelivery;
+    });
+  }, [pharmacies, searchQuery, cityFilter, twentyFourSevenFilter, deliveryFilter]);
+
   return (
     <div className="min-h-screen bg-surface">
       {/* Hero Section */}
@@ -270,7 +295,7 @@ export default function EmergencyHospitalsPage() {
                 Hospital & Medical Center
               </h1>
               <p className="mt-4 text-text-muted text-lg leading-relaxed">
-                Connect with leading government and private medical centers, verified Bengali-speaking doctors, and support staff across Tamil Nadu.
+                Connect with leading government and private medical centers, verified Bengali-speaking doctors, support staff, and pharmacies across Tamil Nadu.
               </p>
               
               <div className="mt-8 flex flex-wrap gap-4">
@@ -331,7 +356,7 @@ export default function EmergencyHospitalsPage() {
                 </div>
               </div>
               
-              {/* Informational Verified Doctors Card (Non-clickable) */}
+              {/* Informational Verified Doctors Card */}
               <div className="bg-white/90 backdrop-blur-md p-5 rounded-2xl border border-emerald-100 shadow-sm hover:shadow-md transition-shadow duration-300 flex-1 flex flex-col justify-between relative overflow-hidden">
                 <div>
                   <div className="flex items-center justify-between mb-2">
@@ -395,6 +420,13 @@ export default function EmergencyHospitalsPage() {
             >
               <Users className="w-4.5 h-4.5" /> 3. Staff Search
             </button>
+
+            <button
+              onClick={() => { setSearchTab('pharmacies'); setSearchQuery(''); }}
+              className={`py-4 text-sm font-bold border-b-2 transition-all cursor-pointer flex items-center gap-2 ${searchTab === 'pharmacies' ? 'border-primary text-primary' : 'border-transparent text-text-muted hover:text-text-primary'}`}
+            >
+              <Pill className="w-4.5 h-4.5" /> 4. Pharmacy Search
+            </button>
           </div>
         </div>
       </div>
@@ -412,14 +444,15 @@ export default function EmergencyHospitalsPage() {
                 placeholder={
                   searchTab === 'hospitals' ? "Search hospitals by name, area..." :
                   searchTab === 'doctors' ? "Search doctors by name..." :
-                  "Search staff by name or role..."
+                  searchTab === 'staff' ? "Search staff by name or role..." :
+                  "Search pharmacy by name or hospital..."
                 }
                 className="w-full pl-11 pr-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 bg-surface/30 font-medium"
               />
             </div>
 
             {/* Specialization Filter (Hospitals/Doctors) */}
-            {searchTab !== 'staff' && (
+            {(searchTab === 'hospitals' || searchTab === 'doctors') && (
               <select
                 value={specializationFilter}
                 onChange={(e) => setSpecializationFilter(e.target.value)}
@@ -459,8 +492,8 @@ export default function EmergencyHospitalsPage() {
               </select>
             )}
 
-            {/* City Filter (Hospitals only) */}
-            {searchTab === 'hospitals' && (
+            {/* City Filter (Hospitals & Pharmacies) */}
+            {(searchTab === 'hospitals' || searchTab === 'pharmacies') && (
               <select
                 value={cityFilter}
                 onChange={(e) => setCityFilter(e.target.value)}
@@ -469,6 +502,26 @@ export default function EmergencyHospitalsPage() {
                 <option value="">All Cities</option>
                 {CITIES.map((c) => <option key={c} value={c}>{c}</option>)}
               </select>
+            )}
+
+            {/* 24/7 & Home Delivery Toggles (Pharmacies only) */}
+            {searchTab === 'pharmacies' && (
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => setTwentyFourSevenFilter(!twentyFourSevenFilter)}
+                  className={`px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer border ${twentyFourSevenFilter ? 'bg-red-50 text-red-600 border-red-300' : 'bg-white text-text-muted border-border'}`}
+                >
+                  24/7 Available
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setDeliveryFilter(!deliveryFilter)}
+                  className={`px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer border ${deliveryFilter ? 'bg-emerald-50 text-emerald-600 border-emerald-300' : 'bg-white text-text-muted border-border'}`}
+                >
+                  Home Delivery
+                </button>
+              </div>
             )}
           </div>
         </div>
@@ -771,6 +824,99 @@ export default function EmergencyHospitalsPage() {
                     <p className="text-5xl mb-4">👥</p>
                     <h3 className="text-xl font-bold mb-2">No staff found</h3>
                     <p className="text-text-muted">Try selecting a different department filter.</p>
+                  </div>
+                )}
+              </>
+            )}
+
+            {/* ── PHARMACY SEARCH RESULTS ── */}
+            {searchTab === 'pharmacies' && (
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-[28px] w-full">
+                  {filteredPharmacies.map((pharmacy) => (
+                    <Card key={pharmacy.id} padding="none" className="overflow-hidden group flex flex-col h-full bg-white border border-gray-100 shadow-[0_4px_25px_-4px_rgba(0,0,0,0.05)] rounded-[24px] w-full">
+                      {/* Image header */}
+                      <div className="relative h-[273px] bg-slate-100 overflow-hidden shrink-0">
+                        <ListingCoverImage 
+                          name={pharmacy.name} 
+                          city={pharmacy.city} 
+                          mapsUrl={pharmacy.google_maps_url} 
+                          imageUrl={pharmacy.image_url}
+                          fallbackIcon={<Pill className="w-12 h-12" />}
+                        />
+                        
+                        {/* Gradient Shadow Overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-5 z-10 pointer-events-none">
+                          <h3 className="text-xl font-bold text-white leading-tight font-display">{pharmacy.name}</h3>
+                          <div className="flex items-center gap-1.5 mt-2 text-sm text-white/90">
+                            <MapPin className="w-4 h-4 text-white shrink-0" />
+                            <span>{pharmacy.area ? `${pharmacy.area}, ` : ''}{pharmacy.city}</span>
+                          </div>
+                        </div>
+
+                        {/* Top-left Badges */}
+                        <div className="absolute top-4 left-4 flex flex-wrap gap-1.5 z-20">
+                          {pharmacy.is_24_7 && (
+                            <span className="bg-red-600 text-white text-[10px] font-extrabold px-2.5 py-1 rounded-full shadow-sm flex items-center gap-1 uppercase tracking-wider">
+                              <Clock className="w-3.5 h-3.5" /> 24/7
+                            </span>
+                          )}
+                          {pharmacy.home_delivery && (
+                            <span className="bg-emerald-600 text-white text-[10px] font-extrabold px-2.5 py-1 rounded-full shadow-sm flex items-center gap-1 uppercase tracking-wider">
+                              <Truck className="w-3.5 h-3.5" /> Home Delivery
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="px-6 py-[22px] flex-1 flex flex-col justify-between">
+                        <div>
+                          {pharmacy.hospital_name && (
+                            <div className="flex items-center gap-1.5 text-xs font-semibold text-primary mb-2 bg-primary/5 p-2 rounded-lg border border-primary/10">
+                              <Building2 className="w-3.5 h-3.5 shrink-0" />
+                              <span className="truncate">{pharmacy.hospital_name}</span>
+                            </div>
+                          )}
+                          {pharmacy.opening_time && (
+                            <div className="flex items-center gap-1.5 text-xs font-medium text-text-muted mb-2">
+                              <Clock className="w-3.5 h-3.5 text-text-muted shrink-0" />
+                              <span>Hours: {pharmacy.opening_time} - {pharmacy.closing_time || 'Late'}</span>
+                            </div>
+                          )}
+                          {pharmacy.description && (
+                            <p className="text-xs text-text-muted line-clamp-2 mb-3">{pharmacy.description}</p>
+                          )}
+                        </div>
+
+                        {/* Action Buttons */}
+                        <div className="flex items-center gap-3 w-full mt-6">
+                          {pharmacy.phone ? (
+                            <a href={`tel:${pharmacy.phone}`} className="flex-1 w-full bg-[#B81D18] hover:bg-[#9E1612] text-white font-bold py-2.5 px-4 rounded-xl text-sm flex items-center justify-center gap-2 shadow-sm transition-all active:scale-[0.98]">
+                              <Phone className="w-4 h-4" />
+                              <span>Call Pharmacy</span>
+                            </a>
+                          ) : (
+                            <div className="flex-1 text-xs text-text-muted text-center py-2.5">Contact via Hospital</div>
+                          )}
+                          
+                          {pharmacy.google_maps_url ? (
+                            <a href={pharmacy.google_maps_url} target="_blank" rel="noopener noreferrer" className="flex-1 w-full bg-white hover:bg-slate-50 border border-[#E4E9F2] text-gray-800 font-bold py-2.5 px-4 rounded-xl text-sm flex items-center justify-center gap-1 shadow-sm transition-all active:scale-[0.98]">
+                              <MapPin className="w-4 h-4 text-primary" />
+                              <span>Directions</span>
+                            </a>
+                          ) : (
+                            <div className="flex-1" />
+                          )}
+                        </div>
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+                {filteredPharmacies.length === 0 && (
+                  <div className="text-center py-20 bg-white rounded-3xl border border-border shadow-xs">
+                    <p className="text-5xl mb-4">💊</p>
+                    <h3 className="text-xl font-bold mb-2">No pharmacies found</h3>
+                    <p className="text-text-muted">Try adjusting filters or city search.</p>
                   </div>
                 )}
               </>

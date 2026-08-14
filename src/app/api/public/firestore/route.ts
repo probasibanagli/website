@@ -10,6 +10,7 @@ const WHITELISTED_COLLECTIONS = new Set([
   'hospitals',
   'bengali_doctors',
   'bengali_staff',
+  'pharmacies',
   'blog_posts',
   'blood_banks',
   'colleges',

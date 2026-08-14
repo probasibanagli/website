@@ -43,10 +43,10 @@ export default function BengaliHospitalsPage() {
         // Only show hospitals that have a bengali doctor OR bengali staff OR are explicitly bengali hospitals
         const bengaliHospitals = data.filter(h => h.has_bengali_doctor || h.has_bengali_staff);
         
-        setHospitals(bengaliHospitals.length > 0 ? bengaliHospitals : (data.length > 0 ? data : sampleHospitals));
+        setHospitals(bengaliHospitals.length > 0 ? bengaliHospitals : data);
       } catch (err) {
         console.error(err);
-        setHospitals(sampleHospitals);
+        setHospitals([]);
       } finally {
         setLoading(false);
       }

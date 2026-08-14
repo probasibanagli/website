@@ -47,7 +47,7 @@ const USER_DEFAULT_PERMISSIONS = {
 const AVAILABLE_MODULES = [
   { key: 'stay', label: 'Stay & Accommodation' },
   { key: 'food', label: 'Bengali Food' },
-  { key: 'emergency', label: 'Emergency Help' },
+  { key: 'emergency', label: 'Hospital Management (Hospitals, Doctors, Staff, Pharmacy)' },
   { key: 'community', label: 'Community Groups' },
   { key: 'services', label: 'Services' },
   { key: 'blog', label: 'Blog' },
@@ -429,35 +429,6 @@ export default function AdminUsersPage() {
                     <span className="text-sm font-medium text-text-primary">{m.label}</span>
                   </label>
                 ))}
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-text-primary mb-1">Hospital Management Scope</label>
-              <p className="text-xs text-text-muted mb-2">Select hospitals this admin is granted permission to manage:</p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-48 overflow-y-auto p-3 border border-border rounded-xl bg-surface/30">
-                {allHospitals.length === 0 ? (
-                  <p className="text-xs text-text-muted italic col-span-2">No hospitals registered yet</p>
-                ) : (
-                  allHospitals.map(h => {
-                    const checked = createAssignedHospitals.includes(h.id);
-                    return (
-                      <label key={h.id} className="flex items-center gap-2.5 p-2 rounded-lg hover:bg-white cursor-pointer text-xs">
-                        <input
-                          type="checkbox"
-                          checked={checked}
-                          onChange={(e) => {
-                            if (e.target.checked) setCreateAssignedHospitals([...createAssignedHospitals, h.id]);
-                            else setCreateAssignedHospitals(createAssignedHospitals.filter(id => id !== h.id));
-                          }}
-                          className="w-4 h-4 accent-primary rounded cursor-pointer"
-                        />
-                        <span className="font-semibold text-text-primary">{h.name}</span>
-                        <span className="text-text-muted">({h.city})</span>
-                      </label>
-                    );
-                  })
-                )}
               </div>
             </div>
 

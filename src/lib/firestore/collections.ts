@@ -19,6 +19,7 @@ export const COLLECTIONS = {
   travel_info: 'travel_info',
   bengali_doctors: 'bengali_doctors',
   bengali_staff: 'bengali_staff',
+  pharmacies: 'pharmacies',
   otps: 'otps',
   ambulances: 'ambulances',
   government_services: 'government_services',
