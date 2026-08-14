@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { PageSkeleton } from '@/components/ui/Skeleton';
 import { useAuth } from '@/lib/auth/AuthContext';
 
 export function GlobalLoader() {

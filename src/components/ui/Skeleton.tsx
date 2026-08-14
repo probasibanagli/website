@@ -19,21 +19,36 @@ export function PageSkeleton() {
       {/* Main Content Area */}
       <div className="flex-1 overflow-y-auto">
         {/* Hero Section Skeleton */}
-        <div className="relative py-20 sm:py-28 lg:py-36 bg-surface px-4 sm:px-6 lg:px-8 text-center">
-          <div className="max-w-[1536px] mx-auto flex flex-col items-center">
-            <Skeleton className="w-40 h-6 rounded-full mb-8 bg-primary/10" />
-            <Skeleton className="w-full max-w-3xl h-16 sm:h-20 mb-6" />
-            <Skeleton className="w-2/3 max-w-xl h-6 mb-12 opacity-70" />
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Skeleton className="w-48 h-12 rounded-xl" />
-              <Skeleton className="w-48 h-12 rounded-xl" />
-            </div>
-            
-            {/* Stats Bar Skeleton */}
-            <div className="mt-16 grid grid-cols-2 sm:grid-cols-4 gap-4 w-full max-w-3xl">
-              {[1, 2, 3, 4].map((i) => (
-                <Skeleton key={i} className="h-12 rounded-2xl" />
-              ))}
+        <div className="relative pt-10 pb-20 sm:pt-12 sm:pb-24 lg:pt-16 lg:pb-32 bg-white/90 px-4 sm:px-6 lg:px-8 border-b border-border/50">
+          <div className="max-w-[1536px] mx-auto">
+            <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
+              {/* Text Column Skeleton */}
+              <div className="flex-1 text-center lg:text-left space-y-6 w-full">
+                <Skeleton className="w-64 h-6 rounded-full mx-auto lg:mx-0" />
+                <div className="space-y-2">
+                  <Skeleton className="w-full max-w-xl h-12 sm:h-16 mx-auto lg:mx-0" />
+                  <Skeleton className="w-3/4 max-w-lg h-12 sm:h-16 mx-auto lg:mx-0" />
+                </div>
+                <Skeleton className="w-full max-w-2xl h-6 mx-auto lg:mx-0 opacity-70" />
+                <Skeleton className="w-5/6 max-w-xl h-6 mx-auto lg:mx-0 opacity-70" />
+                
+                <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-4">
+                  <Skeleton className="w-full sm:w-40 h-12 rounded-lg" />
+                  <Skeleton className="w-full sm:w-40 h-12 rounded-lg" />
+                </div>
+                
+                {/* Stats Bar Skeleton */}
+                <div className="grid grid-cols-2 gap-3 max-w-md pt-4 mx-auto lg:mx-0">
+                  {[1, 2, 3, 4].map((i) => (
+                    <Skeleton key={i} className="h-10 rounded-xl" />
+                  ))}
+                </div>
+              </div>
+
+              {/* Image Column Skeleton */}
+              <div className="flex-1 w-full max-w-md lg:max-w-lg">
+                <Skeleton className="w-full aspect-[4/3] rounded-3xl" />
+              </div>
             </div>
           </div>
         </div>
