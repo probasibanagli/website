@@ -11,6 +11,12 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { useLanguage } from '@/lib/contexts/LanguageContext';
+import localFont from 'next/font/local';
+
+const samarkan = localFont({
+  src: '../../../public/fonts/Samarkan.ttf',
+  display: 'swap',
+});
 
 const navLinks = [
   {
@@ -91,7 +97,7 @@ export function Navbar() {
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2 group notranslate">
               <img src="/logo.png" alt="ProbasiBangali Logo" className="w-10 h-10 object-contain group-hover:scale-105 transition-transform" />
-              <span className="text-xl font-bold text-text-primary hidden sm:block tracking-tight">
+              <span className={`text-[32px] font-normal text-text-primary ${samarkan.className} mt-1.5 leading-none`}>
                 Probasi<span className="text-primary">Bangali</span>
               </span>
             </Link>
@@ -103,7 +109,7 @@ export function Navbar() {
                   key={link.label}
                   className="relative group"
                 >
-                  <button className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-text-primary hover:text-primary transition-colors rounded-lg hover:bg-surface cursor-pointer">
+                  <button suppressHydrationWarning className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-text-primary hover:text-primary transition-colors rounded-lg hover:bg-surface cursor-pointer">
                     <T>{link.label}</T>
                     <ChevronDown className="w-3.5 h-3.5 transition-transform group-hover:rotate-180" />
                   </button>

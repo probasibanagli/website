@@ -215,15 +215,15 @@ export default function StayPage() {
           </div>
 
           {/* Unified Filter Bar */}
-          <div className="mt-6 flex flex-col md:flex-row md:flex-wrap items-start md:items-center gap-3 relative z-30">
+          <div className="mt-6 flex flex-col md:flex-row md:flex-wrap items-stretch md:items-center gap-3 relative z-30">
             {/* Search */}
-            <div className="relative flex-1 min-w-[200px] md:max-w-xs">
+            <div className="relative w-full md:flex-1 md:min-w-[200px] md:max-w-xs">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
               <input value={searchQuery} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)} placeholder="Search by name or area..." className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
             </div>
 
             {/* City Dropdown */}
-            <div className={`relative min-w-[160px] ${isCityOpen ? 'z-50' : ''}`}>
+            <div className={`relative w-full md:w-auto md:min-w-[160px] ${isCityOpen ? 'z-50' : ''}`}>
               <button onClick={() => setIsCityOpen(!isCityOpen)} className="flex items-center justify-between w-full px-4 py-2.5 rounded-xl border border-border bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary/30">
                 <span className="truncate">{city || 'All Cities'}</span>
                 <ChevronDown className={`w-4 h-4 text-text-muted transition-transform ${isCityOpen ? 'rotate-180' : ''}`} />
@@ -243,7 +243,7 @@ export default function StayPage() {
 
             {/* Area Dropdown */}
             {city && (
-              <div className={`relative min-w-[160px] ${isAreaOpen ? 'z-50' : ''}`}>
+              <div className={`relative w-full md:w-auto md:min-w-[160px] ${isAreaOpen ? 'z-50' : ''}`}>
                 <button onClick={() => setIsAreaOpen(!isAreaOpen)} className="flex items-center justify-between w-full px-4 py-2.5 rounded-xl border border-border bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 animate-fade-in">
                   <span className="truncate">{area || 'All Areas'}</span>
                   <ChevronDown className={`w-4 h-4 text-text-muted transition-transform ${isAreaOpen ? 'rotate-180' : ''}`} />
@@ -264,7 +264,7 @@ export default function StayPage() {
 
             {/* Subcategory Dropdown */}
             {city && (
-              <div className={`relative min-w-[180px] ${isSubcatOpen ? 'z-50' : ''}`}>
+              <div className={`relative w-full md:w-auto md:min-w-[180px] ${isSubcatOpen ? 'z-50' : ''}`}>
                 <button onClick={() => setIsSubcatOpen(!isSubcatOpen)} className="flex items-center justify-between w-full px-4 py-2.5 rounded-xl border border-border bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 animate-fade-in">
                   <span className="truncate">
                     {subcategory === 'hospital' ? '🏥 Hospital Nearby' :
@@ -301,16 +301,16 @@ export default function StayPage() {
             {/* Bengali-friendly toggle */}
             {city && (
               <button onClick={() => setBengaliOnly(!bengaliOnly)}
-                className={`flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer animate-fade-in ${bengaliOnly ? 'bg-primary text-white shadow-md' : 'bg-white border border-border text-text-primary hover:border-primary'}`}>
+                className={`flex items-center justify-center w-full md:w-auto gap-1.5 px-4 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer animate-fade-in ${bengaliOnly ? 'bg-primary text-white shadow-md' : 'bg-white border border-border text-text-primary hover:border-primary'}`}>
                 <SlidersHorizontal className="w-3.5 h-3.5" />
                 Bengali-friendly
               </button>
             )}
 
             <div className="flex items-center gap-2 w-full md:w-auto">
-              <input type="number" placeholder="Min ₹" value={minPrice} onChange={(e) => setMinPrice(e.target.value)} className="w-20 px-3 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
-              <span className="text-text-muted">-</span>
-              <input type="number" placeholder="Max ₹" value={maxPrice} onChange={(e) => setMaxPrice(e.target.value)} className="w-20 px-3 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+              <input type="number" placeholder="Min ₹" value={minPrice} onChange={(e) => setMinPrice(e.target.value)} className="flex-1 min-w-0 md:w-24 px-3 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+              <span className="text-text-muted shrink-0">-</span>
+              <input type="number" placeholder="Max ₹" value={maxPrice} onChange={(e) => setMaxPrice(e.target.value)} className="flex-1 min-w-0 md:w-24 px-3 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
             </div>
           </div>
 
@@ -477,8 +477,8 @@ export default function StayPage() {
                     )}
                   </div>
 
-                  <div className="flex flex-wrap items-center justify-between mt-6 pt-5 border-t border-gray-100 gap-3">
-                    <div className="flex items-center gap-2 flex-1 min-w-[200px]">
+                  <div className="flex flex-col-reverse sm:flex-row sm:items-center justify-between mt-6 pt-5 border-t border-gray-100 gap-4">
+                    <div className="flex items-center gap-2 w-full sm:w-auto sm:flex-1">
                       <Link href={`/explore/stay/${listing.id}`} className="flex-1">
                         <button className="w-full bg-[#d85a30] hover:bg-[#b84a00] text-white font-bold px-3 py-2.5 rounded-[12px] transition-colors text-sm shadow-sm whitespace-nowrap">
                           Book Visit
@@ -498,7 +498,7 @@ export default function StayPage() {
                         </a>
                       )}
                     </div>
-                    <div className="text-right shrink-0">
+                    <div className="text-left sm:text-right shrink-0">
                       <p className="text-[20px] font-black text-gray-900 leading-none">
                         {formatPrice(priceVal)}
                       </p>
