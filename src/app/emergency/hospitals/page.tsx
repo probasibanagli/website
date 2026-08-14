@@ -880,7 +880,21 @@ export default function EmergencyHospitalsPage() {
                           {pharmacy.opening_time && (
                             <div className="flex items-center gap-1.5 text-xs font-medium text-text-muted mb-2">
                               <Clock className="w-3.5 h-3.5 text-text-muted shrink-0" />
-                              <span>Hours: {pharmacy.opening_time} - {pharmacy.closing_time || 'Late'}</span>
+                              <span>Hours: {pharmacy.opening_time} {pharmacy.closing_time ? `- ${pharmacy.closing_time}` : ''}</span>
+                            </div>
+                          )}
+                          {pharmacy.services && pharmacy.services.length > 0 && (
+                            <div className="flex flex-wrap gap-1 mb-2">
+                              {pharmacy.services.map((s, idx) => (
+                                <span key={idx} className="bg-surface text-text-primary text-[10px] font-semibold px-2 py-0.5 rounded border border-border">
+                                  {s}
+                                </span>
+                              ))}
+                            </div>
+                          )}
+                          {pharmacy.languages && pharmacy.languages.length > 0 && (
+                            <div className="text-[11px] text-text-muted font-medium mb-2">
+                              Languages: {pharmacy.languages.join(', ')}
                             </div>
                           )}
                           {pharmacy.description && (

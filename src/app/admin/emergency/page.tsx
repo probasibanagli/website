@@ -532,6 +532,10 @@ function AdminEmergencyPageContent() {
                     <input type="text" value={formData.city || 'Chennai'} onChange={e => setFormData({...formData, city: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
                   </div>
                   <div>
+                    <label className="block text-sm font-semibold text-text-primary mb-1.5">District</label>
+                    <input type="text" value={formData.district || 'Chennai'} onChange={e => setFormData({...formData, district: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" placeholder="e.g. Chennai / Kanchipuram" />
+                  </div>
+                  <div>
                     <label className="block text-sm font-semibold text-text-primary mb-1.5">Area/Location *</label>
                     <select value={formData.area || ''} onChange={e => setFormData({...formData, area: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm cursor-pointer">
                       <option value="">Select Area...</option>
@@ -553,6 +557,33 @@ function AdminEmergencyPageContent() {
                   <div>
                     <label className="block text-sm font-semibold text-text-primary mb-1.5">Closing Time</label>
                     <input type="text" value={formData.closing_time || ''} onChange={e => setFormData({...formData, closing_time: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" placeholder="e.g. 10:00 PM" />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Services Provided (Comma-separated)</label>
+                    <input type="text" value={Array.isArray(formData.services) ? formData.services.join(', ') : formData.services || ''} onChange={e => setFormData({...formData, services: e.target.value.split(',').map(s => s.trim()).filter(Boolean)})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" placeholder="Prescription Medicines, OTC Medicines, Health Products, Medical Supplies" />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Languages Spoken</label>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                      {LANGUAGES.map(lang => (
+                        <label key={lang} className="flex items-center gap-2 cursor-pointer">
+                          <input 
+                            type="checkbox" 
+                            checked={(formData.languages || []).includes(lang)}
+                            onChange={(e) => {
+                              const current = formData.languages || [];
+                              if (e.target.checked) {
+                                setFormData({ ...formData, languages: [...current, lang] });
+                              } else {
+                                setFormData({ ...formData, languages: current.filter((l: string) => l !== lang) });
+                              }
+                            }}
+                            className="w-4 h-4 rounded border-border"
+                          />
+                          <span className="text-sm text-text-primary">{lang}</span>
+                        </label>
+                      ))}
+                    </div>
                   </div>
                   <div className="md:col-span-2">
                     <label className="block text-sm font-semibold text-text-primary mb-1.5">Full Address</label>

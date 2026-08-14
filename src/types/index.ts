@@ -505,6 +505,7 @@ export interface Pharmacy {
   is_24_7?: boolean;
   home_delivery?: boolean;
   languages?: string[];
+  services?: string[];
   description?: string;
   image_url?: string;
   google_maps_url?: string;
