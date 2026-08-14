@@ -1,12 +1,18 @@
 import { NextResponse } from 'next/server';
+import dotenv from 'dotenv';
+import path from 'path';
+
+export const dynamic = 'force-dynamic';
 
 // Temporary diagnostic route – remove after fixing the 500 error
 export async function GET() {
+  dotenv.config({ path: path.resolve(process.cwd(), '.env.local') });
+  dotenv.config({ path: path.resolve(process.cwd(), '.env') });
   // Top-level try-catch: this route MUST always return JSON, never 500
   try {
-    const projectId   = process.env.FIREBASE_ADMIN_PROJECT_ID;
-    const clientEmail = process.env.FIREBASE_ADMIN_CLIENT_EMAIL;
-    const rawKey      = process.env.FIREBASE_ADMIN_PRIVATE_KEY;
+    const projectId   = process.env['FIREBASE_ADMIN_PROJECT_ID'];
+    const clientEmail = process.env['FIREBASE_ADMIN_CLIENT_EMAIL'];
+    const rawKey      = process.env['FIREBASE_ADMIN_PRIVATE_KEY'];
 
     const keyInfo = rawKey
       ? {
@@ -53,8 +59,22 @@ export async function GET() {
       importError = e.message;
     }
 
+    const fs = await import('fs');
+    const envPath = path.resolve(process.cwd(), '.env.local');
+    const exists = fs.existsSync(envPath);
+    let rawContent = '';
+    if (exists) {
+      rawContent = fs.readFileSync(envPath, 'utf-8');
+    }
+    const dotenvResult = dotenv.config({ path: envPath, override: true });
+    
     return NextResponse.json({
-      isAdminConfigured,
+      cwd: process.cwd(),
+      envPath,
+      exists,
+      rawContentLength: rawContent.length,
+      dotenvResult: dotenvResult.error ? dotenvResult.error.message : dotenvResult.parsed,
+      isAdminConfigured: (await import('@/lib/firebase-admin')).isAdminConfigured(),
       importError,
       envVarsPresent: {
         FIREBASE_ADMIN_PROJECT_ID: !!projectId,

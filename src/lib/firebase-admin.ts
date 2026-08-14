@@ -1,6 +1,12 @@
 import { initializeApp, getApps, cert, App } from 'firebase-admin/app';
 import { getAuth } from 'firebase-admin/auth';
 import { getFirestore } from 'firebase-admin/firestore';
+import dotenv from 'dotenv';
+import path from 'path';
+
+// Ensure .env.local is explicitly resolved from workspace root
+dotenv.config({ path: path.resolve(process.cwd(), '.env.local') });
+dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 
 /**
  * Normalise the Firebase Admin private key so it works regardless of how
@@ -23,9 +29,22 @@ function getAdminApp(): App | null {
     return getApps()[0];
   }
 
-  const projectId  = process.env.FIREBASE_ADMIN_PROJECT_ID;
-  const clientEmail = process.env.FIREBASE_ADMIN_CLIENT_EMAIL;
-  const privateKey  = normalisePrivateKey(process.env.FIREBASE_ADMIN_PRIVATE_KEY);
+  // Ensure environment variables are loaded with override enabled
+  const envPath = path.resolve(process.cwd(), '.env.local');
+  dotenv.config({ path: envPath, override: true });
+  dotenv.config({ override: true });
+
+  const projectId   = process.env['FIREBASE_ADMIN_PROJECT_ID'] || process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
+  const clientEmail = process.env['FIREBASE_ADMIN_CLIENT_EMAIL'];
+  const privateKey  = normalisePrivateKey(process.env['FIREBASE_ADMIN_PRIVATE_KEY']);
+
+  console.log('[firebase-admin] Attempting init:', {
+    envPath,
+    projectId,
+    hasClientEmail: !!clientEmail,
+    hasPrivateKey: !!privateKey,
+    privateKeyLength: privateKey ? privateKey.length : 0
+  });
 
   if (!projectId || !clientEmail || !privateKey) {
     console.warn(
@@ -45,40 +64,39 @@ function getAdminApp(): App | null {
   }
 }
 
-const adminApp = getAdminApp();
+/** true when Firebase Admin SDK credentials are present */
+export const isAdminConfigured = () => getAdminApp() !== null;
 
-/** true when Firebase Admin SDK was initialised without error */
-export const isAdminConfigured = adminApp !== null;
-
-// Create proxies that throw a recognizable error if Firebase is not configured
-const createFallbackProxy = (serviceName: string) => {
-  return new Proxy({}, {
-    get: () => {
+const adminDbProxy = new Proxy({}, {
+  get(_target, prop, receiver) {
+    const app = getAdminApp();
+    if (!app) {
       throw new Error(
-        `Firebase Admin (${serviceName}) is not initialised. ` +
+        'Firebase Admin (Firestore) is not initialised. ' +
         'Check FIREBASE_ADMIN_PROJECT_ID / CLIENT_EMAIL / PRIVATE_KEY env vars.'
       );
-    },
-  }) as any;
-};
-
-// Wrap in individual try-catch blocks so a throw from getAuth/getFirestore
-// at module-level cannot crash every route that imports this file.
-let adminAuth: any = createFallbackProxy('Auth');
-let adminDb: any   = createFallbackProxy('Firestore');
-
-if (adminApp) {
-  try {
-    adminAuth = getAuth(adminApp);
-  } catch (e) {
-    console.warn('[firebase-admin] getAuth failed:', (e as Error).message);
+    }
+    const instance = getFirestore(app);
+    const value = Reflect.get(instance, prop, receiver);
+    return typeof value === 'function' ? value.bind(instance) : value;
   }
+});
 
-  try {
-    adminDb = getFirestore(adminApp);
-  } catch (e) {
-    console.warn('[firebase-admin] getFirestore failed:', (e as Error).message);
+const adminAuthProxy = new Proxy({}, {
+  get(_target, prop, receiver) {
+    const app = getAdminApp();
+    if (!app) {
+      throw new Error(
+        'Firebase Admin (Auth) is not initialised. ' +
+        'Check FIREBASE_ADMIN_PROJECT_ID / CLIENT_EMAIL / PRIVATE_KEY env vars.'
+      );
+    }
+    const instance = getAuth(app);
+    const value = Reflect.get(instance, prop, receiver);
+    return typeof value === 'function' ? value.bind(instance) : value;
   }
-}
+});
 
-export { adminApp, adminAuth, adminDb };
+export const adminApp = getAdminApp();
+export const adminAuth = adminAuthProxy;
+export const adminDb = adminDbProxy;
