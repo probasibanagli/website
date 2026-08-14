@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { adminDb } from '@/lib/firebase-admin';
 
+export const dynamic = 'force-dynamic';
+
 const WHITELISTED_COLLECTIONS = new Set([
   'listings',
   'food_listings',
@@ -8,6 +10,7 @@ const WHITELISTED_COLLECTIONS = new Set([
   'hospitals',
   'bengali_doctors',
   'bengali_staff',
+  'pharmacies',
   'blog_posts',
   'blood_banks',
   'colleges',

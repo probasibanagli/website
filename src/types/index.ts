@@ -488,3 +488,27 @@ export interface BlogPost {
   published: boolean;
   created_at: string;
 }
+
+export interface Pharmacy {
+  id: string;
+  name: string;
+  hospital_id?: string;
+  hospital_name?: string;
+  address: string;
+  area?: string;
+  district?: string;
+  city: string;
+  phone?: string;
+  email?: string;
+  opening_time?: string;
+  closing_time?: string;
+  is_24_7?: boolean;
+  home_delivery?: boolean;
+  languages?: string[];
+  services?: string[];
+  description?: string;
+  image_url?: string;
+  google_maps_url?: string;
+  created_at?: string;
+}
+

@@ -43,10 +43,10 @@ export default function BengaliHospitalsPage() {
         // Only show hospitals that have a bengali doctor OR bengali staff OR are explicitly bengali hospitals
         const bengaliHospitals = data.filter(h => h.has_bengali_doctor || h.has_bengali_staff);
         
-        setHospitals(bengaliHospitals.length > 0 ? bengaliHospitals : (data.length > 0 ? data : sampleHospitals));
+        setHospitals(bengaliHospitals.length > 0 ? bengaliHospitals : data);
       } catch (err) {
         console.error(err);
-        setHospitals(sampleHospitals);
+        setHospitals([]);
       } finally {
         setLoading(false);
       }
@@ -120,9 +120,9 @@ export default function BengaliHospitalsPage() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="w-full max-w-none px-4 sm:px-6 lg:px-[38px] py-8">
         {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-[28px]">
              {[1, 2, 3, 4, 5, 6].map(i => (
                <Card key={i} className="animate-pulse flex flex-col h-[350px]">
                  <div className="h-40 bg-border/50" />
@@ -136,11 +136,11 @@ export default function BengaliHospitalsPage() {
              ))}
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-[28px]">
             {filtered.map((hospital) => (
-              <Card key={hospital.id} className="group flex flex-col h-full overflow-hidden hover:shadow-lg transition-all duration-300">
+              <Card key={hospital.id} className="group flex flex-col h-full overflow-hidden hover:shadow-lg transition-all duration-300 rounded-[24px] bg-white border border-gray-100">
                 {/* Header Image Fallback */}
-                <div className="relative h-40 bg-gradient-to-br from-red-50 to-orange-50 overflow-hidden">
+                <div className="relative h-[273px] bg-gradient-to-br from-red-50 to-orange-50 overflow-hidden shrink-0">
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="text-red-500 opacity-40 scale-[2.5]">
                       <Building className="w-8 h-8" />
