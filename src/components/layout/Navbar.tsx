@@ -58,6 +58,7 @@ export function Navbar() {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const { language, setLanguage, isMounted } = useLanguage();
   const [langMenuOpen, setLangMenuOpen] = useState(false);
+  const [mobileExpandedCategory, setMobileExpandedCategory] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
@@ -104,6 +105,13 @@ export function Navbar() {
 
             {/* Desktop Nav */}
             <div className="hidden lg:flex items-center gap-1">
+              <Link
+                href="/"
+                onClick={(e) => handleLinkClick(e, '/')}
+                className="px-3 py-2 text-sm font-medium text-text-primary hover:text-primary transition-colors rounded-lg hover:bg-surface"
+              >
+                <T>Home</T>
+              </Link>
               {navLinks.map((link) => (
                 <div
                   key={link.label}
@@ -178,12 +186,6 @@ export function Navbar() {
                 )}
               </div>
 
-              <Link href="/emergency/ambulance">
-                <Button variant="danger" size="sm" className="hidden sm:inline-flex animate-pulse-glow bg-[#B81D18] hover:bg-[#9E1814] text-white" suppressHydrationWarning>
-                  <Phone className="w-3.5 h-3.5" />
-                  <T>Emergency</T>
-                </Button>
-              </Link>
 
               {/* Auth section */}
               {!mounted || loading ? (
@@ -256,6 +258,13 @@ export function Navbar() {
                 </div>
               )}
 
+              <Link href="/emergency/ambulance">
+                <Button variant="danger" size="sm" className="hidden sm:inline-flex animate-pulse-glow bg-[#B81D18] hover:bg-[#9E1814] text-white" suppressHydrationWarning>
+                  <Phone className="w-3.5 h-3.5" />
+                  <T>Emergency</T>
+                </Button>
+              </Link>
+
               {/* Mobile Menu Toggle */}
               <div className="lg:hidden">
                 <button suppressHydrationWarning onClick={() => setMobileOpen(!mobileOpen)} className="p-2 rounded-md text-text-primary">
@@ -264,45 +273,95 @@ export function Navbar() {
               </div>
             </div>
           </div>
-
-          {/* Mobile Menu */}
-          {mobileOpen && (
-            <div className="lg:hidden absolute top-16 left-0 w-full bg-white shadow-lg py-4 animate-fade-in-down">
-              {navLinks.map((link) => (
-                <div key={link.label} className="px-4 py-2">
-                  <p className="font-semibold text-text-primary mb-2"><T>{link.label}</T></p>
-                  {link.children.map((child) => (
-                    <Link
-                      key={child.href}
-                      href={child.href}
-                      onClick={(e) => {
-                        handleLinkClick(e, child.href);
-                        setMobileOpen(false);
-                      }}
-                      className="flex items-center gap-3 py-2 text-text-muted hover:text-primary"
-                    >
-                      {child.icon}
-                      <T>{child.label}</T>
-                    </Link>
-                  ))}
-                </div>
-              ))}
-              <div className="px-4 py-2 border-t border-border mt-2">
-                <Link
-                  href="/blog"
-                  onClick={(e) => {
-                    handleLinkClick(e, '/blog');
-                    setMobileOpen(false);
-                  }}
-                  className="block py-2 text-text-muted hover:text-primary"
-                >
-                  <T>Blog</T>
-                </Link>
-              </div>
-            </div>
-          )}
         </div>
       </nav>
+
+      {/* Mobile Menu Overlay */}
+      {mobileOpen && (
+        <div className="lg:hidden fixed inset-0 z-[60] bg-black/20 backdrop-blur-sm" onClick={() => setMobileOpen(false)} />
+      )}
+
+      {/* Mobile Menu Drawer */}
+      <div className={cn(
+        "lg:hidden fixed top-0 right-0 bottom-0 w-[280px] bg-white shadow-2xl z-[70] transform transition-transform duration-300 ease-in-out flex flex-col overflow-hidden",
+        mobileOpen ? "translate-x-0" : "translate-x-full"
+      )}>
+        <div className="flex items-center justify-between px-4 h-16 border-b border-border">
+          <span className="font-bold text-text-primary text-lg">Menu</span>
+          <button onClick={() => setMobileOpen(false)} className="p-2 rounded-md text-text-primary hover:bg-surface">
+            <X className="w-6 h-6" />
+          </button>
+        </div>
+        <div className="flex-1 overflow-y-auto py-4 px-4 space-y-4">
+          <div className="border-b border-border/60 pb-2">
+            <Link
+              href="/"
+              onClick={(e) => {
+                handleLinkClick(e, '/');
+                setMobileOpen(false);
+              }}
+              className="flex items-center gap-3 py-3 px-2 text-text-primary font-bold text-lg hover:text-primary transition-colors"
+            >
+              <T>Home</T>
+            </Link>
+          </div>
+          {navLinks.map((link) => (
+            <div key={link.label} className="border-b border-border/60 pb-2">
+              <button
+                onClick={() => setMobileExpandedCategory(mobileExpandedCategory === link.label ? null : link.label)}
+                className="w-full flex items-center justify-between py-2 text-text-primary font-bold text-lg"
+              >
+                <T>{link.label}</T>
+                <ChevronDown className={cn("w-5 h-5 transition-transform", mobileExpandedCategory === link.label && "rotate-180 text-primary")} />
+              </button>
+              
+              <div className={cn(
+                "overflow-hidden transition-all duration-300",
+                mobileExpandedCategory === link.label ? "max-h-64 opacity-100 mt-2" : "max-h-0 opacity-0"
+              )}>
+                {link.children.map((child) => (
+                  <Link
+                    key={child.href}
+                    href={child.href}
+                    onClick={(e) => {
+                      handleLinkClick(e, child.href);
+                      setMobileOpen(false);
+                    }}
+                    className="flex items-center gap-3 py-3 px-2 text-text-muted hover:bg-surface hover:text-primary rounded-xl transition-colors"
+                  >
+                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                      {child.icon}
+                    </div>
+                    <span className="font-medium"><T>{child.label}</T></span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          ))}
+          <div className="pt-2">
+            <Link
+              href="/blog"
+              onClick={(e) => {
+                handleLinkClick(e, '/blog');
+                setMobileOpen(false);
+              }}
+              className="flex items-center gap-3 py-3 px-2 text-text-primary font-bold text-lg hover:text-primary transition-colors"
+            >
+              <T>Blog</T>
+            </Link>
+          </div>
+        </div>
+        
+        {/* Mobile Menu Footer */}
+        <div className="p-4 border-t border-border bg-surface/50">
+          <Link href="/emergency/ambulance" onClick={() => setMobileOpen(false)}>
+            <Button variant="danger" className="w-full bg-[#B81D18] hover:bg-[#9E1814] text-white shadow-md">
+              <Phone className="w-4 h-4 mr-2" />
+              <T>Call Emergency</T>
+            </Button>
+          </Link>
+        </div>
+      </div>
     </>
   );
 }

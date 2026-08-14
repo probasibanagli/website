@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Search, Bell, Menu } from 'lucide-react';
+import { Search, Menu } from 'lucide-react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 
 interface AdminHeaderProps {
@@ -63,10 +63,7 @@ export function AdminHeader({ profile, onMenuClick }: AdminHeaderProps) {
 
       {/* User Actions */}
       <div className="flex items-center gap-5">
-        <button className="relative p-2 text-neutral-500 hover:text-[#D85A30] transition-colors bg-white rounded-full border border-neutral-200/40 shadow-sm">
-          <Bell className="w-5 h-5" />
-          <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white" />
-        </button>
+
         <div className="flex items-center gap-3">
           <div className="text-right hidden sm:block">
             <p className="text-sm font-bold text-neutral-900 leading-tight">

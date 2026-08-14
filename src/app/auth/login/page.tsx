@@ -73,7 +73,7 @@ export default function LoginPage() {
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   const startResendTimer = useCallback(() => {
-    setResendTimer(30);
+    setResendTimer(60);
     if (timerRef.current) clearInterval(timerRef.current);
     timerRef.current = setInterval(() => {
       setResendTimer((prev) => {
@@ -85,6 +85,48 @@ export default function LoginPage() {
       });
     }, 1000);
   }, []);
+
+  /* ── Resend Phone OTP ── */
+  const handleResendPhoneOtp = async () => {
+    if (resendTimer > 0) return;
+    setError('');
+    setSuccess('');
+    const digits = phone.trim().replace(/\D/g, '');
+    const formatted = '+91' + digits;
+    setLoading(true);
+    try {
+      const result = await sendPhoneOtp(formatted, 'recaptcha-container', 'login');
+      setConfirmationResult(result);
+      setOtp(['', '', '', '', '', '']);
+      startResendTimer();
+      setSuccess('A new OTP has been sent to your phone.');
+    } catch (err: any) {
+      setError(err.message || 'Failed to resend OTP.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  /* ── Resend Admin Email OTP ── */
+  const handleResendEmailOtp = async (targetEmail: string) => {
+    if (resendTimer > 0) return;
+    setError('');
+    setSuccess('');
+    setLoading(true);
+    try {
+      await fetch('/api/auth/email-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'send', email: targetEmail }),
+      });
+      startResendTimer();
+      setSuccess('A new OTP has been sent to your email.');
+    } catch (err: any) {
+      setError(err.message || 'Failed to resend email OTP.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     return () => {
@@ -875,103 +917,133 @@ export default function LoginPage() {
               {mode === 'phone' && (
                 <div className="space-y-4">
                   {phoneStep === 'input' && (
-                    <>
-                      <Input
-                        label="Phone Number"
-                        id="login-phone"
-                        type="tel"
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
-                        placeholder="98765 43210"
-                      />
+                    <form onSubmit={(e) => { e.preventDefault(); handleSendOtp(); }}>
+                      <div className="space-y-4">
+                        <Input
+                          label="Phone Number"
+                          id="login-phone"
+                          type="tel"
+                          value={phone}
+                          onChange={(e) => setPhone(e.target.value)}
+                          placeholder="98765 43210"
+                        />
 
-                      <div className="flex items-start gap-2 p-3 rounded-xl bg-blue-50/70 border border-blue-100">
-                        <Fingerprint className="w-4 h-4 text-blue-500 mt-0.5 shrink-0" />
-                        <p className="text-xs text-blue-700 leading-relaxed">
-                          We&apos;ll send a <strong>6-digit verification code</strong> to your phone via SMS.
-                        </p>
+                        <div className="flex items-start gap-2 p-3 rounded-xl bg-blue-50/70 border border-blue-100">
+                          <Fingerprint className="w-4 h-4 text-blue-500 mt-0.5 shrink-0" />
+                          <p className="text-xs text-blue-700 leading-relaxed">
+                            We&apos;ll send a <strong>6-digit verification code</strong> to your phone via SMS.
+                          </p>
+                        </div>
+
+                        <Button variant="primary" size="lg" className="w-full" type="submit" disabled={loading}>
+                          {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <ArrowRight className="w-4 h-4" />}
+                          {loading ? 'Sending OTP...' : 'Send OTP'}
+                        </Button>
                       </div>
-
-                      <Button variant="primary" size="lg" className="w-full" onClick={handleSendOtp} disabled={loading}>
-                        {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <ArrowRight className="w-4 h-4" />}
-                        {loading ? 'Sending OTP...' : 'Send OTP'}
-                      </Button>
-                    </>
+                    </form>
                   )}
 
                   {phoneStep === 'otp' && (
-                    <>
-                      <div className="text-center mb-2">
-                        <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-primary/10 flex items-center justify-center relative">
-                          <Shield className="w-8 h-8 text-primary" />
-                          <div className="absolute inset-0 rounded-2xl border-2 border-primary/20 animate-pulse" />
+                    <form onSubmit={(e) => { e.preventDefault(); handleVerifyOtp(); }}>
+                      <div className="space-y-4">
+                        <div className="text-center mb-2">
+                          <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-primary/10 flex items-center justify-center relative">
+                            <Shield className="w-8 h-8 text-primary" />
+                            <div className="absolute inset-0 rounded-2xl border-2 border-primary/20 animate-pulse" />
+                          </div>
+                          <h3 className="text-lg font-bold text-text-primary mb-1">Verify Your Phone</h3>
+                          <p className="text-sm font-semibold text-text-primary mt-0.5">{phone}</p>
                         </div>
-                        <h3 className="text-lg font-bold text-text-primary mb-1">Verify Your Phone</h3>
-                        <p className="text-sm font-semibold text-text-primary mt-0.5">{phone}</p>
-                      </div>
 
-                      <div className="flex justify-center gap-2">
-                        {otp.map((digit, i) => (
-                          <input
-                            key={i}
-                            ref={el => { otpRefs.current[i] = el; }}
-                            type="text"
-                            inputMode="numeric"
-                            maxLength={1}
-                            value={digit}
-                            onChange={e => handleOtpChange('phone', i, e.target.value)}
-                            onKeyDown={e => handleOtpKeyDown('phone', i, e)}
-                            className="w-10 h-12 text-center text-lg font-bold rounded-xl border border-border bg-surface focus:outline-none focus:border-primary"
-                          />
-                        ))}
-                      </div>
+                        <div className="flex justify-center gap-2">
+                          {otp.map((digit, i) => (
+                            <input
+                              key={i}
+                              ref={el => { otpRefs.current[i] = el; }}
+                              type="text"
+                              inputMode="numeric"
+                              maxLength={1}
+                              value={digit}
+                              onChange={e => handleOtpChange('phone', i, e.target.value)}
+                              onKeyDown={e => handleOtpKeyDown('phone', i, e)}
+                              className="w-10 h-12 text-center text-lg font-bold rounded-xl border border-border bg-surface focus:outline-none focus:border-primary"
+                            />
+                          ))}
+                        </div>
 
-                      <Button variant="primary" size="lg" className="w-full" onClick={() => handleVerifyOtp()} disabled={loading || otp.join('').length !== 6}>
-                        {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
-                        {loading ? 'Verifying...' : 'Verify Phone'}
-                      </Button>
+                        <Button variant="primary" size="lg" className="w-full" type="submit" disabled={loading || otp.join('').length !== 6}>
+                          {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
+                          {loading ? 'Verifying...' : 'Verify Phone'}
+                        </Button>
 
-                      <div className="flex items-center justify-between text-xs pt-1">
-                        <button onClick={() => setPhoneStep('input')} className="flex items-center gap-1 text-text-muted hover:text-primary cursor-pointer transition-colors">
-                          <ArrowLeft className="w-3.5 h-3.5" /> Change number
-                        </button>
+                        <div className="flex items-center justify-between text-xs pt-1">
+                          <button type="button" onClick={() => setPhoneStep('input')} className="flex items-center gap-1 text-text-muted hover:text-primary cursor-pointer transition-colors">
+                            <ArrowLeft className="w-3.5 h-3.5" /> Change number
+                          </button>
+                          <button
+                            type="button"
+                            onClick={handleResendPhoneOtp}
+                            disabled={resendTimer > 0 || loading}
+                            className={`flex items-center gap-1 transition-colors cursor-pointer ${
+                              resendTimer > 0 ? 'text-text-muted cursor-not-allowed' : 'text-primary hover:underline'
+                            }`}
+                          >
+                            <RefreshCw className="w-3.5 h-3.5" />
+                            {resendTimer > 0 ? `Resend in ${resendTimer}s` : 'Resend OTP'}
+                          </button>
+                        </div>
                       </div>
-                    </>
+                    </form>
                   )}
 
                   {phoneStep === 'email-verify' && (
-                    <>
-                      <div className="text-center mb-2">
-                        <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-amber-100 flex items-center justify-center relative">
-                          <Shield className="w-8 h-8 text-amber-600" />
+                    <form onSubmit={(e) => { e.preventDefault(); handlePhoneLoginEmailVerify(); }}>
+                      <div className="space-y-4">
+                        <div className="text-center mb-2">
+                          <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-amber-100 flex items-center justify-center relative">
+                            <Shield className="w-8 h-8 text-amber-600" />
+                          </div>
+                          <h3 className="text-lg font-bold text-text-primary mb-1">Admin Authentication</h3>
+                          <p className="text-sm font-semibold text-text-primary mt-0.5">Step 2: Email Verification</p>
+                          <p className="text-xs text-text-muted mt-1">Verify Email: {phoneLoginAdminEmail}</p>
                         </div>
-                        <h3 className="text-lg font-bold text-text-primary mb-1">Admin Authentication</h3>
-                        <p className="text-sm font-semibold text-text-primary mt-0.5">Step 2: Email Verification</p>
-                        <p className="text-xs text-text-muted mt-1">Verify Email: {phoneLoginAdminEmail}</p>
+
+                        <div className="flex justify-center gap-2">
+                          {phoneLoginEmailOtp.map((digit, i) => (
+                            <input
+                              key={i}
+                              ref={el => { phoneLoginEmailOtpRefs.current[i] = el; }}
+                              type="text"
+                              inputMode="numeric"
+                              maxLength={1}
+                              value={digit}
+                              onChange={e => handleOtpChange('phone-login-email', i, e.target.value)}
+                              onKeyDown={e => handleOtpKeyDown('phone-login-email', i, e)}
+                              className="w-10 h-12 text-center text-lg font-bold rounded-xl border border-border bg-surface focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20"
+                            />
+                          ))}
+                        </div>
+
+                        <Button variant="primary" size="lg" className="w-full" type="submit" disabled={loading || phoneLoginEmailOtp.join('').length !== 6}>
+                          {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
+                          {loading ? 'Verifying...' : 'Verify Email & Login'}
+                        </Button>
+
+                        <div className="flex justify-end text-xs pt-1">
+                          <button
+                            type="button"
+                            onClick={() => handleResendEmailOtp(phoneLoginAdminEmail)}
+                            disabled={resendTimer > 0 || loading}
+                            className={`flex items-center gap-1 transition-colors cursor-pointer ${
+                              resendTimer > 0 ? 'text-text-muted cursor-not-allowed' : 'text-primary hover:underline'
+                            }`}
+                          >
+                            <RefreshCw className="w-3.5 h-3.5" />
+                            {resendTimer > 0 ? `Resend in ${resendTimer}s` : 'Resend Email OTP'}
+                          </button>
+                        </div>
                       </div>
-
-
-                      <div className="flex justify-center gap-2">
-                        {phoneLoginEmailOtp.map((digit, i) => (
-                          <input
-                            key={i}
-                            ref={el => { phoneLoginEmailOtpRefs.current[i] = el; }}
-                            type="text"
-                            inputMode="numeric"
-                            maxLength={1}
-                            value={digit}
-                            onChange={e => handleOtpChange('phone-login-email', i, e.target.value)}
-                            onKeyDown={e => handleOtpKeyDown('phone-login-email', i, e)}
-                            className="w-10 h-12 text-center text-lg font-bold rounded-xl border border-border bg-surface focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20"
-                          />
-                        ))}
-                      </div>
-
-                      <Button variant="primary" size="lg" className="w-full" onClick={handlePhoneLoginEmailVerify} disabled={loading || phoneLoginEmailOtp.join('').length !== 6}>
-                        {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
-                        {loading ? 'Verifying...' : 'Verify Email & Login'}
-                      </Button>
-                    </>
+                    </form>
                   )}
                 </div>
               )}
