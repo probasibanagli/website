@@ -41,6 +41,249 @@ const PREDEFINED_DEPARTMENTS = [
 const SAMPLE_DOCTORS: BengaliDoctor[] = [];
 const SAMPLE_STAFF: BengaliStaff[] = [];
 
+const SAMPLE_GOVT_PHARMACIES: Pharmacy[] = [
+  {
+    id: 'jan-aushadhi-t-nagar',
+    name: 'Jan Aushadhi Kendra - T. Nagar',
+    government_level: 'Central Government',
+    scheme_name: 'PMBJP – Jan Aushadhi',
+    pharmacy_type: 'Jan Aushadhi Kendra',
+    medicine_name: 'Paracetamol 500mg, Metformin 500mg, Generic Essential Medicines',
+    mrp: 50,
+    offer_price: 10,
+    stock: 'In Stock',
+    state: 'Tamil Nadu',
+    district: 'Chennai',
+    city: 'Chennai',
+    area: 'T. Nagar',
+    pin_code: '600017',
+    phone: '044-24341001',
+    address: 'Pondy Bazaar, T. Nagar, Chennai',
+    is_24_7: true,
+    home_delivery: false,
+    opening_time: '08:00 AM',
+    closing_time: '10:00 PM',
+    description: 'Central Government Jan Aushadhi Kendra in T. Nagar providing quality generic medicines at 50%-90% lower price than market MRP.',
+    google_maps_url: 'https://maps.google.com/?q=Jan+Aushadhi+Kendra+T+Nagar+Chennai'
+  },
+  {
+    id: 'jan-aushadhi-anna-nagar',
+    name: 'Jan Aushadhi Kendra - Anna Nagar',
+    government_level: 'Central Government',
+    scheme_name: 'PMBJP – Jan Aushadhi',
+    pharmacy_type: 'Jan Aushadhi Kendra',
+    medicine_name: 'Atorvastatin 10mg, Amlodipine 5mg, Essential Generic Drugs',
+    mrp: 80,
+    offer_price: 15,
+    stock: 'In Stock',
+    state: 'Tamil Nadu',
+    district: 'Chennai',
+    city: 'Chennai',
+    area: 'Anna Nagar',
+    pin_code: '600040',
+    phone: '044-26210001',
+    address: '2nd Avenue, Near Roundtana, Anna Nagar, Chennai',
+    is_24_7: true,
+    home_delivery: false,
+    opening_time: '08:00 AM',
+    closing_time: '10:00 PM',
+    description: 'Central Government Jan Aushadhi Kendra in Anna Nagar supplying affordable generic medications.',
+    google_maps_url: 'https://maps.google.com/?q=Jan+Aushadhi+Kendra+Anna+Nagar+Chennai'
+  },
+  {
+    id: 'jan-aushadhi-velachery',
+    name: 'Jan Aushadhi Kendra - Velachery',
+    government_level: 'Central Government',
+    scheme_name: 'PMBJP – Jan Aushadhi',
+    pharmacy_type: 'Jan Aushadhi Kendra',
+    medicine_name: 'Insulin Glargine, Telmisartan 40mg, Generic Cardiac Drugs',
+    mrp: 250,
+    offer_price: 50,
+    stock: 'In Stock',
+    state: 'Tamil Nadu',
+    district: 'Chennai',
+    city: 'Chennai',
+    area: 'Velachery',
+    pin_code: '600042',
+    phone: '044-22430002',
+    address: 'Velachery Main Road, Near Railway Station, Velachery, Chennai',
+    is_24_7: false,
+    home_delivery: false,
+    opening_time: '08:30 AM',
+    closing_time: '09:30 PM',
+    description: 'Central Government Jan Aushadhi Kendra in Velachery supplying low-cost generic pharmaceuticals.',
+    google_maps_url: 'https://maps.google.com/?q=Jan+Aushadhi+Kendra+Velachery+Chennai'
+  },
+  {
+    id: 'jan-aushadhi-adyar',
+    name: 'Jan Aushadhi Kendra - Adyar',
+    government_level: 'Central Government',
+    scheme_name: 'PMBJP – Jan Aushadhi',
+    pharmacy_type: 'Jan Aushadhi Kendra',
+    medicine_name: 'Multivitamins, Pain Relief, Diabetes Medicines',
+    mrp: 100,
+    offer_price: 20,
+    stock: 'In Stock',
+    state: 'Tamil Nadu',
+    district: 'Chennai',
+    city: 'Chennai',
+    area: 'Adyar',
+    pin_code: '600020',
+    phone: '044-24410003',
+    address: 'LB Road, Signal Junction, Adyar, Chennai',
+    is_24_7: true,
+    home_delivery: false,
+    opening_time: '08:00 AM',
+    closing_time: '10:00 PM',
+    description: 'Central Government Jan Aushadhi Kendra in Adyar offering generic medicines at subsidized rates.',
+    google_maps_url: 'https://maps.google.com/?q=Jan+Aushadhi+Kendra+Adyar+Chennai'
+  },
+  {
+    id: 'jan-aushadhi-guindy',
+    name: 'Jan Aushadhi Kendra - Guindy',
+    government_level: 'Central Government',
+    scheme_name: 'PMBJP – Jan Aushadhi',
+    pharmacy_type: 'Jan Aushadhi Kendra',
+    medicine_name: 'Generic Antibiotics, Antacids, BP Care',
+    mrp: 110,
+    offer_price: 22,
+    stock: 'In Stock',
+    state: 'Tamil Nadu',
+    district: 'Chennai',
+    city: 'Chennai',
+    area: 'Guindy',
+    pin_code: '600032',
+    phone: '044-22500004',
+    address: 'GST Road, Near Kathipara Junction, Guindy, Chennai',
+    is_24_7: true,
+    home_delivery: false,
+    opening_time: '08:00 AM',
+    closing_time: '10:00 PM',
+    description: 'Central Government Jan Aushadhi Kendra near Guindy Industrial Estate.',
+    google_maps_url: 'https://maps.google.com/?q=Jan+Aushadhi+Kendra+Guindy+Chennai'
+  },
+  {
+    id: 'mudhalvar-marundhagam-nungambakkam',
+    name: 'Mudhalvar Marundhagam - Nungambakkam',
+    government_level: 'State Government',
+    scheme_name: 'Mudhalvar Marundhagam',
+    pharmacy_type: 'Mudhalvar Marundhagam',
+    medicine_name: 'Subsidized Essential & Chronic Care Drugs',
+    mrp: 140,
+    offer_price: 28,
+    stock: 'In Stock',
+    state: 'Tamil Nadu',
+    district: 'Chennai',
+    city: 'Chennai',
+    area: 'Nungambakkam',
+    pin_code: '600034',
+    phone: '044-28270005',
+    address: 'Nungambakkam High Road, Nungambakkam, Chennai',
+    is_24_7: true,
+    home_delivery: true,
+    opening_time: '08:00 AM',
+    closing_time: '10:00 PM',
+    description: 'Tamil Nadu State Government Mudhalvar Marundhagam providing affordable generic and essential medications.',
+    google_maps_url: 'https://maps.google.com/?q=Mudhalvar+Marundhagam+Nungambakkam+Chennai'
+  },
+  {
+    id: 'mudhalvar-marundhagam-ashok-nagar',
+    name: 'Mudhalvar Marundhagam - Ashok Nagar',
+    government_level: 'State Government',
+    scheme_name: 'Mudhalvar Marundhagam',
+    pharmacy_type: 'Mudhalvar Marundhagam',
+    medicine_name: 'Generic Anti-Diabetic & Cardiac Medicines',
+    mrp: 130,
+    offer_price: 26,
+    stock: 'In Stock',
+    state: 'Tamil Nadu',
+    district: 'Chennai',
+    city: 'Chennai',
+    area: 'Ashok Nagar',
+    pin_code: '600083',
+    phone: '044-24710006',
+    address: '1st Avenue, Near Pillar, Ashok Nagar, Chennai',
+    is_24_7: true,
+    home_delivery: true,
+    opening_time: '08:00 AM',
+    closing_time: '10:00 PM',
+    description: 'TN State Government Mudhalvar Marundhagam branch in Ashok Nagar.',
+    google_maps_url: 'https://maps.google.com/?q=Mudhalvar+Marundhagam+Ashok+Nagar+Chennai'
+  },
+  {
+    id: 'mudhalvar-marundhagam-tambaram',
+    name: 'Mudhalvar Marundhagam - Tambaram',
+    government_level: 'State Government',
+    scheme_name: 'Mudhalvar Marundhagam',
+    pharmacy_type: 'Mudhalvar Marundhagam',
+    medicine_name: 'Multivitamins, Antibiotics, BP & Diabetes Medicines',
+    mrp: 90,
+    offer_price: 18,
+    stock: 'In Stock',
+    state: 'Tamil Nadu',
+    district: 'Chengalpattu',
+    city: 'Chennai',
+    area: 'Tambaram',
+    pin_code: '600045',
+    phone: '044-22260003',
+    address: 'GST Road, Near Railway Station, Tambaram, Chennai',
+    is_24_7: false,
+    home_delivery: true,
+    opening_time: '08:30 AM',
+    closing_time: '09:30 PM',
+    description: 'TN State Government Mudhalvar Marundhagam providing affordable essential health supplies.',
+    google_maps_url: 'https://maps.google.com/?q=Mudhalvar+Marundhagam+Tambaram+Chennai'
+  },
+  {
+    id: 'mudhalvar-marundhagam-perambur',
+    name: 'Mudhalvar Marundhagam - Perambur',
+    government_level: 'State Government',
+    scheme_name: 'Mudhalvar Marundhagam',
+    pharmacy_type: 'Mudhalvar Marundhagam',
+    medicine_name: 'Generic Fever, Pain Relief & Pediatric Medicines',
+    mrp: 75,
+    offer_price: 15,
+    stock: 'In Stock',
+    state: 'Tamil Nadu',
+    district: 'Chennai',
+    city: 'Chennai',
+    area: 'Perambur',
+    pin_code: '600011',
+    phone: '044-25510007',
+    address: 'Paper Mills Road, Perambur, Chennai',
+    is_24_7: false,
+    home_delivery: true,
+    opening_time: '08:30 AM',
+    closing_time: '09:30 PM',
+    description: 'State Government Mudhalvar Marundhagam branch in Perambur.',
+    google_maps_url: 'https://maps.google.com/?q=Mudhalvar+Marundhagam+Perambur+Chennai'
+  },
+  {
+    id: 'mudhalvar-marundhagam-mogappair',
+    name: 'Mudhalvar Marundhagam - Mogappair',
+    government_level: 'State Government',
+    scheme_name: 'Mudhalvar Marundhagam',
+    pharmacy_type: 'Mudhalvar Marundhagam',
+    medicine_name: 'Generic Maintenance & Prescription Drugs',
+    mrp: 95,
+    offer_price: 19,
+    stock: 'In Stock',
+    state: 'Tamil Nadu',
+    district: 'Chennai',
+    city: 'Chennai',
+    area: 'Mogappair',
+    pin_code: '600037',
+    phone: '044-26560008',
+    address: 'Mogappair West Main Road, Mogappair, Chennai',
+    is_24_7: true,
+    home_delivery: true,
+    opening_time: '08:00 AM',
+    closing_time: '10:00 PM',
+    description: 'State Government Mudhalvar Marundhagam outlet in Mogappair.',
+    google_maps_url: 'https://maps.google.com/?q=Mudhalvar+Marundhagam+Mogappair+Chennai'
+  }
+];
+
 function ListingCoverImage({ name, city, mapsUrl, imageUrl, fallbackIcon }: { 
   name: string; 
   city?: string; 
@@ -188,6 +431,9 @@ export default function EmergencyHospitalsPage() {
           const pSnap = await getDocs(collection(db, COLLECTIONS.pharmacies || 'pharmacies')).catch(() => ({ docs: [] }));
           pData = pSnap.docs.map(d => ({ id: d.id, ...d.data() } as Pharmacy));
         }
+        if (pData.length === 0) {
+          pData = SAMPLE_GOVT_PHARMACIES;
+        }
 
         setHospitals(hData);
         setDoctors(dData);
@@ -198,7 +444,7 @@ export default function EmergencyHospitalsPage() {
         setHospitals([]);
         setDoctors([]);
         setStaff([]);
-        setPharmacies([]);
+        setPharmacies(SAMPLE_GOVT_PHARMACIES);
       } finally {
         setLoading(false);
       }
@@ -282,16 +528,26 @@ export default function EmergencyHospitalsPage() {
     });
   }, [staff, searchQuery, departmentFilter, specializationFilter, categoryFilter, cityFilter, hospitalMap]);
 
-  // Pharmacy Filter
+  // Government Pharmacy Filter State & Logic
+  const [govtLevelFilter, setGovtLevelFilter] = useState<string>('All');
+
   const filteredPharmacies = useMemo(() => {
     return pharmacies.filter((p) => {
-      const matchesSearch = !searchQuery || p.name.toLowerCase().includes(searchQuery.toLowerCase()) || (p.area && p.area.toLowerCase().includes(searchQuery.toLowerCase())) || (p.hospital_name && p.hospital_name.toLowerCase().includes(searchQuery.toLowerCase()));
+      const matchesGovt = govtLevelFilter === 'All' || !govtLevelFilter || p.government_level === govtLevelFilter;
+      const matchesSearch = !searchQuery || 
+        p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+        (p.scheme_name && p.scheme_name.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (p.medicine_name && p.medicine_name.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (p.area && p.area.toLowerCase().includes(searchQuery.toLowerCase())) || 
+        (p.city && p.city.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (p.pin_code && p.pin_code.includes(searchQuery)) ||
+        (p.hospital_name && p.hospital_name.toLowerCase().includes(searchQuery.toLowerCase()));
       const matchesCity = !cityFilter || p.city === cityFilter;
       const matches247 = !twentyFourSevenFilter || p.is_24_7;
       const matchesDelivery = !deliveryFilter || p.home_delivery;
-      return matchesSearch && matchesCity && matches247 && matchesDelivery;
+      return matchesGovt && matchesSearch && matchesCity && matches247 && matchesDelivery;
     });
-  }, [pharmacies, searchQuery, cityFilter, twentyFourSevenFilter, deliveryFilter]);
+  }, [pharmacies, govtLevelFilter, searchQuery, cityFilter, twentyFourSevenFilter, deliveryFilter]);
 
   return (
     <div className="min-h-screen bg-surface">
@@ -413,35 +669,55 @@ export default function EmergencyHospitalsPage() {
       </div>
 
       {/* Tabs Switcher */}
-      <div className="bg-white border-b border-border sticky top-0 z-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex gap-4">
+      <div className="bg-white border-b border-border sticky top-0 z-20 shadow-xs">
+        <div className="w-full max-w-none px-4 sm:px-6 lg:px-[38px]">
+          <div className="flex items-center gap-1 sm:gap-4 md:gap-6 overflow-x-auto scrollbar-none py-1">
             <button
               onClick={() => { setSearchTab('hospitals'); setSearchQuery(''); setSpecializationFilter(''); }}
-              className={`py-4 text-sm font-bold border-b-2 transition-all cursor-pointer flex items-center gap-2 ${searchTab === 'hospitals' ? 'border-primary text-primary' : 'border-transparent text-text-muted hover:text-text-primary'}`}
+              className={`py-3.5 px-3.5 sm:px-4 text-sm font-bold border-b-2 transition-all cursor-pointer flex items-center gap-2.5 whitespace-nowrap ${
+                searchTab === 'hospitals' 
+                  ? 'border-primary text-primary bg-primary/5 rounded-t-xl' 
+                  : 'border-transparent text-text-muted hover:text-text-primary hover:bg-surface rounded-t-xl'
+              }`}
             >
-              <Building2 className="w-4.5 h-4.5" /> 1. Hospital Search
+              <Building2 className={`w-4.5 h-4.5 ${searchTab === 'hospitals' ? 'text-primary' : 'text-text-muted'}`} />
+              <span>1. Hospital Search</span>
             </button>
             
             <button
               onClick={() => { setSearchTab('doctors'); setSearchQuery(''); setSpecializationFilter(''); }}
-              className={`py-4 text-sm font-bold border-b-2 transition-all cursor-pointer flex items-center gap-2 ${searchTab === 'doctors' ? 'border-primary text-primary' : 'border-transparent text-text-muted hover:text-text-primary'}`}
+              className={`py-3.5 px-3.5 sm:px-4 text-sm font-bold border-b-2 transition-all cursor-pointer flex items-center gap-2.5 whitespace-nowrap ${
+                searchTab === 'doctors' 
+                  ? 'border-primary text-primary bg-primary/5 rounded-t-xl' 
+                  : 'border-transparent text-text-muted hover:text-text-primary hover:bg-surface rounded-t-xl'
+              }`}
             >
-              <Stethoscope className="w-4.5 h-4.5" /> 2. Doctor Search
+              <Stethoscope className={`w-4.5 h-4.5 ${searchTab === 'doctors' ? 'text-primary' : 'text-text-muted'}`} />
+              <span>2. Doctor Search</span>
             </button>
             
             <button
               onClick={() => { setSearchTab('staff'); setSearchQuery(''); }}
-              className={`py-4 text-sm font-bold border-b-2 transition-all cursor-pointer flex items-center gap-2 ${searchTab === 'staff' ? 'border-primary text-primary' : 'border-transparent text-text-muted hover:text-text-primary'}`}
+              className={`py-3.5 px-3.5 sm:px-4 text-sm font-bold border-b-2 transition-all cursor-pointer flex items-center gap-2.5 whitespace-nowrap ${
+                searchTab === 'staff' 
+                  ? 'border-primary text-primary bg-primary/5 rounded-t-xl' 
+                  : 'border-transparent text-text-muted hover:text-text-primary hover:bg-surface rounded-t-xl'
+              }`}
             >
-              <Users className="w-4.5 h-4.5" /> 3. Staff Search
+              <Users className={`w-4.5 h-4.5 ${searchTab === 'staff' ? 'text-primary' : 'text-text-muted'}`} />
+              <span>3. Staff Search</span>
             </button>
 
             <button
               onClick={() => { setSearchTab('pharmacies'); setSearchQuery(''); }}
-              className={`py-4 text-sm font-bold border-b-2 transition-all cursor-pointer flex items-center gap-2 ${searchTab === 'pharmacies' ? 'border-primary text-primary' : 'border-transparent text-text-muted hover:text-text-primary'}`}
+              className={`py-3.5 px-3.5 sm:px-4 text-sm font-bold border-b-2 transition-all cursor-pointer flex items-center gap-2.5 whitespace-nowrap ${
+                searchTab === 'pharmacies' 
+                  ? 'border-primary text-primary bg-primary/5 rounded-t-xl' 
+                  : 'border-transparent text-text-muted hover:text-text-primary hover:bg-surface rounded-t-xl'
+              }`}
             >
-              <Pill className="w-4.5 h-4.5" /> 4. Pharmacy Search
+              <Pill className={`w-4.5 h-4.5 ${searchTab === 'pharmacies' ? 'text-primary' : 'text-text-muted'}`} />
+              <span>4. Govt Pharmacy Search</span>
             </button>
           </div>
         </div>
@@ -451,48 +727,63 @@ export default function EmergencyHospitalsPage() {
       <div className="bg-white border-b border-border shadow-xs">
         <div className="w-full max-w-none px-4 sm:px-6 lg:px-[38px] py-6">
           <div className="flex flex-wrap items-center gap-4">
-            {/* 1. All Categories Filter */}
-            <div className="min-w-[160px] flex-1 sm:flex-initial">
-              <select
-                aria-label="Category filter"
-                value={categoryFilter}
-                onChange={(e) => setCategoryFilter(e.target.value)}
-                className="w-full px-4 py-2.5 rounded-xl border border-border text-sm font-medium bg-white cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/20 hover:border-gray-300 transition-colors shadow-xs"
-              >
-                <option value="">All Categories</option>
-                <option value="Government">Government Hospitals</option>
-                <option value="Private">Private Hospitals</option>
-              </select>
-            </div>
-
-            {/* 2. Specialization Filter */}
-            <div className="min-w-[180px] flex-1 sm:flex-initial">
-              {searchTab === 'staff' ? (
+            {/* 1. Category / Government Pharmacy Level Filter */}
+            <div className="min-w-[210px] flex-1 sm:flex-initial">
+              {searchTab === 'pharmacies' ? (
                 <select
-                  aria-label="Department filter"
-                  value={departmentFilter}
-                  onChange={(e) => setDepartmentFilter(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl border border-border text-sm font-medium bg-white cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/20 hover:border-gray-300 transition-colors shadow-xs"
+                  aria-label="Government Pharmacy filter"
+                  value={govtLevelFilter}
+                  onChange={(e) => setGovtLevelFilter(e.target.value)}
+                  className="w-full px-4 py-2.5 rounded-xl border border-blue-200 text-sm font-bold text-blue-900 bg-blue-50/60 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500/20 hover:border-blue-300 transition-colors shadow-xs"
                 >
-                  <option value="">All Departments</option>
-                  {PREDEFINED_DEPARTMENTS.map((dept) => (
-                    <option key={dept} value={dept}>{dept}</option>
-                  ))}
+                  <option value="All">All Govt Pharmacies</option>
+                  <option value="Central Government">Central Govt (PMBJP - Jan Aushadhi)</option>
+                  <option value="State Government">State Govt (Mudhalvar Marundhagam)</option>
                 </select>
               ) : (
                 <select
-                  aria-label="Specialization filter"
-                  value={specializationFilter}
-                  onChange={(e) => setSpecializationFilter(e.target.value)}
+                  aria-label="Category filter"
+                  value={categoryFilter}
+                  onChange={(e) => setCategoryFilter(e.target.value)}
                   className="w-full px-4 py-2.5 rounded-xl border border-border text-sm font-medium bg-white cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/20 hover:border-gray-300 transition-colors shadow-xs"
                 >
-                  <option value="">All Specializations</option>
-                  {PREDEFINED_SPECIALIZATIONS.map((spec) => (
-                    <option key={spec} value={spec}>{spec}</option>
-                  ))}
+                  <option value="">All Categories</option>
+                  <option value="Government">Government Hospitals</option>
+                  <option value="Private">Private Hospitals</option>
                 </select>
               )}
             </div>
+
+            {/* 2. Specialization Filter */}
+            {searchTab !== 'pharmacies' && (
+              <div className="min-w-[180px] flex-1 sm:flex-initial">
+                {searchTab === 'staff' ? (
+                  <select
+                    aria-label="Department filter"
+                    value={departmentFilter}
+                    onChange={(e) => setDepartmentFilter(e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-xl border border-border text-sm font-medium bg-white cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/20 hover:border-gray-300 transition-colors shadow-xs"
+                  >
+                    <option value="">All Departments</option>
+                    {PREDEFINED_DEPARTMENTS.map((dept) => (
+                      <option key={dept} value={dept}>{dept}</option>
+                    ))}
+                  </select>
+                ) : (
+                  <select
+                    aria-label="Specialization filter"
+                    value={specializationFilter}
+                    onChange={(e) => setSpecializationFilter(e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-xl border border-border text-sm font-medium bg-white cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/20 hover:border-gray-300 transition-colors shadow-xs font-medium"
+                  >
+                    <option value="">All Specializations</option>
+                    {PREDEFINED_SPECIALIZATIONS.map((spec) => (
+                      <option key={spec} value={spec}>{spec}</option>
+                    ))}
+                  </select>
+                )}
+              </div>
+            )}
 
             {/* 3. All Cities Filter */}
             <div className="min-w-[150px] flex-1 sm:flex-initial">
@@ -509,14 +800,14 @@ export default function EmergencyHospitalsPage() {
               </select>
             </div>
 
-            {/* 4. Search by Name and Area */}
+            {/* 4. Search Input */}
             <div className="relative flex-1 min-w-[240px]">
               <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-text-muted" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search by Name and Area..."
+                placeholder={searchTab === 'pharmacies' ? "Search Govt Pharmacy, Scheme, Medicine, Area, PIN..." : "Search by Name and Area..."}
                 className="w-full pl-11 pr-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 bg-surface/30 font-medium shadow-xs"
               />
             </div>
@@ -826,108 +1117,128 @@ export default function EmergencyHospitalsPage() {
               </>
             )}
 
-            {/* ── PHARMACY SEARCH RESULTS ── */}
+            {/* ── GOVERNMENT PHARMACY SEARCH RESULTS ── */}
             {searchTab === 'pharmacies' && (
               <>
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-[28px] w-full">
-                  {filteredPharmacies.map((pharmacy) => (
-                    <Card key={pharmacy.id} padding="none" className="overflow-hidden group flex flex-col h-full bg-white border border-gray-100 shadow-[0_4px_25px_-4px_rgba(0,0,0,0.05)] rounded-[24px] w-full">
-                      {/* Image header */}
-                      <div className="relative h-[273px] bg-slate-100 overflow-hidden shrink-0">
-                        <ListingCoverImage 
-                          name={pharmacy.name} 
-                          city={pharmacy.city} 
-                          mapsUrl={pharmacy.google_maps_url} 
-                          imageUrl={pharmacy.image_url}
-                          fallbackIcon={<Pill className="w-12 h-12" />}
-                        />
-                        
-                        {/* Gradient Shadow Overlay */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-5 z-10 pointer-events-none">
-                          <h3 className="text-xl font-bold text-white leading-tight font-display">{pharmacy.name}</h3>
-                          <div className="flex items-center gap-1.5 mt-2 text-sm text-white/90">
-                            <MapPin className="w-4 h-4 text-white shrink-0" />
-                            <span>{pharmacy.area ? `${pharmacy.area}, ` : ''}{pharmacy.city}</span>
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-[28px] w-full">
+                  {filteredPharmacies.map((pharmacy) => {
+                    const isCentral = (pharmacy.government_level || 'Central Government') === 'Central Government';
+                    const isState = pharmacy.government_level === 'State Government';
+                    const scheme = pharmacy.scheme_name || (isState ? 'Mudhalvar Marundhagam' : 'PMBJP – Pradhan Mantri Bhartiya Janaushadhi Pariyojana');
+                    const pType = pharmacy.pharmacy_type || (isState ? 'Mudhalvar Marundhagam' : 'Jan Aushadhi Kendra');
+
+                    return (
+                      <Card key={pharmacy.id} padding="none" className="overflow-hidden group flex flex-col h-full bg-white border border-gray-100 shadow-[0_4px_25px_-4px_rgba(0,0,0,0.05)] rounded-[24px] w-full">
+                        {/* Top Banner Header */}
+                        <div className={`p-6 border-b ${isCentral ? 'bg-gradient-to-r from-blue-900 to-indigo-900 text-white' : 'bg-gradient-to-r from-emerald-800 to-teal-900 text-white'}`}>
+                          <div className="flex items-center justify-between gap-2 mb-3">
+                            <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider ${isCentral ? 'bg-blue-500/30 text-blue-100 border border-blue-300/30' : 'bg-emerald-500/30 text-emerald-100 border border-emerald-300/30'}`}>
+                              {isCentral ? '🏛️ Central Government' : '🏬 State Govt (Tamil Nadu)'}
+                            </span>
+                            {pharmacy.is_24_7 && (
+                              <span className="bg-red-500 text-white text-[10px] font-black px-2.5 py-1 rounded-full flex items-center gap-1 uppercase tracking-wider shadow-sm">
+                                <Clock className="w-3 h-3" /> 24/7
+                              </span>
+                            )}
                           </div>
+
+                          <h3 className="text-xl font-extrabold text-white leading-tight font-display mb-1">{pharmacy.name}</h3>
+                          <p className="text-xs font-medium opacity-90 line-clamp-1">{scheme}</p>
                         </div>
 
-                        {/* Top-left Badges */}
-                        <div className="absolute top-4 left-4 flex flex-wrap gap-1.5 z-20">
-                          {pharmacy.is_24_7 && (
-                            <span className="bg-red-600 text-white text-[10px] font-extrabold px-2.5 py-1 rounded-full shadow-sm flex items-center gap-1 uppercase tracking-wider">
-                              <Clock className="w-3.5 h-3.5" /> 24/7
-                            </span>
-                          )}
-                          {pharmacy.home_delivery && (
-                            <span className="bg-emerald-600 text-white text-[10px] font-extrabold px-2.5 py-1 rounded-full shadow-sm flex items-center gap-1 uppercase tracking-wider">
-                              <Truck className="w-3.5 h-3.5" /> Home Delivery
-                            </span>
-                          )}
-                        </div>
-                      </div>
-
-                      <div className="px-6 py-[22px] flex-1 flex flex-col justify-between">
-                        <div>
-                          {pharmacy.hospital_name && (
-                            <div className="flex items-center gap-1.5 text-xs font-semibold text-primary mb-2 bg-primary/5 p-2 rounded-lg border border-primary/10">
-                              <Building2 className="w-3.5 h-3.5 shrink-0" />
-                              <span className="truncate">{pharmacy.hospital_name}</span>
-                            </div>
-                          )}
-                          {pharmacy.opening_time && (
-                            <div className="flex items-center gap-1.5 text-xs font-medium text-text-muted mb-2">
-                              <Clock className="w-3.5 h-3.5 text-text-muted shrink-0" />
-                              <span>Hours: {pharmacy.opening_time} {pharmacy.closing_time ? `- ${pharmacy.closing_time}` : ''}</span>
-                            </div>
-                          )}
-                          {pharmacy.services && pharmacy.services.length > 0 && (
-                            <div className="flex flex-wrap gap-1 mb-2">
-                              {pharmacy.services.map((s, idx) => (
-                                <span key={idx} className="bg-surface text-text-primary text-[10px] font-semibold px-2 py-0.5 rounded border border-border">
-                                  {s}
+                        <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
+                          <div className="space-y-3">
+                            {/* Scheme & Type Tag */}
+                            <div className="flex flex-wrap gap-2 items-center text-xs font-semibold">
+                              <span className="bg-slate-100 text-text-primary px-2.5 py-1 rounded-lg border border-slate-200">
+                                Type: <strong className="text-text-primary">{pType}</strong>
+                              </span>
+                              {pharmacy.stock && (
+                                <span className="bg-emerald-50 text-emerald-700 px-2.5 py-1 rounded-lg border border-emerald-200">
+                                  Stock: <strong>{pharmacy.stock}</strong>
                                 </span>
-                              ))}
+                              )}
                             </div>
-                          )}
-                          {pharmacy.languages && pharmacy.languages.length > 0 && (
-                            <div className="text-[11px] text-text-muted font-medium mb-2">
-                              Languages: {pharmacy.languages.join(', ')}
-                            </div>
-                          )}
-                          {pharmacy.description && (
-                            <p className="text-xs text-text-muted line-clamp-2 mb-3">{pharmacy.description}</p>
-                          )}
-                        </div>
 
-                        {/* Action Buttons */}
-                        <div className="flex items-center gap-3 w-full mt-6">
-                          {pharmacy.phone ? (
-                            <a href={`tel:${pharmacy.phone}`} className="flex-1 w-full bg-[#B81D18] hover:bg-[#9E1612] text-white font-bold py-2.5 px-4 rounded-xl text-sm flex items-center justify-center gap-2 shadow-sm transition-all active:scale-[0.98]">
-                              <Phone className="w-4 h-4" />
-                              <span>Call Pharmacy</span>
-                            </a>
-                          ) : (
-                            <div className="flex-1 text-xs text-text-muted text-center py-2.5">Contact via Hospital</div>
-                          )}
-                          
-                          {pharmacy.google_maps_url ? (
-                            <a href={pharmacy.google_maps_url} target="_blank" rel="noopener noreferrer" className="flex-1 w-full bg-white hover:bg-slate-50 border border-[#E4E9F2] text-gray-800 font-bold py-2.5 px-4 rounded-xl text-sm flex items-center justify-center gap-1 shadow-sm transition-all active:scale-[0.98]">
+                            {/* Specific Medicine & Price Box */}
+                            {(pharmacy.medicine_name || pharmacy.offer_price || pharmacy.mrp) && (
+                              <div className="p-3.5 bg-surface rounded-xl border border-border space-y-1.5">
+                                {pharmacy.medicine_name && (
+                                  <div className="text-xs font-bold text-text-primary flex items-center gap-1.5">
+                                    <Pill className="w-3.5 h-3.5 text-primary shrink-0" />
+                                    <span>{pharmacy.medicine_name}</span>
+                                  </div>
+                                )}
+                                {(pharmacy.mrp || pharmacy.offer_price) && (
+                                  <div className="flex items-center justify-between text-xs pt-1 border-t border-border/50">
+                                    <div className="flex items-center gap-2">
+                                      {pharmacy.mrp && <span className="line-through text-text-muted">MRP: ₹{pharmacy.mrp}</span>}
+                                      {pharmacy.offer_price && <span className="text-sm font-extrabold text-emerald-600">Offer: ₹{pharmacy.offer_price}</span>}
+                                    </div>
+                                    {pharmacy.mrp && pharmacy.offer_price && (
+                                      <span className="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-md">
+                                        Save {Math.round((1 - Number(pharmacy.offer_price) / Number(pharmacy.mrp)) * 100)}%
+                                      </span>
+                                    )}
+                                  </div>
+                                )}
+                              </div>
+                            )}
+
+                            {/* Location Details */}
+                            <div className="text-xs text-text-muted space-y-1.5">
+                              <div className="flex items-start gap-1.5 text-text-primary font-medium">
+                                <MapPin className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                                <span>
+                                  {pharmacy.address || `${pharmacy.area ? pharmacy.area + ', ' : ''}${pharmacy.city}`}
+                                  {pharmacy.district && `, ${pharmacy.district}`}
+                                  {pharmacy.state && `, ${pharmacy.state}`}
+                                  {pharmacy.pin_code && ` - ${pharmacy.pin_code}`}
+                                </span>
+                              </div>
+                              {pharmacy.hospital_name && (
+                                <div className="flex items-center gap-1.5 text-xs text-primary font-semibold pl-5">
+                                  <Building2 className="w-3.5 h-3.5" /> {pharmacy.hospital_name}
+                                </div>
+                              )}
+                              {pharmacy.opening_time && (
+                                <div className="flex items-center gap-1.5 text-xs text-text-muted pl-5">
+                                  <Clock className="w-3.5 h-3.5" /> Hours: {pharmacy.opening_time} {pharmacy.closing_time ? `- ${pharmacy.closing_time}` : ''}
+                                </div>
+                              )}
+                            </div>
+
+                            {pharmacy.description && (
+                              <p className="text-xs text-text-muted line-clamp-2 italic">{pharmacy.description}</p>
+                            )}
+                          </div>
+
+                          {/* Action Buttons */}
+                          <div className="flex items-center gap-3 w-full pt-2">
+                            {pharmacy.phone ? (
+                              <a href={`tel:${pharmacy.phone}`} className="flex-1 w-full bg-[#B81D18] hover:bg-[#9E1612] text-white font-bold py-2.5 px-4 rounded-xl text-sm flex items-center justify-center gap-2 shadow-sm transition-all active:scale-[0.98]">
+                                <Phone className="w-4 h-4" />
+                                <span>Call Pharmacy</span>
+                              </a>
+                            ) : (
+                              <div className="flex-1 text-xs text-text-muted text-center py-2.5 bg-slate-100 rounded-xl font-medium">Direct Govt Visit</div>
+                            )}
+                            
+                            <a href={pharmacy.google_maps_url || `https://maps.google.com/?q=${encodeURIComponent(pharmacy.name + ' ' + pharmacy.city)}`} target="_blank" rel="noopener noreferrer" className="flex-1 w-full bg-white hover:bg-slate-50 border border-[#E4E9F2] text-gray-800 font-bold py-2.5 px-4 rounded-xl text-sm flex items-center justify-center gap-1 shadow-sm transition-all active:scale-[0.98]">
                               <MapPin className="w-4 h-4 text-primary" />
                               <span>Directions</span>
                             </a>
-                          ) : (
-                            <div className="flex-1" />
-                          )}
+                          </div>
                         </div>
-                      </div>
-                    </Card>
-                  ))}
+                      </Card>
+                    );
+                  })}
                 </div>
                 {filteredPharmacies.length === 0 && (
                   <div className="text-center py-20 bg-white rounded-3xl border border-border shadow-xs">
-                    <p className="text-5xl mb-4">💊</p>
-                    <h3 className="text-xl font-bold mb-2">No pharmacies found</h3>
-                    <p className="text-text-muted">Try adjusting filters or city search.</p>
+                    <p className="text-5xl mb-4">🏛️</p>
+                    <h3 className="text-xl font-bold mb-2">No Government Pharmacies Found</h3>
+                    <p className="text-text-muted">Try switching between Central Government and State Government filters or adjusting city search.</p>
                   </div>
                 )}
               </>

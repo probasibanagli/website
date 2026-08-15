@@ -250,6 +250,8 @@ export interface BengaliDoctor {
   phone: string;
   email: string;
   google_review_link?: string;
+  instagram_url?: string;
+  facebook_url?: string;
   social_links?: {
     linkedin?: string;
     facebook?: string;
@@ -275,6 +277,14 @@ export interface BengaliStaff {
   experience: string;
   availability: string;
   description: string;
+  instagram_url?: string;
+  facebook_url?: string;
+  social_links?: {
+    linkedin?: string;
+    facebook?: string;
+    instagram?: string;
+    x?: string;
+  };
   created_at?: string;
   updated_at?: string;
   otp_required?: boolean;
@@ -495,13 +505,22 @@ export interface BlogPost {
 
 export interface Pharmacy {
   id: string;
-  name: string;
+  name: string; // Pharmacy Name
+  government_level: 'Central Government' | 'State Government'; // Government Level (Strictly Government)
+  scheme_name: string; // Scheme Name: e.g. "PMBJP – Pradhan Mantri Bhartiya Janaushadhi Pariyojana" or "Mudhalvar Marundhagam"
+  pharmacy_type?: string; // Pharmacy Type: e.g. "Jan Aushadhi Kendra" or "Mudhalvar Marundhagam"
+  medicine_name?: string; // Medicine Name
+  mrp?: number; // MRP
+  offer_price?: number; // Offer Price
+  stock?: string | number; // Stock status or quantity
+  state?: string; // State (e.g. Tamil Nadu)
+  district?: string; // District
+  city: string; // City
+  area?: string; // Area
+  pin_code?: string; // PIN Code
+  address: string;
   hospital_id?: string;
   hospital_name?: string;
-  address: string;
-  area?: string;
-  district?: string;
-  city: string;
   phone?: string;
   email?: string;
   opening_time?: string;

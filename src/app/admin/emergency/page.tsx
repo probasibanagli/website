@@ -136,7 +136,24 @@ function AdminEmergencyPageContent() {
           ? { hospital_ids: [], languages: ['Bengali'], specialization: 'Cardiology', otp_required: true }
           : activeTab === 'staff'
             ? { languages: ['Bengali'], department: 'Reception', otp_required: true }
-            : { is_24_7: false, home_delivery: false, languages: ['Bengali', 'English'], city: 'Chennai' }
+            : { 
+                government_level: 'Central Government',
+                scheme_name: 'PMBJP – Pradhan Mantri Bhartiya Janaushadhi Pariyojana',
+                pharmacy_type: 'Jan Aushadhi Kendra',
+                name: 'Jan Aushadhi Kendra',
+                medicine_name: '',
+                mrp: '',
+                offer_price: '',
+                stock: 'In Stock',
+                state: 'Tamil Nadu',
+                district: 'Chennai',
+                city: 'Chennai',
+                area: '',
+                pin_code: '',
+                is_24_7: false, 
+                home_delivery: false, 
+                languages: ['Bengali', 'English', 'Tamil'] 
+              }
     );
     setShowForm(true);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -156,13 +173,25 @@ function AdminEmergencyPageContent() {
       }
       if (!Array.isArray(data.languages)) data.languages = [];
       if (data.otp_required === undefined) data.otp_required = true;
+      if (!data.instagram_url && data.social_links?.instagram) data.instagram_url = data.social_links.instagram;
+      if (!data.facebook_url && data.social_links?.facebook) data.facebook_url = data.social_links.facebook;
     }
     if (activeTab === 'staff') {
       if (!Array.isArray(data.languages)) data.languages = [];
       if (data.otp_required === undefined) data.otp_required = true;
+      if (!data.instagram_url && data.social_links?.instagram) data.instagram_url = data.social_links.instagram;
+      if (!data.facebook_url && data.social_links?.facebook) data.facebook_url = data.social_links.facebook;
     }
     if (activeTab === 'pharmacies') {
       if (!Array.isArray(data.languages)) data.languages = [];
+      if (!data.government_level) data.government_level = 'Central Government';
+      if (!data.scheme_name) {
+        data.scheme_name = data.government_level === 'Central Government' 
+          ? 'PMBJP – Pradhan Mantri Bhartiya Janaushadhi Pariyojana' 
+          : 'Mudhalvar Marundhagam';
+      }
+      if (!data.state) data.state = 'Tamil Nadu';
+      if (!data.city) data.city = 'Chennai';
       if (data.is_24_7 === undefined) data.is_24_7 = false;
       if (data.home_delivery === undefined) data.home_delivery = false;
     }
@@ -196,6 +225,22 @@ function AdminEmergencyPageContent() {
           payload.languages = [];
         }
         payload.hospital_id = payload.hospital_ids[0] || '';
+        const existingSocial = payload.social_links || {};
+        payload.social_links = {
+          ...existingSocial,
+          instagram: payload.instagram_url || existingSocial.instagram || '',
+          facebook: payload.facebook_url || existingSocial.facebook || '',
+        };
+      } else if (activeTab === 'staff') {
+        if (!Array.isArray(payload.languages)) {
+          payload.languages = [];
+        }
+        const existingSocial = payload.social_links || {};
+        payload.social_links = {
+          ...existingSocial,
+          instagram: payload.instagram_url || existingSocial.instagram || '',
+          facebook: payload.facebook_url || existingSocial.facebook || '',
+        };
       } else {
         if (!Array.isArray(payload.languages)) {
           payload.languages = [];
@@ -448,6 +493,14 @@ function AdminEmergencyPageContent() {
                     <label className="block text-sm font-semibold text-text-primary mb-1.5">Google Review Link</label>
                     <input type="url" value={formData.google_review_link || ''} onChange={e => setFormData({...formData, google_review_link: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" placeholder="e.g. https://g.page/r/.../review or https://maps.google.com/..." />
                   </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Instagram Profile URL</label>
+                    <input type="url" value={formData.instagram_url || ''} onChange={e => setFormData({...formData, instagram_url: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" placeholder="https://instagram.com/dr_username" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Facebook Profile URL</label>
+                    <input type="url" value={formData.facebook_url || ''} onChange={e => setFormData({...formData, facebook_url: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" placeholder="https://facebook.com/dr_username" />
+                  </div>
                   <div className="md:col-span-2">
                     <label className="block text-sm font-semibold text-text-primary mb-1.5">Languages Spoken</label>
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -527,6 +580,14 @@ function AdminEmergencyPageContent() {
                     <label className="block text-sm font-semibold text-text-primary mb-1.5">Shift/Availability</label>
                     <input type="text" value={formData.shift || ''} onChange={e => setFormData({...formData, shift: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" placeholder="e.g. Day Shift 8 AM - 4 PM" />
                   </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Instagram Profile URL</label>
+                    <input type="url" value={formData.instagram_url || ''} onChange={e => setFormData({...formData, instagram_url: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" placeholder="https://instagram.com/staff_username" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Facebook Profile URL</label>
+                    <input type="url" value={formData.facebook_url || ''} onChange={e => setFormData({...formData, facebook_url: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" placeholder="https://facebook.com/staff_username" />
+                  </div>
                   <div className="md:col-span-2">
                     <label className="block text-sm font-semibold text-text-primary mb-1.5">Languages Spoken</label>
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -570,104 +631,270 @@ function AdminEmergencyPageContent() {
               </>
             ) : (
               <>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Pharmacy Name *</label>
-                    <input type="text" value={formData.name || ''} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" placeholder="e.g. Apollo Pharmacy / MedPlus" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Associated Hospital (Optional)</label>
-                    <select value={formData.hospital_id || ''} onChange={e => {
-                      const h = hospitals.find(hosp => hosp.id === e.target.value);
-                      setFormData({...formData, hospital_id: e.target.value, hospital_name: h?.name || ''});
-                    }} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm cursor-pointer">
-                      <option value="">Standalone / None</option>
-                      {hospitals.map(h => <option key={h.id} value={h.id}>{h.name} ({h.city})</option>)}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-text-primary mb-1.5">City *</label>
-                    <input type="text" value={formData.city || 'Chennai'} onChange={e => setFormData({...formData, city: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-text-primary mb-1.5">District</label>
-                    <input type="text" value={formData.district || 'Chennai'} onChange={e => setFormData({...formData, district: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" placeholder="e.g. Chennai / Kanchipuram" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Area/Location *</label>
-                    <select value={formData.area || ''} onChange={e => setFormData({...formData, area: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm cursor-pointer">
-                      <option value="">Select Area...</option>
-                      {CHENNAI_AREAS.map(a => <option key={a} value={a}>{a}</option>)}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Phone Number *</label>
-                    <input type="text" value={formData.phone || ''} onChange={e => setFormData({...formData, phone: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" placeholder="e.g. 044-12345678" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Email Address</label>
-                    <input type="email" value={formData.email || ''} onChange={e => setFormData({...formData, email: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" placeholder="pharmacy@example.com" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Opening Time</label>
-                    <input type="text" value={formData.opening_time || ''} onChange={e => setFormData({...formData, opening_time: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" placeholder="e.g. 8:00 AM" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Closing Time</label>
-                    <input type="text" value={formData.closing_time || ''} onChange={e => setFormData({...formData, closing_time: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" placeholder="e.g. 10:00 PM" />
-                  </div>
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Services Provided (Comma-separated)</label>
-                    <input type="text" value={Array.isArray(formData.services) ? formData.services.join(', ') : formData.services || ''} onChange={e => setFormData({...formData, services: e.target.value.split(',').map(s => s.trim()).filter(Boolean)})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" placeholder="Prescription Medicines, OTC Medicines, Health Products, Medical Supplies" />
-                  </div>
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Languages Spoken</label>
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                      {LANGUAGES.map(lang => (
-                        <label key={lang} className="flex items-center gap-2 cursor-pointer">
-                          <input 
-                            type="checkbox" 
-                            checked={(formData.languages || []).includes(lang)}
-                            onChange={(e) => {
-                              const current = formData.languages || [];
-                              if (e.target.checked) {
-                                setFormData({ ...formData, languages: [...current, lang] });
-                              } else {
-                                setFormData({ ...formData, languages: current.filter((l: string) => l !== lang) });
-                              }
-                            }}
-                            className="w-4 h-4 rounded border-border"
-                          />
-                          <span className="text-sm text-text-primary">{lang}</span>
-                        </label>
-                      ))}
+                <div className="space-y-4">
+                  {/* Government Pharmacy Level Selection */}
+                  <div className="p-4 bg-blue-50/60 rounded-2xl border border-blue-200">
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="px-2.5 py-1 text-xs font-bold bg-blue-600 text-white rounded-md uppercase tracking-wider">
+                        Government Pharmacy
+                      </span>
+                      <span className="text-xs text-blue-800 font-semibold">
+                        Strictly Government Schemes
+                      </span>
+                    </div>
+
+                    <label className="block text-sm font-semibold text-text-primary mb-2">
+                      Government Level *
+                    </label>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <button
+                        type="button"
+                        onClick={() => setFormData({
+                          ...formData,
+                          government_level: 'Central Government',
+                          scheme_name: 'PMBJP – Pradhan Mantri Bhartiya Janaushadhi Pariyojana',
+                          pharmacy_type: 'Jan Aushadhi Kendra'
+                        })}
+                        className={`p-3.5 rounded-xl border text-left flex items-start gap-3 transition-all cursor-pointer ${
+                          (formData.government_level || 'Central Government') === 'Central Government'
+                            ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
+                            : 'bg-white text-text-primary border-border hover:bg-slate-50'
+                        }`}
+                      >
+                        <div className="text-xl">🏛️</div>
+                        <div>
+                          <div className="font-bold text-sm">Central Government</div>
+                          <div className={`text-xs mt-0.5 ${ (formData.government_level || 'Central Government') === 'Central Government' ? 'text-blue-100' : 'text-text-muted'}`}>
+                            PMBJP – Jan Aushadhi Kendra
+                          </div>
+                        </div>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => setFormData({
+                          ...formData,
+                          government_level: 'State Government',
+                          scheme_name: 'Mudhalvar Marundhagam',
+                          pharmacy_type: 'Mudhalvar Marundhagam'
+                        })}
+                        className={`p-3.5 rounded-xl border text-left flex items-start gap-3 transition-all cursor-pointer ${
+                          formData.government_level === 'State Government'
+                            ? 'bg-emerald-600 text-white border-emerald-600 shadow-sm'
+                            : 'bg-white text-text-primary border-border hover:bg-slate-50'
+                        }`}
+                      >
+                        <div className="text-xl">🏬</div>
+                        <div>
+                          <div className="font-bold text-sm">State Government (Tamil Nadu)</div>
+                          <div className={`text-xs mt-0.5 ${ formData.government_level === 'State Government' ? 'text-emerald-100' : 'text-text-muted'}`}>
+                            Mudhalvar Marundhagam
+                          </div>
+                        </div>
+                      </button>
                     </div>
                   </div>
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Full Address</label>
-                    <input type="text" value={formData.address || ''} onChange={e => setFormData({...formData, address: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" placeholder="Street name, door number..." />
-                  </div>
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Google Maps URL</label>
-                    <input type="text" value={formData.google_maps_url || ''} onChange={e => setFormData({...formData, google_maps_url: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" placeholder="https://maps.google.com/..." />
-                  </div>
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Cover Image</label>
-                    <ImageUpload value={formData.image_url || ''} onChange={(url) => setFormData({...formData, image_url: url})} folder="admin_uploads/pharmacies" />
-                  </div>
-                  <div className="md:col-span-2 pt-2 border-t border-border grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <input type="checkbox" checked={!!formData.is_24_7} onChange={e => setFormData({...formData, is_24_7: e.target.checked})} className="w-4 h-4 rounded border-border" />
-                      <span className="text-sm font-semibold text-text-primary">24/7 Available</span>
-                    </label>
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <input type="checkbox" checked={!!formData.home_delivery} onChange={e => setFormData({...formData, home_delivery: e.target.checked})} className="w-4 h-4 rounded border-border" />
-                      <span className="text-sm font-semibold text-text-primary">Home Delivery Available</span>
-                    </label>
-                  </div>
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Description / Notes</label>
-                    <textarea rows={3} value={formData.description || ''} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm resize-none" placeholder="Medicines available, discount info..." />
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* Scheme Name */}
+                    <div>
+                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Scheme Name *</label>
+                      <input 
+                        type="text" 
+                        value={formData.scheme_name || ''} 
+                        onChange={e => setFormData({...formData, scheme_name: e.target.value})} 
+                        className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm font-medium" 
+                        placeholder="e.g. PMBJP – Pradhan Mantri Bhartiya Janaushadhi Pariyojana" 
+                      />
+                    </div>
+
+                    {/* Pharmacy Name */}
+                    <div>
+                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Pharmacy Name *</label>
+                      <input 
+                        type="text" 
+                        value={formData.name || ''} 
+                        onChange={e => setFormData({...formData, name: e.target.value})} 
+                        className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" 
+                        placeholder="e.g. Jan Aushadhi Kendra - Anna Nagar" 
+                      />
+                    </div>
+
+                    {/* Medicine Name */}
+                    <div>
+                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Medicine Name / Specific Product</label>
+                      <input 
+                        type="text" 
+                        value={formData.medicine_name || ''} 
+                        onChange={e => setFormData({...formData, medicine_name: e.target.value})} 
+                        className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" 
+                        placeholder="e.g. Paracetamol 500mg, Metformin, General Generic Medicines" 
+                      />
+                    </div>
+
+                    {/* Pricing: MRP & Offer Price */}
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-sm font-semibold text-text-primary mb-1.5">MRP (₹)</label>
+                        <input 
+                          type="number" 
+                          step="0.01"
+                          value={formData.mrp || ''} 
+                          onChange={e => setFormData({...formData, mrp: e.target.value ? Number(e.target.value) : ''})} 
+                          className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" 
+                          placeholder="e.g. 50" 
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-semibold text-text-primary mb-1.5">Offer Price (₹)</label>
+                        <input 
+                          type="number" 
+                          step="0.01"
+                          value={formData.offer_price || ''} 
+                          onChange={e => setFormData({...formData, offer_price: e.target.value ? Number(e.target.value) : ''})} 
+                          className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm font-bold text-emerald-600" 
+                          placeholder="e.g. 10" 
+                        />
+                      </div>
+                    </div>
+
+                    {/* Stock Status */}
+                    <div>
+                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Stock Status</label>
+                      <select 
+                        value={formData.stock || 'In Stock'} 
+                        onChange={e => setFormData({...formData, stock: e.target.value})} 
+                        className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm cursor-pointer"
+                      >
+                        <option value="In Stock">In Stock</option>
+                        <option value="Limited Stock">Limited Stock</option>
+                        <option value="Out of Stock">Out of Stock</option>
+                      </select>
+                    </div>
+
+                    {/* State */}
+                    <div>
+                      <label className="block text-sm font-semibold text-text-primary mb-1.5">State *</label>
+                      <input 
+                        type="text" 
+                        value={formData.state || 'Tamil Nadu'} 
+                        onChange={e => setFormData({...formData, state: e.target.value})} 
+                        className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" 
+                        placeholder="e.g. Tamil Nadu" 
+                      />
+                    </div>
+
+                    {/* District */}
+                    <div>
+                      <label className="block text-sm font-semibold text-text-primary mb-1.5">District *</label>
+                      <input 
+                        type="text" 
+                        value={formData.district || 'Chennai'} 
+                        onChange={e => setFormData({...formData, district: e.target.value})} 
+                        className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" 
+                        placeholder="e.g. Chennai / Chengalpattu" 
+                      />
+                    </div>
+
+                    {/* City */}
+                    <div>
+                      <label className="block text-sm font-semibold text-text-primary mb-1.5">City *</label>
+                      <input 
+                        type="text" 
+                        value={formData.city || 'Chennai'} 
+                        onChange={e => setFormData({...formData, city: e.target.value})} 
+                        className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" 
+                        placeholder="e.g. Chennai" 
+                      />
+                    </div>
+
+                    {/* Area */}
+                    <div>
+                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Area / Location *</label>
+                      <input 
+                        type="text" 
+                        value={formData.area || ''} 
+                        onChange={e => setFormData({...formData, area: e.target.value})} 
+                        className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" 
+                        placeholder="e.g. Anna Nagar / T. Nagar" 
+                      />
+                    </div>
+
+                    {/* PIN Code */}
+                    <div>
+                      <label className="block text-sm font-semibold text-text-primary mb-1.5">PIN Code</label>
+                      <input 
+                        type="text" 
+                        value={formData.pin_code || ''} 
+                        onChange={e => setFormData({...formData, pin_code: e.target.value})} 
+                        className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" 
+                        placeholder="e.g. 600040" 
+                      />
+                    </div>
+
+                    {/* Phone Number */}
+                    <div>
+                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Phone Number</label>
+                      <input 
+                        type="text" 
+                        value={formData.phone || ''} 
+                        onChange={e => setFormData({...formData, phone: e.target.value})} 
+                        className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" 
+                        placeholder="e.g. 044-26210001" 
+                      />
+                    </div>
+
+
+
+                    {/* Address */}
+                    <div className="md:col-span-2">
+                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Full Address</label>
+                      <input 
+                        type="text" 
+                        value={formData.address || ''} 
+                        onChange={e => setFormData({...formData, address: e.target.value})} 
+                        className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" 
+                        placeholder="Street name, door number..." 
+                      />
+                    </div>
+
+                    {/* Opening & Closing Time */}
+                    <div>
+                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Opening Time</label>
+                      <input type="text" value={formData.opening_time || ''} onChange={e => setFormData({...formData, opening_time: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" placeholder="e.g. 8:00 AM" />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Closing Time</label>
+                      <input type="text" value={formData.closing_time || ''} onChange={e => setFormData({...formData, closing_time: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" placeholder="e.g. 10:00 PM" />
+                    </div>
+
+                    {/* Google Maps URL & Cover Image */}
+                    <div className="md:col-span-2">
+                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Google Maps URL</label>
+                      <input type="text" value={formData.google_maps_url || ''} onChange={e => setFormData({...formData, google_maps_url: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" placeholder="https://maps.google.com/..." />
+                    </div>
+                    <div className="md:col-span-2">
+                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Cover Image</label>
+                      <ImageUpload value={formData.image_url || ''} onChange={(url) => setFormData({...formData, image_url: url})} folder="admin_uploads/pharmacies" />
+                    </div>
+
+                    {/* Checkboxes */}
+                    <div className="md:col-span-2 pt-2 border-t border-border grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" checked={!!formData.is_24_7} onChange={e => setFormData({...formData, is_24_7: e.target.checked})} className="w-4 h-4 rounded border-border" />
+                        <span className="text-sm font-semibold text-text-primary">24/7 Available</span>
+                      </label>
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" checked={!!formData.home_delivery} onChange={e => setFormData({...formData, home_delivery: e.target.checked})} className="w-4 h-4 rounded border-border" />
+                        <span className="text-sm font-semibold text-text-primary">Home Delivery Available</span>
+                      </label>
+                    </div>
+
+                    {/* Description */}
+                    <div className="md:col-span-2">
+                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Description / Scheme Details</label>
+                      <textarea rows={3} value={formData.description || ''} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm resize-none" placeholder="Government subsidized medicine rates, discount information..." />
+                    </div>
                   </div>
                 </div>
               </>
@@ -696,7 +923,7 @@ function AdminEmergencyPageContent() {
         <div className="flex items-center gap-2">
           {canEdit && (
             <button onClick={openAdd} className="inline-flex items-center gap-2 px-4 py-2.5 bg-primary hover:bg-primary-dark text-white rounded-xl text-sm font-medium transition-colors shadow-md active:scale-95 cursor-pointer">
-              <Plus className="w-4 h-4" /> Add New {activeTab === 'hospitals' ? 'Hospital' : activeTab === 'doctors' ? 'Doctor' : activeTab === 'staff' ? 'Staff' : 'Pharmacy'}
+              <Plus className="w-4 h-4" /> Add New {activeTab === 'hospitals' ? 'Hospital' : activeTab === 'doctors' ? 'Doctor' : activeTab === 'staff' ? 'Staff' : 'Govt Pharmacy'}
             </button>
           )}
         </div>
@@ -725,11 +952,11 @@ function AdminEmergencyPageContent() {
           onClick={() => setActiveTab('pharmacies')}
           className={`px-4 py-3 text-sm font-semibold border-b-2 transition-colors cursor-pointer flex items-center gap-2 whitespace-nowrap ${activeTab === 'pharmacies' ? 'border-primary text-primary' : 'border-transparent text-text-muted hover:text-text-primary'}`}
         >
-          <Pill className="w-4 h-4" /> Pharmacy
+          <Pill className="w-4 h-4" /> Govt Pharmacy
         </button>
       </div>
 
-      {(activeTab === 'doctors' || activeTab === 'staff' || activeTab === 'pharmacies') && hospitals.length > 0 && (
+      {(activeTab === 'doctors' || activeTab === 'staff') && hospitals.length > 0 && (
         <div className="flex items-center gap-4 bg-white p-4 rounded-2xl border border-border shadow-sm">
           <label className="text-sm font-bold text-text-primary whitespace-nowrap">Filter by Hospital:</label>
           <select 
@@ -772,10 +999,10 @@ function AdminEmergencyPageContent() {
                   </>
                 ) : (
                   <>
-                    <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Pharmacy Name</th>
-                    <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Hospital / Location</th>
-                    <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Phone</th>
-                    <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Features</th>
+                    <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Govt Pharmacy Name</th>
+                    <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Scheme & Type</th>
+                    <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Medicine / Pricing</th>
+                    <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Location</th>
                   </>
                 )}
                 {canEdit && <th className="text-right px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Actions</th>}
@@ -788,7 +1015,7 @@ function AdminEmergencyPageContent() {
                    ? doctors.filter(d => selectedHospitalFilter === 'all' || d.hospital_ids?.includes(selectedHospitalFilter) || d.hospital_id === selectedHospitalFilter) 
                    : activeTab === 'staff'
                      ? staff.filter(s => selectedHospitalFilter === 'all' || s.hospital_id === selectedHospitalFilter)
-                     : pharmacies.filter(p => selectedHospitalFilter === 'all' || p.hospital_id === selectedHospitalFilter)
+                     : pharmacies
               ).map((item: any) => (
                 <tr key={item.id} className="hover:bg-surface transition-colors">
                   {activeTab === 'hospitals' ? (
@@ -841,17 +1068,37 @@ function AdminEmergencyPageContent() {
                     </>
                   ) : (
                     <>
-                      <td className="px-5 py-4 text-sm text-text-primary font-medium">{item.name}</td>
-                      <td className="px-5 py-4 text-sm text-text-muted">
-                        <div>{item.hospital_name || hospitals.find(h => h.id === item.hospital_id)?.name || 'Standalone Pharmacy'}</div>
-                        <div className="text-xs text-text-muted mt-0.5">{item.area ? `${item.area}, ` : ''}{item.city}</div>
-                      </td>
-                      <td className="px-5 py-4 text-sm text-text-muted">{item.phone || '—'}</td>
-                      <td className="px-5 py-4 text-sm text-text-muted">
-                        <div className="flex flex-wrap gap-1">
-                          {item.is_24_7 && <span className="bg-red-50 text-red-700 text-[10px] font-bold px-2 py-0.5 rounded">24/7</span>}
-                          {item.home_delivery && <span className="bg-green-50 text-green-700 text-[10px] font-bold px-2 py-0.5 rounded">Delivery</span>}
+                      <td className="px-5 py-4 text-sm text-text-primary font-medium">
+                        <div className="font-bold text-text-primary text-base">{item.name}</div>
+                        <div className="text-xs font-semibold mt-1">
+                          <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-[11px] ${
+                            (item.government_level || 'Central Government') === 'Central Government'
+                              ? 'bg-blue-100 text-blue-800 font-bold border border-blue-200'
+                              : 'bg-emerald-100 text-emerald-800 font-bold border border-emerald-200'
+                          }`}>
+                            {(item.government_level || 'Central Government') === 'Central Government' ? '🏛️ Central Government' : '🏬 State Government'}
+                          </span>
                         </div>
+                      </td>
+                      <td className="px-5 py-4 text-sm text-text-muted">
+                        <div className="font-semibold text-text-primary text-xs">{item.scheme_name || (item.government_level === 'State Government' ? 'Mudhalvar Marundhagam' : 'PMBJP')}</div>
+                        <div className="text-xs text-text-muted mt-0.5">{item.pharmacy_type || (item.government_level === 'State Government' ? 'Mudhalvar Marundhagam' : 'Jan Aushadhi Kendra')}</div>
+                      </td>
+                      <td className="px-5 py-4 text-sm text-text-muted">
+                        {item.medicine_name && <div className="text-xs font-medium text-text-primary mb-1">{item.medicine_name}</div>}
+                        {(item.mrp || item.offer_price) ? (
+                          <div className="text-xs flex items-center gap-1.5">
+                            {item.mrp && <span className="line-through text-gray-400">₹{item.mrp}</span>}
+                            {item.offer_price && <span className="font-bold text-emerald-600">₹{item.offer_price}</span>}
+                            {item.stock && <span className="bg-slate-100 text-text-muted px-1.5 py-0.5 rounded text-[10px]">{item.stock}</span>}
+                          </div>
+                        ) : (
+                          <div className="text-xs text-emerald-600 font-medium">Government Subsidized</div>
+                        )}
+                      </td>
+                      <td className="px-5 py-4 text-sm text-text-muted">
+                        <div>{item.area ? `${item.area}, ` : ''}{item.city}</div>
+                        <div className="text-xs text-text-muted">{item.district || 'Chennai'}, {item.state || 'Tamil Nadu'} {item.pin_code ? `- ${item.pin_code}` : ''}</div>
                       </td>
                     </>
                   )}

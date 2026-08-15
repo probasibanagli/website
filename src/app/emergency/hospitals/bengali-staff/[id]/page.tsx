@@ -235,7 +235,21 @@ export default function StaffDetailsPage({ params }: { params: Promise<{ id: str
                         </a>
                       </div>
                     )}
-                    {!staff.phone && !staff.email && (
+                    {(staff.instagram_url || staff.facebook_url || staff.social_links?.instagram || staff.social_links?.facebook) && (
+                      <div className="flex items-center gap-2 pt-2">
+                        {(staff.instagram_url || staff.social_links?.instagram) && (
+                          <a href={staff.instagram_url || staff.social_links?.instagram} target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 bg-pink-50 text-pink-700 rounded-lg text-xs font-bold hover:bg-pink-100 transition-colors flex items-center gap-1.5">
+                            <span>📸 Instagram</span>
+                          </a>
+                        )}
+                        {(staff.facebook_url || staff.social_links?.facebook) && (
+                          <a href={staff.facebook_url || staff.social_links?.facebook} target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 bg-blue-50 text-blue-700 rounded-lg text-xs font-bold hover:bg-blue-100 transition-colors flex items-center gap-1.5">
+                            <span>📘 Facebook</span>
+                          </a>
+                        )}
+                      </div>
+                    )}
+                    {!staff.phone && !staff.email && !(staff.instagram_url || staff.facebook_url) && (
                       <p className="text-sm text-text-muted">No direct contact details provided.</p>
                     )}
                   </div>
