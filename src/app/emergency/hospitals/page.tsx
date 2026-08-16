@@ -551,117 +551,63 @@ export default function EmergencyHospitalsPage() {
 
   return (
     <div className="min-h-screen bg-surface">
-      {/* Hero Section */}
       <div className="bg-gradient-to-r from-red-50/70 to-orange-50/50 border-b border-red-100/50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-          <div className="flex items-center gap-2 text-sm text-red-600/70 mb-4 font-medium">
+        <div className="w-full max-w-none px-4 sm:px-6 lg:px-[38px] pt-5 pb-3 sm:pt-6 sm:pb-4">
+          <div className="flex items-center gap-2 text-sm text-red-600/70 mb-3 font-medium">
             <Link href="/" className="hover:text-red-600 transition-colors">Home</Link><span>/</span>
             <Link href="/emergency" className="hover:text-red-600 transition-colors">Emergency</Link><span>/</span>
             <span className="text-red-700 font-semibold">Hospital Services</span>
           </div>
           
-          <div className="flex flex-col lg:flex-row gap-8 justify-between lg:items-center">
+          <div className="flex flex-col lg:flex-row gap-6 justify-between lg:items-start">
             <div className="max-w-2xl">
-              <h1 className="text-4xl sm:text-5xl font-extrabold font-display tracking-tight text-text-primary flex items-center gap-3">
-                <ShieldAlert className="w-10 h-10 text-red-500 animate-pulse" />
-                Hospital & Medical Center
+              <h1 className="text-3xl sm:text-4xl font-bold font-display text-text-primary flex items-center gap-3">
+                <span>Hospitals & Bengali Doctors</span>
               </h1>
-              <p className="mt-4 text-text-muted text-lg leading-relaxed">
+              <p className="mt-2.5 text-text-muted text-base sm:text-lg leading-relaxed">
                 Connect with leading government and private medical centers, verified Bengali-speaking doctors, support staff, and pharmacies across Tamil Nadu.
               </p>
               
-              <div className="mt-8 flex flex-wrap gap-4">
+              <div className="mt-4 flex flex-wrap gap-3">
                 <a href="tel:108">
-                  <Button variant="danger" size="lg" className="shadow-lg shadow-red-500/20 font-semibold h-12 px-6">
-                    <Phone className="w-5 h-5 mr-2" /> Quick Call (108)
+                  <Button variant="danger" size="lg" className="shadow-lg shadow-red-500/20 font-semibold h-11 px-5 text-sm">
+                    <Phone className="w-4 h-4 mr-2" /> Quick Call (108)
                   </Button>
                 </a>
                 <Link href="/emergency/ambulance">
-                  <Button variant="outline" size="lg" className="border-red-200 text-red-600 hover:bg-red-50/50 h-12 px-6">
-                    <Ambulance className="w-5 h-5 mr-2" /> Ambulance services
+                  <Button variant="outline" size="lg" className="border-red-200 text-red-600 hover:bg-red-50/50 h-11 px-5 text-sm">
+                    <Ambulance className="w-4 h-4 mr-2" /> Ambulance services
                   </Button>
                 </Link>
               </div>
             </div>
             
-            <div className="flex flex-col sm:flex-row gap-4 lg:w-[480px]">
+            <div className="flex flex-col sm:flex-row gap-3.5 lg:w-[260px]">
               {/* Govt. Facilities Card */}
-              <div className="bg-white/90 backdrop-blur-md p-5 rounded-2xl border border-blue-100 shadow-sm hover:shadow-md transition-shadow duration-300 flex-1 flex flex-col justify-between relative overflow-hidden">
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200 uppercase tracking-wider">
-                      <Building2 className="w-3 h-3 text-blue-600" /> Public Health
-                    </span>
-                    <Building2 className="w-4 h-4 text-blue-600 opacity-80" />
-                  </div>
-                  
-                  <h3 className="font-bold text-text-primary text-base flex items-center gap-2">
-                    <Building2 className="w-5 h-5 text-blue-600 shrink-0" />
-                    <span>Govt. Facilities</span>
-                  </h3>
-                  
-                  <p className="text-xs text-text-muted mt-1.5 leading-relaxed">
-                    Direct access to state medical colleges, general hospitals & public health centers.
-                  </p>
+              <div className="bg-white/90 backdrop-blur-md p-3.5 rounded-xl border border-blue-100 shadow-sm hover:shadow-md transition-shadow duration-300 flex-1 relative overflow-hidden">
+                <div className="flex items-center justify-between mb-1.5">
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200 uppercase tracking-wider">
+                    <Building2 className="w-3 h-3 text-blue-600" /> Public Health
+                  </span>
+                  <Building2 className="w-4 h-4 text-blue-600 opacity-80" />
                 </div>
+                
+                <h3 className="font-bold text-text-primary text-sm sm:text-base flex items-center gap-2">
+                  <Building2 className="w-4 h-4 text-blue-600 shrink-0" />
+                  <span>Govt. Facilities</span>
+                </h3>
+                
+                <p className="text-xs text-text-muted mt-1 leading-relaxed">
+                  State medical colleges, general hospitals & public health centers.
+                </p>
 
-                <div>
-                  <div className="mt-3 pt-2.5 border-t border-blue-100/60 space-y-1 text-[11px] text-blue-800 font-medium">
-                    <div className="flex items-center gap-1.5">
-                      <CheckCircle2 className="w-3 h-3 text-blue-600 shrink-0" /> State Medical Colleges
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <CheckCircle2 className="w-3 h-3 text-blue-600 shrink-0" /> Free / Low Cost Care
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <CheckCircle2 className="w-3 h-3 text-blue-600 shrink-0" /> 24/7 Emergency Services
-                    </div>
-                  </div>
-
-                  <button 
-                    onClick={() => { setSearchTab('hospitals'); setCategoryFilter('Government'); }} 
-                    className="mt-3 pt-2 border-t border-blue-100/40 w-full text-blue-700 hover:text-blue-800 text-xs font-bold flex items-center justify-between group transition-colors cursor-pointer"
-                  >
-                    <span>View Govt. Hospitals</span>
-                    <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                  </button>
-                </div>
-              </div>
-              
-              {/* Informational Verified Doctors Card */}
-              <div className="bg-white/90 backdrop-blur-md p-5 rounded-2xl border border-emerald-100 shadow-sm hover:shadow-md transition-shadow duration-300 flex-1 flex flex-col justify-between relative overflow-hidden">
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 uppercase tracking-wider">
-                      <ShieldCheck className="w-3 h-3 text-emerald-600" /> Verified
-                    </span>
-                    <Stethoscope className="w-4 h-4 text-emerald-600 opacity-80" />
-                  </div>
-                  
-                  <h3 className="font-bold text-text-primary text-base flex items-center gap-2">
-                    <UserRound className="w-5 h-5 text-emerald-600 shrink-0" />
-                    <span>Verified Doctors</span>
-                  </h3>
-                  
-                  <p className="text-xs text-text-muted mt-1.5 leading-relaxed">
-                    Trusted Bengali-speaking doctors from verified hospital records.
-                  </p>
-
-                  <div className="mt-3.5 pt-3 border-t border-emerald-100/60 space-y-2 text-xs text-emerald-900 font-medium">
-                    <div className="flex items-center gap-2">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                      <span>Verified Doctor Profiles</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                      <span>Hospital Affiliations</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                      <span>Specializations & Experience</span>
-                    </div>
-                  </div>
-                </div>
+                <button 
+                  onClick={() => { setSearchTab('hospitals'); setCategoryFilter('Government'); }} 
+                  className="mt-2.5 pt-2 border-t border-blue-100/60 w-full text-blue-700 hover:text-blue-800 text-xs font-bold flex items-center justify-between group transition-colors cursor-pointer"
+                >
+                  <span>View Govt. Hospitals</span>
+                  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                </button>
               </div>
             </div>
           </div>
@@ -681,7 +627,7 @@ export default function EmergencyHospitalsPage() {
               }`}
             >
               <Building2 className={`w-4.5 h-4.5 ${searchTab === 'hospitals' ? 'text-primary' : 'text-text-muted'}`} />
-              <span>1. Hospital Search</span>
+              <span>1. Hospital</span>
             </button>
             
             <button
@@ -693,7 +639,7 @@ export default function EmergencyHospitalsPage() {
               }`}
             >
               <Stethoscope className={`w-4.5 h-4.5 ${searchTab === 'doctors' ? 'text-primary' : 'text-text-muted'}`} />
-              <span>2. Doctor Search</span>
+              <span>2. Bengali Doctor</span>
             </button>
             
             <button
@@ -705,7 +651,7 @@ export default function EmergencyHospitalsPage() {
               }`}
             >
               <Users className={`w-4.5 h-4.5 ${searchTab === 'staff' ? 'text-primary' : 'text-text-muted'}`} />
-              <span>3. Staff Search</span>
+              <span>3. Bengali Staff</span>
             </button>
 
             <button
@@ -717,7 +663,7 @@ export default function EmergencyHospitalsPage() {
               }`}
             >
               <Pill className={`w-4.5 h-4.5 ${searchTab === 'pharmacies' ? 'text-primary' : 'text-text-muted'}`} />
-              <span>4. Govt Pharmacy Search</span>
+              <span>4. Govt Pharmacy</span>
             </button>
           </div>
         </div>
