@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
-import { Search, MapPin, Phone, Clock, CheckCircle2, Stethoscope, Ambulance, LifeBuoy, Building2, UserRound, ArrowRight, ShieldAlert, Lock, Users, ShieldCheck, Mail, GraduationCap, Pill, Truck } from 'lucide-react';
+import { Search, MapPin, Phone, Clock, CheckCircle2, Stethoscope, Ambulance, LifeBuoy, Building2, UserRound, ArrowRight, ShieldAlert, Lock, Users, ShieldCheck, Mail, GraduationCap, Pill, Truck, Volume2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/card';
@@ -13,6 +13,8 @@ import { COLLECTIONS } from '@/lib/firestore/collections';
 import type { Hospital, BengaliDoctor, BengaliStaff, Pharmacy } from '@/types';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { useRouter } from 'next/navigation';
+import { WordHelper } from '@/components/ui/WordHelper';
+import { MEDICAL_VOCABULARY, MEDICAL_PHRASES, ALL_HOSPITAL_TRANSLATION_CARDS } from '@/data/hospital-words';
 
 const PREDEFINED_SPECIALIZATIONS = [
   'Cardiology',
@@ -582,33 +584,13 @@ export default function EmergencyHospitalsPage() {
               </div>
             </div>
             
-            <div className="flex flex-col sm:flex-row gap-3.5 lg:w-[260px]">
-              {/* Govt. Facilities Card */}
-              <div className="bg-white/90 backdrop-blur-md p-3.5 rounded-xl border border-blue-100 shadow-sm hover:shadow-md transition-shadow duration-300 flex-1 relative overflow-hidden">
-                <div className="flex items-center justify-between mb-1.5">
-                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200 uppercase tracking-wider">
-                    <Building2 className="w-3 h-3 text-blue-600" /> Public Health
-                  </span>
-                  <Building2 className="w-4 h-4 text-blue-600 opacity-80" />
-                </div>
-                
-                <h3 className="font-bold text-text-primary text-sm sm:text-base flex items-center gap-2">
-                  <Building2 className="w-4 h-4 text-blue-600 shrink-0" />
-                  <span>Govt. Facilities</span>
-                </h3>
-                
-                <p className="text-xs text-text-muted mt-1 leading-relaxed">
-                  State medical colleges, general hospitals & public health centers.
-                </p>
-
-                <button 
-                  onClick={() => { setSearchTab('hospitals'); setCategoryFilter('Government'); }} 
-                  className="mt-2.5 pt-2 border-t border-blue-100/60 w-full text-blue-700 hover:text-blue-800 text-xs font-bold flex items-center justify-between group transition-colors cursor-pointer"
-                >
-                  <span>View Govt. Hospitals</span>
-                  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                </button>
-              </div>
+            <div className="w-full lg:w-[520px] xl:w-[560px] shrink-0 flex items-center">
+              <WordHelper
+                words={ALL_HOSPITAL_TRANSLATION_CARDS}
+                title="Hospital Word Helper"
+                subtitle="Essential hospital and medical phrases in Tamil & Bengali"
+                variant="horizontal"
+              />
             </div>
           </div>
         </div>
