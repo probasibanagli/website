@@ -8,6 +8,7 @@ import { useAuth } from '@/lib/auth/AuthContext';
 import { canAccess } from '@/lib/permissions';
 import { COLLECTIONS } from '@/lib/firestore/collections';
 import type { Hospital, BengaliDoctor, BengaliStaff, Pharmacy } from '@/types';
+import { CITIES } from '@/lib/constants';
 import ImageUpload from '@/components/admin/ImageUpload';
 import { Plus, Pencil, Trash2, X, Loader2, Shield, Building2, UserRound, PhoneCall, CheckCircle, Users, ArrowLeft, Save, Pill, Clock, Truck } from 'lucide-react';
 
@@ -332,7 +333,7 @@ function AdminEmergencyPageContent() {
           </button>
           <div>
             <h1 className="text-2xl font-bold text-text-primary">
-              {editId ? 'Edit' : 'Add New'} {activeTab === 'hospitals' ? 'Hospital' : activeTab === 'doctors' ? 'Doctor' : 'Staff'}
+              {editId ? 'Edit' : 'Add New'} {activeTab === 'hospitals' ? 'Hospital' : activeTab === 'doctors' ? 'Doctor' : activeTab === 'staff' ? 'Staff' : 'Govt Pharmacy'}
             </h1>
             <p className="text-text-muted text-sm mt-0.5">Fill in the fields below to update records.</p>
           </div>
@@ -349,7 +350,13 @@ function AdminEmergencyPageContent() {
                   </div>
                   <div>
                     <label className="block text-sm font-semibold text-text-primary mb-1.5">City *</label>
-                    <input type="text" value={formData.city || ''} onChange={e => setFormData({...formData, city: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
+                    <select value={formData.city || 'Chennai'} onChange={e => setFormData({...formData, city: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm cursor-pointer">
+                      <option value="">Select City...</option>
+                      {CITIES.map(c => <option key={c} value={c}>{c}</option>)}
+                      {formData.city && !CITIES.includes(formData.city) && (
+                        <option value={formData.city}>{formData.city}</option>
+                      )}
+                    </select>
                   </div>
                   <div>
                     <label className="block text-sm font-semibold text-text-primary mb-1.5">Area/Location *</label>
@@ -799,25 +806,33 @@ function AdminEmergencyPageContent() {
                     {/* City */}
                     <div>
                       <label className="block text-sm font-semibold text-text-primary mb-1.5">City *</label>
-                      <input 
-                        type="text" 
+                      <select 
                         value={formData.city || 'Chennai'} 
                         onChange={e => setFormData({...formData, city: e.target.value})} 
-                        className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" 
-                        placeholder="e.g. Chennai" 
-                      />
+                        className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm cursor-pointer font-medium"
+                      >
+                        <option value="">Select City...</option>
+                        {CITIES.map(c => <option key={c} value={c}>{c}</option>)}
+                        {formData.city && !CITIES.includes(formData.city) && (
+                          <option value={formData.city}>{formData.city}</option>
+                        )}
+                      </select>
                     </div>
 
                     {/* Area */}
                     <div>
                       <label className="block text-sm font-semibold text-text-primary mb-1.5">Area / Location *</label>
-                      <input 
-                        type="text" 
+                      <select 
                         value={formData.area || ''} 
                         onChange={e => setFormData({...formData, area: e.target.value})} 
-                        className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" 
-                        placeholder="e.g. Anna Nagar / T. Nagar" 
-                      />
+                        className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm cursor-pointer font-medium"
+                      >
+                        <option value="">Select Area / Location...</option>
+                        {CHENNAI_AREAS.map(a => <option key={a} value={a}>{a}</option>)}
+                        {formData.area && !CHENNAI_AREAS.includes(formData.area) && (
+                          <option value={formData.area}>{formData.area}</option>
+                        )}
+                      </select>
                     </div>
 
                     {/* PIN Code */}
@@ -1104,9 +1119,13 @@ function AdminEmergencyPageContent() {
                   )}
                   {(canEdit || canManage) && (
                     <td className="px-5 py-4 text-right">
-                      <div className="flex items-center justify-end gap-1">
-                        {canEdit && <button onClick={() => openEdit(item)} className="p-2 rounded-lg hover:bg-primary/10 text-text-muted hover:text-primary transition-colors cursor-pointer"><Pencil className="w-3.5 h-3.5" /></button>}
-                        {canManage && <button onClick={() => handleDelete(item.id)} className="p-2 rounded-lg hover:bg-red-50 text-text-muted hover:text-red-500 transition-colors cursor-pointer"><Trash2 className="w-3.5 h-3.5" /></button>}
+                      <div className="flex items-center justify-end gap-1.5">
+                        <button onClick={() => openEdit(item)} className="p-2 rounded-lg hover:bg-primary/10 text-text-muted hover:text-primary transition-colors cursor-pointer" title="Edit">
+                          <Pencil className="w-4 h-4" />
+                        </button>
+                        <button onClick={() => handleDelete(item.id)} className="p-2 rounded-lg hover:bg-red-50 text-text-muted hover:text-red-500 transition-colors cursor-pointer" title="Delete">
+                          <Trash2 className="w-4 h-4" />
+                        </button>
                       </div>
                     </td>
                   )}

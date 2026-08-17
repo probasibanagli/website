@@ -67,9 +67,9 @@ export function OtpVerificationModal({ isOpen, onClose, onSuccess, doctorId }: O
             }} 
             variant="primary" 
             size="lg" 
-            className="w-full font-bold shadow-md cursor-pointer"
+            className="w-full font-bold shadow-md cursor-pointer text-xs sm:text-sm"
           >
-            Register / Login to See Contact Details
+            Registered users verify OTP • New users register & verify OTP
           </Button>
         </div>
       </div>

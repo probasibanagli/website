@@ -308,9 +308,9 @@ export default function DoctorDetailsPage({ params }: { params: Promise<{ id: st
                       onClick={() => router.push(`/auth/login?redirect=/emergency/hospitals/bengali-doctors/${id}`)} 
                       variant="primary" 
                       size="sm" 
-                      className="w-full font-semibold cursor-pointer shadow-xs"
+                      className="w-full font-semibold cursor-pointer shadow-xs text-xs sm:text-sm"
                     >
-                      Register / Login to See Contact Details
+                      Registered users verify OTP • New users register & verify OTP
                     </Button>
                   </div>
                 ) : (

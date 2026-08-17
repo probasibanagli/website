@@ -519,8 +519,8 @@ export default function HospitalDetailsPage({ params }: { params: Promise<{ id: 
                     <p className="text-text-muted mb-6 max-w-md mx-auto">
                       For privacy reasons, doctor and staff details are only visible to verified users. Please verify your phone number and email.
                     </p>
-                    <Button onClick={() => router.push(`/auth/login?redirect=/emergency/hospitals/${id}`)} variant="primary" className="shadow-md cursor-pointer">
-                      Verify Now to View {activeTab === 'doctors' ? 'Doctors' : 'Staff'}
+                    <Button onClick={() => router.push(`/auth/login?redirect=/emergency/hospitals/${id}`)} variant="primary" className="shadow-md cursor-pointer text-xs sm:text-sm">
+                      Registered users verify OTP • New users register & verify OTP
                     </Button>
                   </div>
                 ) : (

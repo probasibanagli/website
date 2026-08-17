@@ -264,9 +264,9 @@ export default function StaffDetailsPage({ params }: { params: Promise<{ id: str
                       onClick={() => router.push(`/auth/login?redirect=/emergency/hospitals/bengali-staff/${id}`)} 
                       variant="primary" 
                       size="sm" 
-                      className="w-full font-semibold cursor-pointer shadow-xs"
+                      className="w-full font-semibold cursor-pointer shadow-xs text-xs sm:text-sm"
                     >
-                      Register / Login to See Contact Details
+                      Registered users verify OTP • New users register & verify OTP
                     </Button>
                   </div>
                 ) : (

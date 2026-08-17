@@ -275,7 +275,7 @@ export default function BengaliDoctorsPage() {
                       <Phone className="w-3.5 h-3.5" />
                       <span>
                         {!canViewContact 
-                          ? 'Register / Login to See Contact Details' 
+                          ? 'Registered users verify OTP • New users register & verify OTP' 
                           : 'See Contact Details'}
                       </span>
                     </Button>

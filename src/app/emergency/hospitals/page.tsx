@@ -942,8 +942,8 @@ export default function EmergencyHospitalsPage() {
                               </Button>
                             </Link>
                           ) : (
-                            <Button onClick={() => triggerVerification(doctor.id)} variant="danger" size="sm" className="w-full font-bold shadow-md shadow-red-500/10">
-                              <Lock className="w-4 h-4 mr-2" /> Register / Login to See Contact Details
+                            <Button onClick={() => triggerVerification(doctor.id)} variant="danger" size="sm" className="w-full font-bold shadow-md shadow-red-500/10 text-xs flex items-center justify-center">
+                              <Lock className="w-4 h-4 mr-2 shrink-0" /> Registered users verify OTP • New users register & verify OTP
                             </Button>
                           )}
                         </div>
@@ -1026,8 +1026,8 @@ export default function EmergencyHospitalsPage() {
                               </Button>
                             </Link>
                           ) : (
-                            <Button onClick={() => triggerVerification(s.id)} variant="danger" size="sm" className="w-full font-bold shadow-md shadow-red-500/10">
-                              <Lock className="w-4 h-4 mr-2" /> Register / Login to See Contact Details
+                            <Button onClick={() => triggerVerification(s.id)} variant="danger" size="sm" className="w-full font-bold shadow-md shadow-red-500/10 text-xs flex items-center justify-center">
+                              <Lock className="w-4 h-4 mr-2 shrink-0" /> Registered users verify OTP • New users register & verify OTP
                             </Button>
                           )}
                         </div>
