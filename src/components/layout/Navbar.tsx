@@ -105,13 +105,13 @@ export function Navbar() {
 
             {/* Desktop Nav */}
             <div className="hidden lg:flex items-center gap-1">
-              <Link
+              {/* <Link
                 href="/"
                 onClick={(e) => handleLinkClick(e, '/')}
                 className="px-3 py-2 text-sm font-medium text-text-primary hover:text-primary transition-colors rounded-lg hover:bg-surface"
               >
                 <T>Home</T>
-              </Link>
+              </Link> */}
               {navLinks.map((link) => (
                 <div
                   key={link.label}
