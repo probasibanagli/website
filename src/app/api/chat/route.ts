@@ -34,63 +34,92 @@ Key website sections:
 
 export async function POST(req: NextRequest) {
   try {
-    const { messages } = await req.json();
+    const body = await req.json();
 
-    // Try Groq API first (free tier: LLaMA 3 / Mixtral)
-    const groqKey = process.env.GROQ_API_KEY;
-    // Fallback to OpenAI if Groq key not set
-    const openaiKey = process.env.OPENAI_API_KEY;
+    if (body.action === 'translate_word') {
+      const { word } = body;
 
-    // Determine which provider to use
-    const useGroq = groqKey && groqKey !== 'your_groq_api_key';
-    const useOpenAI = !useGroq && openaiKey && openaiKey !== 'your_openai_api_key';
+      // Free public Google Translate endpoint fallback
+      const translateTextFree = async (targetLang: string) => {
+        const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=${targetLang}&dt=t&dt=rm&q=${encodeURIComponent(word)}`;
+        const res = await fetch(url);
+        const data = await res.json();
+        
+        let translated = "";
+        let romanization = "";
+        
+        if (data && data[0]) {
+          for (const item of data[0]) {
+            if (item[0] && typeof item[0] === 'string') translated += item[0];
+            if (item[2] && typeof item[2] === 'string') romanization += item[2];
+          }
+        }
+        return { text: translated.trim() || word, romanization: romanization.trim() };
+      };
 
-    if (!useGroq && !useOpenAI) {
-      return NextResponse.json({
-        reply: getDemoResponse(messages[messages.length - 1]?.content || ''),
-      });
+      // Try Gemini API first if a valid key is provided
+      const geminiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY || process.env.NEXT_PUBLIC_GOOGLE_TRANSLATE_API_KEY;
+      
+      if (geminiKey && !geminiKey.startsWith('your_')) {
+        try {
+          const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiKey}`;
+          const prompt = `Translate the English word/phrase "${word}" to Tamil and Bengali. Respond ONLY with a valid JSON array containing exactly one object with these keys: "meaning" (English meaning), "pronunciation" (Tamil pronunciation in English), "tamil" (Tamil script), "bengali" (Bengali script). Do not include any other text or markdown formatting. Use natural, conversational translations (e.g., "Good afternoon" should be "மதிய வணக்கம்", "Good evening" should be "மாலை வணக்கம்").`;
+
+          const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{ role: 'user', parts: [{ text: prompt }] }],
+              generationConfig: { temperature: 0.2, maxOutputTokens: 200 }
+            }),
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            let reply = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+            
+            if (reply.includes('```json')) reply = reply.split('```json')[1].split('```')[0].trim();
+            else if (reply.includes('```')) reply = reply.split('```')[1].split('```')[0].trim();
+            
+            const parsed = JSON.parse(reply);
+            const result = Array.isArray(parsed) ? parsed[0] : parsed;
+            
+            if (result && result.tamil && result.bengali) {
+              return NextResponse.json({
+                meaning: result.meaning || word,
+                pronunciation: result.pronunciation || "Unavailable",
+                tamil: result.tamil,
+                bengali: result.bengali,
+                bengaliMeaning: result.bengali
+              });
+            }
+          }
+        } catch (err) {
+          console.warn("Gemini translation failed, falling back to free API", err);
+        }
+      }
+
+      // Fallback to Free Google Translate if Gemini fails or is not configured
+      try {
+        const tamilRes = await translateTextFree('ta');
+        const bengaliRes = await translateTextFree('bn');
+
+        return NextResponse.json({
+          meaning: word,
+          pronunciation: tamilRes.romanization || "Unavailable (Free API)",
+          tamil: tamilRes.text,
+          bengali: bengaliRes.text,
+          bengaliMeaning: bengaliRes.text
+        });
+      } catch (err) {
+        console.error('Translation error', err);
+        return NextResponse.json({ error: "Translation API Error" }, { status: 500 });
+      }
     }
 
-    // Build request for the chosen provider
-    const apiUrl = useGroq
-      ? 'https://api.groq.com/openai/v1/chat/completions'
-      : 'https://api.openai.com/v1/chat/completions';
-
-    const apiKey = useGroq ? groqKey : openaiKey;
-    const model = useGroq ? 'llama-3.3-70b-versatile' : 'gpt-4o';
-
-    const response = await fetch(apiUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        model,
-        messages: [
-          { role: 'system', content: SYSTEM_PROMPT },
-          ...messages.slice(-10), // Keep context window manageable
-        ],
-        max_tokens: 600,
-        temperature: 0.7,
-      }),
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error(`AI API error (${response.status}):`, errorText);
-
-      // If Groq fails, try fallback demo response
-      return NextResponse.json({
-        reply: getDemoResponse(messages[messages.length - 1]?.content || ''),
-      });
-    }
-
-    const data = await response.json();
+    const { messages } = body;
     return NextResponse.json({
-      reply:
-        data.choices?.[0]?.message?.content ||
-        'Sorry, I could not process that.',
+      reply: getDemoResponse(messages?.[messages.length - 1]?.content || ''),
     });
   } catch (error) {
     console.error('Chat API error:', error);

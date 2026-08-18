@@ -1,114 +1,130 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import { MessageCircle, X, Send, Sparkles, Home, Mic, MicOff, Volume2, Search } from 'lucide-react';
+import { X, Sparkles, Search, Volume2, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { TAMIL_WORDS } from '@/lib/constants';
+import { TAMIL_WORDS, FOOD_TAMIL_WORDS, STAY_TAMIL_WORDS, HOSPITAL_TAMIL_WORDS, TRAVEL_TAMIL_WORDS } from '@/lib/constants';
 
-const suggestedPrompts = [
-  'Find Bengali PG in Chennai',
-  'Nearest hospital with Bengali doctor',
-  'How to travel by metro in Chennai',
-  'Bengali restaurants near me',
-];
-
-interface Message {
-  role: 'user' | 'assistant';
-  content: string;
+interface WordDef {
+  meaning: string;
+  pronunciation: string;
+  tamil: string;
+  bengali: string;
+  bengaliMeaning?: string;
 }
 
 export function ChatWidget() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [input, setInput] = useState('');
-  const [loading, setLoading] = useState(false);
   const [mounted, setMounted] = React.useState(false);
-  const [isListening, setIsListening] = useState(false);
-  const [activeTab, setActiveTab] = useState<'chat' | 'helper'>('chat');
   const [wordSearch, setWordSearch] = useState('');
+  const [dynamicWords, setDynamicWords] = useState<WordDef[]>([]);
+  const [isLoadingWord, setIsLoadingWord] = useState(false);
+
+  const currentWords = useMemo(() => {
+    let baseWords = [...dynamicWords, ...TAMIL_WORDS];
+    if (pathname?.includes('/explore/food')) baseWords = [...dynamicWords, ...FOOD_TAMIL_WORDS, ...TAMIL_WORDS];
+    else if (pathname?.includes('/explore/stay')) baseWords = [...dynamicWords, ...STAY_TAMIL_WORDS, ...TAMIL_WORDS];
+    else if (pathname?.includes('/explore/hospital')) baseWords = [...dynamicWords, ...HOSPITAL_TAMIL_WORDS, ...TAMIL_WORDS];
+    else if (pathname?.includes('/explore/travel')) baseWords = [...dynamicWords, ...TRAVEL_TAMIL_WORDS, ...TAMIL_WORDS];
+    
+    // Deduplicate by meaning
+    const seen = new Set();
+    return baseWords.filter(w => {
+      const key = w.meaning.toLowerCase();
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  }, [pathname, dynamicWords]);
 
   const filteredWords = useMemo(() => {
-    if (!wordSearch) return TAMIL_WORDS;
+    if (!wordSearch) return currentWords;
     const term = wordSearch.toLowerCase();
-    return TAMIL_WORDS.filter(w => 
+    return currentWords.filter(w => 
       w.meaning.toLowerCase().includes(term) ||
       w.pronunciation.toLowerCase().includes(term) ||
-      w.bengali.toLowerCase().includes(term) ||
-      w.tamil.includes(term)
+      (w.bengali && w.bengali.toLowerCase().includes(term)) ||
+      (w.tamil && w.tamil.includes(term))
     );
-  }, [wordSearch]);
+  }, [wordSearch, currentWords]);
 
-  // Text-To-Speech Playback
-  const speakMessage = (text: string) => {
-    if (typeof window === 'undefined' || !window.speechSynthesis) return;
-
-    if (window.speechSynthesis.speaking) {
-      window.speechSynthesis.cancel();
-      return;
+  const fetchTranslation = async (term: string) => {
+    setIsLoadingWord(true);
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'translate_word', word: term }),
+      });
+      
+      const data = await res.json();
+      
+      if (data.tamil && data.bengali) {
+        setDynamicWords(prev => [data, ...prev]);
+      } else {
+        setDynamicWords(prev => [{
+          meaning: term,
+          pronunciation: "Not Found",
+          tamil: term + " (API Error)",
+          bengali: term + " (API Error)",
+          bengaliMeaning: data.error || "Configure Google Cloud API Key"
+        }, ...prev]);
+      }
+    } catch (err) {
+      console.error(err);
     }
-
-    // Clean up markdown markers for better readout
-    const cleanText = text.replace(/[*#_`]/g, '');
-    const utterance = new SpeechSynthesisUtterance(cleanText);
-    
-    let lang = 'en-US';
-    if (/[\u0980-\u09FF]/.test(text)) {
-      lang = 'bn-IN';
-    } else if (/[\u0B80-\u0BFF]/.test(text)) {
-      lang = 'ta-IN';
-    }
-    utterance.lang = lang;
-
-    const voices = window.speechSynthesis.getVoices();
-    const matchingVoice = voices.find(v => v.lang.startsWith(lang));
-    if (matchingVoice) {
-      utterance.voice = matchingVoice;
-    }
-
-    window.speechSynthesis.speak(utterance);
+    setIsLoadingWord(false);
   };
 
-  // Speech-To-Text Recognition
-  const handleVoiceInput = () => {
-    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    if (!SpeechRecognition) {
-      alert("Speech recognition is not supported in this browser. Please try Google Chrome or Safari.");
-      return;
+  const handleSearchSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!wordSearch.trim() || filteredWords.length > 0 || isLoadingWord) return;
+    fetchTranslation(wordSearch);
+  };
+
+  React.useEffect(() => {
+    if (!wordSearch.trim() || filteredWords.length > 0 || isLoadingWord) return;
+
+    const timeoutId = setTimeout(() => {
+      fetchTranslation(wordSearch);
+    }, 800); // 800ms debounce
+
+    return () => clearTimeout(timeoutId);
+  }, [wordSearch, filteredWords.length, isLoadingWord]);
+
+  const audioRef = React.useRef<HTMLAudioElement | null>(null);
+
+  // Text-To-Speech Playback using High-Quality Cloud API
+  const speakMessage = (word: WordDef) => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+    }
+    
+    // Always prefer reading the actual native Tamil script for perfect pronunciation
+    let lang = 'ta';
+    let textToSpeak = word.tamil || word.pronunciation || word.meaning;
+    
+    if (/[\u0980-\u09FF]/.test(textToSpeak)) {
+      lang = 'bn';
     }
 
-    const recognition = new SpeechRecognition();
-    recognition.continuous = false;
-    recognition.interimResults = false;
-
-    const savedLang = typeof window !== 'undefined' ? localStorage.getItem('pb_lang') : 'en';
-    recognition.lang = savedLang === 'bn' ? 'bn-IN' : savedLang === 'ta' ? 'ta-IN' : 'en-US';
-
-    recognition.onstart = () => {
-      setIsListening(true);
-    };
-
-    recognition.onresult = (event: any) => {
-      const resultText = event.results[0][0].transcript;
-      setInput(resultText);
-    };
-
-    recognition.onerror = (event: any) => {
-      console.error("Speech recognition error:", event.error);
-      setIsListening(false);
-    };
-
-    recognition.onend = () => {
-      setIsListening(false);
-    };
-
-    if (isListening) {
-      recognition.stop();
-    } else {
-      recognition.start();
-    }
+    // Proxy the TTS request through our Next.js backend to bypass browser CORS and Referer restrictions
+    const url = `/api/tts?text=${encodeURIComponent(textToSpeak)}&lang=${lang}`;
+    const audio = new Audio(url);
+    audioRef.current = audio;
+    
+    audio.play().catch(err => {
+      console.error("Audio playback failed:", err);
+      // Fallback to basic browser TTS if cloud audio fails (e.g., offline)
+      if (typeof window !== 'undefined' && window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(textToSpeak.replace(/[*#_`]/g, ''));
+        utterance.lang = lang === 'ta' ? 'ta-IN' : 'bn-IN';
+        window.speechSynthesis.speak(utterance);
+      }
+    });
   };
 
   React.useEffect(() => {
@@ -117,28 +133,6 @@ export function ChatWidget() {
     });
     return () => cancelAnimationFrame(handle);
   }, []);
-
-  const sendMessage = async (text: string) => {
-    if (!text.trim()) return;
-    const userMsg: Message = { role: 'user', content: text.trim() };
-    const newMessages = [...messages, userMsg];
-    setMessages(newMessages);
-    setInput('');
-    setLoading(true);
-
-    try {
-      const res = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: newMessages }),
-      });
-      const data = await res.json();
-      setMessages([...newMessages, { role: 'assistant', content: data.reply || 'Sorry, I could not process that.' }]);
-    } catch {
-      setMessages([...newMessages, { role: 'assistant', content: 'Sorry, service is currently unavailable. Please try again later.' }]);
-    }
-    setLoading(false);
-  };
 
   if (pathname?.startsWith('/admin')) return null;
 
@@ -154,8 +148,8 @@ export function ChatWidget() {
                 <Sparkles className="w-4 h-4 text-white" />
               </div>
               <div>
-                <p className="text-sm font-semibold text-white">ProbasiBangali AI</p>
-                <p className="text-[10px] text-white/70">Ask in Bengali, Tamil, or English</p>
+                <p className="text-sm font-semibold text-white">Tamil Word Helper</p>
+                <p className="text-[10px] text-white/70">Learn Tamil easily in Bengali or English</p>
               </div>
             </div>
             <button onClick={() => setIsOpen(false)} className="text-white/80 hover:text-white transition-colors cursor-pointer">
@@ -163,164 +157,62 @@ export function ChatWidget() {
             </button>
           </div>
 
-          {/* Tab Selector */}
-          <div className="flex border-b border-border bg-surface text-xs font-semibold select-none">
-            <button
-              onClick={() => setActiveTab('chat')}
-              className={cn(
-                "flex-1 py-2.5 text-center transition-colors border-b-2 cursor-pointer",
-                activeTab === 'chat'
-                  ? "border-primary text-primary"
-                  : "border-transparent text-text-muted hover:text-text-primary"
-              )}
-            >
-              AI Assistant
-            </button>
-            <button
-              onClick={() => setActiveTab('helper')}
-              className={cn(
-                "flex-1 py-2.5 text-center transition-colors border-b-2 cursor-pointer",
-                activeTab === 'helper'
-                  ? "border-primary text-primary"
-                  : "border-transparent text-text-muted hover:text-text-primary"
-              )}
-            >
-              Tamil Word Helper
-            </button>
-          </div>
+          <div className="flex-1 flex flex-col min-h-0 bg-white">
+            {/* Search Bar */}
+            <div className="p-3 border-b border-border bg-surface/50">
+              <form onSubmit={handleSearchSubmit} className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
+                <input
+                  value={wordSearch}
+                  onChange={(e) => setWordSearch(e.target.value)}
+                  placeholder="Search to translate automatically..."
+                  className="w-full pl-9 pr-4 py-2 rounded-lg border border-border bg-white text-xs focus:outline-none focus:ring-2 focus:ring-primary/30"
+                />
+              </form>
+            </div>
 
-          {activeTab === 'chat' ? (
-            <>
-              {/* Messages */}
-              <div className="flex-1 overflow-y-auto p-4 space-y-3">
-                {messages.length === 0 && (
-                  <div className="space-y-3">
-                    <p className="text-sm text-text-muted text-center py-4 flex flex-col items-center gap-2">
-                      <Home className="w-10 h-10 text-primary/30 mb-1" />
-                      Hi! I can help you find PGs, food, hospitals, and more in Tamil Nadu.
+            {/* Words List */}
+            <div className="flex-1 overflow-y-auto p-3 space-y-2 select-none">
+              {filteredWords.map((word, i) => (
+                <div key={i} className="flex items-center justify-between p-2.5 bg-surface border border-border/40 rounded-xl hover:border-primary/20 transition-colors">
+                  <div className="flex-1 min-w-0 pr-2">
+                    <p className="text-xs font-bold text-text-primary truncate">{word.meaning}</p>
+                    <p className="text-[10px] text-text-muted mt-0.5">
+                      <span className="text-[9px] font-semibold text-primary uppercase tracking-wider mr-1">Speak:</span>
+                      <span className="italic">{word.pronunciation}</span>
                     </p>
-                    <div className="space-y-2">
-                      {suggestedPrompts.map((prompt) => (
-                        <button
-                          key={prompt}
-                          onClick={() => sendMessage(prompt)}
-                          className="w-full text-left text-xs px-3 py-2 rounded-xl border border-border hover:border-primary hover:bg-primary-light text-text-primary transition-all cursor-pointer"
-                        >
-                          {prompt}
-                        </button>
-                      ))}
-                    </div>
                   </div>
-                )}
-                {messages.map((msg, i) => (
-                  <div key={i} className={cn('flex items-end gap-1.5', msg.role === 'user' ? 'justify-end' : 'justify-start')}>
-                    {msg.role === 'assistant' && (
-                      <button
-                        type="button"
-                        onClick={() => speakMessage(msg.content)}
-                        className="p-1.5 rounded-lg border border-border bg-white text-text-muted hover:text-primary hover:border-primary/30 cursor-pointer shadow-sm shrink-0 mb-1"
-                        title="Speak message"
-                      >
-                        <Volume2 className="w-3.5 h-3.5" />
-                      </button>
-                    )}
-                    <div className={cn(
-                      'max-w-[80%] px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed shadow-sm',
-                      msg.role === 'user'
-                        ? 'bg-primary text-white rounded-br-sm'
-                        : 'bg-surface text-text-primary rounded-bl-sm border border-border/40'
-                    )}>
-                      {msg.content}
-                    </div>
-                  </div>
-                ))}
-                {loading && (
-                  <div className="flex justify-start">
-                    <div className="bg-surface px-4 py-3 rounded-2xl rounded-bl-md border border-border/40 shadow-sm">
-                      <div className="flex gap-1">
-                        <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                        <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                        <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Input */}
-              <div className="p-3 border-t border-border">
-                <form
-                  onSubmit={(e) => { e.preventDefault(); sendMessage(input); }}
-                  className="flex items-center gap-2"
-                >
-                  <input
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                    placeholder={isListening ? "Listening..." : "Type your message..."}
-                    className="flex-1 text-sm px-4 py-2.5 rounded-xl border border-border bg-surface focus:outline-none focus:ring-2 focus:ring-primary/30"
-                    disabled={loading}
-                  />
-                  <button
-                    type="button"
-                    onClick={handleVoiceInput}
-                    className={cn(
-                      "p-2.5 rounded-xl border transition-all cursor-pointer",
-                      isListening 
-                        ? "bg-red-500 text-white border-red-500 animate-pulse" 
-                        : "bg-surface text-text-muted border-border hover:bg-primary-light hover:text-primary hover:border-primary/30"
-                    )}
-                    title="Voice Input (English, Bengali, Tamil)"
-                  >
-                    {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={loading || !input.trim()}
-                    className="p-2.5 bg-primary text-white rounded-xl hover:bg-primary-dark transition-colors disabled:opacity-50 cursor-pointer shrink-0"
-                  >
-                    <Send className="w-4 h-4" />
-                  </button>
-                </form>
-              </div>
-            </>
-          ) : (
-            <div className="flex-1 flex flex-col min-h-0 bg-white">
-              {/* Search Bar */}
-              <div className="p-3 border-b border-border bg-surface/50">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
-                  <input
-                    value={wordSearch}
-                    onChange={(e) => setWordSearch(e.target.value)}
-                    placeholder="Search words or meanings..."
-                    className="w-full pl-9 pr-4 py-2 rounded-lg border border-border bg-white text-xs focus:outline-none focus:ring-2 focus:ring-primary/30"
-                  />
-                </div>
-              </div>
-
-              {/* Words List */}
-              <div className="flex-1 overflow-y-auto p-3 space-y-2 select-none">
-                {filteredWords.map((word, i) => (
-                  <div key={i} className="flex items-center justify-between p-2.5 bg-surface border border-border/40 rounded-xl hover:border-primary/20 transition-colors">
-                    <div className="flex-1 min-w-0 pr-2">
-                      <p className="text-xs font-bold text-text-primary truncate">{word.meaning}</p>
-                      <p className="text-[10px] text-text-muted mt-0.5">
-                        <span className="text-[9px] font-semibold text-primary uppercase tracking-wider mr-1">Speak:</span>
-                        <span className="italic">{word.pronunciation}</span>
-                      </p>
-                    </div>
-                    <div className="text-right shrink-0">
+                  <div className="text-right shrink-0 flex items-center gap-2">
+                    <div className="text-right">
                       <span className="text-xs font-bold text-primary block bengali-text">{word.bengali}</span>
                       <span className="text-[9px] text-text-muted block mt-0.5">{word.tamil}</span>
                     </div>
+                    <button
+                      type="button"
+                      onClick={() => speakMessage(word)}
+                      className="p-1.5 rounded-lg border border-border bg-white text-text-muted hover:text-primary hover:border-primary/30 cursor-pointer shadow-sm"
+                      title="Speak message"
+                    >
+                      <Volume2 className="w-3.5 h-3.5" />
+                    </button>
                   </div>
-                ))}
-                {filteredWords.length === 0 && (
-                  <p className="text-center text-xs text-text-muted py-8">No matching words found.</p>
-                )}
-              </div>
+                </div>
+              ))}
+              
+              {filteredWords.length === 0 && !isLoadingWord && (
+                <div className="text-center py-8">
+                  <p className="text-xs text-text-muted mb-3">Fetching translation for "{wordSearch}"...</p>
+                </div>
+              )}
+              
+              {isLoadingWord && (
+                <div className="flex flex-col items-center justify-center py-8 gap-3">
+                  <Loader2 className="w-6 h-6 text-primary animate-spin" />
+                  <p className="text-xs text-text-muted animate-pulse">Translating...</p>
+                </div>
+              )}
             </div>
-          )}
+          </div>
         </div>
       )}
 
@@ -328,7 +220,7 @@ export function ChatWidget() {
       {mounted && (
         <button
           onClick={() => setIsOpen(!isOpen)}
-          aria-label="Tamil Word Helper - Ask in Bengali, Tamil, or English"
+          aria-label="Tamil Word Helper"
           title="Tamil Word Helper"
           className={cn(
             'fixed bottom-5 right-4 sm:right-6 z-50 w-14 h-14 rounded-full shadow-2xl shadow-primary/25 flex items-center justify-center transition-all duration-300 cursor-pointer ring-1 ring-primary/10 hover:ring-primary/20',
@@ -374,4 +266,3 @@ export function ChatWidget() {
     </>
   );
 }
-

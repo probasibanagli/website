@@ -414,6 +414,10 @@ export const ELECTION_OFFICES = [
 ];
 
 export const TAMIL_WORDS = [
+  { meaning: 'Good morning', pronunciation: 'Kaalai Vanakkam', tamil: 'காலை வணக்கம்', bengali: 'কালাই ভানাক্কাম', bengaliMeaning: 'শুভ সকাল' },
+  { meaning: 'Good afternoon', pronunciation: 'Mathiya Vanakkam', tamil: 'மதிய வணக்கம்', bengali: 'মাথিয়া ভানাক্কাম', bengaliMeaning: 'শুভ বিকাল' },
+  { meaning: 'Good evening', pronunciation: 'Maalai Vanakkam', tamil: 'மாலை வணக்கம்', bengali: 'মালাই ভানাক্কাম', bengaliMeaning: 'শুভ সন্ধ্যা' },
+  { meaning: 'Good night', pronunciation: 'Iravu Vanakkam', tamil: 'இரவு வணக்கம்', bengali: 'ইরাভু ভানাক্কাম', bengaliMeaning: 'শুভ রাত্রি' },
   { meaning: 'Hello / Welcome', pronunciation: 'Vanakkam', tamil: 'வணக்கம்', bengali: 'ভানাক্কাম', bengaliMeaning: 'স্বাগতম / নমস্কার' },
   { meaning: 'Thank you', pronunciation: 'Nandri', tamil: 'நன்றி', bengali: 'নানদ্রি', bengaliMeaning: 'ধন্যবাদ' },
   { meaning: 'How much?', pronunciation: 'Evvalavu?', tamil: 'எவ்வளவு?', bengali: 'এভভালাভু?', bengaliMeaning: 'কত দাম?' },
@@ -965,3 +969,33 @@ export const PARENT_OCCUPATIONS = [
   'Other',
 ] as const;
 
+
+
+export const STAY_TAMIL_WORDS = [
+  { meaning: 'Room', pronunciation: 'Arai', tamil: 'அறை', bengali: 'আরাই', bengaliMeaning: 'রুম / ঘর' },
+  { meaning: 'House', pronunciation: 'Veedu', tamil: 'வீடு', bengali: 'ভিড়ু', bengaliMeaning: 'বাড়ি' },
+  { meaning: 'Rent', pronunciation: 'Vaadagai', tamil: 'வாடகை', bengali: 'ভাডাগাই', bengaliMeaning: 'ভাড়া' },
+  { meaning: 'Advance', pronunciation: 'Munpanam', tamil: 'முன்பணம்', bengali: 'মুনপানাম', bengaliMeaning: 'অগ্রিম' },
+  { meaning: 'Owner', pronunciation: 'Urimaialar', tamil: 'உரிமையாளர்', bengali: 'উরিমাআলার', bengaliMeaning: 'মালিক' },
+  { meaning: 'Key', pronunciation: 'Saavi', tamil: 'சாவி', bengali: 'সাভি', bengaliMeaning: 'চাবি' },
+  { meaning: 'Water facility', pronunciation: 'Thanneer vasathi', tamil: 'தண்ணீர் வசதி', bengali: 'থান্নির ভাসাথি', bengaliMeaning: 'জলের সুবিধা' },
+  { meaning: 'Electricity', pronunciation: 'Minsaram', tamil: 'மின்சாரம்', bengali: 'মিনসারাম', bengaliMeaning: 'বিদ্যুৎ' },
+];
+
+export const TRAVEL_TAMIL_WORDS = [
+  { meaning: 'Bus', pronunciation: 'Perundhu / Bus', tamil: 'பேருந்து / பஸ்', bengali: 'পেরুন্ধু / বাস', bengaliMeaning: 'বাস' },
+  { meaning: 'Train', pronunciation: 'Rayil', tamil: 'ரயில்', bengali: 'রাইল', bengaliMeaning: 'ট্রেন' },
+  { meaning: 'Ticket', pronunciation: 'Payana cheetu', tamil: 'பயணச் சீட்டு', bengali: 'পায়ানা চিট্টু', bengaliMeaning: 'টিকিট' },
+  { meaning: 'Auto', pronunciation: 'Auto', tamil: 'ஆட்டோ', bengali: 'অটো', bengaliMeaning: 'অটো' },
+  { meaning: 'Stop', pronunciation: 'Nirutham', tamil: 'நிறுத்தம்', bengali: 'নিরুথাম', bengaliMeaning: 'স্টপ' },
+  { meaning: 'Fare / Rent', pronunciation: 'Kattanam', tamil: 'கட்டணம்', bengali: 'কাট্টানাম', bengaliMeaning: 'ভাড়া' },
+];
+
+export const HOSPITAL_TAMIL_WORDS = [
+  { meaning: 'Doctor', pronunciation: 'Maruthuvar', tamil: 'மருத்துவர்', bengali: 'মারুথুভার', bengaliMeaning: 'ডাক্তার' },
+  { meaning: 'Hospital', pronunciation: 'Maruthuvamanai', tamil: 'மருத்துவமனை', bengali: 'মারুথুভামানাই', bengaliMeaning: 'হাসপাতাল' },
+  { meaning: 'Medicine', pronunciation: 'Marundhu', tamil: 'மருந்து', bengali: 'মারুন্ধু', bengaliMeaning: 'ওষুধ' },
+  { meaning: 'Pain', pronunciation: 'Vali', tamil: 'வலி', bengali: 'ভালি', bengaliMeaning: 'ব্যথা' },
+  { meaning: 'Fever', pronunciation: 'Kaichal', tamil: 'காய்ச்சல்', bengali: 'কাইচাল', bengaliMeaning: 'জ্বর' },
+  { meaning: 'Pharmacy', pronunciation: 'Marundhagam', tamil: 'மருந்தகம்', bengali: 'মারুন্ধাগাম', bengaliMeaning: 'ফার্মেসি' },
+];
