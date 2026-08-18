@@ -7,6 +7,8 @@ import { ArrowRight, Home, UtensilsCrossed, Bus, Users, Heart, Calendar, Calenda
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/Badge';
+import ScrollReveal from '@/components/ui/ScrollReveal';
+
 export default function HomePage() {
   return (
     <div className="overflow-hidden bg-alpana">
@@ -82,6 +84,7 @@ export default function HomePage() {
       <section id="explore-services" className="py-12 lg:py-16 bg-[#FDFCFB] relative">
         <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-border to-transparent" />
         <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8">
+          <ScrollReveal direction="up">
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-6">
             <div className="max-w-2xl">
               <Badge variant="bengali" className="mb-3 shadow-sm"><T>Explore</T></Badge>
@@ -136,6 +139,7 @@ export default function HomePage() {
               </Link>
             ))}
           </div>
+          </ScrollReveal>
         </div>
       </section>
 
@@ -149,6 +153,7 @@ export default function HomePage() {
         </div>
 
         <div className="relative max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <ScrollReveal direction="up">
           <Badge variant="outline" className="mb-4 border-white/30 text-white bg-white/10 backdrop-blur-md px-3 py-1 text-xs">
             <T>24/7 Support</T>
           </Badge>
@@ -179,6 +184,7 @@ export default function HomePage() {
               </Link>
             ))}
           </div>
+          </ScrollReveal>
         </div>
       </section>
 
@@ -188,6 +194,7 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSA0MCAwIEwgMCAwIDAgNDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgwLDAsMCwwLjAyKSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')] opacity-50" />
         
         <div className="relative max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8">
+          <ScrollReveal direction="up">
           <div className="flex flex-col items-center text-center mb-10 lg:mb-12">
             <Badge variant="teal" className="mb-3 shadow-sm px-3 py-1 rounded-full"><T>Community</T></Badge>
             <h2 className="text-3xl sm:text-4xl font-bold font-display text-text-primary tracking-tight">
@@ -221,12 +228,14 @@ export default function HomePage() {
               </Link>
             ))}
           </div>
+          </ScrollReveal>
         </div>
       </section>
 
       {/* ====== SERVICES SECTION ====== */}
       <section className="py-12 lg:py-16 bg-surface/30 relative">
         <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8">
+          <ScrollReveal direction="up">
           <div className="text-center mb-10 lg:mb-12">
             <Badge variant="teal" className="mb-3 shadow-sm px-3 py-1 rounded-full"><T>Services</T></Badge>
             <h2 className="text-3xl sm:text-4xl font-bold font-display text-text-primary tracking-tight">
@@ -280,6 +289,7 @@ export default function HomePage() {
               </Link>
             ))}
           </div>
+          </ScrollReveal>
         </div>
       </section>
 
@@ -287,6 +297,7 @@ export default function HomePage() {
       {/* ====== CTA SECTION ====== */}
       <section className="py-20 bg-accent-light">
         <div className="max-w-3xl mx-auto px-4 text-center">
+          <ScrollReveal direction="up">
           <h2 className="text-3xl sm:text-4xl font-bold font-display text-text-primary mb-4">
             <T>Join the ProbasiBangali Community</T>
           </h2>
@@ -305,6 +316,7 @@ export default function HomePage() {
               </Button>
             </Link>
           </div>
+          </ScrollReveal>
         </div>
       </section>
     </div>

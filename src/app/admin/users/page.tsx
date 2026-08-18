@@ -604,7 +604,7 @@ export default function AdminUsersPage() {
                     <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Admin details</th>
                     <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Role</th>
                     <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Permissions Assigned</th>
-                    <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">First Login</th>
+                    <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Verification</th>
                     <th className="text-right px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Actions</th>
                   </tr>
                 </thead>
@@ -613,6 +613,7 @@ export default function AdminUsersPage() {
                     const activePermissions = Object.entries(u.permissions || {})
                       .filter(([_, level]) => level !== 'none')
                       .map(([key]) => key);
+                    const isFullyVerified = u.role === 'superadmin' || (u.email_verified && u.phone_verified);
                     
                     return (
                       <tr key={u.uid} className="hover:bg-surface transition-colors">
@@ -650,15 +651,15 @@ export default function AdminUsersPage() {
                         </td>
                         <td className="px-5 py-4">
                           {u.role === 'superadmin' ? (
-                            <span className="text-xs text-text-muted">—</span>
+                            <span className="inline-flex px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-green-50 text-green-700">Verified</span>
                           ) : (
-                            <span className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold ${u.is_first_login !== false ? 'bg-amber-100 text-amber-700' : 'bg-green-50 text-green-700'}`}>
-                              {u.is_first_login !== false ? 'Pending' : 'Completed'}
+                            <span className={`inline-flex px-2.5 py-0.5 rounded-full text-[10px] font-bold ${isFullyVerified ? 'bg-green-50 text-green-700' : 'bg-amber-100 text-amber-700'}`}>
+                              {isFullyVerified ? 'Verified' : 'Pending'}
                             </span>
                           )}
                         </td>
                         <td className="px-5 py-4 text-right">
-                          {isSuperAdmin && u.role !== 'superadmin' && (
+                          {isSuperAdmin && u.email !== profile?.email ? (
                             <div className="flex items-center justify-end gap-2">
                               <Link
                                 href={`/admin/users/${u.uid}`}
@@ -673,6 +674,8 @@ export default function AdminUsersPage() {
                                 <Trash2 className="w-4 h-4" />
                               </button>
                             </div>
+                          ) : (
+                            <span className="text-text-muted">—</span>
                           )}
                         </td>
                       </tr>
