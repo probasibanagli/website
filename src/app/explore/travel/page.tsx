@@ -850,14 +850,13 @@ export default function TravelPage() {
 
   // Fetch MTC bus suggestions for autocomplete (From)
   useEffect(() => {
-    if (timetableCategory === 'city' && cityPublicMode === 'bus' && cityFrom.trim().length > 0) {
+    if (timetableCategory === 'city' && cityPublicMode === 'bus') {
       const controller = new AbortController();
-      fetch(`/api/mtc-bus?autocomplete=${encodeURIComponent(cityFrom)}`, { signal: controller.signal })
+      fetch(`/api/mtc-bus?autocomplete=${encodeURIComponent(cityFrom.trim())}`, { signal: controller.signal })
         .then(res => res.json())
         .then(data => {
-          if (data.stops) {
+          if (data && data.stops) {
             setBusSuggestionsFrom(data.stops);
-            setShowSuggestionsFrom(true);
           }
         })
         .catch(err => {
@@ -872,14 +871,13 @@ export default function TravelPage() {
 
   // Fetch MTC bus suggestions for autocomplete (To)
   useEffect(() => {
-    if (timetableCategory === 'city' && cityPublicMode === 'bus' && cityTo.trim().length > 0) {
+    if (timetableCategory === 'city' && cityPublicMode === 'bus') {
       const controller = new AbortController();
-      fetch(`/api/mtc-bus?autocomplete=${encodeURIComponent(cityTo)}`, { signal: controller.signal })
+      fetch(`/api/mtc-bus?autocomplete=${encodeURIComponent(cityTo.trim())}`, { signal: controller.signal })
         .then(res => res.json())
         .then(data => {
-          if (data.stops) {
+          if (data && data.stops) {
             setBusSuggestionsTo(data.stops);
-            setShowSuggestionsTo(true);
           }
         })
         .catch(err => {
@@ -1469,11 +1467,6 @@ export default function TravelPage() {
                                   <div className="absolute right-4 md:right-auto md:left-1/2 top-1/2 -translate-y-1/2 md:-translate-x-1/2 z-20">
                                     <button
                                       type="button"
-                                      onClick={() => {
-                                        const temp = cityFrom;
-                                        setCityFrom(cityTo);
-                                        setCityTo(temp);
-                                      }}
                                       className="w-8 h-8 rounded-full bg-white border border-slate-200 shadow-sm flex items-center justify-center hover:bg-slate-50 active:scale-95 transition-all text-primary hover:text-primary-dark cursor-pointer"
                                       title="Swap Stations"
                                     >
@@ -1482,64 +1475,110 @@ export default function TravelPage() {
                                   </div>
 
                                   <div className="relative">
-                                    <label className="block text-xs font-bold uppercase tracking-wider text-text-muted mb-1.5">From Station / Area</label>
+                                    <div className="flex items-center justify-between mb-1.5">
+                                      <label className="block text-xs font-bold uppercase tracking-wider text-text-muted">From Station / Area</label>
+                                      {cityPublicMode === 'bus' && cityFrom && (
+                                        <button
+                                          type="button"
+                                          onClick={() => { setCityFrom(''); setBusSearchResult(null); }}
+                                          className="text-[10px] text-text-muted hover:text-red-500 font-semibold cursor-pointer"
+                                        >
+                                          Clear
+                                        </button>
+                                      )}
+                                    </div>
                                     <input
                                       type="text"
                                       value={cityFrom}
-                                      onChange={(e) => setCityFrom(e.target.value)}
+                                      onChange={(e) => {
+                                        setCityFrom(e.target.value);
+                                        if (cityPublicMode === 'bus') setShowSuggestionsFrom(true);
+                                      }}
                                       onFocus={() => { if (cityPublicMode === 'bus') setShowSuggestionsFrom(true); }}
                                       onBlur={() => {
                                         if (cityPublicMode === 'bus') {
-                                          setTimeout(() => setShowSuggestionsFrom(false), 200);
+                                          setTimeout(() => setShowSuggestionsFrom(false), 250);
                                         }
                                       }}
-                                      placeholder={cityTransportType === 'private' ? 'Enter pickup point...' : 'Enter starting point...'}
+                                      placeholder={cityTransportType === 'private' ? 'Enter pickup point...' : (cityPublicMode === 'bus' ? 'e.g. Adyar, Tambaram, CMBT...' : 'Enter starting point...')}
                                       className="w-full px-4 py-3 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 bg-white"
                                     />
                                     {cityPublicMode === 'bus' && showSuggestionsFrom && busSuggestionsFrom.length > 0 && (
-                                      <div className="absolute left-0 right-0 z-50 mt-1 max-h-60 overflow-y-auto bg-white border border-border rounded-xl shadow-lg text-sm">
+                                      <div className="absolute left-0 right-0 z-50 mt-1 max-h-64 overflow-y-auto bg-white border border-border rounded-xl shadow-xl text-sm divide-y divide-slate-100">
+                                        <div className="px-3 py-1.5 bg-slate-50 text-[10px] font-bold text-text-muted uppercase tracking-wider flex items-center justify-between sticky top-0 z-10">
+                                          <span>{cityFrom.trim() ? 'Matching MTC Stops' : 'Popular Chennai Hubs'}</span>
+                                          <span className="text-green-700 font-bold">{busSuggestionsFrom.length} stops</span>
+                                        </div>
                                         {busSuggestionsFrom.map((stop, idx) => (
                                           <div
                                             key={`sugg-from-${idx}`}
-                                            onMouseDown={() => {
+                                            onMouseDown={(e) => {
+                                              e.preventDefault();
                                               setCityFrom(stop);
                                               setShowSuggestionsFrom(false);
                                             }}
-                                            className="px-4 py-2 hover:bg-slate-50 cursor-pointer text-text-primary border-b border-slate-100 last:border-0 font-medium"
+                                            className="px-4 py-2.5 hover:bg-green-50/70 hover:text-green-800 cursor-pointer text-text-primary font-medium flex items-center justify-between transition-colors"
                                           >
-                                            {stop}
+                                            <div className="flex items-center gap-2">
+                                              <span className="text-green-600 text-xs">🚏</span>
+                                              <span>{stop}</span>
+                                            </div>
+                                            <span className="text-[10px] text-text-muted opacity-60">Select</span>
                                           </div>
                                         ))}
                                       </div>
                                     )}
                                   </div>
                                   <div className="relative">
-                                    <label className="block text-xs font-bold uppercase tracking-wider text-text-muted mb-1.5">To Station / Area</label>
+                                    <div className="flex items-center justify-between mb-1.5">
+                                      <label className="block text-xs font-bold uppercase tracking-wider text-text-muted">To Station / Area</label>
+                                      {cityPublicMode === 'bus' && cityTo && (
+                                        <button
+                                          type="button"
+                                          onClick={() => { setCityTo(''); setBusSearchResult(null); }}
+                                          className="text-[10px] text-text-muted hover:text-red-500 font-semibold cursor-pointer"
+                                        >
+                                          Clear
+                                        </button>
+                                      )}
+                                    </div>
                                     <input
                                       type="text"
                                       value={cityTo}
-                                      onChange={(e) => setCityTo(e.target.value)}
+                                      onChange={(e) => {
+                                        setCityTo(e.target.value);
+                                        if (cityPublicMode === 'bus') setShowSuggestionsTo(true);
+                                      }}
                                       onFocus={() => { if (cityPublicMode === 'bus') setShowSuggestionsTo(true); }}
                                       onBlur={() => {
                                         if (cityPublicMode === 'bus') {
-                                          setTimeout(() => setShowSuggestionsTo(false), 200);
+                                          setTimeout(() => setShowSuggestionsTo(false), 250);
                                         }
                                       }}
-                                      placeholder={cityTransportType === 'private' ? 'Enter dropoff point...' : 'Enter destination...'}
+                                      placeholder={cityTransportType === 'private' ? 'Enter dropoff point...' : (cityPublicMode === 'bus' ? 'e.g. Velachery, T.Nagar, Central...' : 'Enter destination...')}
                                       className="w-full px-4 py-3 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 bg-white"
                                     />
                                     {cityPublicMode === 'bus' && showSuggestionsTo && busSuggestionsTo.length > 0 && (
-                                      <div className="absolute left-0 right-0 z-50 mt-1 max-h-60 overflow-y-auto bg-white border border-border rounded-xl shadow-lg text-sm">
+                                      <div className="absolute left-0 right-0 z-50 mt-1 max-h-64 overflow-y-auto bg-white border border-border rounded-xl shadow-xl text-sm divide-y divide-slate-100">
+                                        <div className="px-3 py-1.5 bg-slate-50 text-[10px] font-bold text-text-muted uppercase tracking-wider flex items-center justify-between sticky top-0 z-10">
+                                          <span>{cityTo.trim() ? 'Matching MTC Stops' : 'Popular Chennai Hubs'}</span>
+                                          <span className="text-green-700 font-bold">{busSuggestionsTo.length} stops</span>
+                                        </div>
                                         {busSuggestionsTo.map((stop, idx) => (
                                           <div
                                             key={`sugg-to-${idx}`}
-                                            onMouseDown={() => {
+                                            onMouseDown={(e) => {
+                                              e.preventDefault();
                                               setCityTo(stop);
                                               setShowSuggestionsTo(false);
                                             }}
-                                            className="px-4 py-2 hover:bg-slate-50 cursor-pointer text-text-primary border-b border-slate-100 last:border-0 font-medium"
+                                            className="px-4 py-2.5 hover:bg-green-50/70 hover:text-green-800 cursor-pointer text-text-primary font-medium flex items-center justify-between transition-colors"
                                           >
-                                            {stop}
+                                            <div className="flex items-center gap-2">
+                                              <span className="text-green-600 text-xs">🚏</span>
+                                              <span>{stop}</span>
+                                            </div>
+                                            <span className="text-[10px] text-text-muted opacity-60">Select</span>
                                           </div>
                                         ))}
                                       </div>
