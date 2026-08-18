@@ -12,6 +12,7 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/Input';
 import { useAuth } from '@/lib/auth/AuthContext';
 import type { ConfirmationResult } from 'firebase/auth';
+import { sanitizeErrorMessage } from '@/lib/utils';
 
 type Step = 'details' | 'verification' | 'password';
 
@@ -31,7 +32,8 @@ export default function RegisterPage() {
     confirm_password: '',
   });
 
-  const [error, setError] = useState('');
+  const [error, setErrorState] = useState('');
+  const setError = (msg: string) => setErrorState(sanitizeErrorMessage(msg));
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
 

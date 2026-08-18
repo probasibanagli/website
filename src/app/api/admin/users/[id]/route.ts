@@ -75,12 +75,22 @@ export async function PATCH(request: Request, ctx: any) {
   if (typeof body.phone_verified === 'boolean') updates.phone_verified = body.phone_verified;
 
   try {
-    // Synchronize changes to Firebase Authentication
+    // Synchronize changes to Firebase Auth safely (only if values actually changed)
+    const existingUser = await adminAuth.getUser(id);
     const authUpdates: any = {};
-    if (body.full_name) authUpdates.displayName = body.full_name;
-    if (body.phone) authUpdates.phoneNumber = body.phone;
-    if (body.email) authUpdates.email = body.email.toLowerCase();
-    if (typeof body.email_verified === 'boolean') authUpdates.emailVerified = body.email_verified;
+    
+    if (body.full_name && body.full_name !== existingUser.displayName) {
+      authUpdates.displayName = body.full_name;
+    }
+    if (body.email && body.email.toLowerCase() !== existingUser.email?.toLowerCase()) {
+      authUpdates.email = body.email.toLowerCase();
+    }
+    if (body.phone && body.phone !== existingUser.phoneNumber) {
+      authUpdates.phoneNumber = body.phone;
+    }
+    if (typeof body.email_verified === 'boolean' && body.email_verified !== existingUser.emailVerified) {
+      authUpdates.emailVerified = body.email_verified;
+    }
 
     if (Object.keys(authUpdates).length > 0) {
       await adminAuth.updateUser(id, authUpdates);

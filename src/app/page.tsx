@@ -7,7 +7,6 @@ import { ArrowRight, Home, UtensilsCrossed, Bus, Users, Heart, Calendar, Calenda
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/Badge';
-
 export default function HomePage() {
   return (
     <div className="overflow-hidden bg-alpana">
@@ -80,7 +79,7 @@ export default function HomePage() {
       </section>
 
       {/* ====== EXPLORE SECTION ====== */}
-      <section className="py-12 lg:py-16 bg-[#FDFCFB] relative">
+      <section id="explore-services" className="py-12 lg:py-16 bg-[#FDFCFB] relative">
         <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-border to-transparent" />
         <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-6">

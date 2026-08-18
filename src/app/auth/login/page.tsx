@@ -12,6 +12,7 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/Input';
 import { useAuth } from '@/lib/auth/AuthContext';
 import type { ConfirmationResult } from 'firebase/auth';
+import { sanitizeErrorMessage } from '@/lib/utils';
 
 type LoginMode = 'email' | 'phone';
 type PhoneStep = 'input' | 'otp' | 'email-verify';
@@ -31,7 +32,8 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [error, setErrorState] = useState('');
+  const setError = (msg: string) => setErrorState(sanitizeErrorMessage(msg));
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -271,6 +273,7 @@ export default function LoginPage() {
       window.location.href = redirect;
     } catch (err: any) {
       setError(err.message || 'Login failed.');
+      setPassword('');
       alert(err.message || 'Login failed.');
     } finally {
       if (!superAdminVerify && !adminFirstLogin) {
