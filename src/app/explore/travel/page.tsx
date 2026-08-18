@@ -927,11 +927,11 @@ export default function TravelPage() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Main Dashboard Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left/Middle Content Area based on Selected Tab */}
-          <div className="lg:col-span-2 space-y-6">
+        <div className="flex flex-col gap-8">
+          {/* Main Content Area */}
+          <div className="w-full space-y-6">
 
             {/* 6. TIMETABLE MODULE (NEW) */}
             
@@ -3456,96 +3456,6 @@ export default function TravelPage() {
               </>
             )}
 
-            {/* Tamil & Bengali Word Helper Carousel - Shown only when Chennai Metro is NOT selected */}
-            {!(timetableCategory === 'city' && cityTransportType === 'public' && cityPublicMode === 'metro') && (
-              <Card className="relative overflow-hidden border-primary/20 shadow-xs">
-                <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full -mr-8 -mt-8 pointer-events-none" />
-                <h3 className="text-lg font-bold mb-2 inline-flex items-center gap-2 text-text-primary">
-                  <Megaphone className="w-5 h-5 text-primary" /> Tamil & Bengali Word Helper
-                </h3>
-                <p className="text-xs text-text-muted mb-4 font-medium">Flashcards for daily commute phrases. Click the speaker to hear pronunciation.</p>
-                
-                {TAMIL_WORDS.length > 0 && (() => {
-                  const BENGALI_MEANINGS: Record<string, string> = {
-                    'Hello / Welcome': 'স্বাগতম / নমস্কার',
-                    'Thank you': 'ধন্যবাদ',
-                    'How much?': 'কত দাম?',
-                    'When will it come?': 'কখন আসবে?',
-                    'Where is it?': 'কোথায় আছে?',
-                    'Money': 'টাকা / পয়সা',
-                    'Will auto come?': 'অটো কি আসবে?',
-                    'I need water': 'আমার জল লাগবে',
-                    'Food / Meal': 'খাবার / ভাত',
-                    'Bus station': 'বাস স্টেশন',
-                    'Hospital': 'হাসপাতাল',
-                    'Help!': 'সাহায্য!',
-                    'I need to go home': 'আমি বাড়ি যেতে চাই',
-                    'Very good!': 'খুব ভালো!',
-                    "I don't understand": 'বুঝতে পারছি না',
-                    'One moment': 'এক মিনিট',
-                  };
-                  const currentWord = TAMIL_WORDS[currentTamilIdx] || TAMIL_WORDS[0];
-                  return (
-                    <div className="relative bg-slate-50 border border-slate-150 rounded-2xl p-5 text-center min-h-[170px] flex flex-col justify-between shadow-inner">
-                      <div className="flex justify-between items-start">
-                        <span className="text-[10px] font-black tracking-widest text-slate-400 uppercase">
-                          {currentTamilIdx + 1} of {TAMIL_WORDS.length}
-                        </span>
-                        <button
-                          type="button"
-                          onClick={() => speakWord(currentWord.tamil)}
-                          className="p-1.5 rounded-lg bg-primary-light hover:bg-primary/15 text-primary border border-primary/10 active:scale-95 transition-all cursor-pointer flex items-center justify-center"
-                          title="Listen Tamil Pronunciation"
-                        >
-                          <Volume2 className="w-4 h-4" />
-                        </button>
-                      </div>
-
-                      <div className="my-2 space-y-1">
-                        <div className="text-xl font-extrabold text-slate-800">
-                          {currentWord.pronunciation}
-                        </div>
-                        <div className="text-xs font-bold text-primary font-tamil tracking-wider">
-                          {currentWord.tamil}
-                        </div>
-                        
-                        {/* Bengali equivalent */}
-                        <div className="pt-2 border-t border-dashed border-slate-200/60 mt-2 space-y-1 bg-white/50 p-2 rounded-xl border border-slate-100">
-                          <div className="text-xs text-slate-500 font-semibold">
-                            উচ্চারণ: <span className="text-slate-800 font-bold font-bengali">{currentWord.bengali || ''}</span>
-                          </div>
-                          <div className="text-xs text-slate-500 font-semibold">
-                            অর্থ: <span className="text-primary-dark font-bold font-bengali">{BENGALI_MEANINGS[currentWord.meaning] || currentWord.meaning}</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="border-t border-slate-200/50 pt-2 text-xs font-semibold text-text-muted">
-                        English Meaning: <span className="text-slate-700 font-bold">{currentWord.meaning}</span>
-                      </div>
-                    </div>
-                  );
-                })()}
-
-                {/* Navigation controls */}
-                <div className="flex justify-between items-center mt-3 gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setCurrentTamilIdx((prev) => (prev - 1 + TAMIL_WORDS.length) % TAMIL_WORDS.length)}
-                    className="px-3 py-1.5 border border-border bg-white text-xs font-bold rounded-lg hover:bg-slate-50 cursor-pointer transition-colors shadow-2xs"
-                  >
-                    ← Prev
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setCurrentTamilIdx((prev) => (prev + 1) % TAMIL_WORDS.length)}
-                    className="px-3 py-1.5 border border-border bg-white text-xs font-bold rounded-lg hover:bg-slate-50 cursor-pointer transition-colors shadow-2xs"
-                  >
-                    Next →
-                  </button>
-                </div>
-              </Card>
-            )}
           </div>
         </div>
       </div>

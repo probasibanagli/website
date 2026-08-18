@@ -94,11 +94,11 @@ export function Navbar() {
     <>
       <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-border">
         <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
+          <div className="flex items-center justify-between h-16 gap-2">
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-2 group notranslate">
-              <img src="/logo.png" alt="ProbasiBangali Logo" className="w-10 h-10 object-contain group-hover:scale-105 transition-transform" />
-              <span className={`text-[32px] font-normal text-text-primary ${samarkan.className} mt-1.5 leading-none`}>
+            <Link href="/" className="flex items-center gap-1.5 sm:gap-2 group notranslate shrink-0">
+              <img src="/logo.png" alt="ProbasiBangali Logo" className="w-8 h-8 sm:w-10 sm:h-10 object-contain group-hover:scale-105 transition-transform" />
+              <span className={`text-[22px] sm:text-[32px] font-normal text-text-primary ${samarkan.className} mt-1 sm:mt-1.5 leading-none`}>
                 Probasi<span className="text-primary">Bangali</span>
               </span>
             </Link>
@@ -149,21 +149,21 @@ export function Navbar() {
 
             {/* Right side */}
             <div className="flex items-center gap-2">
-              {/* Prominent Language Selector */}
-              <div className="relative">
+              {/* Language Switcher */}
+              <div className="relative shrink-0">
                 <button
                   suppressHydrationWarning
                   onClick={() => setLangMenuOpen(!langMenuOpen)}
-                  className="flex items-center gap-2 px-3.5 py-1.5 text-xs font-bold text-primary bg-primary/10 hover:bg-primary/15 border-2 border-primary/25 hover:border-primary/50 rounded-full transition-all cursor-pointer shadow-sm notranslate"
+                  className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3.5 py-1.5 text-[10px] sm:text-xs font-bold text-primary bg-primary/10 hover:bg-primary/15 border-2 border-primary/25 hover:border-primary/50 rounded-full transition-all cursor-pointer shadow-sm notranslate"
                   title="Switch Language / ভাষা পরিবর্তন করুন"
                 >
-                  <div className="w-5 h-5 rounded-full bg-primary text-white flex items-center justify-center shrink-0 shadow-sm">
-                    <Globe className="w-3 h-3" />
+                  <div className="w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-primary text-white flex items-center justify-center shrink-0 shadow-sm">
+                    <Globe className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                   </div>
-                  <span className="font-extrabold tracking-wide">
+                  <span className="font-extrabold tracking-wide max-w-[40px] sm:max-w-none truncate">
                     {!isMounted ? 'EN' : language === 'en' ? 'English' : language === 'bn' ? 'বাংলা' : 'தமிழ்'}
                   </span>
-                  <ChevronDown className={cn("w-3.5 h-3.5 text-primary transition-transform duration-200", langMenuOpen && "rotate-180")} />
+                  <ChevronDown className={cn("w-3 h-3 sm:w-3.5 sm:h-3.5 text-primary transition-transform duration-200", langMenuOpen && "rotate-180")} />
                 </button>
 
                 {langMenuOpen && (

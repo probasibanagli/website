@@ -584,6 +584,7 @@ export default function EmergencyHospitalsPage() {
               </div>
             </div>
             
+            {/*
             <div className="w-full lg:w-[520px] xl:w-[560px] shrink-0 flex items-center">
               <WordHelper
                 words={ALL_HOSPITAL_TRANSLATION_CARDS}
@@ -592,6 +593,7 @@ export default function EmergencyHospitalsPage() {
                 variant="horizontal"
               />
             </div>
+            */}
           </div>
         </div>
       </div>

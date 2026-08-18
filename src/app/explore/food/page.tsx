@@ -250,6 +250,7 @@ export default function FoodPage() {
             </div>
             
             {/* Right Sidebar for Word Helper */}
+            {/*
             <div className="w-full lg:w-[450px] xl:w-[500px] shrink-0 flex items-center">
               <WordHelper 
                 words={FOOD_TAMIL_WORDS} 
@@ -258,6 +259,7 @@ export default function FoodPage() {
                 variant="horizontal"
               />
             </div>
+            */}
           </div>
         </div>
       </div>

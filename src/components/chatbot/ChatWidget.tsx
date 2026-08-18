@@ -4,7 +4,7 @@ import React, { useState, useMemo } from 'react';
 import { X, Sparkles, Search, Volume2, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { usePathname } from 'next/navigation';
-import { TAMIL_WORDS, FOOD_TAMIL_WORDS, STAY_TAMIL_WORDS, HOSPITAL_TAMIL_WORDS, TRAVEL_TAMIL_WORDS } from '@/lib/constants';
+import { TAMIL_WORDS, FOOD_TAMIL_WORDS, STAY_TAMIL_WORDS, HOSPITAL_TAMIL_WORDS, TRAVEL_TAMIL_WORDS, COMMUNITY_TAMIL_WORDS, EMERGENCY_TAMIL_WORDS, SERVICES_TAMIL_WORDS } from '@/lib/constants';
 
 interface WordDef {
   meaning: string;
@@ -26,8 +26,11 @@ export function ChatWidget() {
     let baseWords = [...dynamicWords, ...TAMIL_WORDS];
     if (pathname?.includes('/explore/food')) baseWords = [...dynamicWords, ...FOOD_TAMIL_WORDS, ...TAMIL_WORDS];
     else if (pathname?.includes('/explore/stay')) baseWords = [...dynamicWords, ...STAY_TAMIL_WORDS, ...TAMIL_WORDS];
-    else if (pathname?.includes('/explore/hospital')) baseWords = [...dynamicWords, ...HOSPITAL_TAMIL_WORDS, ...TAMIL_WORDS];
     else if (pathname?.includes('/explore/travel')) baseWords = [...dynamicWords, ...TRAVEL_TAMIL_WORDS, ...TAMIL_WORDS];
+    else if (pathname?.includes('/emergency/hospital')) baseWords = [...dynamicWords, ...HOSPITAL_TAMIL_WORDS, ...TAMIL_WORDS];
+    else if (pathname?.includes('/community')) baseWords = [...dynamicWords, ...COMMUNITY_TAMIL_WORDS, ...TAMIL_WORDS];
+    else if (pathname?.includes('/emergency')) baseWords = [...dynamicWords, ...EMERGENCY_TAMIL_WORDS, ...TAMIL_WORDS];
+    else if (pathname?.includes('/services')) baseWords = [...dynamicWords, ...SERVICES_TAMIL_WORDS, ...TAMIL_WORDS];
     
     // Deduplicate by meaning
     const seen = new Set();
@@ -93,6 +96,16 @@ export function ChatWidget() {
 
     return () => clearTimeout(timeoutId);
   }, [wordSearch, filteredWords.length, isLoadingWord]);
+
+  // Clear search and reset state when opened/closed or on page change
+  React.useEffect(() => {
+    setWordSearch('');
+  }, [isOpen]);
+
+  React.useEffect(() => {
+    setDynamicWords([]);
+    setWordSearch('');
+  }, [pathname]);
 
   const audioRef = React.useRef<HTMLAudioElement | null>(null);
 
