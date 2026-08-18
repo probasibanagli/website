@@ -330,4 +330,9 @@ body {
   animation: dance 3s ease-in-out infinite;
 }
 
+/* Prevent welcome modal flashing on SSR reload */
+html.pb-welcome-dismissed .welcome-modal-overlay {
+  display: none !important;
+}
+
 

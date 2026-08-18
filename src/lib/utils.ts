@@ -52,3 +52,44 @@ export function getUberEatsSearchUrl(name: string, city: string): string {
   const query = encodeURIComponent(`${name} ${city}`);
   return `https://www.ubereats.com/search?q=${query}`;
 }
+
+export function sanitizeErrorMessage(message: string): string {
+  if (!message) return '';
+  const msgLower = message.toLowerCase();
+  
+  if (msgLower.includes('firebase') || msgLower.includes('auth/')) {
+    if (msgLower.includes('invalid-credential') || msgLower.includes('user-not-found') || msgLower.includes('wrong-password')) {
+      return 'Invalid email or password. Please try again.';
+    }
+    if (msgLower.includes('invalid-email')) {
+      return 'Please enter a valid email address.';
+    }
+    if (msgLower.includes('email-already-in-use')) {
+      return 'This email address is already in use by another account.';
+    }
+    if (msgLower.includes('weak-password')) {
+      return 'Password should be at least 6 characters long.';
+    }
+    if (msgLower.includes('phone-already-in-use')) {
+      return 'This phone number is already registered.';
+    }
+    if (msgLower.includes('invalid-verification-code') || msgLower.includes('code-expired') || msgLower.includes('session-expired')) {
+      return 'The verification code entered is incorrect or has expired. Please try again.';
+    }
+    if (msgLower.includes('too-many-requests')) {
+      return 'Too many attempts. Please try again later.';
+    }
+    if (msgLower.includes('network-request-failed')) {
+      return 'Network error. Please check your internet connection and try again.';
+    }
+    if (msgLower.includes('popup-closed-by-user') || msgLower.includes('cancelled-popup-request')) {
+      return 'Login window was closed before completion. Please try again.';
+    }
+    if (msgLower.includes('user-disabled')) {
+      return 'This account has been disabled. Please contact support.';
+    }
+    return 'Authentication failed. Please check your inputs and try again.';
+  }
+  
+  return message;
+}

@@ -1,7 +1,9 @@
 'use client';
 
 import React from 'react';
-import { X, CheckCircle2, AlertTriangle, XCircle, Info } from 'lucide-react';
+import { X, Check, RotateCw, AlertTriangle, Info } from 'lucide-react';
+
+import { sanitizeErrorMessage } from '@/lib/utils';
 
 export type AlertType = 'success' | 'error' | 'warning' | 'info';
 
@@ -15,84 +17,105 @@ interface AlertPopupProps {
 export function AlertPopup({ isOpen, message, type = 'info', onClose }: AlertPopupProps) {
   if (!isOpen) return null;
 
+  const sanitizedMessage = sanitizeErrorMessage(message);
+
   const typeConfig = {
     success: {
-      borderColor: 'border-emerald-100',
-      iconColor: 'text-emerald-500',
-      icon: <CheckCircle2 className="w-6 h-6" />,
-      buttonClass: 'bg-emerald-600 hover:bg-emerald-700 text-white focus-visible:ring-emerald-500',
       title: 'Success',
+      iconBg: 'bg-[#E6F4EA] text-[#137333]',
+      icon: <Check className="w-9 h-9" />,
+      buttonText: 'Continue',
+      buttonIcon: <Check className="w-4 h-4" />,
     },
     error: {
-      borderColor: 'border-rose-100',
-      iconColor: 'text-rose-500',
-      icon: <XCircle className="w-6 h-6" />,
-      buttonClass: 'bg-rose-600 hover:bg-rose-700 text-white focus-visible:ring-rose-500',
       title: 'Error',
+      iconBg: 'bg-[#FCE8E6] text-[#C5221F]',
+      icon: (
+        <svg className="w-9 h-9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          {/* Key Head */}
+          <circle cx="8" cy="16" r="3" />
+          {/* Key Shaft */}
+          <line x1="10.1" y1="13.9" x2="18" y2="6" />
+          {/* Teeth */}
+          <path d="M19 5l-2.5 2.5" />
+          <path d="M16 8l-2 2" />
+          {/* Slash Line crossing the key */}
+          <line x1="4" y1="4" x2="20" y2="20" />
+        </svg>
+      ),
+      buttonText: 'Try Again',
+      buttonIcon: <RotateCw className="w-4 h-4" />,
     },
     warning: {
-      borderColor: 'border-amber-100',
-      iconColor: 'text-amber-500',
-      icon: <AlertTriangle className="w-6 h-6" />,
-      buttonClass: 'bg-amber-600 hover:bg-amber-700 text-white focus-visible:ring-amber-500',
       title: 'Warning',
+      iconBg: 'bg-[#FEF7E0] text-[#B06000]',
+      icon: <AlertTriangle className="w-9 h-9" />,
+      buttonText: 'Okay',
+      buttonIcon: <AlertTriangle className="w-4 h-4" />,
     },
     info: {
-      borderColor: 'border-blue-100',
-      iconColor: 'text-blue-500',
-      icon: <Info className="w-6 h-6" />,
-      buttonClass: 'bg-blue-600 hover:bg-blue-700 text-white focus-visible:ring-blue-500',
       title: 'Notification',
+      iconBg: 'bg-[#E8F0FE] text-[#1A73E8]',
+      icon: <Info className="w-9 h-9" />,
+      buttonText: 'Got it',
+      buttonIcon: <Info className="w-4 h-4" />,
     },
   };
 
   const currentType = typeConfig[type] || typeConfig.info;
 
+  // Intelligently choose the title for authentication errors
+  let displayTitle = currentType.title;
+  if (type === 'error') {
+    const msgLower = sanitizedMessage.toLowerCase();
+    if (msgLower.includes('verification') || msgLower.includes('code') || msgLower.includes('auth') || msgLower.includes('incorrect') || msgLower.includes('expired')) {
+      displayTitle = 'Authentication Failed';
+    }
+  }
+
   return (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
-      {/* Premium Backdrop blur */}
+      {/* Dim backdrop with blur */}
       <div 
-        className="absolute inset-0 bg-neutral-950/45 backdrop-blur-md transition-opacity duration-300"
+        className="absolute inset-0 bg-black/45 backdrop-blur-sm transition-opacity duration-300 animate-fade-in"
         onClick={onClose}
       />
       
-      {/* Premium Sleek Minimal Card - Forced White Background (no dark mode styling) */}
-      <div className="relative w-full max-w-sm overflow-hidden rounded-2xl bg-white border border-neutral-200/80 shadow-[0_12px_38px_-4px_rgba(0,0,0,0.12),0_8px_16px_-4px_rgba(0,0,0,0.06)] transition-all duration-300 scale-100">
+      {/* Premium Elegant Card Container */}
+      <div className="relative w-full max-w-sm overflow-hidden rounded-[32px] bg-white border border-black/5 shadow-2xl transition-all duration-300 scale-100 flex flex-col z-10 p-8 pt-10 items-center text-center animate-slide-up">
         
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute right-4 top-4 rounded-full p-1.5 text-neutral-400 hover:text-neutral-600 hover:bg-neutral-100 transition-colors"
+          className="absolute right-6 top-6 rounded-full p-1 text-neutral-400 hover:text-neutral-600 transition-colors"
           aria-label="Close"
         >
-          <X className="w-4 h-4" />
+          <X className="w-5 h-5" />
         </button>
 
-        {/* Content */}
-        <div className="p-6 pt-8 flex flex-col items-center text-center">
-          {/* Elegant Icon Border Wrapper */}
-          <div className={`mb-4 flex items-center justify-center p-2.5 rounded-full border bg-neutral-50 ${currentType.borderColor} ${currentType.iconColor}`}>
-            {currentType.icon}
-          </div>
-
-          {/* Title */}
-          <h3 className="mb-2 text-base font-bold text-neutral-900 tracking-tight">
-            {currentType.title}
-          </h3>
-
-          {/* Message */}
-          <p className="mb-6 text-sm text-neutral-500 leading-relaxed break-words max-w-full px-2">
-            {message}
-          </p>
-
-          {/* Premium Custom Styled Button */}
-          <button
-            onClick={onClose}
-            className={`w-full py-2.5 px-4 rounded-xl text-sm font-semibold transition-all duration-300 cursor-pointer shadow-sm active:scale-[0.98] ${currentType.buttonClass}`}
-          >
-            Done
-          </button>
+        {/* Icon Circle */}
+        <div className={`mb-8 flex items-center justify-center w-20 h-20 rounded-full ${currentType.iconBg}`}>
+          {currentType.icon}
         </div>
+
+        {/* Title */}
+        <h3 className="mb-4 text-2xl font-bold text-neutral-900 tracking-tight leading-tight">
+          {displayTitle}
+        </h3>
+
+        {/* Description Message */}
+        <p className="mb-8 text-neutral-500 text-sm leading-relaxed max-w-xs">
+          {sanitizedMessage}
+        </p>
+
+        {/* Action Button */}
+        <button
+          onClick={onClose}
+          className="w-full py-4 px-6 rounded-full text-base font-semibold text-white bg-[#D85A30] hover:bg-[#C24D27] flex items-center justify-center gap-2 transition-all duration-200 shadow-md shadow-[#D85A30]/20 active:scale-[0.98] cursor-pointer"
+        >
+          {currentType.buttonIcon}
+          {currentType.buttonText}
+        </button>
       </div>
     </div>
   );
