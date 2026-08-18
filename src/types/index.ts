@@ -249,6 +249,9 @@ export interface BengaliDoctor {
   photo: string;
   phone: string;
   email: string;
+  google_rating?: number;
+  google_review_count?: number;
+  google_review_url?: string;
   google_review_link?: string;
   instagram_url?: string;
   facebook_url?: string;
@@ -538,6 +541,7 @@ export interface Pharmacy {
 export interface HospitalReview {
   id: string;
   hospital_id: string;
+  hospital_name?: string;
   user_id?: string;
   user_name: string;
   user_avatar?: string;

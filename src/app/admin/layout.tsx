@@ -65,13 +65,28 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       }
     };
 
+    // Automatically clear validation state when forms are opened/closed
+    const handleGlobalClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const button = target.closest('button');
+      if (button && button.type !== 'submit') {
+        const text = (button.textContent || '').toLowerCase();
+        const title = (button.title || '').toLowerCase();
+        if (text.includes('add') || text.includes('cancel') || text.includes('close') || title.includes('edit') || title.includes('close')) {
+          document.querySelectorAll('form.form-submitted').forEach(f => f.classList.remove('form-submitted'));
+        }
+      }
+    };
+
     // Use capture phase (true) because 'invalid' events do not bubble
     document.addEventListener('invalid', handleInvalid, true);
     document.addEventListener('submit', handleSubmit, true);
+    document.addEventListener('click', handleGlobalClick, true);
 
     return () => {
       document.removeEventListener('invalid', handleInvalid, true);
       document.removeEventListener('submit', handleSubmit, true);
+      document.removeEventListener('click', handleGlobalClick, true);
     };
   }, [router]);
 

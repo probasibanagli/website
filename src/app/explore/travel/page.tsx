@@ -13,7 +13,6 @@ import {
   Loader2,
   AlertCircle,
   Search,
-  Megaphone,
   Map,
   ArrowRight,
   Clock,
@@ -21,13 +20,11 @@ import {
   ArrowUpDown,
   CheckCircle2,
   Compass,
-  Filter,
-  Volume2
+  Filter
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/Badge';
-import { TAMIL_WORDS } from '@/lib/constants';
 import { checkRouteAvailability, RouteResponse, TransportCategory, PrivateMode } from '@/lib/routingService';
 import {
   METRO_STATIONS,
@@ -190,6 +187,78 @@ const METRO_STATION_COORDS: Record<string, [number, number]> = {
   'St. Thomas Mount': [12.9980, 80.2023]
 };
 
+const METRO_PHASE2_C3_PURPLE = [
+  'Madhavaram Milk Colony',
+  'Perambur',
+  'Kellys',
+  'Chetpet',
+  'Nungambakkam',
+  'Thousand Light',
+  'Royapettah',
+  'Thirumayilai',
+  'Adyar',
+  'Thiruvanmiyur',
+  'Perungudi',
+  'Sholinganallur',
+  'SIPCOT 2'
+];
+
+const METRO_PHASE2_C4_YELLOW = [
+  'Lighthouse',
+  'Thirumayilai',
+  'Alwarpet',
+  'Nandanam',
+  'Kodambakkam',
+  'Vadapalani',
+  'Saligramam',
+  'Valasaravakkam',
+  'Porur',
+  'Poonamallee Bypass'
+];
+
+const METRO_PHASE2_C5_RED = [
+  'Madhavaram Milk Colony',
+  'Retteri Junction',
+  'Kolathur',
+  'Villivakkam',
+  'Anna Nagar West',
+  'Koyambedu',
+  'Puratchi Thalaivi Dr.J.Jayalalitha CMBT Metro',
+  'Arignar Anna Alandur Metro',
+  'Madipakkam',
+  'Kilkattalai',
+  'Medavakkam',
+  'Sholinganallur'
+];
+
+const METRO_PHASE2_COORDS: Record<string, [number, number]> = {
+  'Madhavaram Milk Colony': [13.1492, 80.2325],
+  'Perambur': [13.1112, 80.2447],
+  'Kellys': [13.0906, 80.2491],
+  'Chetpet': [13.0691, 80.2415],
+  'Nungambakkam': [13.0581, 80.2392],
+  'Royapettah': [13.0505, 80.2608],
+  'Thirumayilai': [13.0332, 80.2694],
+  'Adyar': [13.0063, 80.2520],
+  'Thiruvanmiyur': [12.9835, 80.2515],
+  'Perungudi': [12.9620, 80.2450],
+  'Sholinganallur': [12.9015, 80.2272],
+  'SIPCOT 2': [12.8259, 80.2161],
+  'Lighthouse': [13.0415, 80.2785],
+  'Alwarpet': [13.0337, 80.2504],
+  'Kodambakkam': [13.0520, 80.2225],
+  'Saligramam': [13.0515, 80.1985],
+  'Valasaravakkam': [13.0412, 80.1740],
+  'Porur': [13.0335, 80.1550],
+  'Poonamallee Bypass': [13.0473, 80.0945],
+  'Retteri Junction': [13.1292, 80.2105],
+  'Kolathur': [13.1215, 80.2030],
+  'Villivakkam': [13.1042, 80.2015],
+  'Anna Nagar West': [13.0895, 80.2010],
+  'Madipakkam': [12.9642, 80.2025],
+  'Kilkattalai': [12.9405, 80.1990],
+  'Medavakkam': [12.9125, 80.1902]
+};
 
 const getMetroPath = (from: string, to: string): string[] => {
   if (!from || !to) return [];
@@ -343,7 +412,6 @@ export default function TravelPage() {
   const [cityRouteResult, setCityRouteResult] = useState<RouteResponse | null>(null);
   const [isCityRouteLoading, setIsCityRouteLoading] = useState(false);
 
-  const [currentTamilIdx, setCurrentTamilIdx] = useState(0);
   const [isNcmcFlipped, setIsNcmcFlipped] = useState(false);
   const [activeCardTab, setActiveCardTab] = useState<'about' | 'benefits' | 'topup' | 'fees' | 'howto'>('about');
   const [activeMetroCardType, setActiveMetroCardType] = useState<'ncmc' | 'svp' | 'faq'>('ncmc');
@@ -352,6 +420,7 @@ export default function TravelPage() {
   const [openFaqIdx, setOpenFaqIdx] = useState<number | null>(null);
   const [activeAmenitiesTab, setActiveAmenitiesTab] = useState<'lastmile' | 'women' | 'disabled'>('lastmile');
   const [mapScale, setMapScale] = useState(1);
+  const [staticMapType, setStaticMapType] = useState<'schematic' | 'phase'>('schematic');
   const metroLineMapContainerRef = useRef<HTMLDivElement | null>(null);
   const dragStatusRef = useRef({ isDragging: false, startX: 0, startY: 0, scrollLeft: 0, scrollTop: 0 });
 
@@ -441,15 +510,6 @@ export default function TravelPage() {
     const interval = setInterval(updateStatus, 60000);
     return () => clearInterval(interval);
   }, []);
-
-  const speakWord = (text: string) => {
-    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'ta-IN';
-      window.speechSynthesis.speak(utterance);
-    }
-  };
 
   // Leaflet map refs & loading state
   const [leafletLoaded, setLeafletLoaded] = useState(false);
@@ -551,6 +611,15 @@ export default function TravelPage() {
       L.polyline(blueLineCoords, { color: '#2563eb', weight: 4, opacity: 0.8 }).addTo(map);
       L.polyline(greenLineCoords, { color: '#16a34a', weight: 4, opacity: 0.8 }).addTo(map);
 
+      // Draw Phase 2 corridors as dashed polylines
+      const purpleLineCoords = METRO_PHASE2_C3_PURPLE.map(stn => METRO_STATION_COORDS[stn] || METRO_PHASE2_COORDS[stn]).filter(Boolean) as [number, number][];
+      const yellowLineCoords = METRO_PHASE2_C4_YELLOW.map(stn => METRO_STATION_COORDS[stn] || METRO_PHASE2_COORDS[stn]).filter(Boolean) as [number, number][];
+      const redLineCoords = METRO_PHASE2_C5_RED.map(stn => METRO_STATION_COORDS[stn] || METRO_PHASE2_COORDS[stn]).filter(Boolean) as [number, number][];
+
+      L.polyline(purpleLineCoords, { color: '#a855f7', weight: 3, opacity: 0.6, dashArray: '5, 8' }).addTo(map);
+      L.polyline(yellowLineCoords, { color: '#eab308', weight: 3, opacity: 0.6, dashArray: '5, 8' }).addTo(map);
+      L.polyline(redLineCoords, { color: '#ef4444', weight: 3, opacity: 0.6, dashArray: '5, 8' }).addTo(map);
+
       const markers: { station: string; marker: any }[] = [];
       const allStations = Array.from(new Set([...METRO_BLUE_LINE, ...METRO_GREEN_LINE]));
 
@@ -609,6 +678,37 @@ export default function TravelPage() {
       });
 
       markerLayersRef.current = markers;
+
+      // Draw Phase 2 station markers (Slate-gray, smaller)
+      const phase2Stations = Array.from(new Set([
+        ...METRO_PHASE2_C3_PURPLE,
+        ...METRO_PHASE2_C4_YELLOW,
+        ...METRO_PHASE2_C5_RED
+      ]));
+
+      phase2Stations.forEach(stn => {
+        // Skip if it's already a Phase 1 active station
+        if (allStations.includes(stn)) return;
+
+        const coords = METRO_PHASE2_COORDS[stn];
+        if (!coords) return;
+
+        const marker = L.circleMarker(coords, {
+          radius: 3.5,
+          fillColor: '#94a3b8',
+          color: '#ffffff',
+          weight: 1,
+          fillOpacity: 0.95
+        }).addTo(map);
+
+        marker.bindTooltip(stn + " (Phase 2 - Yet to Build)", {
+          permanent: false,
+          direction: 'top',
+          offset: [0, -5],
+          opacity: 0.9,
+          className: 'metro-tooltip metro-tooltip-phase2'
+        });
+      });
     }
 
     // Force map to recalculate its size on container mount
@@ -990,7 +1090,7 @@ export default function TravelPage() {
                       {/* Step A: Select Transport Category */}
                       <div>
                         <div>
-                          <label className="block text-sm font-semibold text-text-primary">1. Select Transport Category</label>
+                          <label className="block text-sm font-semibold text-text-primary">Select Transport Category</label>
                           <span className="block text-[11px] text-text-muted font-medium font-bengali mb-3">পরিবহন বিভাগ নির্বাচন করুন</span>
                         </div>
                         <div className="relative flex bg-slate-100 p-1 rounded-2xl border border-slate-200 shadow-inner w-full overflow-hidden">
@@ -1038,7 +1138,10 @@ export default function TravelPage() {
                       {/* Step B: Select Mode of Transport */}
                       {cityTransportType === 'public' && (
                         <div>
-                          <label className="block text-sm font-semibold text-text-primary mb-3">2. Select Mode of Transport</label>
+                          <div>
+                            <label className="block text-sm font-semibold text-text-primary">Select Mode of Transport</label>
+                            <span className="block text-[11px] text-text-muted font-medium font-bengali mb-3">পরিবহন মাধ্যম নির্বাচন করুন</span>
+                          </div>
                           <div className="flex gap-2">
                             <button
                               onClick={() => {
@@ -1076,7 +1179,10 @@ export default function TravelPage() {
 
                       {cityTransportType === 'private' && (
                         <div>
-                          <label className="block text-sm font-semibold text-text-primary mb-3">2. Select Ride-Hailing App</label>
+                          <div>
+                            <label className="block text-sm font-semibold text-text-primary">Select Ride-Hailing App</label>
+                            <span className="block text-[11px] text-text-muted font-medium font-bengali mb-3">রাইড-হেইলিং অ্যাপ নির্বাচন করুন</span>
+                          </div>
                           <div className="flex flex-wrap gap-2">
                             {[
                               { id: 'ola', name: 'Ola Cabs' },
@@ -1150,6 +1256,23 @@ export default function TravelPage() {
                                           <option key={`from-green-${station}`} value={station}>🟢 {station}</option>
                                         ))}
                                       </optgroup>
+                                      <optgroup label="Phase 2 Corridors (Yet to Build)">
+                                        {METRO_PHASE2_C3_PURPLE.filter(stn => !METRO_BLUE_LINE.includes(stn) && !METRO_GREEN_LINE.includes(stn)).map(station => (
+                                          <option key={`from-p2-c3-${station}`} value={station} disabled={true}>
+                                            🟣 {station} (C3 Purple - Yet to Build)
+                                          </option>
+                                        ))}
+                                        {METRO_PHASE2_C4_YELLOW.filter(stn => !METRO_BLUE_LINE.includes(stn) && !METRO_GREEN_LINE.includes(stn)).map(station => (
+                                          <option key={`from-p2-c4-${station}`} value={station} disabled={true}>
+                                            🟡 {station} (C4 Yellow - Yet to Build)
+                                          </option>
+                                        ))}
+                                        {METRO_PHASE2_C5_RED.filter(stn => !METRO_BLUE_LINE.includes(stn) && !METRO_GREEN_LINE.includes(stn)).map(station => (
+                                          <option key={`from-p2-c5-${station}`} value={station} disabled={true}>
+                                            🔴 {station} (C5 Red - Yet to Build)
+                                          </option>
+                                        ))}
+                                      </optgroup>
                                     </select>
                                   </div>
                                   <div>
@@ -1170,6 +1293,23 @@ export default function TravelPage() {
                                           <option key={`to-green-${station}`} value={station}>🟢 {station}</option>
                                         ))}
                                       </optgroup>
+                                      <optgroup label="Phase 2 Corridors (Yet to Build)">
+                                        {METRO_PHASE2_C3_PURPLE.filter(stn => !METRO_BLUE_LINE.includes(stn) && !METRO_GREEN_LINE.includes(stn)).map(station => (
+                                          <option key={`to-p2-c3-${station}`} value={station} disabled={true}>
+                                            🟣 {station} (C3 Purple - Yet to Build)
+                                          </option>
+                                        ))}
+                                        {METRO_PHASE2_C4_YELLOW.filter(stn => !METRO_BLUE_LINE.includes(stn) && !METRO_GREEN_LINE.includes(stn)).map(station => (
+                                          <option key={`to-p2-c4-${station}`} value={station} disabled={true}>
+                                            🟡 {station} (C4 Yellow - Yet to Build)
+                                          </option>
+                                        ))}
+                                        {METRO_PHASE2_C5_RED.filter(stn => !METRO_BLUE_LINE.includes(stn) && !METRO_GREEN_LINE.includes(stn)).map(station => (
+                                          <option key={`to-p2-c5-${station}`} value={station} disabled={true}>
+                                            🔴 {station} (C5 Red - Yet to Build)
+                                          </option>
+                                        ))}
+                                      </optgroup>
                                     </select>
                                   </div>
                                 </div>
@@ -1188,10 +1328,21 @@ export default function TravelPage() {
                                   style={{ height: '400px' }} 
                                   className="w-full rounded-xl border border-border overflow-hidden shadow-sm z-0" 
                                 />
-                                <div className="absolute bottom-2 right-2 bg-white/90 backdrop-blur-xs px-2.5 py-1.5 rounded-lg border border-border text-[10px] font-bold text-text-muted z-10 flex gap-2.5 shadow-xs">
-                                  <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-blue-600 border border-white" /> Blue Line</span>
-                                  <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-green-600 border border-white" /> Green Line</span>
-                                  <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-purple-600 border border-white animate-pulse" /> Interchange</span>
+                                <div className="absolute bottom-2 right-2 bg-white/95 backdrop-blur-xs p-2.5 rounded-xl border border-border text-[9px] font-bold text-text-muted z-10 flex flex-col gap-1.5 shadow-md max-w-[200px]">
+                                  <div className="flex flex-wrap gap-x-2.5 gap-y-1">
+                                    <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-blue-600 border border-white shadow-2xs" /> Blue Line</span>
+                                    <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-green-600 border border-white shadow-2xs" /> Green Line</span>
+                                    <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-purple-600 border border-white animate-pulse shadow-2xs" /> Interchange</span>
+                                  </div>
+                                  <div className="border-t border-slate-100 my-0.5 pt-1.5 flex flex-col gap-1">
+                                    <span className="block font-black text-slate-500 uppercase tracking-wider text-[8px] mb-0.5">Phase 2 (Yet to Build)</span>
+                                    <div className="flex flex-wrap gap-x-2 gap-y-1 font-medium">
+                                      <span className="flex items-center gap-1"><span className="w-3 h-0.5 bg-purple-500 border-t border-dashed" /> C3 Purple</span>
+                                      <span className="flex items-center gap-1"><span className="w-3 h-0.5 bg-yellow-500 border-t border-dashed" /> C4 Yellow</span>
+                                      <span className="flex items-center gap-1"><span className="w-3 h-0.5 bg-red-500 border-t border-dashed" /> C5 Red</span>
+                                      <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-slate-400 border border-white shadow-2xs" /> Station</span>
+                                    </div>
+                                  </div>
                                 </div>
                               </div>
                             </div>
@@ -1304,94 +1455,131 @@ export default function TravelPage() {
                               </div>
                             </div>
                           ) : (
-                            <div className="relative flex flex-col md:flex-row gap-4 items-center bg-slate-50/50 p-4 rounded-2xl border border-slate-100/60">
-                              {/* Left side route line decoration */}
-                              <div className="hidden md:flex flex-col items-center justify-between h-[84px] py-3.5 w-6">
-                                <span className="w-2.5 h-2.5 rounded-full border-2 border-emerald-500 bg-white" />
-                                <div className="w-0.5 flex-1 border-l-2 border-dashed border-slate-300 my-1" />
-                                <span className="w-2.5 h-2.5 rounded-full border-2 border-rose-500 bg-white" />
+                            <div className="space-y-3 w-full">
+                              <div className="relative flex flex-col md:flex-row gap-4 items-center bg-slate-50/50 p-4 rounded-2xl border border-slate-100/60">
+                                {/* Left side route line decoration */}
+                                <div className="hidden md:flex flex-col items-center justify-between h-[84px] py-3.5 w-6">
+                                  <span className="w-2.5 h-2.5 rounded-full border-2 border-emerald-500 bg-white" />
+                                  <div className="w-0.5 flex-1 border-l-2 border-dashed border-slate-300 my-1" />
+                                  <span className="w-2.5 h-2.5 rounded-full border-2 border-rose-500 bg-white" />
+                                </div>
+
+                                <div className="flex-1 w-full grid grid-cols-1 md:grid-cols-2 gap-4 relative">
+                                  {/* Swap Button */}
+                                  <div className="absolute right-4 md:right-auto md:left-1/2 top-1/2 -translate-y-1/2 md:-translate-x-1/2 z-20">
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        const temp = cityFrom;
+                                        setCityFrom(cityTo);
+                                        setCityTo(temp);
+                                      }}
+                                      className="w-8 h-8 rounded-full bg-white border border-slate-200 shadow-sm flex items-center justify-center hover:bg-slate-50 active:scale-95 transition-all text-primary hover:text-primary-dark cursor-pointer"
+                                      title="Swap Stations"
+                                    >
+                                      <ArrowUpDown className="w-4 h-4" />
+                                    </button>
+                                  </div>
+
+                                  <div className="relative">
+                                    <label className="block text-xs font-bold uppercase tracking-wider text-text-muted mb-1.5">From Station / Area</label>
+                                    <input
+                                      type="text"
+                                      value={cityFrom}
+                                      onChange={(e) => setCityFrom(e.target.value)}
+                                      onFocus={() => { if (cityPublicMode === 'bus') setShowSuggestionsFrom(true); }}
+                                      onBlur={() => {
+                                        if (cityPublicMode === 'bus') {
+                                          setTimeout(() => setShowSuggestionsFrom(false), 200);
+                                        }
+                                      }}
+                                      placeholder={cityTransportType === 'private' ? 'Enter pickup point...' : 'Enter starting point...'}
+                                      className="w-full px-4 py-3 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 bg-white"
+                                    />
+                                    {cityPublicMode === 'bus' && showSuggestionsFrom && busSuggestionsFrom.length > 0 && (
+                                      <div className="absolute left-0 right-0 z-50 mt-1 max-h-60 overflow-y-auto bg-white border border-border rounded-xl shadow-lg text-sm">
+                                        {busSuggestionsFrom.map((stop, idx) => (
+                                          <div
+                                            key={`sugg-from-${idx}`}
+                                            onMouseDown={() => {
+                                              setCityFrom(stop);
+                                              setShowSuggestionsFrom(false);
+                                            }}
+                                            className="px-4 py-2 hover:bg-slate-50 cursor-pointer text-text-primary border-b border-slate-100 last:border-0 font-medium"
+                                          >
+                                            {stop}
+                                          </div>
+                                        ))}
+                                      </div>
+                                    )}
+                                  </div>
+                                  <div className="relative">
+                                    <label className="block text-xs font-bold uppercase tracking-wider text-text-muted mb-1.5">To Station / Area</label>
+                                    <input
+                                      type="text"
+                                      value={cityTo}
+                                      onChange={(e) => setCityTo(e.target.value)}
+                                      onFocus={() => { if (cityPublicMode === 'bus') setShowSuggestionsTo(true); }}
+                                      onBlur={() => {
+                                        if (cityPublicMode === 'bus') {
+                                          setTimeout(() => setShowSuggestionsTo(false), 200);
+                                        }
+                                      }}
+                                      placeholder={cityTransportType === 'private' ? 'Enter dropoff point...' : 'Enter destination...'}
+                                      className="w-full px-4 py-3 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 bg-white"
+                                    />
+                                    {cityPublicMode === 'bus' && showSuggestionsTo && busSuggestionsTo.length > 0 && (
+                                      <div className="absolute left-0 right-0 z-50 mt-1 max-h-60 overflow-y-auto bg-white border border-border rounded-xl shadow-lg text-sm">
+                                        {busSuggestionsTo.map((stop, idx) => (
+                                          <div
+                                            key={`sugg-to-${idx}`}
+                                            onMouseDown={() => {
+                                              setCityTo(stop);
+                                              setShowSuggestionsTo(false);
+                                            }}
+                                            className="px-4 py-2 hover:bg-slate-50 cursor-pointer text-text-primary border-b border-slate-100 last:border-0 font-medium"
+                                          >
+                                            {stop}
+                                          </div>
+                                        ))}
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
                               </div>
 
-                              <div className="flex-1 w-full grid grid-cols-1 md:grid-cols-2 gap-4 relative">
-                                {/* Swap Button */}
-                                <div className="absolute right-4 md:right-auto md:left-1/2 top-1/2 -translate-y-1/2 md:-translate-x-1/2 z-20">
-                                  <button
-                                    type="button"
-                                    onClick={() => {
-                                      const temp = cityFrom;
-                                      setCityFrom(cityTo);
-                                      setCityTo(temp);
-                                    }}
-                                    className="w-8 h-8 rounded-full bg-white border border-slate-200 shadow-sm flex items-center justify-center hover:bg-slate-50 active:scale-95 transition-all text-primary hover:text-primary-dark cursor-pointer"
-                                    title="Swap Stations"
+                              {/* MTC Bus Official Link and Accuracy Warning */}
+                              <div className="p-4 bg-green-50/60 rounded-2xl border border-green-200/50 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 text-xs">
+                                <div className="flex items-start gap-3">
+                                  <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-700 shrink-0 text-base font-sans">
+                                    🚌
+                                  </div>
+                                  <div>
+                                    <h5 className="font-bold text-green-900 text-sm">Route Information Accuracy</h5>
+                                    <p className="text-green-700/90 leading-relaxed mt-0.5 font-medium">
+                                      Please note that MTC bus route information is approximate and approximately <strong>90% accurate</strong>.
+                                    </p>
+                                  </div>
+                                </div>
+                                <div className="flex flex-wrap items-center gap-2 w-full md:w-auto shrink-0">
+                                  <a
+                                    href="https://commuter.mtcbusits.in/commuter/dashboard"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 bg-green-600 hover:bg-green-700 active:scale-95 text-white font-extrabold rounded-xl shadow-sm transition-all cursor-pointer text-xs"
                                   >
-                                    <ArrowUpDown className="w-4 h-4" />
-                                  </button>
-                                </div>
-
-                                <div className="relative">
-                                  <label className="block text-xs font-bold uppercase tracking-wider text-text-muted mb-1.5">From Station / Area</label>
-                                  <input
-                                    type="text"
-                                    value={cityFrom}
-                                    onChange={(e) => setCityFrom(e.target.value)}
-                                    onFocus={() => { if (cityPublicMode === 'bus') setShowSuggestionsFrom(true); }}
-                                    onBlur={() => {
-                                      if (cityPublicMode === 'bus') {
-                                        setTimeout(() => setShowSuggestionsFrom(false), 200);
-                                      }
-                                    }}
-                                    placeholder={cityTransportType === 'private' ? 'Enter pickup point...' : 'Enter starting point...'}
-                                    className="w-full px-4 py-3 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 bg-white"
-                                  />
-                                  {cityPublicMode === 'bus' && showSuggestionsFrom && busSuggestionsFrom.length > 0 && (
-                                    <div className="absolute left-0 right-0 z-50 mt-1 max-h-60 overflow-y-auto bg-white border border-border rounded-xl shadow-lg text-sm">
-                                      {busSuggestionsFrom.map((stop, idx) => (
-                                        <div
-                                          key={`sugg-from-${idx}`}
-                                          onMouseDown={() => {
-                                            setCityFrom(stop);
-                                            setShowSuggestionsFrom(false);
-                                          }}
-                                          className="px-4 py-2 hover:bg-slate-50 cursor-pointer text-text-primary border-b border-slate-100 last:border-0 font-medium"
-                                        >
-                                          {stop}
-                                        </div>
-                                      ))}
-                                    </div>
-                                  )}
-                                </div>
-                                <div className="relative">
-                                  <label className="block text-xs font-bold uppercase tracking-wider text-text-muted mb-1.5">To Station / Area</label>
-                                  <input
-                                    type="text"
-                                    value={cityTo}
-                                    onChange={(e) => setCityTo(e.target.value)}
-                                    onFocus={() => { if (cityPublicMode === 'bus') setShowSuggestionsTo(true); }}
-                                    onBlur={() => {
-                                      if (cityPublicMode === 'bus') {
-                                        setTimeout(() => setShowSuggestionsTo(false), 200);
-                                      }
-                                    }}
-                                    placeholder={cityTransportType === 'private' ? 'Enter dropoff point...' : 'Enter destination...'}
-                                    className="w-full px-4 py-3 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 bg-white"
-                                  />
-                                  {cityPublicMode === 'bus' && showSuggestionsTo && busSuggestionsTo.length > 0 && (
-                                    <div className="absolute left-0 right-0 z-50 mt-1 max-h-60 overflow-y-auto bg-white border border-border rounded-xl shadow-lg text-sm">
-                                      {busSuggestionsTo.map((stop, idx) => (
-                                        <div
-                                          key={`sugg-to-${idx}`}
-                                          onMouseDown={() => {
-                                            setCityTo(stop);
-                                            setShowSuggestionsTo(false);
-                                          }}
-                                          className="px-4 py-2 hover:bg-slate-50 cursor-pointer text-text-primary border-b border-slate-100 last:border-0 font-medium"
-                                        >
-                                          {stop}
-                                        </div>
-                                      ))}
-                                    </div>
-                                  )}
+                                    <span>MTC Official Portal (CBS - Commuter)</span>
+                                    <ExternalLink className="w-3.5 h-3.5" />
+                                  </a>
+                                  <a
+                                    href="https://www.chennaione.in/"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 bg-emerald-700 hover:bg-emerald-800 active:scale-95 text-white font-extrabold rounded-xl shadow-sm transition-all cursor-pointer text-xs"
+                                  >
+                                    <span>chennai one</span>
+                                    <ExternalLink className="w-3.5 h-3.5" />
+                                  </a>
                                 </div>
                               </div>
                             </div>
@@ -1548,6 +1736,9 @@ export default function TravelPage() {
                                     return (
                                       <div className="p-4 bg-white rounded-xl border border-border shadow-sm space-y-4">
                                         <h4 className="font-bold text-lg text-green-700">MTC Bus Routes</h4>
+                                        <p className="text-[11px] text-text-muted bg-green-50/30 p-2.5 rounded-lg border border-green-100/50 leading-relaxed font-sans">
+                                          ℹ️ <strong>Note:</strong> Route path sequences are approximate (approximately 90% accurate). For live bus tracking, use the official MTC portal button above.
+                                        </p>
 
                                         {direct.length > 0 && (
                                           <div className="space-y-3">
@@ -1618,6 +1809,7 @@ export default function TravelPage() {
 
                                         <div className="flex flex-wrap gap-2 pt-3 border-t border-border">
                                           <a href="https://chalo.com/app/" target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 bg-green-600 text-white rounded text-xs font-bold flex items-center gap-1 hover:bg-green-700">Chalo App (Live Tracking) <ExternalLink className="w-3 h-3"/></a>
+                                          <a href="https://www.chennaione.in/" target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 bg-emerald-700 text-white rounded text-xs font-bold flex items-center gap-1 hover:bg-emerald-800">chennai one <ExternalLink className="w-3 h-3"/></a>
                                         </div>
                                       </div>
                                     );
@@ -1856,7 +2048,7 @@ export default function TravelPage() {
                       {/* Step A: Select Transport Category */}
                       <div>
                         <div>
-                          <label className="block text-sm font-semibold text-text-primary">1. Select Transport Category</label>
+                          <label className="block text-sm font-semibold text-text-primary">Select Transport Category</label>
                           <span className="block text-[11px] text-text-muted font-medium font-bengali mb-3">পরিবহন বিভাগ নির্বাচন করুন</span>
                         </div>
                         <div className="relative flex bg-slate-100 p-1 rounded-2xl border border-slate-200 shadow-inner w-full overflow-hidden">
@@ -1904,7 +2096,10 @@ export default function TravelPage() {
                       {/* Step B: Select Mode of Transport */}
                       {stateTransportType === 'public' && (
                         <div>
-                          <label className="block text-sm font-semibold text-text-primary mb-3">2. Select Public Mode</label>
+                          <div>
+                            <label className="block text-sm font-semibold text-text-primary">Select Public Mode</label>
+                            <span className="block text-[11px] text-text-muted font-medium font-bengali mb-3">পাবলিক ট্রান্সপোর্ট মাধ্যম নির্বাচন করুন</span>
+                          </div>
                           <div className="flex gap-2">
                             <button
                               onClick={() => {
@@ -1933,7 +2128,7 @@ export default function TravelPage() {
                       {stateTransportType === 'private' && (
                         <div>
                           <div>
-                            <label className="block text-sm font-semibold text-text-primary">2. Select Private Option</label>
+                            <label className="block text-sm font-semibold text-text-primary">Select Private Option</label>
                             <span className="block text-[11px] text-text-muted font-medium font-bengali mb-3">ব্যক্তিগত বিকল্প নির্বাচন করুন</span>
                           </div>
                           <div className="flex flex-wrap gap-2">
@@ -1973,9 +2168,6 @@ export default function TravelPage() {
                                 <div className="flex flex-wrap gap-2">
                                   <a href="https://www.tnstc.in/OTRSOnline/" target="_blank" rel="noopener noreferrer" className="inline-flex px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded-xl text-xs font-bold transition-colors">
                                     Book on TNSTC Portal
-                                  </a>
-                                  <a href="https://www.redbus.in/online-booking/tnstc" target="_blank" rel="noopener noreferrer" className="inline-flex px-4 py-2 border border-primary/20 bg-primary-light text-primary-dark hover:bg-primary/15 rounded-xl text-xs font-bold transition-colors">
-                                    Book on redbus
                                   </a>
                                 </div>
                               </div>
@@ -3392,37 +3584,65 @@ export default function TravelPage() {
 
                 {/* Metro Network Route Map Card */}
                 <Card className="border-blue-100">
-                  <div className="flex justify-between items-center mb-3 border-b border-slate-100 pb-2">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3 border-b border-slate-100 pb-2">
                     <h3 className="text-base font-black flex items-center gap-2 text-text-primary">
                       <Map className="w-5 h-5 text-blue-600" /> Metro Network Map
                     </h3>
                     
-                    {/* Zoom Controls */}
-                    <div className="flex items-center gap-1.5 bg-slate-100 p-0.5 rounded-lg border border-slate-200">
-                      <button
-                        onClick={() => setMapScale(prev => Math.max(prev - 0.2, 0.6))}
-                        className="w-6 h-6 flex items-center justify-center rounded bg-white hover:bg-slate-50 text-slate-700 font-bold border border-slate-200 shadow-2xs text-xs active:scale-95 transition-all cursor-pointer"
-                        title="Zoom Out"
-                      >
-                        -
-                      </button>
-                      <span className="text-[10px] font-mono font-bold text-slate-600 w-10 text-center select-none">
-                        {Math.round(mapScale * 100)}%
-                      </span>
-                      <button
-                        onClick={() => setMapScale(prev => Math.min(prev + 0.2, 3))}
-                        className="w-6 h-6 flex items-center justify-center rounded bg-white hover:bg-slate-50 text-slate-700 font-bold border border-slate-200 shadow-2xs text-xs active:scale-95 transition-all cursor-pointer"
-                        title="Zoom In"
-                      >
-                        +
-                      </button>
-                      <button
-                        onClick={() => setMapScale(1)}
-                        className="w-6 h-6 flex items-center justify-center rounded bg-slate-200 hover:bg-slate-300 text-slate-700 font-extrabold text-[10px] active:scale-95 transition-all ml-0.5 cursor-pointer"
-                        title="Reset Zoom"
-                      >
-                        ↺
-                      </button>
+                    <div className="flex flex-wrap items-center gap-2">
+                      {/* Map Type Toggle */}
+                      <div className="flex bg-slate-100 p-0.5 rounded-lg border border-slate-200 text-[10px] font-bold">
+                        <button
+                          type="button"
+                          onClick={() => setStaticMapType('schematic')}
+                          className={`px-2 py-1 rounded-md transition-all cursor-pointer ${
+                            staticMapType === 'schematic'
+                              ? 'bg-white text-blue-600 shadow-2xs'
+                              : 'text-slate-500 hover:text-slate-800'
+                          }`}
+                        >
+                          Phase 1 Map
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setStaticMapType('phase')}
+                          className={`px-2 py-1 rounded-md transition-all cursor-pointer ${
+                            staticMapType === 'phase'
+                              ? 'bg-white text-blue-600 shadow-2xs'
+                              : 'text-slate-500 hover:text-slate-800'
+                          }`}
+                        >
+                          Phase 1 & 2 Map
+                        </button>
+                      </div>
+
+                      {/* Zoom Controls */}
+                      <div className="flex items-center gap-1 bg-slate-100 p-0.5 rounded-lg border border-slate-200">
+                        <button
+                          onClick={() => setMapScale(prev => Math.max(prev - 0.2, 0.6))}
+                          className="w-5.5 h-5.5 flex items-center justify-center rounded bg-white hover:bg-slate-50 text-slate-700 font-bold border border-slate-200 shadow-2xs text-[10px] active:scale-95 transition-all cursor-pointer"
+                          title="Zoom Out"
+                        >
+                          -
+                        </button>
+                        <span className="text-[9px] font-mono font-bold text-slate-600 w-8 text-center select-none">
+                          {Math.round(mapScale * 100)}%
+                        </span>
+                        <button
+                          onClick={() => setMapScale(prev => Math.min(prev + 0.2, 3))}
+                          className="w-5.5 h-5.5 flex items-center justify-center rounded bg-white hover:bg-slate-50 text-slate-700 font-bold border border-slate-200 shadow-2xs text-[10px] active:scale-95 transition-all cursor-pointer"
+                          title="Zoom In"
+                        >
+                          +
+                        </button>
+                        <button
+                          onClick={() => setMapScale(1)}
+                          className="w-5.5 h-5.5 flex items-center justify-center rounded bg-slate-200 hover:bg-slate-300 text-slate-700 font-extrabold text-[8px] active:scale-95 transition-all ml-0.5 cursor-pointer"
+                          title="Reset Zoom"
+                        >
+                          ↺
+                        </button>
+                      </div>
                     </div>
                   </div>
 
@@ -3444,8 +3664,8 @@ export default function TravelPage() {
                       style={{ width: `${mapScale * 100}%`, minWidth: '100%' }}
                     >
                       <img 
-                        src="/chennai-metro-line-map.svg" 
-                        alt="Chennai Metro Route Map" 
+                        src={staticMapType === 'schematic' ? "/chennai-metro-line-map.svg" : "/chennai-metro-phase2-map.jpg"} 
+                        alt={staticMapType === 'schematic' ? "Chennai Metro Phase 1 Route Map" : "Chennai Metro Rail Phase II Official Map"} 
                         className="w-full h-auto rounded-lg select-none" 
                         draggable="false"
                       />
@@ -3455,7 +3675,6 @@ export default function TravelPage() {
 
               </>
             )}
-
           </div>
         </div>
       </div>
