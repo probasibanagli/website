@@ -160,7 +160,7 @@ export interface Listing {
   verified: boolean;
   available_rooms?: number;
   deposit_amount?: number;
-  accommodation_type?: 'PG' | 'Hotel' | 'Service Apartment' | 'Rental Home';
+  accommodation_type?: 'PG' | 'Hotel' | 'Service Apartment' | 'Rental House';
   contact_person_name?: string;
   contact_whatsapp?: string;
   contact_email?: string;
