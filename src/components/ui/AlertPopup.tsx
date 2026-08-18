@@ -1,6 +1,5 @@
-'use client';
-
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { X, Check, RotateCw, AlertTriangle, Info } from 'lucide-react';
 
 import { sanitizeErrorMessage } from '@/lib/utils';
@@ -15,7 +14,12 @@ interface AlertPopupProps {
 }
 
 export function AlertPopup({ isOpen, message, type = 'info', onClose }: AlertPopupProps) {
-  if (!isOpen) return null;
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!isOpen || !mounted) return null;
 
   const sanitizedMessage = sanitizeErrorMessage(message);
 
@@ -73,7 +77,7 @@ export function AlertPopup({ isOpen, message, type = 'info', onClose }: AlertPop
     }
   }
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
       {/* Dim backdrop with blur */}
       <div 
@@ -117,6 +121,7 @@ export function AlertPopup({ isOpen, message, type = 'info', onClose }: AlertPop
           {currentType.buttonText}
         </button>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
