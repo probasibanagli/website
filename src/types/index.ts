@@ -131,7 +131,25 @@ export interface LegalPortal extends LegalServiceBase {
   icon_name: string;
 }
 
-export type LegalServiceItem = LegalAidCentre | LegalHelpline | LegalCategory | LegalPortal;
+export interface LegalServiceListing {
+  id: string;
+  category: string;
+  name: string;
+  address: string;
+  phone?: string;
+  email?: string;
+  website?: string;
+  city?: string;
+  district?: string;
+  google_maps_url?: string;
+  timings?: string;
+  description?: string;
+  verified?: boolean;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export type LegalServiceItem = LegalAidCentre | LegalHelpline | LegalCategory | LegalPortal | LegalServiceListing;
 
 export interface Listing {
   id: string;
