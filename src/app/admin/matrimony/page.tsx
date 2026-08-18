@@ -27,15 +27,22 @@ import {
   adminDeleteProfile,
   getMedia
 } from '@/lib/matrimony-service';
+import { useAuth } from '@/lib/auth/AuthContext';
+import { canAccess } from '@/lib/permissions';
 import type { MatrimonialProfile } from '@/types';
 
 export default function MatrimonialAdminPage() {
+  const { profile } = useAuth();
   const [profiles, setProfiles] = useState<MatrimonialProfile[]>([]);
   const [activeTab, setActiveTab] = useState<'pending' | 'active' | 'archived'>('pending');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedProfile, setSelectedProfile] = useState<MatrimonialProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [mediaUrls, setMediaUrls] = useState<Record<string, string>>({});
+
+  const canView = canAccess(profile?.role || 'user', profile?.permissions, 'matrimony', 'view');
+  const canEdit = canAccess(profile?.role || 'user', profile?.permissions, 'matrimony', 'edit');
+  const canManage = canAccess(profile?.role || 'user', profile?.permissions, 'matrimony', 'manage');
 
   useEffect(() => {
     loadProfiles();
@@ -137,6 +144,16 @@ export default function MatrimonialAdminPage() {
       return true;
     });
   }, [profiles, activeTab, searchTerm]);
+
+  if (!canView) {
+    return (
+      <div className="text-center py-20 bg-white rounded-3xl border border-border shadow-sm">
+        <ShieldAlert className="w-12 h-12 text-red-500 mx-auto mb-4" />
+        <h2 className="text-xl font-bold text-text-primary mb-2">Access Denied</h2>
+        <p className="text-text-muted">You don&apos;t have permission from Super Admin to access the Matrimonial module.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

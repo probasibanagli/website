@@ -10,7 +10,7 @@ import { useAuth } from '@/lib/auth/AuthContext';
 import {
   Users, Home, UtensilsCrossed, FileText, AlertTriangle, TrendingUp,
   Activity, Crown, ShieldCheck, Plus, Bell, Search, MessageSquare, Heart, Shield, Loader2,
-  Bus, GraduationCap, Droplets, Truck
+  Bus, GraduationCap, Droplets, Truck, Landmark, Scale
 } from 'lucide-react';
 
 interface StatCard {
@@ -586,17 +586,20 @@ export default function AdminDashboard() {
                   { label: 'Admin Management', href: '/admin/users?tab=admins', icon: <Shield className="w-4 h-4" />, highlight: true },
                   { label: 'User Management', href: '/admin/users?tab=users', icon: <Users className="w-4 h-4" />, highlight: true },
                   { label: 'Activity Logs', href: '/admin/users?tab=activities', icon: <Activity className="w-4 h-4" />, highlight: true },
-              ] : [
-                { label: 'Stay Directory', href: '/admin/stay', icon: <Home className="w-4 h-4" /> },
-                { label: 'Food Directory', href: '/admin/food', icon: <UtensilsCrossed className="w-4 h-4" /> },
-                { label: 'Hospital Info', href: '/admin/emergency', icon: <AlertTriangle className="w-4 h-4" /> },
-                { label: 'Community', href: '/admin/community', icon: <Users className="w-4 h-4" /> },
-                { label: 'Campus & Gov', href: '/admin/services', icon: <GraduationCap className="w-4 h-4" /> },
-                { label: 'Write Blog', href: '/admin/blog', icon: <FileText className="w-4 h-4" /> },
-                { label: 'Matrimonial', href: '/admin/matrimony', icon: <Heart className="w-4 h-4" /> },
-                { label: 'Blood Banks', href: '/admin/blood-bank', icon: <Droplets className="w-4 h-4" /> },
-                { label: 'Ambulances', href: '/admin/ambulance', icon: <Truck className="w-4 h-4" /> },
-              ]).map((action: any) => {
+                ] : [
+                  { mod: 'stay', label: 'Stay Directory', href: '/admin/stay', icon: <Home className="w-4 h-4" /> },
+                  { mod: 'food', label: 'Food Directory', href: '/admin/food', icon: <UtensilsCrossed className="w-4 h-4" /> },
+                  { mod: 'emergency', label: 'Hospital Info', href: '/admin/emergency', icon: <AlertTriangle className="w-4 h-4" /> },
+                  { mod: 'community', label: 'Community', href: '/admin/community', icon: <Users className="w-4 h-4" /> },
+                  { mod: 'services', label: 'Campus & Gov', href: '/admin/services', icon: <GraduationCap className="w-4 h-4" /> },
+                  { mod: 'blog', label: 'Write Blog', href: '/admin/blog', icon: <FileText className="w-4 h-4" /> },
+                  { mod: 'matrimony', label: 'Matrimonial', href: '/admin/matrimony', icon: <Heart className="w-4 h-4" /> },
+                  { mod: 'blood_bank', label: 'Blood Banks', href: '/admin/blood-bank', icon: <Droplets className="w-4 h-4" /> },
+                  { mod: 'ambulance', label: 'Ambulances', href: '/admin/ambulance', icon: <Truck className="w-4 h-4" /> },
+                  { mod: 'government_services', label: 'Govt Services', href: '/admin/government-services', icon: <Landmark className="w-4 h-4" /> },
+                  { mod: 'legal', label: 'Legal Services', href: '/admin/legal', icon: <Scale className="w-4 h-4" /> },
+                  { mod: 'travel', label: 'Travel & Transport', href: '/admin/travel', icon: <Bus className="w-4 h-4" /> },
+                ].filter((action: any) => accessibleModules.includes(action.mod))).map((action: any) => {
                 const colorClass = action.highlight 
                   ? 'bg-[#D85A30] text-white hover:bg-[#c24e25]' 
                   : 'bg-white/50 text-neutral-800 hover:bg-neutral-50/80 border border-[#EADED9]/60';
