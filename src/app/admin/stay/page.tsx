@@ -449,7 +449,8 @@ export default function AdminStayPage() {
                 </div>
                 <div className="sm:col-span-2">
                   <label className="block text-xs font-semibold text-text-primary mb-1.5">Description</label>
-                  <textarea value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} rows={3} className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl text-sm resize-none" placeholder="Enter other features or specifications..." />
+                  <textarea maxLength={250} value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} rows={3} className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl text-sm resize-none" placeholder="Enter other features or specifications (Max 250 characters)..." />
+                  <p className="text-right text-[10px] text-text-muted mt-1">{(formData.description || '').length}/250</p>
                 </div>
               </div>
             </div>

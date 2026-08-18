@@ -632,7 +632,8 @@ function AdminEmergencyPageContent() {
                   </div>
                   <div className="md:col-span-2">
                     <label className="block text-sm font-semibold text-text-primary mb-1.5">Description</label>
-                    <textarea rows={3} value={formData.description || ''} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm resize-none" />
+                    <textarea maxLength={250} rows={3} value={formData.description || ''} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm resize-none" placeholder="(Max 250 characters)" />
+                    <p className="text-right text-[10px] text-text-muted mt-1">{(formData.description || '').length}/250</p>
                   </div>
                 </div>
               </>
@@ -908,7 +909,8 @@ function AdminEmergencyPageContent() {
                     {/* Description */}
                     <div className="md:col-span-2">
                       <label className="block text-sm font-semibold text-text-primary mb-1.5">Description / Scheme Details</label>
-                      <textarea rows={3} value={formData.description || ''} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm resize-none" placeholder="Government subsidized medicine rates, discount information..." />
+                      <textarea maxLength={250} rows={3} value={formData.description || ''} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm resize-none" placeholder="Government subsidized medicine rates, discount information... (Max 250 characters)" />
+                      <p className="text-right text-[10px] text-text-muted mt-1">{(formData.description || '').length}/250</p>
                     </div>
                   </div>
                 </div>

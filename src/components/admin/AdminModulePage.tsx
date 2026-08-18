@@ -162,13 +162,17 @@ export default function AdminModulePage({ moduleKey, collectionName, columns, fo
                   </label>
 
                   {f.type === 'textarea' ? (
-                    <textarea
-                      value={String(formData[f.key] || '')}
-                      onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setFormData({ ...formData, [f.key]: e.target.value })}
-                      rows={4}
-                      className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none"
-                      placeholder={`Enter ${f.label.toLowerCase()}...`}
-                    />
+                    <>
+                      <textarea
+                        maxLength={250}
+                        value={String(formData[f.key] || '')}
+                        onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setFormData({ ...formData, [f.key]: e.target.value })}
+                        rows={4}
+                        className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none"
+                        placeholder={`Enter ${f.label.toLowerCase()}... (Max 250 chars)`}
+                      />
+                      <p className="text-right text-[10px] text-text-muted mt-1">{String(formData[f.key] || '').length}/250</p>
+                    </>
                   ) : f.type === 'select' && f.options ? (
                     <select
                       value={String(formData[f.key] || '')}

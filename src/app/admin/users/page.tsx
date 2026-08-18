@@ -8,6 +8,8 @@ import { db } from '@/lib/firebase';
 import { useAuth } from '@/lib/auth/AuthContext';
 import type { UserProfile, ModuleKey, PermissionLevel } from '@/types';
 import { MODULE_LABELS } from '@/types';
+import { AlertPopup, AlertType } from '@/components/ui/AlertPopup';
+import { ConfirmPopup } from '@/components/ui/ConfirmPopup';
 import {
   Shield, Crown, Search, ChevronRight, Check, X, Loader2,
   UserPlus, Users, Trash2, Ban, UserCheck, Activity, Eye, Settings, ShieldCheck, ArrowLeft
@@ -93,6 +95,14 @@ export default function AdminUsersPage() {
   }, [searchParams]);
 
   const [filterRole, setFilterRole] = useState<string>('all');
+
+  // Popup States
+  const [alertConfig, setAlertConfig] = useState<{isOpen: boolean, message: string, type: AlertType}>({ isOpen: false, message: '', type: 'info' });
+  const [confirmConfig, setConfirmConfig] = useState<{isOpen: boolean, message: string, title?: string, confirmText?: string, onConfirm: () => void}>({ isOpen: false, message: '', onConfirm: () => {} });
+
+  const showAlert = (message: string, type: AlertType = 'info') => {
+    setAlertConfig({ isOpen: true, message, type });
+  };
 
   // Create Admin Modal State
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -219,17 +229,28 @@ export default function AdminUsersPage() {
 
       setUsers((prev) => prev.map((u) => u.uid === uid ? { ...u, is_active: !currentActive } : u));
       if (isSuperAdmin) loadActivities();
-      alert(`User ${currentActive ? 'blocked' : 'unblocked'} successfully!`);
+      showAlert(`User ${currentActive ? 'blocked' : 'unblocked'} successfully!`, 'success');
     } catch (e: any) {
-      alert(e.message || 'Error updating status');
+      showAlert(e.message || 'Error updating status', 'error');
     }
   }
 
   // Delete User Account
-  async function handleDeleteUser(uid: string) {
+  function handleDeleteUser(uid: string) {
     if (!canManage || !firebaseUser) return;
-    if (!confirm('Are you sure you want to permanently delete this user? This action cannot be undone.')) return;
+    setConfirmConfig({
+      isOpen: true,
+      title: 'Delete User',
+      message: 'Are you sure you want to permanently delete this user? This action cannot be undone.',
+      confirmText: 'Delete Permanently',
+      onConfirm: () => {
+        setConfirmConfig(prev => ({ ...prev, isOpen: false }));
+        executeDeleteUser(uid);
+      }
+    });
+  }
 
+  async function executeDeleteUser(uid: string) {
     try {
       const token = await getIdToken();
       const res = await fetch(`/api/admin/users/${uid}`, {
@@ -242,22 +263,35 @@ export default function AdminUsersPage() {
 
       setUsers((prev) => prev.filter((u) => u.uid !== uid));
       if (isSuperAdmin) loadActivities();
-      alert('User account deleted permanently!');
+      showAlert('User account deleted permanently!', 'success');
     } catch (e: any) {
-      alert(e.message || 'Error deleting user');
+      showAlert(e.message || 'Error deleting user', 'error');
     }
   }
 
   // Delete Visitor log
-  async function handleDeleteVisitor(id: string) {
+  function handleDeleteVisitor(id: string) {
     if (!canManage) return;
-    if (!confirm('Are you sure you want to delete this visitor log?')) return;
+    setConfirmConfig({
+      isOpen: true,
+      title: 'Delete Visitor Log',
+      message: 'Are you sure you want to delete this visitor log?',
+      confirmText: 'Delete',
+      onConfirm: () => {
+        setConfirmConfig(prev => ({ ...prev, isOpen: false }));
+        executeDeleteVisitor(id);
+      }
+    });
+  }
+
+  async function executeDeleteVisitor(id: string) {
     try {
       await deleteDoc(doc(db, 'otps', id));
       setVisitors(prev => prev.filter(v => v.id !== id));
-      alert('Visitor verification log deleted successfully.');
+      setVisitors(prev => prev.filter(v => v.id !== id));
+      showAlert('Visitor verification log deleted successfully.', 'success');
     } catch (err: any) {
-      alert('Failed to delete visitor log: ' + err.message);
+      showAlert('Failed to delete visitor log: ' + err.message, 'error');
     }
   }
 
@@ -408,12 +442,29 @@ export default function AdminUsersPage() {
 
             <div>
               <label className="block text-sm font-semibold text-text-primary mb-2">Module Access Permissions</label>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                {AVAILABLE_MODULES.map(m => (
-                  <label key={m.key} className="flex items-center gap-3 p-3 rounded-xl border border-border hover:bg-surface cursor-pointer transition-colors">
-                    <input type="checkbox" checked={selectedModules[m.key] || false} onChange={(e) => setSelectedModules({...selectedModules, [m.key]: e.target.checked})} className="w-4 h-4 accent-primary rounded cursor-pointer" />
-                    <span className="text-sm font-medium text-text-primary">{m.label}</span>
-                  </label>
+              <div className="space-y-6 border border-border p-5 rounded-2xl bg-surface/30 mt-3">
+                {[
+                  { title: 'Explore', modules: ['stay', 'food', 'travel'] },
+                  { title: 'Community', modules: ['community', 'matrimony', 'events'] },
+                  { title: 'Emergency', modules: ['emergency', 'blood_bank', 'ambulance'] },
+                  { title: 'Services', modules: ['services', 'government_services', 'legal'] },
+                  { title: 'System Management', modules: ['users', 'blog'] }
+                ].map(group => (
+                  <div key={group.title}>
+                    <h4 className="text-xs font-bold text-text-muted uppercase tracking-wider mb-3">{group.title}</h4>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                      {group.modules.map(moduleKey => {
+                        const m = AVAILABLE_MODULES.find(mod => mod.key === moduleKey);
+                        if (!m) return null;
+                        return (
+                          <label key={m.key} className="flex items-center gap-3 p-3 rounded-xl border border-border hover:border-primary/30 hover:bg-surface cursor-pointer bg-white transition-colors shadow-sm">
+                            <input type="checkbox" checked={selectedModules[m.key] || false} onChange={(e) => setSelectedModules({...selectedModules, [m.key]: e.target.checked})} className="w-4 h-4 accent-primary rounded cursor-pointer" />
+                            <span className="text-sm font-medium text-text-primary leading-tight">{m.label}</span>
+                          </label>
+                        );
+                      })}
+                    </div>
+                  </div>
                 ))}
               </div>
             </div>
@@ -433,6 +484,20 @@ export default function AdminUsersPage() {
 
   return (
     <div className="space-y-6">
+      <AlertPopup 
+        isOpen={alertConfig.isOpen} 
+        message={alertConfig.message} 
+        type={alertConfig.type} 
+        onClose={() => setAlertConfig(prev => ({...prev, isOpen: false}))} 
+      />
+      <ConfirmPopup
+        isOpen={confirmConfig.isOpen}
+        title={confirmConfig.title}
+        message={confirmConfig.message}
+        confirmText={confirmConfig.confirmText}
+        onConfirm={confirmConfig.onConfirm}
+        onCancel={() => setConfirmConfig(prev => ({...prev, isOpen: false}))}
+      />
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
