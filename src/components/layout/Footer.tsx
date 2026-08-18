@@ -14,11 +14,21 @@ const samarkan = localFont({
 
 export function Footer() {
   const pathname = usePathname();
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Don't show footer on admin pages (admin has its own layout)
   if (pathname?.startsWith('/admin')) return null;
+
+  if (!mounted) {
+    return <footer className="bg-text-primary text-white pt-16 pb-8 border-t-[6px] border-primary opacity-0 min-h-[300px]" />;
+  }
+
   return (
-    <footer className="bg-text-primary text-white pt-16 pb-8 border-t-[6px] border-primary">
+    <footer className="bg-text-primary text-white pt-16 pb-8 border-t-[6px] border-primary transition-opacity duration-150 opacity-100">
       <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-8 mb-16">
           

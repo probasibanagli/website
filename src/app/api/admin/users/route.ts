@@ -75,7 +75,7 @@ export async function POST(request: Request) {
       permissions: permissions || {},
       assigned_hospitals: Array.isArray(assigned_hospitals) ? assigned_hospitals : [],
       created_at: now, updated_at: now, created_by: user.uid, is_active: true,
-      is_first_login: false,
+      is_first_login: true,
     });
     return NextResponse.json({ uid: newUser.uid });
   } catch (err: unknown) {

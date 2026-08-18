@@ -12,6 +12,7 @@ import { BlockedCheck } from '@/components/layout/BlockedCheck';
 import { AlertProvider } from '@/lib/contexts/AlertContext';
 import { cookies } from 'next/headers';
 import { WelcomeModal } from '@/components/layout/WelcomeModal';
+import { PageSkeletonLoader } from '@/components/ui/PageSkeletonLoader';
 
 export const dynamic = 'force-dynamic';
 
@@ -50,13 +51,15 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <script dangerouslySetInnerHTML={{ __html: `
-          try {
-            if (document.cookie.indexOf('pb_welcome_dismissed=true') > -1 || localStorage.getItem('pb_welcome_dismissed') === 'true') {
-              document.documentElement.classList.add('pb-welcome-dismissed');
-            }
-          } catch (e) {}
-        `}} />
+        <Script id="welcome-dismissed-check" strategy="beforeInteractive">
+          {`
+            try {
+              if (document.cookie.indexOf('pb_welcome_dismissed=true') > -1 || localStorage.getItem('pb_welcome_dismissed') === 'true') {
+                document.documentElement.classList.add('pb-welcome-dismissed');
+              }
+            } catch (e) {}
+          `}
+        </Script>
         <link rel="icon" href="/favicon.ico?v=2" sizes="any" />
         <link rel="icon" href="/logo.png?v=2" type="image/png" />
         <link rel="apple-touch-icon" href="/logo.png?v=2" />
@@ -102,7 +105,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               <BlockedCheck>
                 <WelcomeModal initiallyOpen={!dismissed} />
                 <Navbar />
-                <Suspense fallback={null}>
+                <Suspense fallback={<PageSkeletonLoader />}>
                   <main className="flex-1">{children}</main>
                 </Suspense>
                 <Footer />

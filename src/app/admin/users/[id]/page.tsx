@@ -25,6 +25,9 @@ export default function EditUserPage() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
+  const [emailVerified, setEmailVerified] = useState(false);
+  const [phoneVerified, setPhoneVerified] = useState(false);
+
   const userId = params.id as string;
 
   useEffect(() => {
@@ -43,6 +46,8 @@ export default function EditUserPage() {
               rawPhone = rawPhone.slice(3);
             }
             setPhone(rawPhone);
+            setEmailVerified(!!data.user.email_verified);
+            setPhoneVerified(!!data.user.phone_verified);
             setPermissions(data.user.permissions || {} as Record<ModuleKey, PermissionLevel>);
           }
         }
@@ -82,7 +87,9 @@ export default function EditUserPage() {
           permissions,
           full_name: fullName.trim(),
           email: email.trim(),
-          phone: formattedPhone
+          phone: formattedPhone,
+          email_verified: emailVerified,
+          phone_verified: phoneVerified,
         })
       });
       if (!res.ok) {
@@ -100,7 +107,7 @@ export default function EditUserPage() {
           user_role: 'superadmin',
           details: `Updated permissions for ${fullName}`
         })
-      }).catch(() => {});
+      }).catch(() => { });
 
       setSaved(true);
       setTimeout(() => setSaved(false), 2000);
@@ -195,6 +202,38 @@ export default function EditUserPage() {
               />
             </div>
           </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+            <div className="flex items-center justify-between p-3.5 rounded-xl border border-border bg-surface/30">
+              <div>
+                <p className="text-xs font-bold text-text-primary">Email Verification</p>
+                <p className="text-[11px] text-text-muted">Mark email address as verified</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setEmailVerified(!emailVerified)}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer border ${emailVerified ? 'bg-green-50 text-green-700 border-green-300' : 'bg-amber-50 text-amber-700 border-amber-300'
+                  }`}
+              >
+                {emailVerified ? 'Verified' : 'Pending'}
+              </button>
+            </div>
+
+            <div className="flex items-center justify-between p-3.5 rounded-xl border border-border bg-surface/30">
+              <div>
+                <p className="text-xs font-bold text-text-primary">Phone Verification</p>
+                <p className="text-[11px] text-text-muted">Mark phone number as verified</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setPhoneVerified(!phoneVerified)}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer border ${phoneVerified ? 'bg-green-50 text-green-700 border-green-300' : 'bg-amber-50 text-amber-700 border-amber-300'
+                  }`}
+              >
+                {phoneVerified ? 'Verified' : 'Pending'}
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -255,7 +294,7 @@ export default function EditUserPage() {
             className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary-dark text-white rounded-xl text-sm font-semibold transition-colors disabled:opacity-50 cursor-pointer shadow-md active:scale-95"
           >
             {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-            {saving ? 'Saving...' : 'Save Permissions & Hospital Scope'}
+            {saving ? 'Saving...' : 'Save Permissions'}
           </button>
         </div>
       </div>

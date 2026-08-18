@@ -10,16 +10,14 @@ interface WelcomeModalProps {
 }
 
 export function WelcomeModal({ initiallyOpen = false }: WelcomeModalProps) {
-  const [isOpen, setIsOpen] = useState(initiallyOpen);
+  const [isOpen, setIsOpen] = useState(false);
   const { setLanguage } = useLanguage();
   const pathname = usePathname();
 
   useEffect(() => {
     // Client-side fallback check in case cookie didn't sync or wasn't set
     const dismissed = localStorage.getItem('pb_welcome_dismissed');
-    if (dismissed) {
-      setIsOpen(false);
-    } else {
+    if (!dismissed) {
       setIsOpen(true);
     }
   }, []);
