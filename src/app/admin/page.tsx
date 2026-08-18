@@ -12,6 +12,7 @@ import {
   Activity, Crown, ShieldCheck, Plus, Bell, Search, MessageSquare, Heart, Shield, Loader2,
   Bus, GraduationCap, Droplets, Truck, Landmark, Scale
 } from 'lucide-react';
+import { getAccessibleModules } from '@/lib/permissions';
 
 interface StatCard {
   label: string;
@@ -34,6 +35,7 @@ interface ActivityLog {
 
 export default function AdminDashboard() {
   const { profile, firebaseUser } = useAuth();
+  const accessibleModules = getAccessibleModules(profile?.role || 'user', profile?.permissions);
   const searchParams = useSearchParams();
   const searchVal = searchParams.get('search') || '';
   const [stats, setStats] = useState<StatCard[]>([]);
