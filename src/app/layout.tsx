@@ -51,6 +51,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: `
+          try {
+            if (document.cookie.indexOf('pb_welcome_dismissed=true') > -1 || localStorage.getItem('pb_welcome_dismissed') === 'true') {
+              document.documentElement.classList.add('pb-welcome-dismissed');
+            }
+          } catch (e) {}
+        `}} />
         <link rel="icon" href="/favicon.ico?v=2" sizes="any" />
         <link rel="icon" href="/logo.png?v=2" type="image/png" />
         <link rel="apple-touch-icon" href="/logo.png?v=2" />
