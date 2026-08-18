@@ -201,6 +201,7 @@ export default function StayPage() {
               <button
                 key={tab.value}
                 onClick={() => setActiveType(tab.value)}
+                suppressHydrationWarning
                 className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all cursor-pointer ${
                   activeType === tab.value
                     ? 'bg-primary text-white shadow-md'
