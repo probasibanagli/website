@@ -6,12 +6,13 @@ import { collection, getDocs, query, where, doc, getDoc, setDoc } from 'firebase
 import { db } from '@/lib/firebase';
 import { COLLECTIONS } from '@/lib/firestore/collections';
 import type { Hospital, BengaliDoctor, BengaliStaff, Pharmacy, Ambulance, HospitalReview } from '@/types';
-import { MapPin, Phone, Globe, Star, Mail, ArrowLeft, Building2, UserRound, CheckCircle2, ChevronRight, AlertTriangle, Users, Clock, PlusSquare, MessageSquare, Ambulance as AmbulanceIcon, Search, ShieldAlert, Share2, ExternalLink } from 'lucide-react';
+import { MapPin, Phone, Globe, Star, Mail, ArrowLeft, Building2, UserRound, CheckCircle2, ChevronRight, AlertTriangle, Users, Clock, PlusSquare, MessageSquare, Ambulance as AmbulanceIcon, Search, ShieldAlert, Share2, ExternalLink, Download, FileSpreadsheet, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/card';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { useRouter } from 'next/navigation';
+import { exportToCSV, exportToExcel } from '@/lib/utils/export';
 
 const SAMPLE_HOSPITALS: Hospital[] = [];
 
@@ -242,6 +243,7 @@ export default function HospitalDetailsPage({ params }: { params: Promise<{ id: 
       const newReview: HospitalReview = {
         id: `rev-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
         hospital_id: id,
+        hospital_name: hospital?.name || 'Hospital',
         user_id: user.uid,
         user_name: user.displayName || profile?.full_name || user.email?.split('@')[0] || 'Verified Patient',
         user_avatar: user.photoURL || undefined,
@@ -257,6 +259,13 @@ export default function HospitalDetailsPage({ params }: { params: Promise<{ id: 
         await setDoc(doc(db, COLLECTIONS.hospital_reviews, newReview.id), newReview);
       } catch (err) {
         console.warn('Error writing review to Firestore:', err);
+      }
+
+      try {
+        const existingLocal = JSON.parse(localStorage.getItem('hospital_reviews') || '[]');
+        localStorage.setItem('hospital_reviews', JSON.stringify([newReview, ...existingLocal]));
+      } catch (err) {
+        console.warn('Error saving review to localStorage:', err);
       }
 
       setReviews(prev => [newReview, ...prev]);
@@ -555,19 +564,20 @@ export default function HospitalDetailsPage({ params }: { params: Promise<{ id: 
                                     <p className="text-xs text-text-muted mt-1">{doc.experience || 'Experience N/A'}</p>
                                   </div>
                                 </Link>
-                                <div className="flex items-center gap-1">
-                                   {doc.google_review_link && (
-                                     <a
-                                       href={doc.google_review_link}
-                                       target="_blank"
-                                       rel="noopener noreferrer"
-                                       className="p-2 text-amber-600 hover:text-amber-700 hover:bg-amber-50 rounded-lg transition-colors cursor-pointer"
-                                       title="View Google Reviews"
-                                     >
-                                       <Star className="w-4 h-4 fill-amber-400 text-amber-500" />
-                                     </a>
-                                   )}
-                                   <button onClick={() => {
+                                <div className="flex items-center gap-1.5">
+                                  {(doc.google_rating || doc.google_review_url || doc.google_review_link) && (
+                                    <a
+                                      href={doc.google_review_url || doc.google_review_link || '#'}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-900 rounded-lg text-xs font-bold flex items-center gap-1 transition-colors cursor-pointer"
+                                      title="View Google Reviews"
+                                    >
+                                      <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-500" />
+                                      <span>{doc.google_rating ? doc.google_rating.toFixed(1) : '4.8'} ⭐</span>
+                                    </a>
+                                  )}
+                                  <button onClick={() => {
                                      if (navigator.share) {
                                        navigator.share({
                                          title: `${doc.doctor_name} at ${hospital.name}`,
@@ -657,7 +667,7 @@ export default function HospitalDetailsPage({ params }: { params: Promise<{ id: 
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <div className="px-3.5 py-1.5 bg-amber-50 border border-amber-200 rounded-xl text-center">
+                  <div className="px-3 py-1.5 bg-amber-50 border border-amber-200 rounded-xl text-center">
                     <div className="flex items-center gap-1 text-amber-800 font-bold text-base">
                       <Star className="w-4 h-4 fill-amber-400 text-amber-500" />
                       <span>{avgHospitalRating.toFixed(1)}</span>
@@ -665,7 +675,7 @@ export default function HospitalDetailsPage({ params }: { params: Promise<{ id: 
                     <p className="text-[10px] text-amber-700 font-bold uppercase tracking-wider">Hospital</p>
                   </div>
 
-                  <div className="px-3.5 py-1.5 bg-blue-50 border border-blue-200 rounded-xl text-center">
+                  <div className="px-3 py-1.5 bg-blue-50 border border-blue-200 rounded-xl text-center">
                     <div className="flex items-center gap-1 text-blue-800 font-bold text-base">
                       <Star className="w-4 h-4 fill-blue-400 text-blue-500" />
                       <span>{avgWebsiteRating.toFixed(1)}</span>

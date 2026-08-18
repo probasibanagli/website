@@ -292,6 +292,12 @@ function AmbulancePageContent() {
                 <label className="block text-sm font-semibold text-text-primary mb-1.5">Full Address</label>
                 <input type="text" value={formData.address || ''} onChange={e => setFormData({...formData, address: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
               </div>
+              {Boolean(formData.address && formData.address.trim()) && (
+                <div>
+                  <label className="block text-sm font-semibold text-text-primary mb-1.5">Pincode</label>
+                  <input type="text" maxLength={6} value={formData.pincode || ''} onChange={e => setFormData({...formData, pincode: e.target.value.replace(/\D/g, '')})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" placeholder="e.g. 600001" />
+                </div>
+              )}
             </div>
             
             <div className="flex items-center justify-end gap-3 pt-4 border-t border-border">

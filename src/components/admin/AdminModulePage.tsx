@@ -88,6 +88,13 @@ export default function AdminModulePage({ moduleKey, collectionName, columns, fo
   }
 
   async function handleSave() {
+    // Validate required fields
+    const missingFields = formFields.filter(f => f.required && !String(formData[f.key] || '').trim());
+    if (missingFields.length > 0) {
+      alert(`Please fill out all required fields: ${missingFields.map(f => f.label).join(', ')}`);
+      return;
+    }
+
     setSaving(true);
     try {
       const now = new Date().toISOString();
@@ -155,7 +162,13 @@ export default function AdminModulePage({ moduleKey, collectionName, columns, fo
             className="p-6 md:p-8 space-y-6"
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {formFields.map(f => (
+              {formFields.filter(f => {
+                if (f.key === 'pincode') {
+                  const hasAddress = Boolean(String(formData['address'] || '').trim());
+                  return hasAddress;
+                }
+                return true;
+              }).map(f => (
                 <div key={f.key} className={f.type === 'textarea' || f.type === 'staff_contacts' ? 'md:col-span-2' : ''}>
                   <label className="block text-sm font-semibold text-text-primary mb-1.5">
                     {f.label}{f.required && <span className="text-primary"> *</span>}
@@ -164,6 +177,7 @@ export default function AdminModulePage({ moduleKey, collectionName, columns, fo
                   {f.type === 'textarea' ? (
                     <>
                       <textarea
+                        required={f.required}
                         maxLength={250}
                         value={String(formData[f.key] || '')}
                         onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setFormData({ ...formData, [f.key]: e.target.value })}
@@ -175,6 +189,7 @@ export default function AdminModulePage({ moduleKey, collectionName, columns, fo
                     </>
                   ) : f.type === 'select' && f.options ? (
                     <select
+                      required={f.required}
                       value={String(formData[f.key] || '')}
                       onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setFormData({ ...formData, [f.key]: e.target.value })}
                       className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all cursor-pointer"
@@ -265,9 +280,17 @@ export default function AdminModulePage({ moduleKey, collectionName, columns, fo
                     </div>
                   ) : (
                     <input
+                      required={f.required}
                       type={f.type || 'text'}
                       value={String(formData[f.key] || '')}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, [f.key]: e.target.value })}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                        let val = e.target.value;
+                        if (f.key === 'map_embed_code' && val.includes('<iframe')) {
+                          const match = val.match(/src="([^"]+)"/);
+                          if (match && match[1]) val = match[1];
+                        }
+                        setFormData({ ...formData, [f.key]: val });
+                      }}
                       className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
                       placeholder={`Enter ${f.label.toLowerCase()}...`}
                     />
@@ -317,6 +340,10 @@ export default function AdminModulePage({ moduleKey, collectionName, columns, fo
             </tr></thead>
             <tbody className="divide-y divide-border">
               {items.filter(item => {
+                // Filter out empty entries (items missing a name or title)
+                const mainName = String(item.name || item.title || '').trim();
+                if (!mainName) return false;
+
                 if (!searchVal) return true;
                 const q = searchVal.toLowerCase();
                 return Object.keys(item).some(key => {
