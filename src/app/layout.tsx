@@ -10,6 +10,10 @@ import { GlobalLoader } from '@/components/layout/GlobalLoader';
 import { LanguageProvider } from '@/lib/contexts/LanguageContext';
 import { BlockedCheck } from '@/components/layout/BlockedCheck';
 import { AlertProvider } from '@/lib/contexts/AlertContext';
+import { cookies } from 'next/headers';
+import { WelcomeModal } from '@/components/layout/WelcomeModal';
+
+export const dynamic = 'force-dynamic';
 
 
 export const metadata: Metadata = {
@@ -39,7 +43,10 @@ export const viewport: Viewport = {
   themeColor: '#D85A30',
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const cookieStore = await cookies();
+  const dismissed = cookieStore.get('pb_welcome_dismissed')?.value === 'true';
+
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -86,7 +93,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <AlertProvider>
             <AuthProvider>
               <BlockedCheck>
-
+                <WelcomeModal initiallyOpen={!dismissed} />
                 <Navbar />
                 <Suspense fallback={null}>
                   <main className="flex-1">{children}</main>

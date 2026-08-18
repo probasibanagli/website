@@ -6,7 +6,7 @@ type Language = 'en' | 'bn' | 'ta';
 
 interface LanguageContextType {
   language: Language;
-  setLanguage: (lang: Language) => void;
+  setLanguage: (lang: Language, skipReload?: boolean) => void;
   isMounted: boolean;
 }
 
@@ -52,11 +52,13 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     return () => cancelAnimationFrame(handle);
   }, []);
 
-  const handleSetLanguage = (lang: Language) => {
+  const handleSetLanguage = (lang: Language, skipReload: boolean = false) => {
     setLanguage(lang);
     localStorage.setItem('pb_lang', lang);
     applyGoogleTranslate(lang);
-    window.location.reload();
+    if (!skipReload) {
+      window.location.reload();
+    }
   };
 
   return (
