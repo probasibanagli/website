@@ -455,43 +455,7 @@ export default function AdminUsersPage() {
         )}
       </div>
 
-      {/* Tabs Switcher */}
-      <div className="flex border-b border-border gap-6">
-        <button
-          onClick={() => setActiveTab('users')}
-          className={`pb-3 text-sm font-bold border-b-2 transition-colors cursor-pointer ${
-            activeTab === 'users' ? 'border-primary text-primary' : 'border-transparent text-text-muted hover:text-text-primary'
-          }`}
-        >
-          Users ({regularUsersList.length})
-        </button>
-        <button
-          onClick={() => setActiveTab('admins')}
-          className={`pb-3 text-sm font-bold border-b-2 transition-colors cursor-pointer ${
-            activeTab === 'admins' ? 'border-primary text-primary' : 'border-transparent text-text-muted hover:text-text-primary'
-          }`}
-        >
-          Admins ({adminsList.length})
-        </button>
-        <button
-          onClick={() => setActiveTab('visitors')}
-          className={`pb-3 text-sm font-bold border-b-2 transition-colors cursor-pointer ${
-            activeTab === 'visitors' ? 'border-primary text-primary' : 'border-transparent text-text-muted hover:text-text-primary'
-          }`}
-        >
-          Directory Visitors ({visitors.length})
-        </button>
-        {isSuperAdmin && (
-          <button
-            onClick={() => setActiveTab('activities')}
-            className={`pb-3 text-sm font-bold border-b-2 transition-colors cursor-pointer ${
-              activeTab === 'activities' ? 'border-primary text-primary' : 'border-transparent text-text-muted hover:text-text-primary'
-            }`}
-          >
-            Activity Logs ({activities.length})
-          </button>
-        )}
-      </div>
+
 
       {/* Filters */}
       {activeTab !== 'activities' && (
