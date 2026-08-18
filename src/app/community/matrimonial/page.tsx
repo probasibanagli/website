@@ -150,10 +150,12 @@ export default function MatrimonialPage() {
     const matches = all.map(candidate => {
       const myMatchOnCandidate = calculateMatchPercentage(myProfile, candidate);
       const candidateMatchOnMe = calculateMatchPercentage(candidate, myProfile);
-      const mutualScore = Math.round((myMatchOnCandidate.percentage + candidateMatchOnMe.percentage) / 2);
+      const mutualScore = candidateMatchOnMe.criteria.length > 0 
+        ? Math.round((myMatchOnCandidate.percentage + candidateMatchOnMe.percentage) / 2)
+        : myMatchOnCandidate.percentage;
       return { profile: candidate, myScore: myMatchOnCandidate.percentage, theirScore: candidateMatchOnMe.percentage, mutualScore };
     })
-    .filter(m => m.myScore >= 50 && m.theirScore >= 50)
+    .filter(m => m.myScore >= 60 && (m.theirScore >= 60 || m.theirScore === 0))
     .sort((a, b) => b.mutualScore - a.mutualScore);
     return matches;
   }, [myProfile, allProfs]);
@@ -836,11 +838,11 @@ export default function MatrimonialPage() {
                   <Heart className="w-10 h-10 text-primary" />
                 </div>
                 <h3 className="text-2xl font-bold font-display mb-2">
-                  {activeTab === 'matches' ? 'No mutual matches found yet' : 'No profiles found'}
+                  {activeTab === 'matches' ? 'No matches found above 60%' : 'No profiles found'}
                 </h3>
                 <p className="text-text-muted max-w-md mx-auto mb-6">
                   {activeTab === 'matches'
-                    ? 'Update your partner preferences to find better matches, or browse all profiles manually.'
+                    ? 'Update your partner preferences to find profiles matching 60% or higher, or browse all profiles manually.'
                     : 'Try adjusting your filters or search query. You can also register your own profile to get started.'
                   }
                 </p>

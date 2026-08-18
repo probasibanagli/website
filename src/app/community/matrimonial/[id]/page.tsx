@@ -690,7 +690,7 @@ export default function MatrimonialDetailPage() {
                       <path
                         d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
                         fill="none"
-                        stroke={matchResult.percentage >= 75 ? '#22c55e' : matchResult.percentage >= 50 ? '#f59e0b' : '#9ca3af'}
+                        stroke={matchResult.percentage >= 75 ? '#22c55e' : matchResult.percentage >= 60 ? '#f59e0b' : '#9ca3af'}
                         strokeWidth="3"
                         strokeDasharray={`${matchResult.percentage}, 100`}
                         strokeLinecap="round"
@@ -698,7 +698,7 @@ export default function MatrimonialDetailPage() {
                     </svg>
                     <div className="absolute inset-0 flex items-center justify-center">
                       <span className={`text-lg font-bold ${
-                        matchResult.percentage >= 75 ? 'text-green-600' : matchResult.percentage >= 50 ? 'text-amber-600' : 'text-gray-500'
+                        matchResult.percentage >= 75 ? 'text-green-600' : matchResult.percentage >= 60 ? 'text-amber-600' : 'text-gray-500'
                       }`}>
                         {matchResult.percentage}%
                       </span>
@@ -707,7 +707,7 @@ export default function MatrimonialDetailPage() {
                   <div>
                     <h3 className="text-sm font-bold text-text-primary">Profile Match</h3>
                     <p className="text-xs text-text-muted mt-0.5">
-                      {matchResult.percentage >= 75 ? 'Great match!' : matchResult.percentage >= 50 ? 'Good match' : 'Partial match'}
+                      {matchResult.percentage >= 75 ? 'Great match!' : matchResult.percentage >= 60 ? 'Good match' : 'Partial match (<60%)'}
                     </p>
                   </div>
                 </div>

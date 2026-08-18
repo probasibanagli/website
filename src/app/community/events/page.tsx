@@ -31,6 +31,8 @@ import {
   Clock,
   Plus,
   Edit,
+  Search,
+  X,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/card';
@@ -485,6 +487,8 @@ export default function EventsPage() {
 
   const [city, setCity] = useState('');
   const [category, setCategory] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [festivalSearch, setFestivalSearch] = useState('');
   const [activeTab, setActiveTab] = useState<'events' | 'panjika' | 'annual' | 'converter'>('events');
 
   // Selected festival state
@@ -505,6 +509,48 @@ export default function EventsPage() {
   const [annualCommunityFilter, setAnnualCommunityFilter] = useState('');
   const [annualCategoryFilter, setAnnualCategoryFilter] = useState('');
   const [annualCityFilter, setAnnualCityFilter] = useState('');
+  const [annualSearchQuery, setAnnualSearchQuery] = useState('');
+  const [highlightedEventId, setHighlightedEventId] = useState<string | null>(null);
+
+  const navigateToAnnualEvent = (event: CommunityEvent) => {
+    setActiveTab('annual');
+    setHighlightedEventId(event.id);
+
+    // Clear filters that might hide the target event
+    setAnnualCommunityFilter('');
+    setAnnualCategoryFilter('');
+    setAnnualCityFilter('');
+    setAnnualSearchQuery('');
+
+    setTimeout(() => {
+      const el = document.getElementById(`annual-event-${event.id}`);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } else if (event.event_date) {
+        const monthIndex = parseInt(event.event_date.split('-')[1]) - 1;
+        const monthEl = document.getElementById(`month-${monthIndex}`);
+        if (monthEl) {
+          monthEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+    }, 150);
+
+    setTimeout(() => {
+      setHighlightedEventId((prev) => (prev === event.id ? null : prev));
+    }, 4000);
+  };
+
+  const filteredFestivals = useMemo(() => {
+    if (!festivalSearch.trim()) return MAJOR_FESTIVALS;
+    const q = festivalSearch.toLowerCase().trim();
+    return MAJOR_FESTIVALS.filter(f => 
+      f.name.toLowerCase().includes(q) ||
+      f.nameBn.toLowerCase().includes(q) ||
+      f.description.toLowerCase().includes(q) ||
+      f.monthEn.toLowerCase().includes(q) ||
+      f.monthBn.toLowerCase().includes(q)
+    );
+  }, [festivalSearch]);
 
   const selectedFestival = useMemo(() => {
     if (!selectedFestivalId) return null;
@@ -529,9 +575,21 @@ export default function EventsPage() {
     return firestoreEvents.filter((e) => {
       if (city && e.city !== city) return false;
       if (category && e.category !== category) return false;
+      if (searchQuery.trim()) {
+        const q = searchQuery.toLowerCase().trim();
+        const matchTitle = (e.title || '').toLowerCase().includes(q);
+        const matchDesc = (e.description || '').toLowerCase().includes(q);
+        const matchVenue = (e.venue || '').toLowerCase().includes(q);
+        const matchCity = (e.city || '').toLowerCase().includes(q);
+        const matchOrganizer = (e.organizer || '').toLowerCase().includes(q);
+        const matchCategory = (e.category || '').toLowerCase().includes(q);
+        if (!matchTitle && !matchDesc && !matchVenue && !matchCity && !matchOrganizer && !matchCategory) {
+          return false;
+        }
+      }
       return true;
     });
-  }, [city, category, firestoreEvents]);
+  }, [city, category, searchQuery, firestoreEvents]);
 
   // Calendar calculations
   const daysInMonth = useMemo(() => {
@@ -575,6 +633,18 @@ export default function EventsPage() {
       if (annualCommunityFilter && e.community_group_id !== annualCommunityFilter) return false;
       if (annualCategoryFilter && e.category !== annualCategoryFilter) return false;
       if (annualCityFilter && e.city !== annualCityFilter) return false;
+      if (annualSearchQuery.trim()) {
+        const q = annualSearchQuery.toLowerCase().trim();
+        const matchTitle = (e.title || '').toLowerCase().includes(q);
+        const matchDesc = (e.description || '').toLowerCase().includes(q);
+        const matchVenue = (e.venue || '').toLowerCase().includes(q);
+        const matchCity = (e.city || '').toLowerCase().includes(q);
+        const matchOrganizer = (e.organizer || '').toLowerCase().includes(q);
+        const matchCategory = (e.category || '').toLowerCase().includes(q);
+        if (!matchTitle && !matchDesc && !matchVenue && !matchCity && !matchOrganizer && !matchCategory) {
+          return false;
+        }
+      }
       return true;
     });
 
@@ -595,7 +665,7 @@ export default function EventsPage() {
     });
 
     return grouped;
-  }, [annualCommunityFilter, annualCategoryFilter, annualCityFilter, firestoreEvents]);
+  }, [annualCommunityFilter, annualCategoryFilter, annualCityFilter, annualSearchQuery, firestoreEvents]);
 
   // Unique community groups in events for filter
   const communityGroupsInEvents = useMemo(() => {
@@ -696,65 +766,102 @@ export default function EventsPage() {
                   </p>
                 </div>
                 
-                {selectedFestivalId && (
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    onClick={() => setSelectedFestivalId(null)}
-                    className="self-start md:self-auto cursor-pointer"
-                  >
-                    Clear Selection
-                  </Button>
-                )}
+                <div className="flex flex-wrap items-center gap-3">
+                  <div className="relative min-w-[200px] sm:w-60">
+                    <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none" />
+                    <input
+                      type="text"
+                      value={festivalSearch}
+                      onChange={(e) => setFestivalSearch(e.target.value)}
+                      placeholder="Search festivals..."
+                      className="w-full pl-9 pr-8 py-2 rounded-xl border border-border bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+                    />
+                    {festivalSearch && (
+                      <button
+                        onClick={() => setFestivalSearch('')}
+                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary p-0.5"
+                        aria-label="Clear festival search"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                  </div>
+
+                  {selectedFestivalId && (
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => setSelectedFestivalId(null)}
+                      className="self-start md:self-auto cursor-pointer"
+                    >
+                      Clear Selection
+                    </Button>
+                  )}
+                </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                {MAJOR_FESTIVALS.map((fest) => {
-                  const isSelected = selectedFestivalId === fest.id;
-                  return (
-                    <button
-                      key={fest.id}
-                      onClick={() => setSelectedFestivalId(isSelected ? null : fest.id)}
-                      className={`p-5 rounded-2xl border text-left transition-all duration-300 relative overflow-hidden group cursor-pointer ${
-                        isSelected 
-                          ? 'border-primary ring-2 ring-primary/20 bg-amber-50/60' 
-                          : 'border-border bg-white hover:border-primary/50 hover:shadow-md'
-                      }`}
-                    >
-                      <div className="flex items-start gap-4">
-                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-sm ${
-                          isSelected ? 'bg-primary text-white' : 'bg-surface text-primary group-hover:scale-110 transition-transform'
-                        }`}>
-                          {(() => {
-                            const Icon = festivalIcons[fest.id] || Sparkles;
-                            return <Icon className="w-5 h-5" />;
-                          })()}
+              {filteredFestivals.length > 0 ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                  {filteredFestivals.map((fest) => {
+                    const isSelected = selectedFestivalId === fest.id;
+                    return (
+                      <button
+                        key={fest.id}
+                        onClick={() => setSelectedFestivalId(isSelected ? null : fest.id)}
+                        className={`p-5 rounded-2xl border text-left transition-all duration-300 relative overflow-hidden group cursor-pointer ${
+                          isSelected 
+                            ? 'border-primary ring-2 ring-primary/20 bg-amber-50/60' 
+                            : 'border-border bg-white hover:border-primary/50 hover:shadow-md'
+                        }`}
+                      >
+                        <div className="flex items-start gap-4">
+                          <div className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-sm ${
+                            isSelected ? 'bg-primary text-white' : 'bg-surface text-primary group-hover:scale-110 transition-transform'
+                          }`}>
+                            {(() => {
+                              const Icon = festivalIcons[fest.id] || Sparkles;
+                              return <Icon className="w-5 h-5" />;
+                            })()}
+                          </div>
+                          
+                          <div className="flex-1">
+                            <h3 className="font-bold text-text-primary group-hover:text-primary transition-colors">
+                              {fest.name}
+                            </h3>
+                            <p className="text-xs bengali-text text-text-muted mt-0.5">{fest.nameBn}</p>
+                            <p className="text-xs text-text-muted mt-2 font-medium bg-surface px-2.5 py-0.5 rounded-full inline-flex items-center gap-1">
+                              <Clock className="w-3.5 h-3.5 text-primary shrink-0" /> <span>{fest.monthEn}</span>
+                            </p>
+                          </div>
                         </div>
                         
-                        <div className="flex-1">
-                          <h3 className="font-bold text-text-primary group-hover:text-primary transition-colors">
-                            {fest.name}
-                          </h3>
-                          <p className="text-xs bengali-text text-text-muted mt-0.5">{fest.nameBn}</p>
-                          <p className="text-xs text-text-muted mt-2 font-medium bg-surface px-2.5 py-0.5 rounded-full inline-flex items-center gap-1">
-                            <Clock className="w-3.5 h-3.5 text-primary shrink-0" /> <span>{fest.monthEn}</span>
-                          </p>
+                        <div className="mt-4 pt-3 border-t border-border flex items-center justify-between text-xs text-text-muted">
+                          <span className="font-semibold text-primary flex items-center gap-1">
+                            <Users className="w-3.5 h-3.5" /> Celebrated by {fest.communityIds.length} Communities
+                          </span>
+                          
+                          <span className="text-[10px] uppercase font-bold tracking-wider text-text-muted group-hover:text-primary transition-colors">
+                            {isSelected ? 'Selected' : 'View Info'} →
+                          </span>
                         </div>
-                      </div>
-                      
-                      <div className="mt-4 pt-3 border-t border-border flex items-center justify-between text-xs text-text-muted">
-                        <span className="font-semibold text-primary flex items-center gap-1">
-                          <Users className="w-3.5 h-3.5" /> Celebrated by {fest.communityIds.length} Communities
-                        </span>
-                        
-                        <span className="text-[10px] uppercase font-bold tracking-wider text-text-muted group-hover:text-primary transition-colors">
-                          {isSelected ? 'Selected' : 'View Info'} →
-                        </span>
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="text-center py-8 bg-white rounded-2xl border border-border p-6">
+                  <p className="text-sm font-semibold text-text-primary">No festivals match &quot;{festivalSearch}&quot;</p>
+                  <p className="text-xs text-text-muted mt-1">Try searching by festival name like Durga, Saraswati, or Poila.</p>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setFestivalSearch('')}
+                    className="mt-3 text-xs"
+                  >
+                    Clear Search
+                  </Button>
+                </div>
+              )}
 
               {/* Festival Details Card */}
               {selectedFestival && (
@@ -869,19 +976,92 @@ export default function EventsPage() {
               </div>
               <p className="text-sm text-text-muted mb-6">Events from all community groups across Tamil Nadu. Click on any event to view its community group.</p>
 
-              {/* Filters */}
-              <div className="flex flex-wrap gap-3 mb-6">
-                <select value={city} onChange={(e) => setCity(e.target.value)} className="px-4 py-2.5 rounded-xl border border-border bg-white text-sm cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30">
-                  <option value="">All Cities</option>
-                  {CITIES.map((c) => <option key={c} value={c}>{c}</option>)}
-                </select>
-                <select value={category} onChange={(e) => setCategory(e.target.value)} className="px-4 py-2.5 rounded-xl border border-border bg-white text-sm cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30">
-                  <option value="">All Categories</option>
-                  <option value="festival">Festival</option>
-                  <option value="cultural">Cultural</option>
-                  <option value="social">Social</option>
-                  <option value="religious">Religious</option>
-                </select>
+              {/* Search & Filters */}
+              <div className="bg-white p-4 rounded-2xl border border-border mb-6 shadow-sm">
+                <div className="flex flex-col md:flex-row gap-3 items-stretch md:items-center">
+                  {/* Search Input */}
+                  <div className="relative flex-1 min-w-[240px]">
+                    <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none" />
+                    <input
+                      type="text"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      placeholder="Search events by title, organizer, venue, or keyword..."
+                      className="w-full pl-10 pr-9 py-2.5 rounded-xl border border-border bg-surface/40 hover:bg-white focus:bg-white text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
+                    />
+                    {searchQuery && (
+                      <button
+                        onClick={() => setSearchQuery('')}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary transition-colors cursor-pointer p-0.5"
+                        aria-label="Clear search"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
+
+                  {/* City dropdown */}
+                  <div className="w-full md:w-48">
+                    <select
+                      value={city}
+                      onChange={(e) => setCity(e.target.value)}
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-border bg-white text-sm text-text-primary cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30"
+                    >
+                      <option value="">All Cities</option>
+                      {CITIES.map((c) => <option key={c} value={c}>{c}</option>)}
+                    </select>
+                  </div>
+
+                  {/* Category dropdown */}
+                  <div className="w-full md:w-44">
+                    <select
+                      value={category}
+                      onChange={(e) => setCategory(e.target.value)}
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-border bg-white text-sm text-text-primary cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30"
+                    >
+                      <option value="">All Categories</option>
+                      <option value="festival">Festival</option>
+                      <option value="cultural">Cultural</option>
+                      <option value="social">Social</option>
+                      <option value="religious">Religious</option>
+                    </select>
+                  </div>
+
+                  {/* Clear all filters button */}
+                  {(searchQuery || city || category) && (
+                    <button
+                      onClick={() => { setSearchQuery(''); setCity(''); setCategory(''); }}
+                      className="px-4 py-2.5 rounded-xl text-sm font-medium text-red-600 bg-red-50 border border-red-200 hover:bg-red-100 transition-colors cursor-pointer whitespace-nowrap"
+                    >
+                      Clear Filters
+                    </button>
+                  )}
+                </div>
+
+                {/* Filter info indicator */}
+                <div className="mt-3 pt-3 border-t border-border/60 flex flex-wrap items-center justify-between text-xs text-text-muted gap-2">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span>Showing <strong className="text-text-primary">{filtered.length}</strong> of {firestoreEvents.length} events</span>
+                    {searchQuery && (
+                      <span className="bg-primary/10 text-primary font-medium px-2 py-0.5 rounded-md flex items-center gap-1">
+                        Search: &quot;{searchQuery}&quot;
+                        <button onClick={() => setSearchQuery('')} className="hover:text-primary/70"><X className="w-3 h-3" /></button>
+                      </span>
+                    )}
+                    {city && (
+                      <span className="bg-surface text-text-primary border border-border px-2 py-0.5 rounded-md flex items-center gap-1">
+                        City: {city}
+                        <button onClick={() => setCity('')} className="hover:text-red-500"><X className="w-3 h-3" /></button>
+                      </span>
+                    )}
+                    {category && (
+                      <span className="bg-surface text-text-primary border border-border px-2 py-0.5 rounded-md capitalize flex items-center gap-1">
+                        Category: {category}
+                        <button onClick={() => setCategory('')} className="hover:text-red-500"><X className="w-3 h-3" /></button>
+                      </span>
+                    )}
+                  </div>
+                </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -956,7 +1136,7 @@ export default function EventsPage() {
                               </Link>
                             )}
                             <button
-                              onClick={() => { setAnnualCommunityFilter(event.community_group_id || ''); setActiveTab('annual'); }}
+                              onClick={() => navigateToAnnualEvent(event)}
                               className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-surface text-text-primary text-xs font-bold hover:bg-primary/10 hover:text-primary border border-border transition-colors cursor-pointer"
                             >
                               <CalendarIcon className="w-3.5 h-3.5" /> Calendar
@@ -969,12 +1149,26 @@ export default function EventsPage() {
                 })}
               </div>
               {filtered.length === 0 && (
-                <div className="text-center py-20 bg-white rounded-2xl border border-border">
+                <div className="text-center py-16 bg-white rounded-2xl border border-border p-6">
                   <div className="flex justify-center mb-4 text-primary/40">
-                    <PartyPopper className="w-16 h-16" />
+                    <PartyPopper className="w-14 h-14" />
                   </div>
-                  <h3 className="text-xl font-bold mb-2">No events found</h3>
-                  <p className="text-text-muted">Check back soon or try different filters.</p>
+                  <h3 className="text-xl font-bold mb-2 text-text-primary">No events found</h3>
+                  <p className="text-text-muted max-w-md mx-auto text-sm">
+                    {searchQuery || city || category
+                      ? 'No events match your current search and filter criteria. Try searching with different keywords or clearing filters.'
+                      : 'Check back soon or try different filters.'}
+                  </p>
+                  {(searchQuery || city || category) && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => { setSearchQuery(''); setCity(''); setCategory(''); }}
+                      className="mt-4"
+                    >
+                      Clear All Filters
+                    </Button>
+                  )}
                 </div>
               )}
             </div>
@@ -1297,7 +1491,27 @@ export default function EventsPage() {
                 <Filter className="w-4 h-4 text-primary" />
                 <h3 className="text-sm font-bold text-text-primary">Filter Events</h3>
               </div>
-              <div className="flex flex-wrap gap-3">
+              <div className="flex flex-col md:flex-row flex-wrap gap-3">
+                {/* Search annual events */}
+                <div className="relative flex-1 min-w-[220px]">
+                  <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none" />
+                  <input
+                    type="text"
+                    value={annualSearchQuery}
+                    onChange={(e) => setAnnualSearchQuery(e.target.value)}
+                    placeholder="Search annual events by title, venue, organizer..."
+                    className="w-full pl-10 pr-9 py-2.5 rounded-xl border border-border bg-surface/40 hover:bg-white focus:bg-white text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
+                  />
+                  {annualSearchQuery && (
+                    <button
+                      onClick={() => setAnnualSearchQuery('')}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary p-0.5"
+                      aria-label="Clear search"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  )}
+                </div>
                 <select value={annualCommunityFilter} onChange={(e) => setAnnualCommunityFilter(e.target.value)} className="px-4 py-2.5 rounded-xl border border-border bg-white text-sm cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 min-w-[200px]">
                   <option value="">All Community Groups</option>
                   {communityGroupsInEvents.map((g) => <option key={g.id} value={g.id}>{g.name}</option>)}
@@ -1313,9 +1527,9 @@ export default function EventsPage() {
                   <option value="">All Cities</option>
                   {CITIES.map((c) => <option key={c} value={c}>{c}</option>)}
                 </select>
-                {(annualCommunityFilter || annualCategoryFilter || annualCityFilter) && (
+                {(annualCommunityFilter || annualCategoryFilter || annualCityFilter || annualSearchQuery) && (
                   <button
-                    onClick={() => { setAnnualCommunityFilter(''); setAnnualCategoryFilter(''); setAnnualCityFilter(''); }}
+                    onClick={() => { setAnnualCommunityFilter(''); setAnnualCategoryFilter(''); setAnnualCityFilter(''); setAnnualSearchQuery(''); }}
                     className="px-4 py-2.5 rounded-xl text-sm font-medium text-red-600 bg-red-50 border border-red-200 hover:bg-red-100 transition-colors cursor-pointer"
                   >
                     Clear Filters
@@ -1377,13 +1591,20 @@ export default function EventsPage() {
                           const communityGroup = event.community_group_id ? firestoreGroups.find((g: any) => g.id === event.community_group_id) : null;
                           const eventDate = event.event_date ? new Date(event.event_date + 'T12:00:00') : null;
                           const bDate = eventDate ? convertToBengaliDate(eventDate) : null;
+                          const isHighlighted = highlightedEventId === event.id;
                           
                           return (
-                            <div key={event.id} className="relative group">
+                            <div key={event.id} id={`annual-event-${event.id}`} className="relative group scroll-mt-28">
                               {/* Timeline dot */}
-                              <div className="absolute -left-[31px] top-4 w-4 h-4 rounded-full bg-white border-2 border-primary shadow-sm group-hover:bg-primary group-hover:border-primary transition-colors" />
+                              <div className={`absolute -left-[31px] top-4 w-4 h-4 rounded-full bg-white border-2 shadow-sm transition-all duration-300 ${
+                                isHighlighted ? 'bg-primary border-primary ring-4 ring-primary/30 scale-125' : 'border-primary group-hover:bg-primary group-hover:border-primary'
+                              }`} />
                               
-                              <Card className="p-4 bg-white hover:shadow-md transition-shadow border-l-4 border-l-transparent group-hover:border-l-primary">
+                              <Card className={`p-4 transition-all duration-500 border-l-4 ${
+                                isHighlighted
+                                  ? 'border-l-primary ring-2 ring-primary/40 bg-amber-50/80 shadow-lg scale-[1.01]'
+                                  : 'bg-white border-l-transparent group-hover:border-l-primary hover:shadow-md'
+                              }`}>
                                 <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
                                   <div className="flex-1">
                                     <div className="flex items-start gap-3">

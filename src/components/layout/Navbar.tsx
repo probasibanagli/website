@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { T } from '@/lib/contexts/LanguageContext';
 import { usePathname, useRouter } from 'next/navigation';
 import {
-  Menu, X, ChevronDown, Phone, Globe, User, Shield, LogOut, Home, Users, Heart, Calendar, PlusCircle, Droplets, LifeBuoy, GraduationCap, Building, Bus, Gift, Info, Scale
+  Menu, X, ChevronDown, Phone, Globe, User, Shield, LogOut, Home, Users, Heart, Calendar, PlusCircle, Droplets, LifeBuoy, GraduationCap, Building, Bus, Gift, Info, Scale, Check
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -149,39 +149,52 @@ export function Navbar() {
 
             {/* Right side */}
             <div className="flex items-center gap-2">
-              {/* Language Selector */}
+              {/* Prominent Language Selector */}
               <div className="relative">
                 <button
                   suppressHydrationWarning
                   onClick={() => setLangMenuOpen(!langMenuOpen)}
-                  className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-text-muted hover:text-primary border border-border rounded-full hover:border-primary transition-all cursor-pointer bg-white notranslate"
+                  className="flex items-center gap-2 px-3.5 py-1.5 text-xs font-bold text-primary bg-primary/10 hover:bg-primary/15 border-2 border-primary/25 hover:border-primary/50 rounded-full transition-all cursor-pointer shadow-sm notranslate"
+                  title="Switch Language / ভাষা পরিবর্তন করুন"
                 >
-                  <Globe className="w-3.5 h-3.5" />
-                  {!isMounted ? 'EN' : language === 'en' ? 'EN' : language === 'bn' ? 'বাংলা' : 'தமிழ்'}
-                  <ChevronDown className={cn("w-3 h-3 transition-transform", langMenuOpen && "rotate-180")} />
+                  <div className="w-5 h-5 rounded-full bg-primary text-white flex items-center justify-center shrink-0 shadow-sm">
+                    <Globe className="w-3 h-3" />
+                  </div>
+                  <span className="font-extrabold tracking-wide">
+                    {!isMounted ? 'EN' : language === 'en' ? 'English' : language === 'bn' ? 'বাংলা' : 'தமிழ்'}
+                  </span>
+                  <ChevronDown className={cn("w-3.5 h-3.5 text-primary transition-transform duration-200", langMenuOpen && "rotate-180")} />
                 </button>
 
                 {langMenuOpen && (
-                  <div className="absolute top-full right-0 mt-2 w-32 bg-white rounded-xl shadow-xl border border-border py-1 z-50 animate-fade-in">
-                    {[
-                      { code: 'en', label: 'English', native: 'EN' },
-                      { code: 'bn', label: 'Bengali', native: 'বাংলা' },
-                      { code: 'ta', label: 'Tamil', native: 'தமிழ்' },
-                    ].map((l) => (
-                      <button
-                        key={l.code}
-                        onClick={() => {
-                          setLanguage(l.code as 'en' | 'bn' | 'ta');
-                          setLangMenuOpen(false);
-                        }}
-                        className={cn(
-                          "w-full text-left px-4 py-2 text-sm hover:bg-surface transition-colors notranslate",
-                          language === l.code ? "text-primary font-bold" : "text-text-primary"
-                        )}
-                      >
-                        {l.native}
-                      </button>
-                    ))}
+                  <div className="absolute top-full right-0 mt-2 w-44 bg-white rounded-2xl shadow-2xl border border-primary/20 py-1.5 z-50 animate-fade-in divide-y divide-border/40">
+                    <div className="px-3.5 py-1.5 text-[10px] font-extrabold uppercase tracking-wider text-text-muted">
+                      Select Language
+                    </div>
+                    <div className="py-1">
+                      {[
+                        { code: 'en', native: 'English (EN)' },
+                        { code: 'bn', native: 'বাংলা (Bengali)' },
+                        { code: 'ta', native: 'தமிழ் (Tamil)' },
+                      ].map((l) => (
+                        <button
+                          key={l.code}
+                          onClick={() => {
+                            setLanguage(l.code as 'en' | 'bn' | 'ta');
+                            setLangMenuOpen(false);
+                          }}
+                          className={cn(
+                            "w-full flex items-center justify-between px-3.5 py-2.5 text-xs transition-colors notranslate cursor-pointer",
+                            language === l.code
+                              ? "bg-primary/10 text-primary font-extrabold"
+                              : "text-text-primary hover:bg-surface"
+                          )}
+                        >
+                          <span>{l.native}</span>
+                          {language === l.code && <Check className="w-4 h-4 text-primary shrink-0" />}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 )}
               </div>
@@ -291,6 +304,33 @@ export function Navbar() {
           <button onClick={() => setMobileOpen(false)} className="p-2 rounded-md text-text-primary hover:bg-surface">
             <X className="w-6 h-6" />
           </button>
+        </div>
+
+        {/* Mobile Language Switcher */}
+        <div className="px-4 py-3 bg-primary/5 border-b border-border">
+          <p className="text-[10px] font-extrabold text-primary uppercase tracking-wider mb-2 flex items-center gap-1.5">
+            <Globe className="w-3.5 h-3.5 text-primary" /> Language / ভাষা / மொழி
+          </p>
+          <div className="grid grid-cols-3 gap-1 bg-white p-1 rounded-xl border border-primary/20 shadow-sm notranslate">
+            {[
+              { code: 'en', label: 'English' },
+              { code: 'bn', label: 'বাংলা' },
+              { code: 'ta', label: 'தமிழ்' },
+            ].map((l) => (
+              <button
+                key={l.code}
+                onClick={() => setLanguage(l.code as 'en' | 'bn' | 'ta')}
+                className={cn(
+                  "py-2 text-xs font-extrabold rounded-lg transition-all cursor-pointer text-center",
+                  language === l.code
+                    ? "bg-primary text-white shadow-sm"
+                    : "text-text-primary hover:bg-surface"
+                )}
+              >
+                {l.label}
+              </button>
+            ))}
+          </div>
         </div>
         <div className="flex-1 overflow-y-auto py-4 px-4 space-y-4">
           <div className="border-b border-border/60 pb-2">
