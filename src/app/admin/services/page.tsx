@@ -1,5 +1,6 @@
 'use client';
 import AdminModulePage from '@/components/admin/AdminModulePage';
+import { CITIES, CITY_AREAS } from '@/lib/constants';
 
 export default function AdminServicesPage() {
   return (
@@ -29,8 +30,8 @@ export default function AdminServicesPage() {
           required: true 
         },
         { key: 'ranking', label: 'Ranking / Priority (1 = Top, 2 = Second, etc.)', type: 'number' },
-        { key: 'city', label: 'City', required: true },
-        { key: 'area', label: 'Area' },
+        { key: 'city', label: 'City', type: 'select', options: CITIES, required: true },
+        { key: 'area', label: 'Area', type: 'select', options: (formData) => formData.city && typeof formData.city === 'string' ? (CITY_AREAS[formData.city] || []) : [] },
         { key: 'address', label: 'Address' },
         { key: 'pincode', label: 'Pincode' },
         { key: 'phone', label: 'Phone' },

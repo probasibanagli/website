@@ -1,6 +1,7 @@
 'use client';
 export const dynamic = 'force-dynamic';
 import AdminModulePage from '@/components/admin/AdminModulePage';
+import { CITIES } from '@/lib/constants';
 
 export default function AdminCommunityPage() {
   return (
@@ -15,7 +16,7 @@ export default function AdminCommunityPage() {
       formFields={[
         { key: 'name', label: 'Group Name', required: true },
         { key: 'image_url', label: 'Cover Image', type: 'image' },
-        { key: 'city', label: 'City' },
+        { key: 'city', label: 'City', type: 'select', options: CITIES },
         { key: 'state', label: 'State', type: 'select', options: ['Andaman and Nicobar Islands', 'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chandigarh', 'Chhattisgarh', 'Dadra and Nagar Haveli', 'Daman and Diu', 'Delhi', 'Goa', 'Gujarat', 'Haryana', 'Himachal Pradesh', 'Jammu and Kashmir', 'Jharkhand', 'Karnataka', 'Kerala', 'Lakshadweep', 'Madhya Pradesh', 'Maharashtra', 'Manipur', 'Meghalaya', 'Mizoram', 'Nagaland', 'Odisha', 'Puducherry', 'Punjab', 'Rajasthan', 'Sikkim', 'Tamil Nadu', 'Telangana', 'Tripura', 'Uttar Pradesh', 'Uttarakhand', 'West Bengal', 'All India', 'Global'] },
         { key: 'description', label: 'Description', type: 'textarea' },
         { key: 'member_count', label: 'Member Count (e.g. 500)' },
