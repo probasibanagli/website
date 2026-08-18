@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 const SYSTEM_PROMPT = `You are ProbasiBangali AI, a helpful assistant for ProbasiBangali.in - a community platform for Bengali people living in Tamil Nadu, India.
 
 You help users find:
-- Bengali-friendly PG accommodation, hotels, and rental houses
+- Bengali-friendly PG accommodation, hotels, and service apartments
 - Bengali restaurants, sweet shops, and tiffin services
 - Travel routes (bus, metro, train, auto) across Tamil Nadu cities
 - Hospitals (especially those with Bengali-speaking doctors)
@@ -20,7 +20,7 @@ Rules:
 5. Keep responses under 200 words unless the user asks for detail.
 
 Key website sections:
-- /explore/stay - PG, Hotels, Rentals
+- /explore/stay - PG, Hotels, Service Apartments
 - /explore/food - Bengali Restaurants & Sweets
 - /explore/travel - Bus, Metro, Train routes
 - /community/groups - WhatsApp & Telegram groups
@@ -135,7 +135,7 @@ function getDemoResponse(query: string): string {
   const q = query.toLowerCase();
 
   if (q.includes('pg') || q.includes('accommodation') || q.includes('stay') || q.includes('room') || q.includes('থাকা') || q.includes('পিজি')) {
-    return "🏠 Looking for accommodation? We have verified Bengali-friendly PGs, hotels, and rental houses across Tamil Nadu!\n\n➡️ Visit our **Stay & Accommodation** page: /explore/stay\n\nPopular options:\n• Kolkata Home PG, Guindy - ₹8,500/mo\n• Bengal Nest Ladies PG, Anna Nagar - ₹9,500/mo\n• Bangla Bhavan PG, Vellore - ₹7,000/mo\n\nAll listings include Bengali food availability, WiFi, and WhatsApp contact.";
+    return "🏠 Looking for accommodation? We have verified Bengali-friendly PGs, hotels, and service apartments across Tamil Nadu!\n\n➡️ Visit our **Stay & Accommodation** page: /explore/stay\n\nPopular options:\n• Kolkata Home PG, Guindy - ₹8,500/mo\n• Bengal Nest Ladies PG, Anna Nagar - ₹9,500/mo\n• Bangla Bhavan PG, Vellore - ₹7,000/mo\n\nAll listings include Bengali food availability, WiFi, and WhatsApp contact.";
   }
 
   if (q.includes('food') || q.includes('restaurant') || q.includes('খাবার') || q.includes('রেস্তোরাঁ') || q.includes('mishti') || q.includes('sweet')) {

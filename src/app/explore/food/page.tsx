@@ -250,6 +250,7 @@ export default function FoodPage() {
             </div>
             
             {/* Right Sidebar for Word Helper */}
+            {/*
             <div className="w-full lg:w-[450px] xl:w-[500px] shrink-0 flex items-center">
               <WordHelper 
                 words={FOOD_TAMIL_WORDS} 
@@ -258,6 +259,7 @@ export default function FoodPage() {
                 variant="horizontal"
               />
             </div>
+            */}
           </div>
         </div>
       </div>
@@ -276,8 +278,13 @@ export default function FoodPage() {
             if (food.type === 'sweets') tagsToShow.push({ name: 'Sweets', icon: null });
             if (food.type === 'tiffin') tagsToShow.push({ name: 'Tiffin Service', icon: null });
             
-            // Add specialties
-            (food.specialties || []).slice(0, 2).forEach((s) => {
+            // Add specialties safely (handle case where it might be a string in DB)
+            const rawSpecialties = food.specialties as any;
+            const specialtiesArray = Array.isArray(rawSpecialties) 
+              ? rawSpecialties 
+              : (typeof rawSpecialties === 'string' ? rawSpecialties.split(',').map((s: string) => s.trim()) : []);
+              
+            specialtiesArray.slice(0, 2).forEach((s) => {
               tagsToShow.push({ name: s, icon: null });
             });
             

@@ -6,8 +6,9 @@ import { collection, getDocs, doc, setDoc, updateDoc, deleteDoc } from 'firebase
 import { db } from '@/lib/firebase';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { canAccess } from '@/lib/permissions';
-import { Plus, Pencil, Trash2, X, Loader2, Shield, Phone, MessageSquare, Mail, Globe, MapPin, Hospital, HelpCircle, ArrowLeft, Save } from 'lucide-react';
+import { Plus, Pencil, Trash2, Loader2, Shield, ArrowLeft, Save } from 'lucide-react';
 import ImageUpload from '@/components/admin/ImageUpload';
+import { CITIES } from '@/lib/constants';
 
 interface ListingItem {
   id: string;
@@ -15,6 +16,7 @@ interface ListingItem {
   city: string;
   area: string;
   address?: string;
+  pincode?: string;
   description?: string;
   accommodation_type?: 'PG' | 'Hotel' | 'Service Apartment' | 'Rental Home';
   type?: string;
@@ -49,7 +51,7 @@ interface ListingItem {
 const PREDEFINED_AMENITIES = ['WiFi', 'AC', 'Laundry', 'Power Backup', 'Food', 'RO Water', 'CCTV'];
 
 export default function AdminStayPage() {
-  const { profile, firebaseUser } = useAuth();
+  const { profile } = useAuth();
   const searchParams = useSearchParams();
   const searchVal = searchParams.get('search') || '';
   const [items, setItems] = useState<ListingItem[]>([]);
@@ -156,10 +158,22 @@ export default function AdminStayPage() {
       return;
     }
 
+    if (formData.accommodation_type === 'Hotel') {
+      if (!formData.price_daily || formData.price_daily <= 0) {
+        alert('Please enter a valid Price Per Day for Hotel.');
+        return;
+      }
+    } else {
+      if (!formData.price_monthly || formData.price_monthly <= 0) {
+        alert('Please enter a valid Price Per Month.');
+        return;
+      }
+    }
+
     setSaving(true);
     try {
       const now = new Date().toISOString();
-      const payload = { ...formData };
+      const payload: Record<string, any> = { ...formData };
 
       // Clean up fields based on type
       if (payload.accommodation_type !== 'PG') {
@@ -169,6 +183,13 @@ export default function AdminStayPage() {
       if (payload.accommodation_type === 'Hotel') {
         delete payload.price_monthly;
       }
+
+      // Firebase Firestore does not accept 'undefined' values in document fields
+      Object.keys(payload).forEach(key => {
+        if (payload[key] === undefined) {
+          delete payload[key];
+        }
+      });
 
       if (editId) {
         await updateDoc(doc(db, 'listings', editId), { ...payload, updated_at: now });
@@ -283,12 +304,19 @@ export default function AdminStayPage() {
                   <input required type="text" value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl text-sm" placeholder="e.g. Kolkata PG or City Stay Hotel" />
                 </div>
                 <div>
+                  <label className="block text-xs font-semibold text-text-primary mb-1.5">City *</label>
+                  <select required value={formData.city} onChange={e => setFormData({ ...formData, city: e.target.value })} className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl text-sm">
+                    <option value="">Select City...</option>
+                    {CITIES.map(c => <option key={c} value={c}>{c}</option>)}
+                  </select>
+                </div>
+                <div>
                   <label className="block text-xs font-semibold text-text-primary mb-1.5">Accommodation Type *</label>
                   <select value={formData.accommodation_type} onChange={e => setFormData({ ...formData, accommodation_type: e.target.value as any })} className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl text-sm">
                     <option value="PG">PG</option>
                     <option value="Hotel">Hotel</option>
                     <option value="Service Apartment">Service Apartment</option>
-                    <option value="Rental Home">Rental Home</option>
+                    <option value="Rental House">Rental House</option>
                   </select>
                 </div>
                 <div>
@@ -349,8 +377,8 @@ export default function AdminStayPage() {
                 ) : (
                   <>
                     <div>
-                      <label className="block text-xs font-semibold text-text-primary mb-1.5">Price Per Month (₹)</label>
-                      <input type="number" value={formData.price_monthly || ''} onChange={e => setFormData({ ...formData, price_monthly: Number(e.target.value) })} className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl text-sm" placeholder="e.g. 8000" />
+                      <label className="block text-xs font-semibold text-text-primary mb-1.5">Price Per Month (₹) *</label>
+                      <input required type="number" value={formData.price_monthly || ''} onChange={e => setFormData({ ...formData, price_monthly: Number(e.target.value) })} className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl text-sm" placeholder="e.g. 8000" />
                     </div>
                     <div>
                       <label className="block text-xs font-semibold text-text-primary mb-1.5">Price Per Day (₹) (Optional)</label>
@@ -358,19 +386,38 @@ export default function AdminStayPage() {
                     </div>
                   </>
                 )}
-                <div className="sm:col-span-2">
-                  <label className="block text-xs font-semibold text-text-primary mb-1.5">Price Range Description</label>
-                  <input type="text" value={formData.price_range} onChange={e => setFormData({ ...formData, price_range: e.target.value })} className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl text-sm" placeholder="e.g. ₹5,000 - ₹12,000 based on sharing options" />
-                </div>
               </div>
             </div>
 
             <div className="space-y-4 pt-4 border-t border-border">
               <h4 className="font-bold text-sm text-indigo-500 uppercase tracking-wider">Features & Location</h4>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-semibold text-text-primary mb-1.5">Room Types (comma separated)</label>
-                  <input type="text" value={formData.room_type} onChange={e => setFormData({ ...formData, room_type: e.target.value })} className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl text-sm" placeholder="e.g. Single, Double Sharing" />
+                <div className="sm:col-span-2">
+                  <label className="block text-xs font-semibold text-text-primary mb-1.5">Room Types (Select all that apply)</label>
+                  <div className="flex flex-wrap gap-2">
+                    {['1 Sharing', '2 Sharing', '3 Sharing', '4 Sharing', '5 Sharing', 'Rental House', 'Other'].map(rt => (
+                      <label key={rt} className="flex items-center gap-1.5 px-3 py-1.5 bg-surface border border-border rounded-lg cursor-pointer hover:bg-border/50 transition-colors">
+                        <input
+                          type="checkbox"
+                          className="w-3.5 h-3.5 text-primary rounded border-border"
+                          checked={(formData.room_type || '').includes(rt)}
+                          onChange={(e) => {
+                            let current = (formData.room_type || '').split(',').map((s: string) => s.trim()).filter(Boolean);
+                            if (e.target.checked) {
+                              if (!current.includes(rt)) current.push(rt);
+                            } else {
+                              current = current.filter((a: string) => a !== rt);
+                            }
+                            setFormData({
+                              ...formData,
+                              room_type: current.join(', ')
+                            });
+                          }}
+                        />
+                        <span className="text-xs font-medium text-text-secondary">{rt}</span>
+                      </label>
+                    ))}
+                  </div>
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-text-primary mb-1.5">Total Available Rooms</label>
@@ -432,13 +479,40 @@ export default function AdminStayPage() {
                   <input type="url" value={formData.google_maps_url} onChange={e => setFormData({ ...formData, google_maps_url: e.target.value })} className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl text-sm" placeholder="e.g. https://maps.google.com/..." />
                 </div>
                 <div className="sm:col-span-2">
-                  <label className="block text-xs font-semibold text-text-primary mb-1.5">Google Maps Embed Code (iframe src URL)</label>
-                  <input type="text" value={formData.map_embed_code} onChange={e => setFormData({ ...formData, map_embed_code: e.target.value })} className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl text-sm" placeholder="e.g. https://www.google.com/maps/embed?pb=..." />
+                  <label className="block text-xs font-semibold text-text-primary mb-1.5">Google Maps Embed Code or URL</label>
+                  <input
+                    type="text"
+                    value={formData.map_embed_code || ''}
+                    onChange={e => {
+                      let val = e.target.value;
+                      if (val.includes('<iframe')) {
+                        const match = val.match(/src="([^"]+)"/);
+                        if (match && match[1]) val = match[1];
+                      }
+                      setFormData({ ...formData, map_embed_code: val });
+                    }}
+                    className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl text-sm"
+                    placeholder="Paste iframe embed HTML or URL (e.g. https://www.google.com/maps/embed?pb=...)"
+                  />
                 </div>
                 <div className="sm:col-span-2">
                   <label className="block text-xs font-semibold text-text-primary mb-1.5">Detailed Address</label>
                   <textarea value={formData.address} onChange={e => setFormData({ ...formData, address: e.target.value })} rows={2} className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl text-sm resize-none" placeholder="e.g. 12, Park Street, near bus stop" />
                 </div>
+                {Boolean(formData.address && formData.address.trim()) && (
+                  <div className="sm:col-span-2">
+                    <label className="block text-xs font-semibold text-text-primary mb-1.5">Pincode (6 digits) *</label>
+                    <input
+                      required
+                      type="text"
+                      maxLength={6}
+                      value={formData.pincode || ''}
+                      onChange={e => setFormData({ ...formData, pincode: e.target.value.replace(/\D/g, '') })}
+                      className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl text-sm"
+                      placeholder="e.g. 600017"
+                    />
+                  </div>
+                )}
                 <div>
                   <label className="block text-xs font-semibold text-text-primary mb-1.5">Nearby Hospital</label>
                   <input type="text" value={formData.nearby_hospital} onChange={e => setFormData({ ...formData, nearby_hospital: e.target.value })} className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl text-sm" placeholder="e.g. Apollo Hospital (1.2 km)" />
@@ -449,7 +523,8 @@ export default function AdminStayPage() {
                 </div>
                 <div className="sm:col-span-2">
                   <label className="block text-xs font-semibold text-text-primary mb-1.5">Description</label>
-                  <textarea value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} rows={3} className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl text-sm resize-none" placeholder="Enter other features or specifications..." />
+                  <textarea maxLength={250} value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} rows={3} className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl text-sm resize-none" placeholder="Enter other features or specifications (Max 250 characters)..." />
+                  <p className="text-right text-[10px] text-text-muted mt-1">{(formData.description || '').length}/250</p>
                 </div>
               </div>
             </div>

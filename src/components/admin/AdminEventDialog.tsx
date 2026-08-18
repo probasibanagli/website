@@ -168,13 +168,15 @@ export function AdminEventDialog({ existingEvent, onClose, onSaved, onDeleted }:
               <div className="sm:col-span-2">
                 <label className="block text-sm font-medium text-text-primary mb-1">Description</label>
                 <textarea
+                  maxLength={250}
                   name="description"
                   value={formData.description || ''}
                   onChange={handleChange}
                   rows={3}
                   className="w-full px-3 py-2 bg-white border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
-                  placeholder="Details about the event..."
+                  placeholder="Details about the event... (Max 250 chars)"
                 />
+                <p className="text-right text-[10px] text-text-muted mt-1">{(formData.description || '').length}/250</p>
               </div>
 
               <div>

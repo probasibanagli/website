@@ -158,6 +158,12 @@ function LegalPageContent() {
                   <label className="block text-sm font-semibold text-text-primary mb-1.5">Address</label>
                   <input type="text" value={formData.address || ''} onChange={e => setFormData({...formData, address: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
                 </div>
+                {Boolean(formData.address && formData.address.trim()) && (
+                  <div>
+                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Pincode</label>
+                    <input type="text" maxLength={6} value={formData.pincode || ''} onChange={e => setFormData({...formData, pincode: e.target.value.replace(/\D/g, '')})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" placeholder="e.g. 600001" />
+                  </div>
+                )}
               </div>
             )}
 
@@ -222,7 +228,8 @@ function LegalPageContent() {
                 </div>
                 <div className="md:col-span-2">
                   <label className="block text-sm font-semibold text-text-primary mb-1.5">Description</label>
-                  <textarea value={formData.description || ''} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" rows={2} />
+                  <textarea maxLength={250} value={formData.description || ''} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" rows={2} placeholder="(Max 250 characters)" />
+                  <p className="text-right text-[10px] text-text-muted mt-1">{(formData.description || '').length}/250</p>
                 </div>
                 <div className="md:col-span-2 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
                   <p className="text-xs text-yellow-800">Advanced fields like Steps, Portals and nested Helplines editing are partially supported here in the simple editor. In a full version, dynamic arrays would be built here. For now, they are preserved when editing.</p>

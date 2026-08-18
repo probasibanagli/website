@@ -1271,16 +1271,16 @@ export default function MatrimonialRegisterPage() {
                   <label className="block text-sm font-medium text-text-primary">About Me / Description</label>
                   <textarea
                     value={(formData.about_me as string) || ''}
-                    onChange={(e) => updateField('about_me', e.target.value.slice(0, 500))}
+                    onChange={(e) => updateField('about_me', e.target.value.slice(0, 250))}
                     rows={4}
-                    maxLength={500}
+                    maxLength={250}
                     className="w-full px-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none"
-                    placeholder="Share about your personality, interests, values, family life, what makes you unique..."
+                    placeholder="Share about your personality, interests, values, family life, what makes you unique... (Max 250 chars)"
                   />
                   <div className="flex justify-between items-center">
                     <p className="text-[10px] text-text-muted">A good description helps get more matches</p>
-                    <p className={`text-[10px] font-medium ${((formData.about_me as string) || '').length > 450 ? 'text-amber-500' : 'text-text-muted'}`}>
-                      {((formData.about_me as string) || '').length}/500
+                    <p className={`text-[10px] font-medium ${((formData.about_me as string) || '').length > 200 ? 'text-amber-500' : 'text-text-muted'}`}>
+                      {((formData.about_me as string) || '').length}/250
                     </p>
                   </div>
                 </div>
@@ -1316,14 +1316,14 @@ export default function MatrimonialRegisterPage() {
                   <label className="block text-sm font-medium text-text-primary">Expectations Description <span className="text-text-muted font-normal">(optional)</span></label>
                   <textarea
                     value={(formData.partner_preference as string) || ''}
-                    onChange={(e) => updateField('partner_preference', e.target.value.slice(0, 500))}
+                    onChange={(e) => updateField('partner_preference', e.target.value.slice(0, 250))}
                     rows={4}
-                    maxLength={500}
+                    maxLength={250}
                     className="w-full px-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none"
-                    placeholder="Describe the kind of partner you envision — personality, values, lifestyle..."
+                    placeholder="Describe the kind of partner you envision — personality, values, lifestyle... (Max 250 chars)"
                   />
-                  <p className={`text-[10px] font-medium text-right ${((formData.partner_preference as string) || '').length > 450 ? 'text-amber-500' : 'text-text-muted'}`}>
-                    {((formData.partner_preference as string) || '').length}/500
+                  <p className={`text-[10px] font-medium text-right ${((formData.partner_preference as string) || '').length > 200 ? 'text-amber-500' : 'text-text-muted'}`}>
+                    {((formData.partner_preference as string) || '').length}/250
                   </p>
                 </div>
 

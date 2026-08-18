@@ -245,6 +245,15 @@ body {
   border-top-color: #1e293b !important;
 }
 
+.leaflet-tooltip.metro-tooltip-phase2 {
+  color: #64748b !important;
+  border: 1.5px solid #94a3b8 !important;
+}
+
+.leaflet-tooltip-top.metro-tooltip-phase2::before {
+  border-top-color: #94a3b8 !important;
+}
+
 @keyframes dash {
   to {
     stroke-dashoffset: -20;
@@ -339,4 +348,17 @@ html.pb-welcome-dismissed .welcome-modal-overlay {
   display: none !important;
 }
 
+/* Global Form Validation Styles for Admin */
+form.form-submitted input:invalid,
+form.form-submitted select:invalid,
+form.form-submitted textarea:invalid {
+  border-color: #ef4444 !important;
+  background-color: #fef2f2 !important;
+}
 
+form.form-submitted input:invalid:focus,
+form.form-submitted select:invalid:focus,
+form.form-submitted textarea:invalid:focus {
+  outline-color: #ef4444 !important;
+  box-shadow: 0 0 0 2px #fee2e2 !important;
+}

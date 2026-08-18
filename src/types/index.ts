@@ -135,7 +135,7 @@ export type LegalServiceItem = LegalAidCentre | LegalHelpline | LegalCategory | 
 
 export interface Listing {
   id: string;
-  type: 'pg' | 'hotel' | 'rental';
+  type: 'pg' | 'hotel' | 'rental' | 'rental-house';
   name: string;
   description?: string;
   city: string;
@@ -160,7 +160,7 @@ export interface Listing {
   verified: boolean;
   available_rooms?: number;
   deposit_amount?: number;
-  accommodation_type?: 'PG' | 'Hotel' | 'Service Apartment' | 'Rental Home';
+  accommodation_type?: 'PG' | 'Hotel' | 'Service Apartment' | 'Rental House';
   contact_person_name?: string;
   contact_whatsapp?: string;
   contact_email?: string;
@@ -249,6 +249,9 @@ export interface BengaliDoctor {
   photo: string;
   phone: string;
   email: string;
+  google_rating?: number;
+  google_review_count?: number;
+  google_review_url?: string;
   google_review_link?: string;
   instagram_url?: string;
   facebook_url?: string;
@@ -558,6 +561,7 @@ export interface Pharmacy {
 export interface HospitalReview {
   id: string;
   hospital_id: string;
+  hospital_name?: string;
   user_id?: string;
   user_name: string;
   user_avatar?: string;

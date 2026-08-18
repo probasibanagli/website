@@ -22,6 +22,7 @@ export default function AdminServicesPage() {
         { key: 'city', label: 'City', required: true },
         { key: 'area', label: 'Area' },
         { key: 'address', label: 'Address' },
+        { key: 'pincode', label: 'Pincode' },
         { key: 'phone', label: 'Phone' },
         { key: 'website', label: 'Website URL' },
         { key: 'google_maps_url', label: 'Google Maps URL' },

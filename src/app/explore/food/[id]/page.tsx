@@ -12,10 +12,10 @@ import { useFirestore } from '@/lib/hooks/useFirestore';
 import { FoodListing } from '@/types';
 import { MapEmbed } from '@/components/ui/MapEmbed';
 
-function ListingCoverImage({ name, city, mapsUrl, imageUrl, type, mapEmbedCode, fallbackIcon }: { 
-  name: string; 
-  city?: string; 
-  mapsUrl?: string; 
+function ListingCoverImage({ name, city, mapsUrl, imageUrl, type, mapEmbedCode, fallbackIcon }: {
+  name: string;
+  city?: string;
+  mapsUrl?: string;
   imageUrl?: string;
   type?: string;
   mapEmbedCode?: string;
@@ -26,7 +26,7 @@ function ListingCoverImage({ name, city, mapsUrl, imageUrl, type, mapEmbedCode, 
     const match = mapEmbedCode.match(/src="([^"]+)"/);
     if (match) extractUrl = match[1];
   }
-  
+
   // Always try to fetch if we have name and city, even if URL is missing
   const imgSrc = imageUrl || (name && city ? `/api/public/place-photo?name=${encodeURIComponent(name)}&city=${encodeURIComponent(city || '')}&mapsUrl=${encodeURIComponent(extractUrl)}&v=4` : null);
   const [error, setError] = useState(false);
@@ -110,16 +110,17 @@ export default function FoodDetailPage() {
   return (
     <div className="min-h-screen bg-surface">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <Link href="/explore/food" className="inline-flex items-center gap-2 text-sm text-text-muted hover:text-primary mb-6">
-          <ArrowLeft className="w-4 h-4" /> Back to food listings
-        </Link>
-
         {/* Title & Rating Section */}
         <div className="mb-6">
           <div className="flex items-start justify-between gap-4">
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold font-display text-gray-900 leading-tight">
-              {food.name}
-            </h1>
+            <div className="flex items-center gap-3">
+              <Link href="/explore/food" className="inline-flex items-center justify-center p-2.5 rounded-full hover:bg-surface text-text-muted hover:text-primary transition-colors border border-border/50 bg-white shadow-sm mt-0.5 sm:mt-1.5">
+                <ArrowLeft className="w-5 h-5" />
+              </Link>
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold font-display text-gray-900 leading-tight">
+                {food.name}
+              </h1>
+            </div>
             {food.rating && (
               <div className="flex items-center gap-1.5 bg-white border border-[#E4E9F2] px-3 py-1.5 rounded-full shadow-sm whitespace-nowrap text-sm mt-1 sm:mt-2">
                 <Star className="w-4 h-4 fill-[#B06000] text-[#B06000]" />
@@ -128,7 +129,7 @@ export default function FoodDetailPage() {
             )}
           </div>
           <div className="flex items-center gap-1.5 mt-2 text-sm text-text-muted">
-            <MapPin className="w-4 h-4" /> {food.address || `${food.area}, ${food.city}`}
+            <MapPin className="w-4 h-4" /> <span className="break-all">{food.address || `${food.area}, ${food.city}`}{food.pincode ? `, ${food.pincode}` : ''}</span>
           </div>
         </div>
 
@@ -151,7 +152,7 @@ export default function FoodDetailPage() {
             </div>
           </div>
           <div className="w-full lg:w-[calc(25%-4px)] lg:flex-none rounded-2xl overflow-hidden border border-border h-48 sm:h-56 lg:h-64 bg-surface">
-            <MapEmbed 
+            <MapEmbed
               name={food.name}
               address={food.address}
               area={food.area}
@@ -162,49 +163,46 @@ export default function FoodDetailPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          <div className="lg:col-span-7 space-y-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start mb-8">
+          <div className="space-y-6">
 
             {food.specialties && food.specialties.length > 0 && (
-            <Card>
-              <h3 className="text-lg font-bold mb-3">Specialties</h3>
-              <div className="flex flex-wrap gap-2">
-                {(Array.isArray(food.specialties) ? food.specialties : String(food.specialties).split(',').map(s => s.trim())).filter(Boolean).map((s: string) => <Badge key={s} variant="bengali">{s}</Badge>)}
-              </div>
-            </Card>
+              <Card>
+                <h3 className="text-lg font-bold mb-3">Specialties</h3>
+                <div className="flex flex-wrap gap-2">
+                  {(Array.isArray(food.specialties) ? food.specialties : typeof (food.specialties as unknown) === 'string' ? (food.specialties as unknown as string).split(',').map(s => s.trim()) : []).filter(Boolean).map((s: string) => <Badge key={s} variant="bengali">{s}</Badge>)}
+                </div>
+              </Card>
             )}
-
 
           </div>
 
-          <div className="lg:col-span-5 space-y-4">
+          <div className="space-y-4">
             <Card className="bg-orange-50 border-orange-100">
               <h3 className="text-lg font-bold mb-4">Contact & Order</h3>
               <div className="space-y-3">
-                {food.phone && <a href={`tel:${food.phone}`} className="block"><Button variant="primary" className="w-full h-12 text-base shadow-sm"><Phone className="w-4 h-4" /> Call to Order</Button></a>}
-                {food.whatsapp && <a href={getWhatsAppUrl(food.whatsapp)} target="_blank" rel="noopener noreferrer" className="block"><Button variant="secondary" className="w-full h-12 text-base shadow-sm"><MessageCircle className="w-4 h-4" /> WhatsApp Chat</Button></a>}
-                
-                {DELIVERY_PARTNERS.some(p => (food as unknown as Record<string, unknown>)[p.key]) && (
-                  <div className="pt-4 mt-4 border-t border-orange-100">
-                    <p className="text-xs font-semibold text-orange-800 uppercase tracking-wider mb-3">Delivery Partner</p>
-                    <div className="space-y-2">
-                      {DELIVERY_PARTNERS.map((partner) => {
-                        const url = (food as unknown as Record<string, unknown>)[partner.key] as string | undefined;
-                        return url ? (
-                          <a key={partner.key} href={url} target="_blank" rel="noopener noreferrer" className="block">
-                            <Button variant="outline" className="w-full border-orange-100 hover:bg-orange-50 text-orange-700 hover:text-orange-800 transition-all font-semibold">
-                              {partner.emoji} Order on {partner.label} <ExternalLink className="w-3 h-3 ml-auto" />
-                            </Button>
-                          </a>
-                        ) : null;
-                      })}
-                    </div>
-                  </div>
-                )}
+                {food.phone && <a href={`tel:${food.phone}`} className="flex items-center justify-center gap-2 w-full h-12 bg-primary text-white hover:bg-primary-dark shadow-sm font-semibold rounded-xl transition-all text-base"><Phone className="w-4 h-4" /> Call to Order</a>}
+                {food.whatsapp && <a href={getWhatsAppUrl(food.whatsapp)} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 w-full h-12 bg-accent text-white hover:bg-emerald-700 shadow-sm font-semibold rounded-xl transition-all text-base"><MessageCircle className="w-4 h-4" /> WhatsApp Chat</a>}
               </div>
             </Card>
           </div>
         </div>
+
+        {DELIVERY_PARTNERS.some(p => (food as unknown as Record<string, unknown>)[p.key]) && (
+          <Card>
+            <h3 className="text-lg font-bold mb-4">Delivery Partners</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {DELIVERY_PARTNERS.map((partner) => {
+                const url = (food as unknown as Record<string, unknown>)[partner.key] as string | undefined;
+                return url ? (
+                  <a key={partner.key} href={url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 w-full px-4 py-3 text-sm border-2 border-border hover:border-orange-200 hover:bg-orange-50 text-text-primary rounded-xl font-semibold transition-all">
+                    <span className="text-xl">{partner.emoji}</span> <span>Order on {partner.label}</span> <ExternalLink className="w-4 h-4 ml-auto text-text-muted" />
+                  </a>
+                ) : null;
+              })}
+            </div>
+          </Card>
+        )}
       </div>
     </div>
   );

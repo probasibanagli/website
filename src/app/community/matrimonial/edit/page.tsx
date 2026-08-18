@@ -676,8 +676,8 @@ export default function EditMatrimonialProfile() {
               </div>
               <div className="space-y-1.5">
                 <label className="block text-sm font-medium text-text-primary">About Ideal Partner</label>
-                <textarea value={(formData.partner_preference as string) || ''} onChange={(e) => updateField('partner_preference', e.target.value.slice(0, 500))} rows={4} maxLength={500} className="w-full px-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none" placeholder="Describe your ideal partner — personality, values, lifestyle..." />
-                <p className={`text-[10px] font-medium text-right ${((formData.partner_preference as string) || '').length > 450 ? 'text-amber-500' : 'text-text-muted'}`}>{((formData.partner_preference as string) || '').length}/500</p>
+                <textarea value={(formData.partner_preference as string) || ''} onChange={(e) => updateField('partner_preference', e.target.value.slice(0, 250))} rows={4} maxLength={250} className="w-full px-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none" placeholder="Describe your ideal partner — personality, values, lifestyle... (Max 250 chars)" />
+                <p className={`text-[10px] font-medium text-right ${((formData.partner_preference as string) || '').length > 200 ? 'text-amber-500' : 'text-text-muted'}`}>{((formData.partner_preference as string) || '').length}/250</p>
               </div>
             </div>
           )}
@@ -688,10 +688,10 @@ export default function EditMatrimonialProfile() {
               <h2 className="text-lg font-bold mb-4">About Me</h2>
               <div className="space-y-1.5">
                 <label className="block text-sm font-medium text-text-primary">Tell potential matches about yourself</label>
-                <textarea value={(formData.about_me as string) || ''} onChange={(e) => updateField('about_me', e.target.value.slice(0, 500))} rows={6} maxLength={500} className="w-full px-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none" placeholder="Share your personality, values, interests, what makes you unique..." />
+                <textarea value={(formData.about_me as string) || ''} onChange={(e) => updateField('about_me', e.target.value.slice(0, 250))} rows={6} maxLength={250} className="w-full px-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none" placeholder="Share your personality, values, interests, what makes you unique... (Max 250 chars)" />
                 <div className="flex justify-between items-center">
                   <p className="text-[10px] text-text-muted">A good description helps get more matches</p>
-                  <p className={`text-[10px] font-medium ${((formData.about_me as string) || '').length > 450 ? 'text-amber-500' : 'text-text-muted'}`}>{((formData.about_me as string) || '').length}/500</p>
+                  <p className={`text-[10px] font-medium ${((formData.about_me as string) || '').length > 200 ? 'text-amber-500' : 'text-text-muted'}`}>{((formData.about_me as string) || '').length}/250</p>
                 </div>
               </div>
             </div>

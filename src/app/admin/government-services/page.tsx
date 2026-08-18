@@ -376,12 +376,14 @@ function GovernmentServicesAdminContent() {
             <div>
               <label className="block text-xs font-bold text-text-primary mb-1">Description & Guidelines</label>
               <textarea
+                maxLength={250}
                 rows={3}
                 value={formData.description || ''}
                 onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                placeholder="Provide step-by-step instructions or background info..."
+                placeholder="Provide step-by-step instructions or background info... (Max 250 chars)"
                 className="w-full px-3.5 py-2.5 border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 resize-none"
               />
+              <p className="text-right text-[10px] text-text-muted mt-1">{(formData.description || '').length}/250</p>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

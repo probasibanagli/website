@@ -249,7 +249,7 @@ function ServiceCard({
   footer: React.ReactNode;
 }) {
   return (
-    <Card padding="none" className="flex flex-col border-amber-200/60 bg-amber-50/30 hover:border-amber-400 hover:shadow-lg transition-all duration-300 h-full">
+    <Card padding="none" className="flex flex-col border border-amber-200 bg-white shadow-md hover:border-amber-400 hover:shadow-xl transition-all duration-300 h-full">
       {/* Header */}
       <div className="flex items-start gap-3 p-5 pb-3">
         <div className="w-11 h-11 rounded-xl bg-amber-100/70 flex items-center justify-center shrink-0">
@@ -589,7 +589,7 @@ export default function GovernmentPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-surface">
+    <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <div className="bg-white border-b border-border">
         <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-8">

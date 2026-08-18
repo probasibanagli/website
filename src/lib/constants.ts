@@ -999,3 +999,30 @@ export const HOSPITAL_TAMIL_WORDS = [
   { meaning: 'Fever', pronunciation: 'Kaichal', tamil: 'காய்ச்சல்', bengali: 'কাইচাল', bengaliMeaning: 'জ্বর' },
   { meaning: 'Pharmacy', pronunciation: 'Marundhagam', tamil: 'மருந்தகம்', bengali: 'মারুন্ধাগাম', bengaliMeaning: 'ফার্মেসি' },
 ];
+
+export const COMMUNITY_TAMIL_WORDS = [
+  { meaning: 'Hello / Welcome', pronunciation: 'Vanakkam', tamil: 'வணக்கம்', bengali: 'ভনাক্কম', bengaliMeaning: 'নমস্কার' },
+  { meaning: 'Friend', pronunciation: 'Nanbar', tamil: 'நண்பர்', bengali: 'নানবার', bengaliMeaning: 'বন্ধু' },
+  { meaning: 'Group', pronunciation: 'Kuzhu', tamil: 'குழு', bengali: 'কুঝু', bengaliMeaning: 'দল' },
+  { meaning: 'Meeting', pronunciation: 'Santhippu', tamil: 'சந்திப்பு', bengali: 'সন্থিপ্পু', bengaliMeaning: 'মিটিং' },
+  { meaning: 'Festival', pronunciation: 'Thiruvizha', tamil: 'திருவிழா', bengali: 'থিরুভিঝা', bengaliMeaning: 'উৎসব' },
+  { meaning: 'Marriage', pronunciation: 'Thirumanam', tamil: 'திருமணம்', bengali: 'থিরুমানাম', bengaliMeaning: 'বিয়ে' },
+];
+
+export const EMERGENCY_TAMIL_WORDS = [
+  { meaning: 'Help!', pronunciation: 'Udhavi!', tamil: 'உதவி!', bengali: 'উধাভি!', bengaliMeaning: 'সাহায্য করুন!' },
+  { meaning: 'Emergency', pronunciation: 'Avasaram', tamil: 'அவசரம்', bengali: 'আভাসারাম', bengaliMeaning: 'জরুরী' },
+  { meaning: 'Ambulance', pronunciation: 'Ambulance', tamil: 'ஆம்புலன்ஸ்', bengali: 'অ্যাম্বুলেন্স', bengaliMeaning: 'অ্যাম্বুলেন্স' },
+  { meaning: 'Blood', pronunciation: 'Ratham', tamil: 'ரத்தம்', bengali: 'রাথাম', bengaliMeaning: 'রক্ত' },
+  { meaning: 'Police', pronunciation: 'Kaval Thurai', tamil: 'காவல்துறை', bengali: 'কাভাল থুরাই', bengaliMeaning: 'পুলিশ' },
+  { meaning: 'Accident', pronunciation: 'Vibathu', tamil: 'விபத்து', bengali: 'ভিবাথু', bengaliMeaning: 'দুর্ঘটনা' },
+];
+
+export const SERVICES_TAMIL_WORDS = [
+  { meaning: 'School', pronunciation: 'Palli', tamil: 'பள்ளி', bengali: 'পল্লি', bengaliMeaning: 'স্কুল' },
+  { meaning: 'College', pronunciation: 'Kalloori', tamil: 'கல்லூரி', bengali: 'কাল্লুরি', bengaliMeaning: 'কলেজ' },
+  { meaning: 'Office', pronunciation: 'Aluvalagam', tamil: 'அலுவலகம்', bengali: 'আলুভালাগম', bengaliMeaning: 'অফিস' },
+  { meaning: 'Application', pronunciation: 'Vinnappam', tamil: 'விண்ணப்பம்', bengali: 'ভিন্নপ্পাম', bengaliMeaning: 'আবেদন' },
+  { meaning: 'Signature', pronunciation: 'Kaiyezhuthu', tamil: 'கையெழுத்து', bengali: 'কাইয়েঝুথু', bengaliMeaning: 'সই' },
+  { meaning: 'Lawyer', pronunciation: 'Vazhakkaringar', tamil: 'வழக்கறிஞர்', bengali: 'ভাজাক্কারিংগার', bengaliMeaning: 'উকিল' },
+];

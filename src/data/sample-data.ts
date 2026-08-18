@@ -1532,6 +1532,10 @@ export const sampleDoctors: BengaliDoctor[] = [
     photo: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=400&auto=format&fit=crop&q=80',
     phone: '+91 98765 43210',
     email: 'dr.anirban@apollohospitals.com',
+    google_rating: 4.8,
+    google_review_count: 326,
+    google_review_url: 'https://maps.google.com/?q=Apollo+Hospitals+Greams+Road+Chennai',
+    google_review_link: 'https://maps.google.com/?q=Apollo+Hospitals+Greams+Road+Chennai',
     created_at: new Date().toISOString(),
     otp_required: false
   },
@@ -1549,6 +1553,10 @@ export const sampleDoctors: BengaliDoctor[] = [
     photo: 'https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=400&auto=format&fit=crop&q=80',
     phone: '+91 98765 43211',
     email: 'saptarshi.c@mgmhealthcare.in',
+    google_rating: 4.7,
+    google_review_count: 341,
+    google_review_url: 'https://maps.google.com/?q=MGM+Healthcare+Chennai',
+    google_review_link: 'https://maps.google.com/?q=MGM+Healthcare+Chennai',
     created_at: new Date().toISOString(),
     otp_required: false
   },
@@ -1566,6 +1574,10 @@ export const sampleDoctors: BengaliDoctor[] = [
     photo: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400&auto=format&fit=crop&q=80',
     phone: '+91 98765 43212',
     email: 'debasish.b@miotinternational.com',
+    google_rating: 4.6,
+    google_review_count: 287,
+    google_review_url: 'https://maps.google.com/?q=MIOT+International+Chennai',
+    google_review_link: 'https://maps.google.com/?q=MIOT+International+Chennai',
     created_at: new Date().toISOString(),
     otp_required: false
   },
@@ -1583,6 +1595,10 @@ export const sampleDoctors: BengaliDoctor[] = [
     photo: 'https://images.unsplash.com/photo-1594824813566-88855ce78907?w=400&auto=format&fit=crop&q=80',
     phone: '+91 98765 43213',
     email: 'swati.m@fortis.com',
+    google_rating: 4.7,
+    google_review_count: 218,
+    google_review_url: 'https://maps.google.com/?q=Fortis+Malar+Hospital+Chennai',
+    google_review_link: 'https://maps.google.com/?q=Fortis+Malar+Hospital+Chennai',
     created_at: new Date().toISOString(),
     otp_required: false
   },
@@ -1600,6 +1616,10 @@ export const sampleDoctors: BengaliDoctor[] = [
     photo: 'https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=400&auto=format&fit=crop&q=80',
     phone: '+91 98765 43214',
     email: 'partha.s@kauvery.com',
+    google_rating: 4.9,
+    google_review_count: 412,
+    google_review_url: 'https://maps.google.com/?q=Kauvery+Hospital+Chennai',
+    google_review_link: 'https://maps.google.com/?q=Kauvery+Hospital+Chennai',
     created_at: new Date().toISOString(),
     otp_required: false
   }

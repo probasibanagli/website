@@ -30,6 +30,7 @@ const InstagramIcon = (props: React.SVGProps<SVGSVGElement>) => (
 const PLATFORMS = [
   { key: 'whatsapp', label: 'WhatsApp', icon: <FaWhatsapp className="w-5 h-5" />, color: 'bg-green-500', ringColor: 'ring-green-500', textColor: 'text-green-700' },
   { key: 'facebook', label: 'Facebook', icon: <FaFacebook className="w-5 h-5" />, color: 'bg-blue-600', ringColor: 'ring-blue-600', textColor: 'text-blue-700' },
+  { key: 'instagram', label: 'Instagram', icon: <InstagramIcon className="w-5 h-5" />, color: 'bg-pink-600', ringColor: 'ring-pink-600', textColor: 'text-pink-700' },
   { key: 'discord', label: 'Discord', icon: <FaDiscord className="w-5 h-5" />, color: 'bg-indigo-500', ringColor: 'ring-indigo-500', textColor: 'text-indigo-700' },
   { key: 'telegram', label: 'Telegram', icon: <FaTelegram className="w-5 h-5" />, color: 'bg-sky-500', ringColor: 'ring-sky-500', textColor: 'text-sky-700' },
   { key: 'website', label: 'Website', icon: <FaLink className="w-5 h-5" />, color: 'bg-slate-700', ringColor: 'ring-slate-700', textColor: 'text-slate-800' },
@@ -216,7 +217,7 @@ export default function GroupsPage() {
               secondaryHref = group.facebook_url;
             } else if (group.instagram_url) {
               secondaryLabel = 'Instagram';
-              secondaryIcon = <ExternalLink className="w-4 h-4" />;
+              secondaryIcon = <InstagramIcon className="w-4 h-4" />;
               secondaryHref = group.instagram_url;
             } else {
               secondaryLabel = 'Link';

@@ -48,6 +48,46 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     } else {
       setMfaChecked(true);
     }
+
+    // Global form validation listener
+    const handleInvalid = (e: Event) => {
+      const target = e.target as HTMLElement;
+      const form = target.closest('form');
+      if (form) {
+        form.classList.add('form-submitted');
+      }
+    };
+    
+    const handleSubmit = (e: Event) => {
+      const form = e.target as HTMLFormElement;
+      if (form) {
+        form.classList.add('form-submitted');
+      }
+    };
+
+    // Automatically clear validation state when forms are opened/closed
+    const handleGlobalClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const button = target.closest('button');
+      if (button && button.type !== 'submit') {
+        const text = (button.textContent || '').toLowerCase();
+        const title = (button.title || '').toLowerCase();
+        if (text.includes('add') || text.includes('cancel') || text.includes('close') || title.includes('edit') || title.includes('close')) {
+          document.querySelectorAll('form.form-submitted').forEach(f => f.classList.remove('form-submitted'));
+        }
+      }
+    };
+
+    // Use capture phase (true) because 'invalid' events do not bubble
+    document.addEventListener('invalid', handleInvalid, true);
+    document.addEventListener('submit', handleSubmit, true);
+    document.addEventListener('click', handleGlobalClick, true);
+
+    return () => {
+      document.removeEventListener('invalid', handleInvalid, true);
+      document.removeEventListener('submit', handleSubmit, true);
+      document.removeEventListener('click', handleGlobalClick, true);
+    };
   }, [router]);
 
   if (loading || !mfaChecked) {
@@ -87,15 +127,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       { key: 'admin-mgmt', label: 'Admin Management', href: '/admin/users?tab=admins', icon: <Shield className="w-4 h-4" /> },
       { key: 'user-mgmt', label: 'User Management', href: '/admin/users?tab=users', icon: <Users className="w-4 h-4" /> },
       { key: 'activity-log', label: 'Activity Tracking', href: '/admin/users?tab=activities', icon: <Activity className="w-4 h-4" /> },
-    ] : []),
-    ...accessibleModules
+    ] : accessibleModules
       .filter((mod) => mod !== 'users' && MODULE_LABELS[mod])
       .map((mod) => ({
         key: mod,
         label: MODULE_LABELS[mod],
         href: `/admin/${mod === 'blood_bank' ? 'blood-bank' : mod === 'government_services' ? 'government-services' : mod}`,
         icon: moduleIcons[mod],
-      })),
+      }))),
   ];
 
   const handleLogout = async () => {
