@@ -17,10 +17,6 @@ export function Footer() {
   const [mounted, setMounted] = React.useState(false);
 
   React.useEffect(() => {
-    if (typeof window !== 'undefined') {
-      window.history.scrollRestoration = 'manual';
-      window.scrollTo(0, 0);
-    }
     setMounted(true);
   }, []);
 
