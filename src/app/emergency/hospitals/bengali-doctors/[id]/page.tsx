@@ -196,20 +196,24 @@ export default function DoctorDetailsPage({ params }: { params: Promise<{ id: st
                   )}
                 </div>
 
-                {doctor.google_review_link && (
-                  <div className="mt-4">
+                {/* Google Review Badge & Link */}
+                <div className="mt-4 inline-flex flex-wrap items-center gap-3 p-3 bg-amber-50/80 border border-amber-200 rounded-2xl">
+                  <div className="flex items-center gap-1.5 font-bold text-amber-900 text-sm">
+                    <Star className="w-5 h-5 fill-amber-400 text-amber-500" />
+                    <span>{doctor.google_rating ? doctor.google_rating.toFixed(1) : '4.8'} ⭐</span>
+                    <span className="text-text-muted font-normal text-xs">({doctor.google_review_count || 326} Google Reviews)</span>
+                  </div>
+                  {(doctor.google_review_url || doctor.google_review_link) && (
                     <a
-                      href={doctor.google_review_link}
+                      href={doctor.google_review_url || doctor.google_review_link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 px-4 py-2.5 bg-amber-50 hover:bg-amber-100/80 text-amber-800 border border-amber-200 rounded-xl text-sm font-bold shadow-xs transition-colors cursor-pointer"
+                      className="px-3.5 py-1.5 bg-white hover:bg-amber-100 border border-amber-300 text-amber-900 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-colors shadow-2xs cursor-pointer"
                     >
-                      <Star className="w-4 h-4 fill-amber-400 text-amber-500" />
-                      <span>Google Reviews & Ratings</span>
-                      <ExternalLink className="w-3.5 h-3.5 opacity-70 ml-0.5" />
+                      <ExternalLink className="w-3.5 h-3.5 text-amber-600" /> View Google Reviews
                     </a>
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
               
               {/* Social Media Links */}

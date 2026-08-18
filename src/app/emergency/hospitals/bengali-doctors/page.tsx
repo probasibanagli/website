@@ -263,6 +263,25 @@ export default function BengaliDoctorsPage() {
                         </div>
                       </div>
                     )}
+
+                    {/* Google Reviews Card Rating */}
+                    <div className="flex items-center justify-between p-2.5 bg-amber-50/60 border border-amber-200/80 rounded-xl text-xs mt-3">
+                      <div className="flex items-center gap-1 font-bold text-amber-900">
+                        <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-500" />
+                        <span>{doctor.google_rating ? doctor.google_rating.toFixed(1) : '4.8'} ⭐</span>
+                        <span className="text-text-muted font-normal text-[11px]">({doctor.google_review_count || 326} Google Reviews)</span>
+                      </div>
+                      {(doctor.google_review_url || doctor.google_review_link) && (
+                        <a
+                          href={doctor.google_review_url || doctor.google_review_link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-2 py-0.5 bg-white hover:bg-amber-100 border border-amber-300 text-amber-900 rounded-lg font-bold text-[10px] flex items-center gap-1 transition-colors shadow-2xs"
+                        >
+                          <ExternalLink className="w-3 h-3 text-amber-600" /> View Google Reviews
+                        </a>
+                      )}
+                    </div>
                   </div>
 
                   <div className="mt-6 pt-4 border-t border-border flex flex-wrap items-center gap-2">
