@@ -48,6 +48,31 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     } else {
       setMfaChecked(true);
     }
+
+    // Global form validation listener
+    const handleInvalid = (e: Event) => {
+      const target = e.target as HTMLElement;
+      const form = target.closest('form');
+      if (form) {
+        form.classList.add('form-submitted');
+      }
+    };
+    
+    const handleSubmit = (e: Event) => {
+      const form = e.target as HTMLFormElement;
+      if (form) {
+        form.classList.add('form-submitted');
+      }
+    };
+
+    // Use capture phase (true) because 'invalid' events do not bubble
+    document.addEventListener('invalid', handleInvalid, true);
+    document.addEventListener('submit', handleSubmit, true);
+
+    return () => {
+      document.removeEventListener('invalid', handleInvalid, true);
+      document.removeEventListener('submit', handleSubmit, true);
+    };
   }, [router]);
 
   if (loading || !mfaChecked) {
