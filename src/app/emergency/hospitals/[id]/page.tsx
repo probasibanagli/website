@@ -672,15 +672,7 @@ export default function HospitalDetailsPage({ params }: { params: Promise<{ id: 
                       <Star className="w-4 h-4 fill-amber-400 text-amber-500" />
                       <span>{avgHospitalRating.toFixed(1)}</span>
                     </div>
-                    <p className="text-[10px] text-amber-700 font-bold uppercase tracking-wider">Hospital</p>
-                  </div>
-
-                  <div className="px-3 py-1.5 bg-blue-50 border border-blue-200 rounded-xl text-center">
-                    <div className="flex items-center gap-1 text-blue-800 font-bold text-base">
-                      <Star className="w-4 h-4 fill-blue-400 text-blue-500" />
-                      <span>{avgWebsiteRating.toFixed(1)}</span>
-                    </div>
-                    <p className="text-[10px] text-blue-700 font-bold uppercase tracking-wider">Website</p>
+                    <p className="text-[10px] text-amber-700 font-bold uppercase tracking-wider">Hospital Rating</p>
                   </div>
                 </div>
               </div>
@@ -712,28 +704,6 @@ export default function HospitalDetailsPage({ params }: { params: Promise<{ id: 
                         <span className="ml-2 text-xs font-bold text-amber-600">{hospitalRating}/5</span>
                       </div>
                     </div>
-
-                    {/* Website Rating */}
-                    <div className="bg-white p-3.5 rounded-xl border border-border/60">
-                      <label className="block text-xs font-bold text-text-primary uppercase tracking-wider mb-1.5">
-                        Website Experience ⭐
-                      </label>
-                      <div className="flex items-center gap-1">
-                        {[1, 2, 3, 4, 5].map((star) => (
-                          <button
-                            key={star}
-                            type="button"
-                            onClick={() => setWebsiteRating(star)}
-                            className="p-1 hover:scale-110 transition-transform cursor-pointer"
-                          >
-                            <Star
-                              className={`w-5 h-5 ${star <= websiteRating ? 'fill-blue-400 text-blue-500' : 'text-gray-300'}`}
-                            />
-                          </button>
-                        ))}
-                        <span className="ml-2 text-xs font-bold text-blue-600">{websiteRating}/5</span>
-                      </div>
-                    </div>
                   </div>
 
                   <div>
@@ -749,7 +719,6 @@ export default function HospitalDetailsPage({ params }: { params: Promise<{ id: 
                       <option value="Doctors & Staff">Doctors & Staff</option>
                       <option value="Cleanliness">Cleanliness</option>
                       <option value="Facilities">Facilities</option>
-                      <option value="Website Experience">Website Experience</option>
                       <option value="Other">Other</option>
                     </select>
                   </div>
@@ -824,18 +793,10 @@ export default function HospitalDetailsPage({ params }: { params: Promise<{ id: 
 
                         <div className="flex items-center gap-3 text-xs font-medium">
                           <div className="flex items-center gap-1 text-amber-700">
-                            <span className="text-text-muted text-[11px]">Hospital:</span>
+                            <span className="text-text-muted text-[11px]">Rating:</span>
                             <div className="flex">
                               {[1, 2, 3, 4, 5].map((s) => (
                                 <Star key={s} className={`w-3 h-3 ${s <= rev.hospital_rating ? 'fill-amber-400 text-amber-500' : 'text-gray-300'}`} />
-                              ))}
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-1 text-blue-700">
-                            <span className="text-text-muted text-[11px]">Website:</span>
-                            <div className="flex">
-                              {[1, 2, 3, 4, 5].map((s) => (
-                                <Star key={s} className={`w-3 h-3 ${s <= rev.website_rating ? 'fill-blue-400 text-blue-500' : 'text-gray-300'}`} />
                               ))}
                             </div>
                           </div>

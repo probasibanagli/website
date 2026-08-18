@@ -9,6 +9,7 @@ import { COLLECTIONS } from '@/lib/firestore/collections';
 import type { BloodBank } from '@/types';
 import { Plus, Pencil, Trash2, X, Loader2, Shield, Droplets, Upload, Phone, Globe, MapPin, ArrowLeft, Save, Search } from 'lucide-react';
 import { CITIES } from '@/lib/constants';
+// @ts-ignore
 import * as XLSX from 'xlsx';
 import { AlertPopup } from '@/components/ui/AlertPopup';
 import { createPortal } from 'react-dom';

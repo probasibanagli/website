@@ -9,6 +9,7 @@ import { COLLECTIONS } from '@/lib/firestore/collections';
 import type { Ambulance } from '@/types';
 import { Plus, Pencil, Trash2, Loader2, Shield, Truck, Upload, ArrowLeft, Save, Search } from 'lucide-react';
 import { CITIES } from '@/lib/constants';
+// @ts-ignore
 import * as XLSX from 'xlsx';
 import { AlertPopup } from '@/components/ui/AlertPopup';
 import { createPortal } from 'react-dom';
