@@ -16,7 +16,7 @@ interface AdminModulePageProps {
   moduleKey: ModuleKey;
   collectionName: string;
   columns: { key: string; label: string }[];
-  formFields: { key: string; label: string; type?: string; required?: boolean; options?: string[] }[];
+  formFields: { key: string; label: string; type?: string; required?: boolean; options?: string[] | ((formData: Record<string, unknown>) => string[]) }[];
 }
 
 export default function AdminModulePage({ moduleKey, collectionName, columns, formFields }: AdminModulePageProps) {
@@ -195,7 +195,11 @@ export default function AdminModulePage({ moduleKey, collectionName, columns, fo
                       className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all cursor-pointer"
                     >
                       <option value="">Select {f.label}...</option>
-                      {f.options.map(o => <option key={o} value={o}>{o}</option>)}
+                      {(typeof f.options === 'function' ? f.options(formData) : f.options).map(o => (
+                        <option key={o} value={o}>
+                          {o.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                        </option>
+                      ))}
                     </select>
                   ) : f.type === 'image' ? (
                     <div className="space-y-2">

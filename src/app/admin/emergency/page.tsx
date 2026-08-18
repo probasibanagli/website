@@ -8,12 +8,24 @@ import { useAuth } from '@/lib/auth/AuthContext';
 import { canAccess } from '@/lib/permissions';
 import { COLLECTIONS } from '@/lib/firestore/collections';
 import type { Hospital, BengaliDoctor, BengaliStaff, Pharmacy, HospitalReview } from '@/types';
-import { CITIES } from '@/lib/constants';
+import { CITIES, TN_DISTRICTS } from '@/lib/constants';
 import ImageUpload from '@/components/admin/ImageUpload';
 import { Plus, Pencil, Trash2, X, Loader2, Shield, Building2, UserRound, PhoneCall, CheckCircle, Users, ArrowLeft, Save, Pill, Clock, Truck, Star, MessageSquare, Download, FileSpreadsheet, FileText, Search, Filter } from 'lucide-react';
 import { exportToCSV, exportToExcel } from '@/lib/utils/export';
 
-const CHENNAI_AREAS = ['Adyar', 'Alandur', 'Ambattur', 'Anna Nagar', 'Ashok Nagar', 'Aminjikarai', 'Avadi', 'Besant Nagar', 'Broadway', 'Chromepet', 'Egmore', 'Guindy', 'Kilpauk', 'Kodambakkam', 'Kolathur', 'Madipakkam', 'Madhavaram', 'Mambalam', 'Manapakkam', 'Medavakkam', 'Mogappair', 'Nanganallur', 'OMR', 'Pallavaram', 'Perambur', 'Porur', 'Royapettah', 'Saidapet', 'Sholinganallur', 'Tambaram', 'T Nagar', 'Thiruvanmiyur', 'Triplicane', 'Vadapalani', 'Velachery', 'Villivakkam', 'Virugambakkam', 'West Mambalam', 'Greams Road', 'Gandhi Nagar', 'Koyembedu', 'Mylapore', 'Perungudi'].sort();
+const DISTRICT_OPTIONS = TN_DISTRICTS.filter(d => d !== 'All Districts');
+
+const CHENNAI_AREAS = Array.from(new Set([
+  'Adyar', 'Alandur', 'Alwarpet', 'Ambattur', 'Aminjikarai', 'Anna Nagar', 'Ashok Nagar', 
+  'Avadi', 'Besant Nagar', 'Broadway', 'Chetpet', 'Chromepet', 'CMC Campus', 'Egmore', 
+  'Gandhi Nagar', 'Greams Road', 'Guindy', 'Katpadi', 'Kilpauk', 'KK Nagar', 'Kodambakkam', 
+  'Kolathur', 'Koyembedu', 'Madhavaram', 'Madipakkam', 'Mambalam', 'Manapakkam', 'Medavakkam', 
+  'MIOT Campus', 'Mogappair', 'Mylapore', 'Nanganallur', 'Nungambakkam', 'OMR', 'Pallavaram', 
+  'Peelamedu', 'Perambur', 'Perumbakkam', 'Perungudi', 'Porur', 'RS Puram', 'Royapettah', 
+  'Saidapet', 'Sathuvachari', 'Shenoy Nagar', 'Sholinganallur', 'Simmakkal', 'T Nagar', 
+  'Tambaram', 'Thiruvanmiyur', 'Thousand Lights', 'Triplicane', 'Vadapalani', 'Velachery', 
+  'Villivakkam', 'Virugambakkam', 'West Mambalam'
+])).sort();
 const LANGUAGES = ['Bengali', 'Tamil', 'English', 'Hindi', 'Telugu', 'Malayalam', 'Kannada', 'Urdu'];
 
 const PREDEFINED_SPECIALIZATIONS = [
@@ -240,7 +252,7 @@ function AdminEmergencyPageContent() {
     setEditId(null);
     setFormData(
       activeTab === 'hospitals' 
-        ? { specializations: [], category: 'Private', status: 'Active', main_branch: false, is_24_7: false, has_bengali_doctor: false } 
+        ? { specializations: [], district: 'Chennai', city: 'Chennai', area: '', category: 'Private', status: 'Active', main_branch: false, is_24_7: false, has_bengali_doctor: false } 
         : activeTab === 'doctors'
           ? { hospital_ids: [], languages: ['Bengali'], specialization: 'Cardiology', otp_required: true }
           : activeTab === 'staff'
@@ -250,10 +262,6 @@ function AdminEmergencyPageContent() {
                 scheme_name: 'PMBJP – Pradhan Mantri Bhartiya Janaushadhi Pariyojana',
                 pharmacy_type: 'Jan Aushadhi Kendra',
                 name: 'Jan Aushadhi Kendra',
-                medicine_name: '',
-                mrp: '',
-                offer_price: '',
-                stock: 'In Stock',
                 state: 'Tamil Nadu',
                 district: 'Chennai',
                 city: 'Chennai',
@@ -457,9 +465,19 @@ function AdminEmergencyPageContent() {
                     <input type="text" value={formData.name || ''} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-text-primary mb-1.5">City *</label>
-                    <select value={formData.city || 'Chennai'} onChange={e => setFormData({...formData, city: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm cursor-pointer">
-                      <option value="">Select City...</option>
+                    <label className="block text-sm font-semibold text-text-primary mb-1.5">District *</label>
+                    <select value={formData.district || 'Chennai'} onChange={e => setFormData({...formData, district: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm cursor-pointer font-medium">
+                      <option value="">Select District...</option>
+                      {DISTRICT_OPTIONS.map(d => <option key={d} value={d}>{d}</option>)}
+                      {formData.district && !DISTRICT_OPTIONS.includes(formData.district) && (
+                        <option value={formData.district}>{formData.district}</option>
+                      )}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-text-primary mb-1.5">City / Place *</label>
+                    <select value={formData.city || 'Chennai'} onChange={e => setFormData({...formData, city: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm cursor-pointer font-medium">
+                      <option value="">Select City / Place...</option>
                       {CITIES.map(c => <option key={c} value={c}>{c}</option>)}
                       {formData.city && !CITIES.includes(formData.city) && (
                         <option value={formData.city}>{formData.city}</option>
@@ -467,10 +485,13 @@ function AdminEmergencyPageContent() {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Area/Location *</label>
-                    <select value={formData.area || ''} onChange={e => setFormData({...formData, area: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm cursor-pointer">
-                      <option value="">Select Area...</option>
+                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Area / Location *</label>
+                    <select value={formData.area || ''} onChange={e => setFormData({...formData, area: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm cursor-pointer font-medium">
+                      <option value="">Select Area / Location...</option>
                       {CHENNAI_AREAS.map(a => <option key={a} value={a}>{a}</option>)}
+                      {formData.area && !CHENNAI_AREAS.includes(formData.area) && (
+                        <option value={formData.area}>{formData.area}</option>
+                      )}
                     </select>
                   </div>
                   <div>
@@ -846,91 +867,45 @@ function AdminEmergencyPageContent() {
                       />
                     </div>
 
-                    {/* Medicine Name */}
-                    <div>
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Medicine Name / Specific Product</label>
-                      <input 
-                        type="text" 
-                        value={formData.medicine_name || ''} 
-                        onChange={e => setFormData({...formData, medicine_name: e.target.value})} 
-                        className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" 
-                        placeholder="e.g. Paracetamol 500mg, Metformin, General Generic Medicines" 
-                      />
-                    </div>
-
-                    {/* Pricing: MRP & Offer Price */}
-                    <div className="grid grid-cols-2 gap-3">
-                      <div>
-                        <label className="block text-sm font-semibold text-text-primary mb-1.5">MRP (₹)</label>
-                        <input 
-                          type="number" 
-                          step="0.01"
-                          value={formData.mrp || ''} 
-                          onChange={e => setFormData({...formData, mrp: e.target.value ? Number(e.target.value) : ''})} 
-                          className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" 
-                          placeholder="e.g. 50" 
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-semibold text-text-primary mb-1.5">Offer Price (₹)</label>
-                        <input 
-                          type="number" 
-                          step="0.01"
-                          value={formData.offer_price || ''} 
-                          onChange={e => setFormData({...formData, offer_price: e.target.value ? Number(e.target.value) : ''})} 
-                          className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm font-bold text-emerald-600" 
-                          placeholder="e.g. 10" 
-                        />
-                      </div>
-                    </div>
-
-                    {/* Stock Status */}
-                    <div>
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Stock Status</label>
-                      <select 
-                        value={formData.stock || 'In Stock'} 
-                        onChange={e => setFormData({...formData, stock: e.target.value})} 
-                        className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm cursor-pointer"
-                      >
-                        <option value="In Stock">In Stock</option>
-                        <option value="Limited Stock">Limited Stock</option>
-                        <option value="Out of Stock">Out of Stock</option>
-                      </select>
-                    </div>
-
                     {/* State */}
                     <div>
                       <label className="block text-sm font-semibold text-text-primary mb-1.5">State *</label>
-                      <input 
-                        type="text" 
+                      <select 
                         value={formData.state || 'Tamil Nadu'} 
                         onChange={e => setFormData({...formData, state: e.target.value})} 
-                        className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" 
-                        placeholder="e.g. Tamil Nadu" 
-                      />
+                        className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm cursor-pointer font-medium"
+                      >
+                        <option value="Tamil Nadu">Tamil Nadu</option>
+                        <option value="Puducherry">Puducherry</option>
+                        <option value="Other">Other</option>
+                      </select>
                     </div>
 
                     {/* District */}
                     <div>
                       <label className="block text-sm font-semibold text-text-primary mb-1.5">District *</label>
-                      <input 
-                        type="text" 
+                      <select 
                         value={formData.district || 'Chennai'} 
                         onChange={e => setFormData({...formData, district: e.target.value})} 
-                        className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" 
-                        placeholder="e.g. Chennai / Chengalpattu" 
-                      />
+                        className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm cursor-pointer font-medium"
+                      >
+                        <option value="">Select District...</option>
+                        {DISTRICT_OPTIONS.map(d => <option key={d} value={d}>{d}</option>)}
+                        {formData.district && !DISTRICT_OPTIONS.includes(formData.district) && (
+                          <option value={formData.district}>{formData.district}</option>
+                        )}
+                      </select>
                     </div>
 
-                    {/* City */}
+                    {/* City / Place */}
                     <div>
-                      <label className="block text-sm font-semibold text-text-primary mb-1.5">City *</label>
+                      <label className="block text-sm font-semibold text-text-primary mb-1.5">City / Place *</label>
                       <select 
                         value={formData.city || 'Chennai'} 
                         onChange={e => setFormData({...formData, city: e.target.value})} 
                         className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm cursor-pointer font-medium"
                       >
-                        <option value="">Select City...</option>
+                        <option value="">Select City / Place...</option>
                         {CITIES.map(c => <option key={c} value={c}>{c}</option>)}
                         {formData.city && !CITIES.includes(formData.city) && (
                           <option value={formData.city}>{formData.city}</option>
@@ -1140,7 +1115,6 @@ function AdminEmergencyPageContent() {
                       { key: 'hospital_name', label: 'Hospital Name' },
                       { key: 'category', label: 'Feedback Category' },
                       { key: 'hospital_rating', label: 'Hospital Rating' },
-                      { key: 'website_rating', label: 'Website Rating' },
                       { key: 'comment', label: 'Review Comment' },
                       { key: 'created_at', label: 'Date Submitted' }
                     ];
@@ -1162,7 +1136,7 @@ function AdminEmergencyPageContent() {
             </div>
 
             {/* Stats summary banner */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div className="p-4 bg-amber-50/60 border border-amber-200/80 rounded-xl">
                 <p className="text-xs font-bold text-amber-700 uppercase tracking-wider">Avg Hospital Rating</p>
                 <p className="text-2xl font-bold text-amber-900 mt-1 flex items-center gap-1.5">
@@ -1170,15 +1144,6 @@ function AdminEmergencyPageContent() {
                   {feedbacks.length > 0 
                     ? (feedbacks.reduce((sum, f) => sum + (f.hospital_rating || 5), 0) / feedbacks.length).toFixed(1) 
                     : '4.8'}
-                </p>
-              </div>
-              <div className="p-4 bg-blue-50/60 border border-blue-200/80 rounded-xl">
-                <p className="text-xs font-bold text-blue-700 uppercase tracking-wider">Avg Website Rating</p>
-                <p className="text-2xl font-bold text-blue-900 mt-1 flex items-center gap-1.5">
-                  <Star className="w-5 h-5 fill-blue-400 text-blue-500" />
-                  {feedbacks.length > 0 
-                    ? (feedbacks.reduce((sum, f) => sum + (f.website_rating || 5), 0) / feedbacks.length).toFixed(1) 
-                    : '4.9'}
                 </p>
               </div>
               <div className="p-4 bg-emerald-50/60 border border-emerald-200/80 rounded-xl">
@@ -1217,7 +1182,6 @@ function AdminEmergencyPageContent() {
                   <option value="Doctors & Staff">Doctors & Staff</option>
                   <option value="Cleanliness">Cleanliness</option>
                   <option value="Facilities">Facilities</option>
-                  <option value="Website Experience">Website Experience</option>
                   <option value="Other">Other</option>
                 </select>
               </div>
@@ -1292,7 +1256,6 @@ function AdminEmergencyPageContent() {
                           <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-500" />
                           <span>{item.hospital_rating || 5} / 5</span>
                         </div>
-                        <div className="text-[10px] text-text-muted mt-0.5">Website: {item.website_rating || 5}/5</div>
                       </td>
                       <td className="px-5 py-4 max-w-xs">
                         <p className="text-xs text-text-primary line-clamp-2">{item.comment}</p>
@@ -1330,7 +1293,7 @@ function AdminEmergencyPageContent() {
                 {activeTab === 'hospitals' ? (
                   <>
                     <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Hospital Name</th>
-                    <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">City</th>
+                    <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">District / Place</th>
                     <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Phone</th>
                     <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Emergency No</th>
                     <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Branch</th>
@@ -1352,7 +1315,6 @@ function AdminEmergencyPageContent() {
                   <>
                     <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Govt Pharmacy Name</th>
                     <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Scheme & Type</th>
-                    <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Medicine / Pricing</th>
                     <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Location</th>
                   </>
                 )}
@@ -1387,8 +1349,8 @@ function AdminEmergencyPageContent() {
                         </div>
                       </td>
                       <td className="px-5 py-4 text-sm text-text-muted">
-                        <div>{item.city}</div>
-                        {item.pincode && <div className="text-xs text-text-muted font-mono mt-0.5">PIN: {item.pincode}</div>}
+                        <div className="font-semibold text-text-primary text-xs">{item.area ? `${item.area}, ` : ''}{item.city}</div>
+                        <div className="text-[11px] text-text-muted mt-0.5">{item.district || 'Chennai'}{item.pincode ? ` • PIN: ${item.pincode}` : ''}</div>
                       </td>
                       <td className="px-5 py-4 text-sm text-text-muted">{item.phone}</td>
                       <td className="px-5 py-4 text-sm font-bold text-red-600">{item.emergency_phone || '-'}</td>
@@ -1455,18 +1417,6 @@ function AdminEmergencyPageContent() {
                       <td className="px-5 py-4 text-sm text-text-muted">
                         <div className="font-semibold text-text-primary text-xs">{item.scheme_name || (item.government_level === 'State Government' ? 'Mudhalvar Marundhagam' : 'PMBJP')}</div>
                         <div className="text-xs text-text-muted mt-0.5">{item.pharmacy_type || (item.government_level === 'State Government' ? 'Mudhalvar Marundhagam' : 'Jan Aushadhi Kendra')}</div>
-                      </td>
-                      <td className="px-5 py-4 text-sm text-text-muted">
-                        {item.medicine_name && <div className="text-xs font-medium text-text-primary mb-1">{item.medicine_name}</div>}
-                        {(item.mrp || item.offer_price) ? (
-                          <div className="text-xs flex items-center gap-1.5">
-                            {item.mrp && <span className="line-through text-gray-400">₹{item.mrp}</span>}
-                            {item.offer_price && <span className="font-bold text-emerald-600">₹{item.offer_price}</span>}
-                            {item.stock && <span className="bg-slate-100 text-text-muted px-1.5 py-0.5 rounded text-[10px]">{item.stock}</span>}
-                          </div>
-                        ) : (
-                          <div className="text-xs text-emerald-600 font-medium">Government Subsidized</div>
-                        )}
                       </td>
                       <td className="px-5 py-4 text-sm text-text-muted">
                         <div>{item.area ? `${item.area}, ` : ''}{item.city}</div>

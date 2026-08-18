@@ -17,8 +17,7 @@ export type ModuleKey =
   | 'events'
   | 'ambulance'
   | 'government_services'
-  | 'legal'
-  | 'travel';
+  | 'legal';
 
 export type ModulePermissions = Record<ModuleKey, PermissionLevel>;
 
@@ -60,7 +59,6 @@ export const MODULE_LABELS: Record<ModuleKey, string> = {
   ambulance: 'Ambulance Directory',
   government_services: 'Government Services',
   legal: 'Legal Services',
-  travel: 'Travel',
 };
 
 /* ──────────────── Government Service Data Model ──────────────── */
@@ -131,7 +129,25 @@ export interface LegalPortal extends LegalServiceBase {
   icon_name: string;
 }
 
-export type LegalServiceItem = LegalAidCentre | LegalHelpline | LegalCategory | LegalPortal;
+export interface LegalServiceListing {
+  id: string;
+  category: string;
+  name: string;
+  address: string;
+  phone?: string;
+  email?: string;
+  website?: string;
+  city?: string;
+  district?: string;
+  google_maps_url?: string;
+  timings?: string;
+  description?: string;
+  verified?: boolean;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export type LegalServiceItem = LegalAidCentre | LegalHelpline | LegalCategory | LegalPortal | LegalServiceListing;
 
 export interface Listing {
   id: string;
@@ -177,7 +193,7 @@ export interface Listing {
 export interface FoodListing {
   id: string;
   name: string;
-  type?: 'restaurant' | 'sweets' | 'tiffin' | 'delivery partner';
+  type?: 'restaurant' | 'sweets' | 'tiffin' | 'delivery partner' | 'cloud kitchen';
   city: string;
   area: string;
   address?: string;
@@ -355,12 +371,15 @@ export interface CommunityGroup {
   id: string;
   name: string;
   image_url?: string;
-  platform?: 'whatsapp' | 'telegram' | 'facebook' | 'instagram' | 'linkedin' | 'website';
+  platform?: 'whatsapp' | 'telegram' | 'facebook' | 'instagram' | 'linkedin' | 'website' | 'discord';
   city?: string;
-  region?: 'tamil_nadu' | 'india' | 'all';
+  state?: string;
   description?: string;
   member_count?: number;
   join_url?: string;
+  whatsapp_url?: string;
+  telegram_url?: string;
+  discord_url?: string;
   instagram_url?: string;
   facebook_url?: string;
   linkedin_url?: string;

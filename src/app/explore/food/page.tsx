@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { MapPin, Phone, MessageCircle, Search, CheckCircle2, ExternalLink, Home, Gift, ShoppingBag, Truck, Download, ChevronDown, SlidersHorizontal, Heart, Star, Utensils, Candy, Soup, Sparkles } from 'lucide-react';
+import { MapPin, Phone, MessageCircle, Search, CheckCircle2, ExternalLink, Home, Gift, ShoppingBag, Truck, Download, ChevronDown, SlidersHorizontal, Heart, Star, Utensils, Candy, Soup, Sparkles, ChefHat } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/card';
@@ -18,6 +18,7 @@ const FOOD_TYPE_LABELS: Record<string, string> = {
   sweets: 'Sweets',
   tiffin: 'Tiffin',
   'delivery partner': 'Delivery Partner',
+  'cloud kitchen': 'Cloud Kitchen',
 };
 
 const FOOD_TYPE_ICONS: Record<string, React.ReactNode> = {
@@ -25,6 +26,7 @@ const FOOD_TYPE_ICONS: Record<string, React.ReactNode> = {
   sweets: <Gift className="w-5 h-5 text-black" />,
   tiffin: <ShoppingBag className="w-5 h-5 text-black" />,
   delivery: <Truck className="w-5 h-5 text-black" />,
+  'cloud kitchen': <ChefHat className="w-5 h-5 text-black" />,
 };
 
 function ListingCoverImage({ name, city, mapsUrl, imageUrl, type, mapEmbedCode, fallbackIcon }: { 
@@ -144,6 +146,7 @@ export default function FoodPage() {
               { value: 'restaurant', label: 'Restaurants', icon: (active: boolean) => <Utensils className={`w-4 h-4 ${active ? 'text-white' : 'text-black'}`} /> },
               { value: 'sweets', label: 'Sweets', icon: (active: boolean) => <Candy className={`w-4 h-4 ${active ? 'text-white' : 'text-black'}`} /> },
               { value: 'tiffin', label: 'Tiffin', icon: (active: boolean) => <Soup className={`w-4 h-4 ${active ? 'text-white' : 'text-black'}`} /> },
+              { value: 'cloud kitchen', label: 'Cloud Kitchen', icon: (active: boolean) => <ChefHat className={`w-4 h-4 ${active ? 'text-white' : 'text-black'}`} /> },
             ].map((tab) => {
               const active = activeType === tab.value;
               return (
