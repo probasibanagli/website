@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
-import { Search, MapPin, Phone, GraduationCap, Globe, ExternalLink, Navigation, ChevronDown, ChevronUp, Lock, ShieldAlert, Mail, ArrowRight, Loader2, Map, X } from 'lucide-react';
+import { Search, MapPin, Phone, GraduationCap, Globe, ExternalLink, Navigation, ChevronDown, ChevronUp, Lock, ShieldAlert, Mail, ArrowRight, Loader2, Map, X, School } from 'lucide-react';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/Badge';
@@ -352,7 +352,9 @@ export default function CollegePage() {
 
             {filtered.length === 0 && (
               <div className="text-center py-20 bg-white rounded-3xl border border-border mt-6">
-                <p className="text-5xl mb-4">{activeTab === 'colleges' ? '🎓' : '🏫'}</p>
+                <div className="flex justify-center mb-4 text-slate-500/40">
+                  {activeTab === 'colleges' ? <GraduationCap className="w-16 h-16" /> : <School className="w-16 h-16" />}
+                </div>
                 <h3 className="text-xl font-bold text-text-primary mb-2">No {activeTab} found</h3>
                 <p className="text-text-muted text-sm">Try using different search keywords or district filters.</p>
               </div>

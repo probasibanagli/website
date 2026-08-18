@@ -177,7 +177,7 @@ export interface Listing {
 export interface FoodListing {
   id: string;
   name: string;
-  type?: 'restaurant' | 'sweets' | 'tiffin' | 'delivery partner';
+  type?: 'restaurant' | 'sweets' | 'tiffin' | 'delivery partner' | 'cloud kitchen';
   city: string;
   area: string;
   address?: string;
@@ -335,12 +335,15 @@ export interface CommunityGroup {
   id: string;
   name: string;
   image_url?: string;
-  platform?: 'whatsapp' | 'telegram' | 'facebook' | 'instagram' | 'linkedin' | 'website';
+  platform?: 'whatsapp' | 'telegram' | 'facebook' | 'instagram' | 'linkedin' | 'website' | 'discord';
   city?: string;
-  region?: 'tamil_nadu' | 'india' | 'all';
+  state?: string;
   description?: string;
   member_count?: number;
   join_url?: string;
+  whatsapp_url?: string;
+  telegram_url?: string;
+  discord_url?: string;
   instagram_url?: string;
   facebook_url?: string;
   linkedin_url?: string;

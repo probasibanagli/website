@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { MapPin, Phone, MessageSquare, Wifi, Wind, CheckCircle2, Search, SlidersHorizontal, ChevronDown, Home, Building, Building2, Download, GraduationCap, Train, Bus, Gift, Globe, User, Utensils, BedDouble, Star } from 'lucide-react';
+import { MapPin, Phone, MessageSquare, Wifi, Wind, CheckCircle2, Search, SlidersHorizontal, ChevronDown, Home, Building, Building2, Download, GraduationCap, Train, Bus, Gift, Globe, User, Utensils, BedDouble, Star, Activity } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/card';
@@ -268,10 +268,10 @@ export default function StayPage() {
             {city && (
               <div className={`relative w-full md:w-auto md:min-w-[180px] ${isSubcatOpen ? 'z-50' : ''}`}>
                 <button onClick={() => setIsSubcatOpen(!isSubcatOpen)} className="flex items-center justify-between w-full px-4 py-2.5 rounded-xl border border-border bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 animate-fade-in">
-                  <span className="truncate">
-                    {subcategory === 'hospital' ? '🏥 Hospital Nearby' :
-                     subcategory === 'college' ? '🎓 College/Uni Nearby' :
-                     subcategory === 'metro' ? '🚆 Metro/Transport' :
+                  <span className="truncate flex items-center gap-2">
+                    {subcategory === 'hospital' ? <><Activity className="w-4 h-4 text-primary" /> Hospital Nearby</> :
+                     subcategory === 'college' ? <><GraduationCap className="w-4 h-4 text-primary" /> College/Uni Nearby</> :
+                     subcategory === 'metro' ? <><Train className="w-4 h-4 text-primary" /> Metro/Transport</> :
                      'All Categories'}
                   </span>
                   <ChevronDown className={`w-4 h-4 text-text-muted transition-transform ${isSubcatOpen ? 'rotate-180' : ''}`} />
@@ -281,10 +281,10 @@ export default function StayPage() {
                     <div className="fixed inset-0 z-40" onClick={() => setIsSubcatOpen(false)} />
                     <div className="absolute top-full left-0 w-full mt-1 bg-white border border-border rounded-xl shadow-lg z-50">
                       {[
-                        { value: '', label: 'All Categories' },
-                        { value: 'hospital', label: '🏥 Hospital Nearby' },
-                        { value: 'college', label: '🎓 College/Uni Nearby' },
-                        { value: 'metro', label: '🚆 Metro/Transport' },
+                        { value: '', label: 'All Categories', icon: null },
+                        { value: 'hospital', label: 'Hospital Nearby', icon: <Activity className="w-4 h-4 text-primary" /> },
+                        { value: 'college', label: 'College/Uni Nearby', icon: <GraduationCap className="w-4 h-4 text-primary" /> },
+                        { value: 'metro', label: 'Metro/Transport', icon: <Train className="w-4 h-4 text-primary" /> },
                       ].map((opt) => (
                         <button key={opt.value} onClick={() => { 
                           if (opt.value === 'metro') {
@@ -292,7 +292,10 @@ export default function StayPage() {
                           }
                           setSubcategory(opt.value); setSelectedHospital(''); setSelectedCollege(''); setSelectedMetroRoute(''); setIsSubcatOpen(false); 
                         }}
-                          className={`w-full text-left px-4 py-2 text-sm hover:bg-surface transition-colors ${subcategory === opt.value ? 'bg-primary/5 font-medium text-primary' : 'text-text-primary'}`}>{opt.label}</button>
+                          className={`w-full flex items-center gap-2 text-left px-4 py-2 text-sm hover:bg-surface transition-colors ${subcategory === opt.value ? 'bg-primary/5 font-medium text-primary' : 'text-text-primary'}`}>
+                            {opt.icon}
+                            {opt.label}
+                        </button>
                       ))}
                     </div>
                   </>
@@ -327,7 +330,7 @@ export default function StayPage() {
                     <button onClick={() => setSelectedHospital('')} className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${!selectedHospital ? 'bg-red-500 text-white shadow-sm' : 'bg-red-50 text-red-700 border border-red-200 hover:bg-red-100'}`}>All Hospitals</button>
                     {cityHospitals.map((h) => (
                       <button key={h.name} onClick={() => setSelectedHospital(h.name)} className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${selectedHospital === h.name ? 'bg-red-500 text-white shadow-sm' : 'bg-red-50 text-red-700 border border-red-200 hover:bg-red-100'}`}>
-                        🏥 {h.name}<span className="ml-1 opacity-60">({h.area})</span>
+                        <Activity className="w-4 h-4 text-rose-500 shrink-0" /> <span className="truncate">{h.name}</span><span className="ml-1 opacity-60">({h.area})</span>
                       </button>
                     ))}
                   </div>
@@ -342,7 +345,7 @@ export default function StayPage() {
                     <button onClick={() => setSelectedCollege('')} className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${!selectedCollege ? 'bg-blue-500 text-white shadow-sm' : 'bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100'}`}>All Colleges</button>
                     {cityColleges.map((c) => (
                       <button key={c.name} onClick={() => setSelectedCollege(c.name)} className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${selectedCollege === c.name ? 'bg-blue-500 text-white shadow-sm' : 'bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100'}`}>
-                        🎓 {c.name}<span className="ml-1 opacity-60">({c.area})</span>
+                        <GraduationCap className="w-4 h-4 text-blue-500 shrink-0" /> <span className="truncate">{c.name}</span><span className="ml-1 opacity-60">({c.area})</span>
                       </button>
                     ))}
                   </div>
@@ -429,7 +432,7 @@ export default function StayPage() {
                   </div>
                   {listing.bengali_food && (
                     <div className="absolute top-4 right-4">
-                      <Badge variant="bengali">🍛 Bengali Food</Badge>
+                      <Badge variant="bengali" className="flex items-center gap-1.5"><Utensils className="w-3.5 h-3.5" /> Bengali Food</Badge>
                     </div>
                   )}
                 </div>
@@ -452,8 +455,8 @@ export default function StayPage() {
                   </p>
                   
                   {listing.nearby_hospital && (
-                    <p className="text-xs text-text-muted mt-2 flex items-center gap-1">
-                      🏥 Nearby Hospital: <span className="font-semibold text-text-primary">{listing.nearby_hospital}</span>
+                    <p className="text-xs text-text-muted mt-2 flex items-center gap-1.5">
+                      <Activity className="w-3.5 h-3.5 text-rose-500 shrink-0" /> <span className="font-medium text-text-muted">Nearby Hospital:</span> <span className="font-semibold text-text-primary truncate">{listing.nearby_hospital}</span>
                     </p>
                   )}
                   

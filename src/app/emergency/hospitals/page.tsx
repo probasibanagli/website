@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
-import { Search, MapPin, Phone, Clock, CheckCircle2, Stethoscope, Ambulance, LifeBuoy, Building2, UserRound, ArrowRight, ShieldAlert, Lock, Users, ShieldCheck, Mail, GraduationCap, Pill, Truck, Volume2, Star, ExternalLink } from 'lucide-react';
+import { Search, MapPin, Phone, Clock, CheckCircle2, Stethoscope, Ambulance, LifeBuoy, Building2, UserRound, ArrowRight, ShieldAlert, Lock, Users, ShieldCheck, Mail, GraduationCap, Pill, Truck, Volume2, Star, ExternalLink, Activity } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/card';
@@ -830,7 +830,9 @@ export default function EmergencyHospitalsPage() {
                 </div>
                 {filteredHospitals.length === 0 && (
                   <div className="text-center py-20 bg-white rounded-3xl border border-border shadow-xs">
-                    <p className="text-5xl mb-4">🏥</p>
+                    <div className="flex justify-center mb-4 text-rose-500/40">
+                      <Activity className="w-16 h-16" />
+                    </div>
                     <h3 className="text-xl font-bold mb-2">No hospitals found</h3>
                     <p className="text-text-muted">Try removing filters or altering your search.</p>
                   </div>

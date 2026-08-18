@@ -18,7 +18,7 @@ export default function AdminFoodPage() {
       ]}
       formFields={[
         { key: 'name', label: 'Name', required: true },
-        { key: 'type', label: 'Type', type: 'select', options: ['restaurant', 'sweets', 'tiffin', 'delivery partner'], required: true },
+        { key: 'type', label: 'Type', type: 'select', options: ['restaurant', 'sweets', 'tiffin', 'delivery partner', 'cloud kitchen'], required: true },
         { key: 'city', label: 'City', required: true },
         { key: 'area', label: 'Area', required: true },
         { key: 'address', label: 'Address' },

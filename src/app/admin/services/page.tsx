@@ -17,7 +17,17 @@ export default function AdminServicesPage() {
       formFields={[
         { key: 'category', label: 'Category', type: 'select', options: ['college', 'school'], required: true },
         { key: 'name', label: 'Institution Name', required: true },
-        { key: 'type', label: 'Type / Board', type: 'select', options: ['engineering', 'medical', 'arts_science', 'cbse', 'icse', 'kv'], required: true },
+        { 
+          key: 'type', 
+          label: 'Type / Board', 
+          type: 'select', 
+          options: (formData) => {
+            if (formData.category === 'school') return ['cbse', 'icse', 'state_board', 'kv', 'international'];
+            if (formData.category === 'college') return ['engineering', 'medical', 'arts_science', 'law', 'management'];
+            return ['engineering', 'medical', 'arts_science', 'law', 'management', 'cbse', 'icse', 'state_board', 'kv', 'international'];
+          }, 
+          required: true 
+        },
         { key: 'ranking', label: 'Ranking / Priority (1 = Top, 2 = Second, etc.)', type: 'number' },
         { key: 'city', label: 'City', required: true },
         { key: 'area', label: 'Area' },

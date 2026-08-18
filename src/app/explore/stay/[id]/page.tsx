@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { MapPin, Phone, MessageCircle, ArrowLeft, CheckCircle2, Bed, Users, IndianRupee, Shield, Home, Star, Activity, Navigation } from 'lucide-react';
+import { MapPin, Phone, MessageCircle, ArrowLeft, CheckCircle2, Bed, Users, IndianRupee, Shield, Home, Star, Activity, Navigation, Utensils, HeartHandshake } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/card';
@@ -148,7 +148,22 @@ export default function StayDetailPage() {
               <Card className="p-4">
                 <h3 className="text-sm font-bold mb-3 text-text-primary">Details</h3>
                 <div className="grid grid-cols-2 gap-3 text-sm">
-                  {listing.room_type && <div className="flex items-start gap-2 col-span-2 sm:col-span-1"><Bed className="w-4 h-4 text-primary shrink-0 mt-0.5" /><span className="font-semibold capitalize leading-snug" title={listing.room_type}>{listing.room_type.replace(/ Sharing(?=,)/gi, '')}</span></div>}
+                  {listing.room_type && (
+                    <div className="flex items-start gap-2 col-span-2 sm:col-span-1">
+                      <Bed className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                      <span className="font-semibold capitalize leading-snug" title={listing.room_type}>
+                        {(() => {
+                          const str = listing.room_type || '';
+                          let parts = str.split(',').map((p: string) => p.trim()).filter(Boolean);
+                          const hasNumbers = parts.some((p: string) => /\d/.test(p));
+                          if (hasNumbers) parts = parts.filter((p: string) => !['single', 'double', 'triple'].includes(p.toLowerCase()));
+                          let formatted = parts.join(', ');
+                          if (hasNumbers && !/sharing/i.test(formatted)) formatted += ' Sharing';
+                          return formatted.replace(/ Sharing(?=,)/gi, '');
+                        })()}
+                      </span>
+                    </div>
+                  )}
                   {listing.gender && <div className="flex items-center gap-2"><Users className="w-4 h-4 text-primary" /><span className="font-semibold capitalize truncate">{listing.gender}</span></div>}
                   {listing.deposit_amount !== undefined && <div className="flex items-center gap-2"><IndianRupee className="w-4 h-4 text-primary" /><span className="font-semibold truncate">Dep: {formatPrice(listing.deposit_amount)}</span></div>}
                   {listing.available_rooms !== undefined && <div className="flex items-center gap-2"><Shield className="w-4 h-4 text-primary" /><span className="font-semibold truncate">Rooms: {listing.available_rooms}</span></div>}
@@ -164,8 +179,8 @@ export default function StayDetailPage() {
                   {(listing.amenities || []).map((a: string) => (
                     <Badge key={a} variant="teal">{a}</Badge>
                   ))}
-                  {listing.bengali_food && <Badge variant="bengali">🍛 Bengali Food Available</Badge>}
-                  {listing.bengali_friendly && <Badge variant="bengali">🤝 Bengali-Friendly</Badge>}
+                  {listing.bengali_food && <Badge variant="bengali" className="flex items-center gap-1.5"><Utensils className="w-3.5 h-3.5" /> Bengali Food Available</Badge>}
+                  {listing.bengali_friendly && <Badge variant="bengali" className="flex items-center gap-1.5"><HeartHandshake className="w-3.5 h-3.5" /> Bengali-Friendly</Badge>}
                 </div>
               </Card>
             )}

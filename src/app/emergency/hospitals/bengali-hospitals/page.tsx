@@ -6,7 +6,7 @@ import { collection, getDocs } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { COLLECTIONS } from '@/lib/firestore/collections';
 import type { Hospital } from '@/types';
-import { Search, MapPin, Phone, ChevronRight, Star, Globe, Building2, Building, ArrowLeft, Clock } from 'lucide-react';
+import { Search, MapPin, Phone, ChevronRight, Star, Globe, Building2, Building, ArrowLeft, Clock, Activity } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/card';
@@ -197,7 +197,7 @@ export default function BengaliHospitalsPage() {
         )}
         {!loading && filtered.length === 0 && (
           <div className="text-center py-20 bg-white rounded-3xl border border-border mt-8">
-            <p className="text-5xl mb-4">🏥</p>
+            <div className="flex justify-center mb-4 text-rose-500/40"><Activity className="w-16 h-16" /></div>
             <h3 className="text-xl font-bold mb-2">No hospitals found</h3>
             <p className="text-text-muted">Try adjusting your search or filters.</p>
           </div>
