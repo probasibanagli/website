@@ -279,9 +279,10 @@ export default function FoodPage() {
             if (food.type === 'tiffin') tagsToShow.push({ name: 'Tiffin Service', icon: null });
             
             // Add specialties safely (handle case where it might be a string in DB)
-            const specialtiesArray = Array.isArray(food.specialties) 
-              ? food.specialties 
-              : (typeof food.specialties === 'string' ? food.specialties.split(',').map(s => s.trim()) : []);
+            const rawSpecialties = food.specialties as any;
+            const specialtiesArray = Array.isArray(rawSpecialties) 
+              ? rawSpecialties 
+              : (typeof rawSpecialties === 'string' ? rawSpecialties.split(',').map((s: string) => s.trim()) : []);
               
             specialtiesArray.slice(0, 2).forEach((s) => {
               tagsToShow.push({ name: s, icon: null });
