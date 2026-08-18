@@ -381,14 +381,16 @@ function AdminEmergencyPageContent() {
                     <label className="block text-sm font-semibold text-text-primary mb-1.5">General Phone</label>
                     <input type="text" value={formData.phone || ''} onChange={e => setFormData({...formData, phone: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
                   </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Pincode</label>
-                    <input type="text" value={formData.pincode || ''} onChange={e => setFormData({...formData, pincode: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" placeholder="e.g. 600020" />
-                  </div>
                   <div className="md:col-span-2">
                     <label className="block text-sm font-semibold text-text-primary mb-1.5">Full Address</label>
                     <input type="text" value={formData.address || ''} onChange={e => setFormData({...formData, address: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
                   </div>
+                  {Boolean(formData.address && formData.address.trim()) && (
+                    <div>
+                      <label className="block text-sm font-semibold text-text-primary mb-1.5">Pincode</label>
+                      <input type="text" maxLength={6} value={formData.pincode || ''} onChange={e => setFormData({...formData, pincode: e.target.value.replace(/\D/g, '')})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" placeholder="e.g. 600020" />
+                    </div>
+                  )}
                   <div className="md:col-span-2">
                     <label className="block text-sm font-semibold text-text-primary mb-1.5">Google Maps Link</label>
                     <input type="text" value={formData.google_maps_url || ''} onChange={e => setFormData({...formData, google_maps_url: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" placeholder="https://maps.google.com/..." />
@@ -872,6 +874,12 @@ function AdminEmergencyPageContent() {
                         placeholder="Street name, door number..." 
                       />
                     </div>
+                    {Boolean(formData.address && formData.address.trim()) && (
+                      <div>
+                        <label className="block text-sm font-semibold text-text-primary mb-1.5">Pincode</label>
+                        <input type="text" maxLength={6} value={formData.pincode || ''} onChange={e => setFormData({...formData, pincode: e.target.value.replace(/\D/g, '')})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" placeholder="e.g. 600020" />
+                      </div>
+                    )}
 
                     {/* Opening & Closing Time */}
                     <div>
