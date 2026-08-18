@@ -241,6 +241,15 @@ body {
   border-top-color: #1e293b !important;
 }
 
+.leaflet-tooltip.metro-tooltip-phase2 {
+  color: #64748b !important;
+  border: 1.5px solid #94a3b8 !important;
+}
+
+.leaflet-tooltip-top.metro-tooltip-phase2::before {
+  border-top-color: #94a3b8 !important;
+}
+
 @keyframes dash {
   to {
     stroke-dashoffset: -20;
@@ -334,8 +343,6 @@ body {
 html.pb-welcome-dismissed .welcome-modal-overlay {
   display: none !important;
 }
-
-
 
 /* Global Form Validation Styles for Admin */
 form.form-submitted input:invalid,
