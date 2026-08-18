@@ -1,14 +1,17 @@
 'use client';
 
 import React, { useEffect, useState, Suspense } from 'react';
-import { collection, getDocs, doc, setDoc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { collection, getDocs, onSnapshot, doc, setDoc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { canAccess } from '@/lib/permissions';
 import { COLLECTIONS } from '@/lib/firestore/collections';
 import type { BloodBank } from '@/types';
-import { Plus, Pencil, Trash2, X, Loader2, Shield, Droplets, Upload, Phone, Globe, MapPin, ArrowLeft, Save } from 'lucide-react';
+import { Plus, Pencil, Trash2, X, Loader2, Shield, Droplets, Upload, Phone, Globe, MapPin, ArrowLeft, Save, Search } from 'lucide-react';
 import { CITIES } from '@/lib/constants';
+import * as XLSX from 'xlsx';
+import { AlertPopup } from '@/components/ui/AlertPopup';
+import { createPortal } from 'react-dom';
 
 function BloodBankPageContent() {
   const { profile, firebaseUser } = useAuth();
@@ -23,137 +26,185 @@ function BloodBankPageContent() {
   const [cityFilter, setCityFilter] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
 
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
+  const [alertType, setAlertType] = useState<'success' | 'error' | 'warning' | 'info'>('info');
+
+  const showAlert = (message: string, type: 'success' | 'error' | 'warning' | 'info' = 'info') => {
+    setAlertMessage(message);
+    setAlertType(type);
+    setAlertOpen(true);
+  };
+
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+
   const moduleKey = 'blood_bank';
   const canView = canAccess(profile?.role || 'user', profile?.permissions, moduleKey, 'view');
   const canEdit = canAccess(profile?.role || 'user', profile?.permissions, moduleKey, 'edit');
 
   useEffect(() => {
-    if (canView) {
-      loadData();
-    }
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!canView) return;
+
+    setLoading(true);
+    const unsubscribe = onSnapshot(
+      collection(db, COLLECTIONS.blood_banks || 'blood_banks'),
+      (snap) => {
+        setBloodBanks(snap.docs.map(d => ({ id: d.id, ...d.data() } as BloodBank)));
+        setLoading(false);
+      },
+      (err) => {
+        console.error(err);
+        setLoading(false);
+      }
+    );
+
+    return () => unsubscribe();
   }, [canView]);
 
-  async function loadData() {
-    setLoading(true);
+  // Removed loadData in favor of onSnapshot listener
+
+  function parseCsvText(text: string): string[][] {
+    const lines: string[][] = [];
+    let row: string[] = [];
+    let inQuotes = false;
+    let currentValue = '';
+
+    for (let i = 0; i < text.length; i++) {
+      const char = text[i];
+      const nextChar = text[i + 1];
+
+      if (char === '"') {
+        inQuotes = !inQuotes;
+      } else if (char === ',' && !inQuotes) {
+        row.push(currentValue.trim());
+        currentValue = '';
+      } else if ((char === '\r' || char === '\n') && !inQuotes) {
+        if (char === '\r' && nextChar === '\n') i++;
+        row.push(currentValue.trim());
+        if (row.some(val => val !== '')) {
+          lines.push(row);
+        }
+        row = [];
+        currentValue = '';
+      } else {
+        currentValue += char;
+      }
+    }
+    if (currentValue || row.length > 0) {
+      row.push(currentValue.trim());
+      lines.push(row);
+    }
+    return lines;
+  }
+
+  async function processImportRows(lines: any[][]) {
     try {
-      const bbSnap = await getDocs(collection(db, COLLECTIONS.blood_banks || 'blood_banks'));
-      setBloodBanks(bbSnap.docs.map(d => ({ id: d.id, ...d.data() } as BloodBank)));
-    } catch (e: any) {
-      console.error(e);
+      setLoading(true);
+      if (lines.length < 2) {
+        showAlert('Invalid file or empty data.', 'error');
+        return;
+      }
+
+      const headers = lines[0].map(h => String(h || '').toLowerCase().replace(/[^a-z0-9]/g, ''));
+      let nameIdx = headers.findIndex(h => h.includes('name') || h.includes('title') || h.includes('hospital') || h.includes('bloodbank'));
+      let cityIdx = headers.findIndex(h => h.includes('district') || h.includes('city') || h.includes('area') || h.includes('location'));
+      let addressIdx = headers.findIndex(h => h.includes('address') || h.includes('details'));
+      let phoneIdx = headers.findIndex(h => h.includes('phone') || h.includes('mobile') || h.includes('contact') || h.includes('number'));
+      let mapIdx = headers.findIndex(h => h.includes('map') || h.includes('google') || h.includes('link') || h.includes('url'));
+      let websiteIdx = headers.findIndex(h => h.includes('website') || h.includes('site') || h.includes('web'));
+
+      if (nameIdx === -1) {
+        nameIdx = 0;
+        cityIdx = 1;
+        phoneIdx = 2;
+        addressIdx = 3;
+      }
+
+      const newItems: BloodBank[] = [];
+      const now = new Date().toISOString();
+
+      for (let i = 1; i < lines.length; i++) {
+        const r = lines[i];
+        const name = nameIdx !== -1 && r[nameIdx] ? String(r[nameIdx]) : '';
+        if (!name) continue;
+
+        const rawCity = cityIdx !== -1 && r[cityIdx] ? String(r[cityIdx]) : '';
+        let matchedCity = CITIES.find(c => rawCity.toLowerCase().includes(c.toLowerCase())) || 'Chennai';
+
+        const itemData: BloodBank = {
+          id: `bb-${Date.now()}-${i}-${Math.random().toString(36).slice(2, 6)}`,
+          name,
+          city: matchedCity,
+          phone: phoneIdx !== -1 && r[phoneIdx] ? String(r[phoneIdx]) : '',
+          address: addressIdx !== -1 && r[addressIdx] ? String(r[addressIdx]) : '',
+          available_groups: [],
+          google_maps_url: mapIdx !== -1 && r[mapIdx] ? String(r[mapIdx]) : '',
+          website: websiteIdx !== -1 && r[websiteIdx] ? String(r[websiteIdx]) : '',
+          created_at: now,
+          updated_at: now,
+        };
+
+        newItems.push(itemData);
+      }
+
+      if (newItems.length === 0) {
+        showAlert('No valid rows found in file.', 'warning');
+        return;
+      }
+
+      setBloodBanks(prev => [...newItems, ...prev]);
+
+      for (const item of newItems) {
+        await setDoc(doc(db, COLLECTIONS.blood_banks || 'blood_banks', item.id), item);
+      }
+
+      showAlert(`Successfully imported ${newItems.length} blood bank records!`, 'success');
+    } catch (err) {
+      console.error(err);
+      showAlert('Error parsing file. Please make sure format is valid.', 'error');
     } finally {
       setLoading(false);
     }
   }
 
-  function handleCsvImport(e: React.ChangeEvent<HTMLInputElement>) {
+  function handleFileImport(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    const fileName = file.name.toLowerCase();
+    const isXlsx = fileName.endsWith('.xlsx') || fileName.endsWith('.xls');
+
     const reader = new FileReader();
-    reader.onload = async (evt) => {
-      const text = evt.target?.result as string;
-      if (!text) return;
 
-      try {
-        setLoading(true);
-        const lines: string[][] = [];
-        let row: string[] = [];
-        let inQuotes = false;
-        let currentValue = '';
-
-        for (let i = 0; i < text.length; i++) {
-          const char = text[i];
-          const nextChar = text[i + 1];
-
-          if (char === '"') {
-            inQuotes = !inQuotes;
-          } else if (char === ',' && !inQuotes) {
-            row.push(currentValue.trim());
-            currentValue = '';
-          } else if ((char === '\r' || char === '\n') && !inQuotes) {
-            if (char === '\r' && nextChar === '\n') i++;
-            row.push(currentValue.trim());
-            if (row.some(val => val !== '')) {
-              lines.push(row);
-            }
-            row = [];
-            currentValue = '';
-          } else {
-            currentValue += char;
-          }
+    if (isXlsx) {
+      reader.onload = async (evt) => {
+        try {
+          const data = new Uint8Array(evt.target?.result as ArrayBuffer);
+          const workbook = XLSX.read(data, { type: 'array' });
+          const sheetName = workbook.SheetNames[0];
+          const sheet = workbook.Sheets[sheetName];
+          const rows: any[][] = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+          await processImportRows(rows);
+        } catch (err) {
+          console.error(err);
+          showAlert('Failed to read Excel file.', 'error');
         }
-        if (currentValue || row.length > 0) {
-          row.push(currentValue.trim());
-          lines.push(row);
-        }
-
-        if (lines.length < 2) {
-          alert('Invalid CSV file or empty data.');
-          return;
-        }
-
-        const headers = lines[0].map(h => h.toLowerCase().replace(/[^a-z0-9]/g, ''));
-        let nameIdx = headers.findIndex(h => h.includes('name') || h.includes('title') || h.includes('hospital') || h.includes('bloodbank'));
-        let cityIdx = headers.findIndex(h => h.includes('district') || h.includes('city') || h.includes('area') || h.includes('location'));
-        let addressIdx = headers.findIndex(h => h.includes('address') || h.includes('details'));
-        let phoneIdx = headers.findIndex(h => h.includes('phone') || h.includes('mobile') || h.includes('contact') || h.includes('number'));
-        let mapIdx = headers.findIndex(h => h.includes('map') || h.includes('google') || h.includes('link') || h.includes('url'));
-        let websiteIdx = headers.findIndex(h => h.includes('website') || h.includes('site') || h.includes('web'));
-
-        if (nameIdx === -1) {
-          nameIdx = 0;
-          cityIdx = 1;
-          phoneIdx = 2;
-          addressIdx = 3;
-        }
-
-        const newItems: BloodBank[] = [];
-        const now = new Date().toISOString();
-
-        for (let i = 1; i < lines.length; i++) {
-          const r = lines[i];
-          const name = nameIdx !== -1 && r[nameIdx] ? r[nameIdx] : '';
-          if (!name) continue;
-
-          const rawCity = cityIdx !== -1 && r[cityIdx] ? r[cityIdx] : '';
-          let matchedCity = CITIES.find(c => rawCity.toLowerCase().includes(c.toLowerCase())) || 'Chennai';
-
-          const itemData: BloodBank = {
-            id: `bb-${Date.now()}-${i}-${Math.random().toString(36).slice(2, 6)}`,
-            name,
-            city: matchedCity,
-            phone: phoneIdx !== -1 && r[phoneIdx] ? r[phoneIdx] : '',
-            address: addressIdx !== -1 && r[addressIdx] ? r[addressIdx] : '',
-            available_groups: [],
-            google_maps_url: mapIdx !== -1 && r[mapIdx] ? r[mapIdx] : '',
-            website: websiteIdx !== -1 && r[websiteIdx] ? r[websiteIdx] : '',
-            created_at: now,
-            updated_at: now,
-          };
-
-          newItems.push(itemData);
-        }
-
-        if (newItems.length === 0) {
-          alert('No valid rows found in CSV file.');
-          return;
-        }
-
-        setBloodBanks(prev => [...newItems, ...prev]);
-
-        for (const item of newItems) {
-          await setDoc(doc(db, COLLECTIONS.blood_banks || 'blood_banks', item.id), item);
-        }
-
-        alert(`Successfully imported ${newItems.length} blood bank records!`);
-      } catch (err) {
-        console.error(err);
-        alert('Error parsing CSV file.');
-      } finally {
-        setLoading(false);
-      }
-    };
-    reader.readAsText(file);
+      };
+      reader.readAsArrayBuffer(file);
+    } else {
+      reader.onload = async (evt) => {
+        const text = evt.target?.result as string;
+        if (!text) return;
+        const rows = parseCsvText(text);
+        await processImportRows(rows);
+      };
+      reader.readAsText(file);
+    }
   }
 
   function openAdd() {
@@ -172,7 +223,7 @@ function BloodBankPageContent() {
 
   async function handleSave() {
     if (!formData.name || !formData.city) {
-      alert('Name and City are required fields.');
+      showAlert('Name and City are required fields.', 'warning');
       return;
     }
     setSaving(true);
@@ -201,20 +252,27 @@ function BloodBankPageContent() {
       }
     } catch (e) {
       console.error(e);
-      alert('Error saving blood bank.');
+      showAlert('Error saving blood bank.', 'error');
       setSaving(false);
     }
   }
 
-  async function handleDelete(id: string) {
-    if (!confirm('Are you sure you want to delete this blood bank?')) return;
-    try {
-      setBloodBanks(prev => prev.filter(i => i.id !== id));
-      await deleteDoc(doc(db, COLLECTIONS.blood_banks || 'blood_banks', id));
-    } catch (e) {
-      console.error(e);
-      alert('Error deleting blood bank.');
-    }
+  function handleDelete(id: string) {
+    setDeleteId(id);
+  }
+
+  function executeDelete() {
+    if (!deleteId) return;
+    setBloodBanks(prev => prev.filter(i => i.id !== deleteId));
+    deleteDoc(doc(db, COLLECTIONS.blood_banks || 'blood_banks', deleteId))
+      .then(() => {
+        showAlert('Blood bank deleted successfully.', 'success');
+      })
+      .catch(e => {
+        console.error(e);
+        showAlert('Error deleting blood bank.', 'error');
+      });
+    setDeleteId(null);
   }
 
   const filtered = bloodBanks.filter(b => {
@@ -313,8 +371,8 @@ function BloodBankPageContent() {
         <div className="flex items-center gap-2">
           {canEdit && (
             <label className="inline-flex items-center gap-2 px-4 py-2.5 bg-surface border border-border hover:bg-border/50 text-text-primary rounded-xl text-sm font-medium transition-colors shadow-sm active:scale-95 cursor-pointer">
-              <Upload className="w-4 h-4 text-primary" /> Import CSV
-              <input type="file" accept=".csv" onChange={handleCsvImport} className="hidden" />
+              <Upload className="w-4 h-4 text-primary" /> Import File
+              <input type="file" accept=".csv,.xlsx,.xls" onChange={handleFileImport} className="hidden" />
             </label>
           )}
           {canEdit && (
@@ -325,27 +383,25 @@ function BloodBankPageContent() {
         </div>
       </div>
 
-      <div className="flex flex-col sm:flex-row items-center gap-4 bg-white p-4 rounded-2xl border border-border shadow-sm">
-        <div className="w-full sm:max-w-xs">
+      <div className="flex flex-wrap items-center gap-3 bg-white p-4 rounded-2xl border border-border shadow-sm">
+        <div className="relative flex-1 min-w-[200px] w-full md:w-auto">
+          <Search className="w-4 h-4 text-text-muted absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input 
             type="text" 
-            placeholder="Search blood bank..."
+            placeholder="Search blood banks by name or area..."
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
-            className="w-full px-3 py-2 bg-surface border border-border rounded-lg text-sm"
+            className="w-full pl-10 pr-4 py-2.5 bg-surface border border-border rounded-xl text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
           />
         </div>
-        <div className="flex items-center gap-2 w-full sm:max-w-xs">
-          <label className="text-sm font-bold text-text-primary whitespace-nowrap">Filter City:</label>
-          <select 
-            value={cityFilter} 
-            onChange={e => setCityFilter(e.target.value)} 
-            className="w-full px-3 py-2 bg-surface border border-border rounded-lg text-sm cursor-pointer"
-          >
-            <option value="">All Cities</option>
-            {CITIES.map(c => <option key={c} value={c}>{c}</option>)}
-          </select>
-        </div>
+        <select 
+          value={cityFilter} 
+          onChange={e => setCityFilter(e.target.value)} 
+          className="w-full md:w-auto px-4 py-2.5 rounded-xl border border-border text-sm bg-surface cursor-pointer hover:border-primary/50 transition-colors outline-none focus:border-primary min-w-[140px]"
+        >
+          <option value="">All Cities</option>
+          {CITIES.map(c => <option key={c} value={c}>{c}</option>)}
+        </select>
       </div>
 
       {loading ? (
@@ -391,6 +447,41 @@ function BloodBankPageContent() {
             </table>
           </div>
         </div>
+      )}
+
+      <AlertPopup 
+        isOpen={alertOpen} 
+        message={alertMessage} 
+        type={alertType} 
+        onClose={() => setAlertOpen(false)} 
+      />
+
+      {deleteId && mounted && createPortal(
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/45 backdrop-blur-sm transition-opacity duration-300" onClick={() => setDeleteId(null)} />
+          <div className="relative w-full max-w-sm overflow-hidden rounded-[32px] bg-white border border-black/5 shadow-2xl z-10 p-8 pt-10 text-center animate-slide-up">
+            <div className="mb-6 flex items-center justify-center w-16 h-16 rounded-full bg-red-50 text-red-600 mx-auto">
+              <Trash2 className="w-8 h-8" />
+            </div>
+            <h3 className="mb-2 text-xl font-bold text-neutral-900">Confirm Delete</h3>
+            <p className="mb-6 text-neutral-500 text-sm">Are you sure you want to delete this blood bank listing?</p>
+            <div className="flex gap-3">
+              <button 
+                onClick={() => setDeleteId(null)} 
+                className="flex-1 py-3 px-4 rounded-xl border border-border text-sm font-semibold text-text-muted hover:text-text-primary hover:bg-surface transition-colors cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={executeDelete} 
+                className="flex-1 py-3 px-4 rounded-xl bg-red-600 hover:bg-red-700 text-white text-sm font-semibold transition-all active:scale-95 cursor-pointer"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>,
+        document.body
       )}
     </div>
   );

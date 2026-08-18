@@ -324,11 +324,31 @@ export interface Ambulance {
   eta?: string;
   equipment?: string;
   base_rate?: string;
-  sub_category?: string;
+  sub_category?: string; // e.g. private, government
   type_mode?: string;
   source_notes?: string;
   created_at?: string;
   updated_at?: string;
+
+  // Premium category fields
+  main_category?: 'flight' | 'local' | 'train';
+  size_category?: 'small' | 'medium' | 'large';
+  approx_cost?: string;
+  specialization?: string;
+  
+  // Boolean flags for features/displays
+  icu_ambulance?: boolean;
+  cardiac_ambulance?: boolean;
+  neonatal_ambulance?: boolean;
+  ventilator_ambulance?: boolean;
+  nurse_support?: boolean;
+  multi_specialty?: boolean;
+  
+  // Additional services flags
+  patient_shifting?: boolean;
+  dead_body_transport?: boolean;
+  tn_to_wb?: boolean;
+  wb_to_tn?: boolean;
 }
 
 export interface CommunityGroup {
