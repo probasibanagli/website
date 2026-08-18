@@ -222,7 +222,7 @@ export const GENDERS = ['male', 'female', 'mixed'] as const;
 export const COMMUNITY_PLATFORMS = ['whatsapp', 'telegram', 'facebook', 'instagram'] as const;
 export const COMMUNITY_CATEGORIES = ['general', 'students', 'professionals', 'women', 'seniors'] as const;
 
-export const COLLEGE_TYPES = ['engineering', 'medical', 'arts_science'] as const;
+export const COLLEGE_TYPES = ['engineering', 'medical', 'arts_science', 'law', 'management'] as const;
 export const SCHOOL_TYPES = ['cbse', 'icse', 'kv'] as const;
 
 export const EVENT_CATEGORIES = ['festival', 'cultural', 'social', 'religious'] as const;
