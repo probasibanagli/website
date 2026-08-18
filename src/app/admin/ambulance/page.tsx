@@ -473,6 +473,73 @@ function AmbulancePageContent() {
                 <label className="block text-sm font-semibold text-text-primary mb-1.5">Full Address</label>
                 <input type="text" value={formData.address || ''} onChange={e => setFormData({...formData, address: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" />
               </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-text-primary mb-1.5">Main Category</label>
+                <select value={formData.main_category || ''} onChange={e => setFormData({...formData, main_category: e.target.value as any})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm cursor-pointer">
+                  <option value="">Select Main Category...</option>
+                  <option value="local">Local Ambulance</option>
+                  <option value="flight">Flight Ambulance</option>
+                  <option value="train">Train Ambulance</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-text-primary mb-1.5">Sub-Category</label>
+                <select value={formData.sub_category || ''} onChange={e => setFormData({...formData, sub_category: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm cursor-pointer">
+                  <option value="">Select Sub-Category...</option>
+                  <option value="government">Government Ambulance</option>
+                  <option value="private">Private Ambulance</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-text-primary mb-1.5">Ambulance Size</label>
+                <select value={formData.size_category || ''} onChange={e => setFormData({...formData, size_category: e.target.value as any})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm cursor-pointer">
+                  <option value="">Select Size...</option>
+                  <option value="small">Small Ambulance</option>
+                  <option value="medium">Medium Ambulance</option>
+                  <option value="large">Large Ambulance</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-text-primary mb-1.5">Specialization</label>
+                <input type="text" value={formData.specialization || ''} onChange={e => setFormData({...formData, specialization: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" placeholder="e.g. Trauma care, Neonatal transport" />
+              </div>
+
+              <div className="md:col-span-2 space-y-3">
+                <label className="block text-sm font-semibold text-text-primary">Ambulance Display & Features</label>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  {[
+                    { key: 'icu_ambulance', label: 'ICU Ambulance' },
+                    { key: 'cardiac_ambulance', label: 'Cardiac Ambulance' },
+                    { key: 'neonatal_ambulance', label: 'Neonatal Ambulance' },
+                    { key: 'ventilator_ambulance', label: 'Ventilator Ambulance' },
+                    { key: 'nurse_support', label: 'Nurse Support' },
+                    { key: 'multi_specialty', label: 'Multi-specialty Service' },
+                  ].map((feat) => (
+                    <label key={feat.key} className="flex items-center gap-2 px-4 py-3 bg-surface border border-border rounded-xl text-xs font-semibold cursor-pointer hover:bg-surface/80 transition-colors">
+                      <input type="checkbox" checked={!!formData[feat.key as keyof Ambulance]} onChange={e => setFormData({...formData, [feat.key]: e.target.checked})} className="rounded text-primary focus:ring-primary/20" />
+                      {feat.label}
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              <div className="md:col-span-2 space-y-3">
+                <label className="block text-sm font-semibold text-text-primary">Additional Services</label>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {[
+                    { key: 'patient_shifting', label: 'Patient shifting' },
+                    { key: 'dead_body_transport', label: 'Dead body transportation' },
+                    { key: 'tn_to_wb', label: 'Tamil Nadu to West Bengal ambulance service' },
+                    { key: 'wb_to_tn', label: 'West Bengal to Tamil Nadu ambulance service' },
+                  ].map((srv) => (
+                    <label key={srv.key} className="flex items-center gap-2 px-4 py-3 bg-surface border border-border rounded-xl text-xs font-semibold cursor-pointer hover:bg-surface/80 transition-colors">
+                      <input type="checkbox" checked={!!formData[srv.key as keyof Ambulance]} onChange={e => setFormData({...formData, [srv.key]: e.target.checked})} className="rounded text-primary focus:ring-primary/20" />
+                      {srv.label}
+                    </label>
+                  ))}
+                </div>
+              </div>
             </div>
             
             <div className="flex items-center justify-end gap-3 pt-4 border-t border-border">
