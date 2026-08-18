@@ -232,6 +232,7 @@ export function ChatWidget() {
       {/* FAB Button */}
       {mounted && (
         <button
+          id="word-helper-fab"
           onClick={() => setIsOpen(!isOpen)}
           aria-label="Tamil Word Helper"
           title="Tamil Word Helper"
