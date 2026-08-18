@@ -117,7 +117,7 @@ export default function StayPage() {
 
   const filtered = useMemo(() => {
     return combinedListings.filter((l) => {
-      const type = l.type || '';
+      const type = l.type || (l.accommodation_type === 'PG' ? 'pg' : l.accommodation_type === 'Hotel' ? 'hotel' : l.accommodation_type === 'Service Apartment' ? 'rental' : l.accommodation_type === 'Rental House' ? 'rental-house' : '');
       const name = l.name || '';
       const area = l.area || '';
       const amenities = l.amenities || [];
@@ -188,7 +188,7 @@ export default function StayPage() {
           <h1 className="text-3xl sm:text-4xl font-bold font-display text-text-primary">
             Stay & Accommodation
           </h1>
-          <p className="mt-2 text-text-muted">Find Bengali-friendly PGs, hotels, and rental houses in Tamil Nadu.</p>
+          <p className="mt-2 text-text-muted">Find Bengali-friendly PGs, hotels, and service apartments in Tamil Nadu.</p>
 
           {/* Type Tabs */}
           <div className="mt-6 flex flex-wrap gap-2">
@@ -196,7 +196,8 @@ export default function StayPage() {
               { value: 'all', label: 'All', icon: <Search className="w-4 h-4" /> },
               { value: 'pg', label: 'PG', icon: <Home className="w-4 h-4" /> },
               { value: 'hotel', label: 'Hotels', icon: <Building className="w-4 h-4" /> },
-              { value: 'rental', label: 'Rental House', icon: <Building2 className="w-4 h-4" /> },
+              { value: 'rental', label: 'Service Apartment', icon: <Building2 className="w-4 h-4" /> },
+              { value: 'rental-house', label: 'Rental House', icon: <Home className="w-4 h-4" /> },
             ].map((tab) => (
               <button
                 key={tab.value}

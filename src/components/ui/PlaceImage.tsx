@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { Home, Building, Building2, UtensilsCrossed, Stethoscope, Users, ImageOff } from 'lucide-react';
 
-type PlaceType = 'stay' | 'pg' | 'hotel' | 'rental' | 'food' | 'restaurant' | 'sweets' | 'tiffin' | 'hospital' | 'community' | 'college';
+type PlaceType = 'stay' | 'pg' | 'hotel' | 'rental' | 'rental-house' | 'food' | 'restaurant' | 'sweets' | 'tiffin' | 'hospital' | 'community' | 'college';
 
 interface PlaceImageProps {
   name: string;
@@ -19,6 +19,7 @@ const TYPE_STYLES: Record<string, { gradient: string; icon: React.ReactNode }> =
   pg: { gradient: 'from-blue-100 to-sky-50', icon: <Home className="w-8 h-8 text-blue-300" /> },
   hotel: { gradient: 'from-indigo-100 to-blue-50', icon: <Building className="w-8 h-8 text-indigo-300" /> },
   rental: { gradient: 'from-violet-100 to-purple-50', icon: <Building2 className="w-8 h-8 text-violet-300" /> },
+  'rental-house': { gradient: 'from-orange-100 to-amber-50', icon: <Home className="w-8 h-8 text-orange-300" /> },
   food: { gradient: 'from-orange-100 to-amber-50', icon: <UtensilsCrossed className="w-8 h-8 text-orange-300" /> },
   restaurant: { gradient: 'from-orange-100 to-amber-50', icon: <UtensilsCrossed className="w-8 h-8 text-orange-300" /> },
   sweets: { gradient: 'from-pink-100 to-rose-50', icon: <UtensilsCrossed className="w-8 h-8 text-pink-300" /> },

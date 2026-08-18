@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { MapPin, Phone, MessageCircle, ArrowLeft, CheckCircle2, Bed, Users, IndianRupee, Shield, Home, Star } from 'lucide-react';
+import { MapPin, Phone, MessageCircle, ArrowLeft, CheckCircle2, Bed, Users, IndianRupee, Shield, Home, Star, Activity, Navigation } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/card';
@@ -117,7 +117,7 @@ export default function StayDetailPage() {
               fallbackIcon={<Home className="w-20 h-20" />}
             />
             <div className="absolute top-4 left-4 flex gap-2">
-              <Badge variant={(listing.accommodation_type?.toLowerCase() || listing.type) as 'pg' | 'hotel' | 'rental'}>{(listing.accommodation_type || listing.type || 'STAY').toUpperCase()}</Badge>
+              <Badge variant={(listing.accommodation_type?.toLowerCase().replace(' ', '-') || listing.type) as 'pg' | 'hotel' | 'rental' | 'rental-house'}>{(listing.accommodation_type || listing.type || 'STAY').toUpperCase()}</Badge>
               {listing.verified && <Badge variant="verified"><CheckCircle2 className="w-3.5 h-3.5 mr-1" /> Verified</Badge>}
             </div>
           </div>
@@ -148,10 +148,11 @@ export default function StayDetailPage() {
               <Card className="p-4">
                 <h3 className="text-sm font-bold mb-3 text-text-primary">Details</h3>
                 <div className="grid grid-cols-2 gap-3 text-sm">
-                  {listing.room_type && <div className="flex items-center gap-2"><Bed className="w-4 h-4 text-primary" /><span className="font-semibold capitalize truncate">{listing.room_type}</span></div>}
+                  {listing.room_type && <div className="flex items-start gap-2 col-span-2 sm:col-span-1"><Bed className="w-4 h-4 text-primary shrink-0 mt-0.5" /><span className="font-semibold capitalize leading-snug" title={listing.room_type}>{listing.room_type.replace(/ Sharing(?=,)/gi, '')}</span></div>}
                   {listing.gender && <div className="flex items-center gap-2"><Users className="w-4 h-4 text-primary" /><span className="font-semibold capitalize truncate">{listing.gender}</span></div>}
                   {listing.deposit_amount !== undefined && <div className="flex items-center gap-2"><IndianRupee className="w-4 h-4 text-primary" /><span className="font-semibold truncate">Dep: {formatPrice(listing.deposit_amount)}</span></div>}
                   {listing.available_rooms !== undefined && <div className="flex items-center gap-2"><Shield className="w-4 h-4 text-primary" /><span className="font-semibold truncate">Rooms: {listing.available_rooms}</span></div>}
+                  {listing.nearby_hospital && <div className="flex items-center gap-2 col-span-2 text-rose-600 bg-rose-50 px-2 py-1 rounded-md -ml-2 max-w-full"><Activity className="w-4 h-4 shrink-0" /><span className="font-semibold truncate">Hospital: {listing.nearby_hospital}</span></div>}
                 </div>
               </Card>
             )}
@@ -189,9 +190,17 @@ export default function StayDetailPage() {
                 </div>
               </div>
 
-              <div className="flex items-start gap-2 mt-6 text-sm text-text-muted bg-surface/60 p-3 rounded-lg border border-border/50 max-h-32 overflow-y-auto">
-                <MapPin className="w-4 h-4 mt-0.5 shrink-0 text-primary" /> 
-                <span className="leading-snug break-all">{listing.address || `${listing.area}, ${listing.city}`}{listing.pincode ? `, ${listing.pincode}` : ''}</span>
+              <div className="mt-6 flex flex-col gap-2 text-sm text-text-muted bg-surface/60 p-3 rounded-lg border border-border/50 max-h-40 overflow-y-auto">
+                <div className="flex items-start gap-2">
+                  <MapPin className="w-4 h-4 mt-0.5 shrink-0 text-primary" /> 
+                  <span className="leading-snug break-words">{listing.address || `${listing.area}, ${listing.city}`}{listing.pincode ? `, ${listing.pincode}` : ''}</span>
+                </div>
+                {listing.landmark && (
+                  <div className="flex items-start gap-2 pt-2 border-t border-border/50 text-text-primary">
+                    <Navigation className="w-4 h-4 mt-0.5 shrink-0 text-accent" />
+                    <span className="leading-snug break-words"><span className="font-semibold">Landmark:</span> {listing.landmark}</span>
+                  </div>
+                )}
               </div>
             </div>
 

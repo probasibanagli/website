@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Bengali PG, Hotels & Accommodation in Tamil Nadu | ProbasiBangali',
-  description: 'Find Bengali-friendly PGs, hotels, and rental houses across Chennai, Coimbatore, Vellore and more. Verified listings with Bengali food, WiFi, AC.',
+  description: 'Find Bengali-friendly PGs, hotels, and service apartments across Chennai, Coimbatore, Vellore and more. Verified listings with Bengali food, WiFi, AC.',
   keywords: ['Bengali PG Chennai', 'Bengali accommodation Tamil Nadu', 'Bengali friendly hotel', 'PG for Bengali students'],
 };
 

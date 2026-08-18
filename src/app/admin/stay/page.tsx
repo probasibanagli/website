@@ -316,7 +316,7 @@ export default function AdminStayPage() {
                     <option value="PG">PG</option>
                     <option value="Hotel">Hotel</option>
                     <option value="Service Apartment">Service Apartment</option>
-                    <option value="Rental Home">Rental Home</option>
+                    <option value="Rental House">Rental House</option>
                   </select>
                 </div>
                 <div>
@@ -392,9 +392,32 @@ export default function AdminStayPage() {
             <div className="space-y-4 pt-4 border-t border-border">
               <h4 className="font-bold text-sm text-indigo-500 uppercase tracking-wider">Features & Location</h4>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-semibold text-text-primary mb-1.5">Room Types (comma separated)</label>
-                  <input type="text" value={formData.room_type} onChange={e => setFormData({ ...formData, room_type: e.target.value })} className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl text-sm" placeholder="e.g. Single, Double Sharing" />
+                <div className="sm:col-span-2">
+                  <label className="block text-xs font-semibold text-text-primary mb-1.5">Room Types (Select all that apply)</label>
+                  <div className="flex flex-wrap gap-2">
+                    {['1 Sharing', '2 Sharing', '3 Sharing', '4 Sharing', '5 Sharing', 'Rental House', 'Other'].map(rt => (
+                      <label key={rt} className="flex items-center gap-1.5 px-3 py-1.5 bg-surface border border-border rounded-lg cursor-pointer hover:bg-border/50 transition-colors">
+                        <input
+                          type="checkbox"
+                          className="w-3.5 h-3.5 text-primary rounded border-border"
+                          checked={(formData.room_type || '').includes(rt)}
+                          onChange={(e) => {
+                            let current = (formData.room_type || '').split(',').map((s: string) => s.trim()).filter(Boolean);
+                            if (e.target.checked) {
+                              if (!current.includes(rt)) current.push(rt);
+                            } else {
+                              current = current.filter((a: string) => a !== rt);
+                            }
+                            setFormData({
+                              ...formData,
+                              room_type: current.join(', ')
+                            });
+                          }}
+                        />
+                        <span className="text-xs font-medium text-text-secondary">{rt}</span>
+                      </label>
+                    ))}
+                  </div>
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-text-primary mb-1.5">Total Available Rooms</label>

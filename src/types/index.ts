@@ -135,7 +135,7 @@ export type LegalServiceItem = LegalAidCentre | LegalHelpline | LegalCategory | 
 
 export interface Listing {
   id: string;
-  type: 'pg' | 'hotel' | 'rental';
+  type: 'pg' | 'hotel' | 'rental' | 'rental-house';
   name: string;
   description?: string;
   city: string;

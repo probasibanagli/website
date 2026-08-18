@@ -100,7 +100,7 @@ export default function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
               { 
-                icon: <Home className="w-6 h-6" />, title: 'Stay & Accommodation', desc: 'Find Bengali-friendly PGs, hotels, and rental houses.', 
+                icon: <Home className="w-6 h-6" />, title: 'Stay & Accommodation', desc: 'Find Bengali-friendly PGs, hotels, and service apartments.', 
                 href: '/explore/stay', theme: 'from-blue-500/10 to-blue-500/5', iconColor: 'text-blue-600', borderColor: 'group-hover:border-blue-200' 
               },
               { 
