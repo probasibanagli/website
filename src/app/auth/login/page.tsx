@@ -18,8 +18,7 @@ type LoginMode = 'email' | 'phone';
 type PhoneStep = 'input' | 'otp' | 'email-verify';
 type AdminFirstLoginStep = 'double-otp' | 'create-password';
 
-const SUPER_ADMIN_EMAIL = 'admin@probasibangali.in';
-const SECOND_SUPER_ADMIN_EMAIL = 'vigneshayyanar134@gmail.com';
+const SUPER_ADMIN_EMAIL = 'vigneshayyanar134@gmail.com';
 const PRECONFIGURED_SUPER_ADMIN_PHONE = '+919626855406';
 
 export default function LoginPage() {
@@ -215,10 +214,10 @@ export default function LoginPage() {
 
       const snap = await getDoc(doc(db, 'users', currentUser.uid));
       const userProfile = snap.data();
-      if (emailLower === 'vigneshayyanar134@gmail.com' || emailLower === 'admin@probasibangali.in') {
+      if (emailLower === SUPER_ADMIN_EMAIL) {
         if (userProfile) {
           userProfile.is_active = true;
-          userProfile.role = 'admin';
+          userProfile.role = 'superadmin';
         }
       }
 
@@ -231,8 +230,8 @@ export default function LoginPage() {
       }
 
       // Check if Admin or Super Admin
-      if (emailLower === SUPER_ADMIN_EMAIL || emailLower === SECOND_SUPER_ADMIN_EMAIL || userProfile?.role === 'superadmin' || userProfile?.role === 'admin') {
-        const isSuper = emailLower === SUPER_ADMIN_EMAIL || emailLower === SECOND_SUPER_ADMIN_EMAIL || userProfile?.role === 'superadmin';
+      if (emailLower === SUPER_ADMIN_EMAIL || userProfile?.role === 'superadmin' || userProfile?.role === 'admin') {
+        const isSuper = emailLower === SUPER_ADMIN_EMAIL || userProfile?.role === 'superadmin';
         const adminPhone = isSuper ? PRECONFIGURED_SUPER_ADMIN_PHONE : userProfile?.phone;
         
         if (!adminPhone) {
