@@ -152,6 +152,7 @@ export function Navbar() {
               {/* Language Switcher */}
               <div className="relative shrink-0">
                 <button
+                  id="navbar-lang-selector"
                   suppressHydrationWarning
                   onClick={() => setLangMenuOpen(!langMenuOpen)}
                   className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3.5 py-1.5 text-[10px] sm:text-xs font-bold text-primary bg-primary/10 hover:bg-primary/15 border-2 border-primary/25 hover:border-primary/50 rounded-full transition-all cursor-pointer shadow-sm notranslate"
