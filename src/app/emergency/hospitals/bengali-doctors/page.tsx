@@ -128,50 +128,50 @@ export default function BengaliDoctorsPage() {
     <div className="min-h-screen bg-surface">
       {/* Header */}
       <div className="bg-white border-b border-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="flex items-center gap-2 text-sm text-text-muted mb-4">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3 md:py-4 lg:py-5">
+          <div className="hidden md:flex items-center gap-2 text-xs md:text-sm text-text-muted mb-2">
             <Link href="/" className="hover:text-primary">Home</Link><span>/</span>
             <Link href="/emergency/hospitals" className="hover:text-primary">Hospitals</Link><span>/</span>
             <span className="text-text-primary font-medium">Bengali Doctors</span>
           </div>
           
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-2.5">
             <div>
-              <Link href="/emergency/hospitals" className="inline-flex items-center gap-1 text-sm font-semibold text-primary hover:text-primary-dark mb-4">
-                 <ArrowLeft className="w-4 h-4" /> Back to Emergency
+              <Link href="/emergency/hospitals" className="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:text-primary-dark mb-1">
+                 <ArrowLeft className="w-3.5 h-3.5" /> Back to Emergency
               </Link>
-              <h1 className="text-3xl sm:text-4xl font-bold font-display text-text-primary flex items-center gap-3">
-                <UserRound className="w-8 h-8 text-primary" />
+              <h1 className="text-lg sm:text-2xl md:text-3xl font-bold font-display text-text-primary flex items-center gap-2 leading-tight">
+                <UserRound className="w-6 h-6 md:w-8 md:h-8 text-primary shrink-0" />
                 Bengali Doctors Directory
               </h1>
-              <p className="mt-2 text-text-muted">Find and connect with highly experienced Bengali-speaking doctors.</p>
+              <p className="hidden md:block mt-1 text-xs md:text-sm text-text-muted">Find and connect with highly experienced Bengali-speaking doctors.</p>
             </div>
             
-            <div className="flex flex-wrap gap-2">
+            <div className="flex items-center gap-2">
                <Link href="/emergency/hospitals/bengali-hospitals">
-                 <Button variant="outline" className="shadow-sm">View Hospitals <ChevronRight className="w-4 h-4 ml-1"/></Button>
+                 <Button variant="outline" className="shadow-sm text-xs py-1.5 px-3 md:py-2 md:px-4">View Hospitals <ChevronRight className="w-3.5 h-3.5 ml-1"/></Button>
                </Link>
                <Link href="/emergency/hospitals/bengali-staff">
-                 <Button variant="primary" className="shadow-sm bg-primary hover:bg-primary-dark text-white border-none">View Bengali Staff <ChevronRight className="w-4 h-4 ml-1"/></Button>
+                 <Button variant="primary" className="shadow-sm bg-primary hover:bg-primary-dark text-white border-none text-xs py-1.5 px-3 md:py-2 md:px-4">Bengali Staff <ChevronRight className="w-3.5 h-3.5 ml-1"/></Button>
                </Link>
             </div>
           </div>
 
           {/* Filters */}
-          <div className="mt-8 flex flex-wrap items-center gap-3">
-            <div className="relative flex-1 min-w-[200px] max-w-md">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
+          <div className="mt-3 md:mt-4 flex flex-wrap items-center gap-2 md:gap-3">
+            <div className="relative flex-1 min-w-[180px] max-w-md">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 md:w-4 md:h-4 text-text-muted" />
               <input 
                 value={search} 
                 onChange={(e) => setSearch(e.target.value)} 
                 placeholder="Search doctor name..." 
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 bg-surface/50" 
+                className="w-full pl-9 pr-3 py-1.5 md:pl-10 md:pr-4 md:py-2 rounded-lg md:rounded-xl border border-border text-xs md:text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 bg-surface/50" 
               />
             </div>
             <select 
               value={specialtyFilter} 
               onChange={(e) => setSpecialtyFilter(e.target.value)} 
-              className="px-4 py-2.5 rounded-xl border border-border text-sm bg-surface/50 min-w-[150px] cursor-pointer"
+              className="px-3 py-1.5 md:px-4 md:py-2 rounded-lg md:rounded-xl border border-border text-xs md:text-sm bg-surface/50 min-w-[130px] cursor-pointer"
             >
               <option value="">All Specialties</option>
               {specialties.map((s) => <option key={s} value={s}>{s}</option>)}

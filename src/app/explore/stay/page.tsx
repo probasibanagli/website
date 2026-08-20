@@ -177,151 +177,154 @@ export default function StayPage() {
     <div className="min-h-screen bg-surface">
       {/* Header */}
       <div className="bg-white border-b border-border">
-        <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="flex items-center gap-2 text-sm text-text-muted mb-4">
+        <div className="max-w-[1536px] mx-auto px-3 sm:px-6 lg:px-8 py-3 md:py-4 lg:py-5">
+          <div className="hidden md:flex items-center gap-2 text-xs md:text-sm text-text-muted mb-2">
             <Link href="/" className="hover:text-primary">Home</Link>
             <span>/</span>
             <Link href="/explore/stay" className="hover:text-primary">Explore</Link>
             <span>/</span>
             <span className="text-text-primary font-medium">Stay</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold font-display text-text-primary">
+          <h1 className="text-lg sm:text-2xl md:text-3xl font-bold font-display text-text-primary leading-tight">
             Stay & Accommodation
           </h1>
-          <p className="mt-2 text-text-muted">Find Bengali-friendly PGs, hotels, and service apartments in Tamil Nadu.</p>
+          <p className="hidden md:block mt-1 text-xs md:text-sm text-text-muted">Find Bengali-friendly PGs, hotels, and service apartments in Tamil Nadu.</p>
 
           {/* Type Tabs */}
-          <div className="mt-6 flex flex-wrap gap-2">
+          <div className="mt-2.5 md:mt-3.5 flex flex-wrap items-center gap-1 sm:gap-2 justify-between sm:justify-start w-full">
             {[
-              { value: 'all', label: 'All', icon: <Search className="w-4 h-4" /> },
-              { value: 'pg', label: 'PG', icon: <Home className="w-4 h-4" /> },
-              { value: 'hotel', label: 'Hotels', icon: <Building className="w-4 h-4" /> },
-              { value: 'rental', label: 'Service Apartment', icon: <Building2 className="w-4 h-4" /> },
-              { value: 'rental-house', label: 'Rental House', icon: <Home className="w-4 h-4" /> },
+              { value: 'all', label: 'All', shortLabel: 'All', icon: <Search className="w-3 h-3 md:w-4 md:h-4" /> },
+              { value: 'pg', label: 'PG', shortLabel: 'PG', icon: <Home className="w-3 h-3 md:w-4 md:h-4" /> },
+              { value: 'hotel', label: 'Hotels', shortLabel: 'Hotel', icon: <Building className="w-3 h-3 md:w-4 md:h-4" /> },
+              { value: 'rental', label: 'Service Apartment', shortLabel: 'Apt', icon: <Building2 className="w-3 h-3 md:w-4 md:h-4" /> },
+              { value: 'rental-house', label: 'Rental House', shortLabel: 'Rental', icon: <Home className="w-3 h-3 md:w-4 md:h-4" /> },
             ].map((tab) => (
               <button
                 key={tab.value}
                 onClick={() => setActiveType(tab.value)}
                 suppressHydrationWarning
-                className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all cursor-pointer ${
+                className={`inline-flex items-center justify-center gap-1.5 px-2.5 py-1 md:px-3.5 md:py-1.5 rounded-full text-[11px] sm:text-xs md:text-sm font-semibold transition-all cursor-pointer flex-1 sm:flex-initial text-center ${
                   activeType === tab.value
-                    ? 'bg-primary text-white shadow-md'
+                    ? 'bg-primary text-white shadow-sm'
                     : 'bg-white text-text-primary border border-border hover:border-primary'
                 }`}
               >
                 {tab.icon}
-                {tab.label}
+                <span className="sm:hidden">{tab.shortLabel}</span>
+                <span className="hidden sm:inline">{tab.label}</span>
               </button>
             ))}
-
           </div>
 
           {/* Unified Filter Bar */}
-          <div className="mt-6 flex flex-col md:flex-row md:flex-wrap items-stretch md:items-center gap-3 relative z-30">
+          <div className="mt-2.5 md:mt-3.5 flex flex-col md:flex-row md:flex-wrap items-stretch md:items-center gap-2 md:gap-3 relative z-30">
             {/* Search */}
             <div className="relative w-full md:flex-1 md:min-w-[200px] md:max-w-xs">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
-              <input value={searchQuery} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)} placeholder="Search by name or area..." className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 md:w-4 md:h-4 text-text-muted" />
+              <input value={searchQuery} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)} placeholder="Search by name or area..." className="w-full pl-9 pr-3 py-1.5 md:pl-10 md:pr-4 md:py-2 rounded-lg md:rounded-xl border border-border text-xs md:text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 shadow-sm" />
             </div>
 
-            {/* City Dropdown */}
-            <div className={`relative w-full md:w-auto md:min-w-[160px] ${isCityOpen ? 'z-50' : ''}`}>
-              <button onClick={() => setIsCityOpen(!isCityOpen)} className="flex items-center justify-between w-full px-4 py-2.5 rounded-xl border border-border bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary/30">
-                <span className="truncate">{city || 'All Cities'}</span>
-                <ChevronDown className={`w-4 h-4 text-text-muted transition-transform ${isCityOpen ? 'rotate-180' : ''}`} />
-              </button>
-              {isCityOpen && (
-                <>
-                  <div className="fixed inset-0 z-40" onClick={() => setIsCityOpen(false)} />
-                  <div className="absolute top-full left-0 w-full mt-1 bg-white border border-border rounded-xl shadow-lg z-50 max-h-60 overflow-y-auto">
-                    <button onClick={() => handleCityChange('')} className={`w-full text-left px-4 py-2 text-sm hover:bg-surface transition-colors ${!city ? 'bg-primary/5 font-medium text-primary' : 'text-text-primary'}`}>All Cities</button>
-                    {sortedCities.map((c) => (
-                      <button key={c} onClick={() => handleCityChange(c)} className={`w-full text-left px-4 py-2 text-sm hover:bg-surface transition-colors ${city === c ? 'bg-primary/5 font-medium text-primary' : 'text-text-primary'}`}>{c}</button>
-                    ))}
-                  </div>
-                </>
+            {/* Dropdowns & Price inputs */}
+            <div className="flex flex-wrap items-center gap-1.5 md:gap-2 w-full md:w-auto">
+              {/* City Dropdown */}
+              <div className={`relative flex-1 sm:flex-none md:min-w-[160px] ${isCityOpen ? 'z-50' : ''}`}>
+                <button onClick={() => setIsCityOpen(!isCityOpen)} className="flex items-center justify-between gap-1.5 w-full px-2.5 py-1.5 md:px-3.5 md:py-2 rounded-lg md:rounded-xl border border-border bg-white text-xs md:text-sm focus:outline-none focus:ring-2 focus:ring-primary/30">
+                  <span className="truncate max-w-[100px] md:max-w-none">{city || 'All Cities'}</span>
+                  <ChevronDown className={`w-3.5 h-3.5 md:w-4 md:h-4 text-text-muted transition-transform ${isCityOpen ? 'rotate-180' : ''}`} />
+                </button>
+                {isCityOpen && (
+                  <>
+                    <div className="fixed inset-0 z-40" onClick={() => setIsCityOpen(false)} />
+                    <div className="absolute top-full left-0 w-44 md:w-full mt-1 bg-white border border-border rounded-xl shadow-lg z-50 max-h-60 overflow-y-auto">
+                      <button onClick={() => handleCityChange('')} className={`w-full text-left px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm hover:bg-surface transition-colors ${!city ? 'bg-primary/5 font-medium text-primary' : 'text-text-primary'}`}>All Cities</button>
+                      {sortedCities.map((c) => (
+                        <button key={c} onClick={() => handleCityChange(c)} className={`w-full text-left px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm hover:bg-surface transition-colors ${city === c ? 'bg-primary/5 font-medium text-primary' : 'text-text-primary'}`}>{c}</button>
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
+
+              {/* Area Dropdown */}
+              {city && (
+                <div className={`relative flex-1 sm:flex-none md:min-w-[160px] ${isAreaOpen ? 'z-50' : ''}`}>
+                  <button onClick={() => setIsAreaOpen(!isAreaOpen)} className="flex items-center justify-between gap-1.5 w-full px-2.5 py-1.5 md:px-3.5 md:py-2 rounded-lg md:rounded-xl border border-border bg-white text-xs md:text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 animate-fade-in">
+                    <span className="truncate max-w-[100px] md:max-w-none">{area || 'All Areas'}</span>
+                    <ChevronDown className={`w-3.5 h-3.5 md:w-4 md:h-4 text-text-muted transition-transform ${isAreaOpen ? 'rotate-180' : ''}`} />
+                  </button>
+                  {isAreaOpen && (
+                    <>
+                      <div className="fixed inset-0 z-40" onClick={() => setIsAreaOpen(false)} />
+                      <div className="absolute top-full left-0 w-44 md:w-full mt-1 bg-white border border-border rounded-xl shadow-lg z-50 max-h-48 overflow-y-auto">
+                        <button onClick={() => { setArea(''); setIsAreaOpen(false); }} className={`w-full text-left px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm hover:bg-surface transition-colors ${!area ? 'bg-primary/5 font-medium text-primary' : 'text-text-primary'}`}>All Areas</button>
+                        {availableAreas.map((a) => (
+                          <button key={a} onClick={() => { setArea(a); setIsAreaOpen(false); }} className={`w-full text-left px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm hover:bg-surface transition-colors ${area === a ? 'bg-primary/5 font-medium text-primary' : 'text-text-primary'}`}>{a}</button>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </div>
               )}
-            </div>
 
-            {/* Area Dropdown */}
-            {city && (
-              <div className={`relative w-full md:w-auto md:min-w-[160px] ${isAreaOpen ? 'z-50' : ''}`}>
-                <button onClick={() => setIsAreaOpen(!isAreaOpen)} className="flex items-center justify-between w-full px-4 py-2.5 rounded-xl border border-border bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 animate-fade-in">
-                  <span className="truncate">{area || 'All Areas'}</span>
-                  <ChevronDown className={`w-4 h-4 text-text-muted transition-transform ${isAreaOpen ? 'rotate-180' : ''}`} />
+              {/* Subcategory Dropdown */}
+              {city && (
+                <div className={`relative flex-1 sm:flex-none md:min-w-[180px] ${isSubcatOpen ? 'z-50' : ''}`}>
+                  <button onClick={() => setIsSubcatOpen(!isSubcatOpen)} className="flex items-center justify-between gap-1.5 w-full px-2.5 py-1.5 md:px-3.5 md:py-2 rounded-lg md:rounded-xl border border-border bg-white text-xs md:text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 animate-fade-in">
+                    <span className="truncate flex items-center gap-1.5 max-w-[110px] md:max-w-none">
+                      {subcategory === 'hospital' ? <><Activity className="w-3.5 h-3.5 text-primary" /> Hospital</> :
+                       subcategory === 'college' ? <><GraduationCap className="w-3.5 h-3.5 text-primary" /> College</> :
+                       subcategory === 'metro' ? <><Train className="w-3.5 h-3.5 text-primary" /> Metro</> :
+                       'All Categories'}
+                    </span>
+                    <ChevronDown className={`w-3.5 h-3.5 md:w-4 md:h-4 text-text-muted transition-transform ${isSubcatOpen ? 'rotate-180' : ''}`} />
+                  </button>
+                  {isSubcatOpen && (
+                    <>
+                      <div className="fixed inset-0 z-40" onClick={() => setIsSubcatOpen(false)} />
+                      <div className="absolute top-full left-0 w-48 md:w-full mt-1 bg-white border border-border rounded-xl shadow-lg z-50">
+                        {[
+                          { value: '', label: 'All Categories', icon: null },
+                          { value: 'hospital', label: 'Hospital Nearby', icon: <Activity className="w-3.5 h-3.5 text-primary" /> },
+                          { value: 'college', label: 'College/Uni Nearby', icon: <GraduationCap className="w-3.5 h-3.5 text-primary" /> },
+                          { value: 'metro', label: 'Metro/Transport', icon: <Train className="w-3.5 h-3.5 text-primary" /> },
+                        ].map((opt) => (
+                          <button key={opt.value} onClick={() => { 
+                            if (opt.value === 'metro') {
+                              window.open('https://chennai.metroroute.co.in/', '_blank');
+                            }
+                            setSubcategory(opt.value); setSelectedHospital(''); setSelectedCollege(''); setSelectedMetroRoute(''); setIsSubcatOpen(false); 
+                          }}
+                            className={`w-full flex items-center gap-2 text-left px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm hover:bg-surface transition-colors ${subcategory === opt.value ? 'bg-primary/5 font-medium text-primary' : 'text-text-primary'}`}>
+                              {opt.icon}
+                              {opt.label}
+                          </button>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </div>
+              )}
+
+              {/* Bengali-friendly toggle */}
+              {city && (
+                <button onClick={() => setBengaliOnly(!bengaliOnly)}
+                  className={`flex items-center justify-center gap-1 px-2.5 py-1.5 md:px-3.5 md:py-2 rounded-lg md:rounded-xl text-xs md:text-sm font-medium transition-all cursor-pointer animate-fade-in shrink-0 ${bengaliOnly ? 'bg-primary text-white shadow-md' : 'bg-white border border-border text-text-primary hover:border-primary'}`}>
+                  <SlidersHorizontal className="w-3 h-3 md:w-3.5 md:h-3.5" />
+                  Bengali-friendly
                 </button>
-                {isAreaOpen && (
-                  <>
-                    <div className="fixed inset-0 z-40" onClick={() => setIsAreaOpen(false)} />
-                    <div className="absolute top-full left-0 w-full mt-1 bg-white border border-border rounded-xl shadow-lg z-50 max-h-48 overflow-y-auto">
-                      <button onClick={() => { setArea(''); setIsAreaOpen(false); }} className={`w-full text-left px-4 py-2 text-sm hover:bg-surface transition-colors ${!area ? 'bg-primary/5 font-medium text-primary' : 'text-text-primary'}`}>All Areas</button>
-                      {availableAreas.map((a) => (
-                        <button key={a} onClick={() => { setArea(a); setIsAreaOpen(false); }} className={`w-full text-left px-4 py-2 text-sm hover:bg-surface transition-colors ${area === a ? 'bg-primary/5 font-medium text-primary' : 'text-text-primary'}`}>{a}</button>
-                      ))}
-                    </div>
-                  </>
-                )}
+              )}
+
+              <div className="flex items-center gap-1 shrink-0">
+                <input type="number" placeholder="Min ₹" value={minPrice} onChange={(e) => setMinPrice(e.target.value)} className="w-16 md:w-20 lg:w-24 px-2 py-1.5 md:px-3 md:py-2 rounded-lg md:rounded-xl border border-border text-xs md:text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+                <span className="text-text-muted shrink-0 text-xs md:text-sm">-</span>
+                <input type="number" placeholder="Max ₹" value={maxPrice} onChange={(e) => setMaxPrice(e.target.value)} className="w-16 md:w-20 lg:w-24 px-2 py-1.5 md:px-3 md:py-2 rounded-lg md:rounded-xl border border-border text-xs md:text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
               </div>
-            )}
-
-            {/* Subcategory Dropdown */}
-            {city && (
-              <div className={`relative w-full md:w-auto md:min-w-[180px] ${isSubcatOpen ? 'z-50' : ''}`}>
-                <button onClick={() => setIsSubcatOpen(!isSubcatOpen)} className="flex items-center justify-between w-full px-4 py-2.5 rounded-xl border border-border bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 animate-fade-in">
-                  <span className="truncate flex items-center gap-2">
-                    {subcategory === 'hospital' ? <><Activity className="w-4 h-4 text-primary" /> Hospital Nearby</> :
-                     subcategory === 'college' ? <><GraduationCap className="w-4 h-4 text-primary" /> College/Uni Nearby</> :
-                     subcategory === 'metro' ? <><Train className="w-4 h-4 text-primary" /> Metro/Transport</> :
-                     'All Categories'}
-                  </span>
-                  <ChevronDown className={`w-4 h-4 text-text-muted transition-transform ${isSubcatOpen ? 'rotate-180' : ''}`} />
-                </button>
-                {isSubcatOpen && (
-                  <>
-                    <div className="fixed inset-0 z-40" onClick={() => setIsSubcatOpen(false)} />
-                    <div className="absolute top-full left-0 w-full mt-1 bg-white border border-border rounded-xl shadow-lg z-50">
-                      {[
-                        { value: '', label: 'All Categories', icon: null },
-                        { value: 'hospital', label: 'Hospital Nearby', icon: <Activity className="w-4 h-4 text-primary" /> },
-                        { value: 'college', label: 'College/Uni Nearby', icon: <GraduationCap className="w-4 h-4 text-primary" /> },
-                        { value: 'metro', label: 'Metro/Transport', icon: <Train className="w-4 h-4 text-primary" /> },
-                      ].map((opt) => (
-                        <button key={opt.value} onClick={() => { 
-                          if (opt.value === 'metro') {
-                            window.open('https://chennai.metroroute.co.in/', '_blank');
-                          }
-                          setSubcategory(opt.value); setSelectedHospital(''); setSelectedCollege(''); setSelectedMetroRoute(''); setIsSubcatOpen(false); 
-                        }}
-                          className={`w-full flex items-center gap-2 text-left px-4 py-2 text-sm hover:bg-surface transition-colors ${subcategory === opt.value ? 'bg-primary/5 font-medium text-primary' : 'text-text-primary'}`}>
-                            {opt.icon}
-                            {opt.label}
-                        </button>
-                      ))}
-                    </div>
-                  </>
-                )}
-              </div>
-            )}
-
-            {/* Bengali-friendly toggle */}
-            {city && (
-              <button onClick={() => setBengaliOnly(!bengaliOnly)}
-                className={`flex items-center justify-center w-full md:w-auto gap-1.5 px-4 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer animate-fade-in ${bengaliOnly ? 'bg-primary text-white shadow-md' : 'bg-white border border-border text-text-primary hover:border-primary'}`}>
-                <SlidersHorizontal className="w-3.5 h-3.5" />
-                Bengali-friendly
-              </button>
-            )}
-
-            <div className="flex items-center gap-2 w-full md:w-auto">
-              <input type="number" placeholder="Min ₹" value={minPrice} onChange={(e) => setMinPrice(e.target.value)} className="flex-1 min-w-0 md:w-24 px-3 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
-              <span className="text-text-muted shrink-0">-</span>
-              <input type="number" placeholder="Max ₹" value={maxPrice} onChange={(e) => setMaxPrice(e.target.value)} className="flex-1 min-w-0 md:w-24 px-3 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
             </div>
           </div>
 
           {/* Sub-Filters (Hospitals, Colleges, Metro) */}
           {(subcategory === 'hospital' || subcategory === 'college' || subcategory === 'metro') && city && (
-            <div className="mt-4 p-4 bg-white rounded-2xl border border-border animate-fade-in relative z-20">
+            <div className="mt-2 md:mt-4 p-3 md:p-4 bg-white rounded-xl md:rounded-2xl border border-border animate-fade-in relative z-20">
               {/* Hospital Names */}
               {subcategory === 'hospital' && cityHospitals.length > 0 && (
                 <div>
@@ -384,7 +387,7 @@ export default function StayPage() {
       </div>
 
       {/* Results */}
-      <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         <p className="text-sm text-text-muted mb-6">
           <span className="font-semibold text-text-primary">{filtered.length}</span> listings found
           {city && <> in <span className="font-semibold text-primary">{city}</span></>}
@@ -393,9 +396,10 @@ export default function StayPage() {
            · Verified first
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {/* Grid: 1 col (<640px), 2 col (640-1024px), 3 col (1024-1280px), 4 col (>1280px) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
           {filtered.map((listing) => {
-            const typeLabel = listing.accommodation_type || (listing.type ? listing.type.toUpperCase() : 'STAY');
+            const typeLabel = listing.accommodation_type || (listing.type ? listing.type.toUpperCase() : 'PG');
             const contactName = listing.contact_person_name || listing.owner_name || 'Contact Person';
             const whatsappNum = listing.contact_whatsapp || listing.owner_whatsapp;
             const phoneNum = listing.contact_phone || listing.owner_phone;
@@ -403,8 +407,9 @@ export default function StayPage() {
             const pricePeriod = listing.accommodation_type === 'Hotel' ? 'per day' : 'per month';
             
             return (
-              <Card key={listing.id} padding="none" className="rounded-[24px] overflow-hidden group border border-gray-100 shadow-[0_4px_25px_-4px_rgba(0,0,0,0.05)] bg-white">
-                <div className="relative h-60 bg-primary-light overflow-hidden">
+              <Card key={listing.id} padding="none" className="rounded-2xl lg:rounded-[24px] overflow-hidden group border border-gray-100 shadow-[0_2px_15px_-4px_rgba(0,0,0,0.06)] bg-white flex flex-row lg:flex-col min-h-[145px] sm:min-h-[160px] lg:min-h-0">
+                {/* Thumbnail / Cover Image Box */}
+                <div className="relative w-32 sm:w-40 lg:w-full h-auto lg:h-52 xl:h-60 shrink-0 bg-[#FDF2EE] lg:bg-primary-light overflow-hidden flex items-center justify-center">
                   <ListingCoverImage
                     name={listing.name}
                     city={listing.city}
@@ -412,80 +417,87 @@ export default function StayPage() {
                     imageUrl={listing.image_url}
                     type={listing.accommodation_type}
                     mapEmbedCode={listing.map_embed_code}
-                    fallbackIcon={<BedDouble className="w-16 h-16" />}
+                    fallbackIcon={<BedDouble className="w-12 h-12 lg:w-16 lg:h-16 text-[#E07A5F]/40 lg:text-primary/40" />}
                   />
-                  <div className="absolute top-4 left-4 flex gap-2">
-                    <span className="bg-white text-[#D35400] text-[11px] font-bold px-3.5 py-1.5 rounded-full shadow-sm tracking-wide">
+                  {/* Badges Container */}
+                  <div className="absolute top-2 left-2 lg:top-4 lg:left-4 flex flex-col lg:flex-row gap-1 lg:gap-2 z-10 max-w-[calc(100%-16px)]">
+                    <span className="bg-white/95 backdrop-blur-sm lg:bg-white text-[#D35400] text-[10px] lg:text-[11px] font-bold px-2 py-0.5 lg:px-3.5 lg:py-1.5 rounded-md lg:rounded-full shadow-sm tracking-wide shrink-0 border border-orange-100 lg:border-none">
                       {typeLabel}
                     </span>
                     {listing.rating && (
-                      <span className="bg-white text-gray-900 text-[11px] font-bold px-2.5 py-1.5 rounded-full shadow-sm flex items-center gap-1">
+                      <span className="hidden lg:flex bg-white text-gray-900 text-[11px] font-bold px-2.5 py-1.5 rounded-full shadow-sm items-center gap-1">
                         <Star className="w-3.5 h-3.5 fill-[#B06000] text-[#B06000]" />
                         <span>{listing.rating}</span>
                       </span>
                     )}
                     {listing.verified && (
-                      <span className="bg-emerald-500 text-white text-[11px] font-bold px-2.5 py-1.5 rounded-full shadow-sm flex items-center gap-1">
-                        <CheckCircle2 className="w-3 h-3" /> Verified
+                      <span className="bg-[#00B894] lg:bg-emerald-500 text-white text-[9px] lg:text-[11px] font-bold px-2 py-0.5 lg:px-2.5 lg:py-1.5 rounded-md lg:rounded-full shadow-sm flex items-center gap-0.5 sm:gap-1 shrink-0">
+                        <CheckCircle2 className="w-2.5 h-2.5 lg:w-3 lg:h-3" /> Verified
                       </span>
                     )}
                   </div>
                   {listing.bengali_food && (
-                    <div className="absolute top-4 right-4">
-                      <Badge variant="bengali" className="flex items-center gap-1.5"><Utensils className="w-3.5 h-3.5" /> Bengali Food</Badge>
+                    <div className="absolute top-2 right-2 lg:top-4 lg:right-4 z-10">
+                      <span className="bg-[#FFEAA7] lg:bg-rose-500 lg:text-white text-[#D63031] text-[9px] lg:text-xs font-bold px-2 py-0.5 lg:px-2.5 lg:py-1 rounded-md lg:rounded-full shadow-sm flex items-center gap-1">
+                        <Utensils className="w-2.5 h-2.5 lg:w-3.5 lg:h-3.5" /> Bengali Food
+                      </span>
                     </div>
                   )}
                 </div>
-                <div className="p-6">
-                  <div className="flex justify-between items-start gap-3">
-                    <Link href={`/explore/stay/${listing.id}`}>
-                      <h3 className="text-xl font-bold text-gray-900 group-hover:text-[#D35400] transition-colors leading-tight font-display">
-                        {listing.name}
-                      </h3>
-                    </Link>
-                    {listing.gender && (
-                      <div className="flex items-center gap-1 text-[#8F9BB3] text-sm font-semibold shrink-0 mt-0.5">
-                        <User className="w-4 h-4" />
-                        <span className="capitalize">{listing.gender}</span>
-                      </div>
-                    )}
-                  </div>
-                  <p className="mt-2 text-[14px] text-[#8F9BB3] leading-snug">
-                    {listing.area}{listing.landmark ? `, ${listing.landmark}` : ''}, {listing.city}
-                  </p>
-                  
-                  {listing.nearby_hospital && (
-                    <p className="text-xs text-text-muted mt-2 flex items-center gap-1.5">
-                      <Activity className="w-3.5 h-3.5 text-rose-500 shrink-0" /> <span className="font-medium text-text-muted">Nearby Hospital:</span> <span className="font-semibold text-text-primary truncate">{listing.nearby_hospital}</span>
+
+                {/* Details Container */}
+                <div className="p-3 sm:p-4 lg:p-5 xl:p-6 flex-1 flex flex-col justify-between min-w-0">
+                  <div>
+                    <div className="flex justify-between items-start gap-2">
+                      <Link href={`/explore/stay/${listing.id}`} className="min-w-0 flex-1">
+                        <h3 className="text-sm sm:text-base lg:text-lg xl:text-xl font-bold text-gray-900 group-hover:text-[#D35400] transition-colors leading-snug font-display truncate lg:whitespace-normal">
+                          {listing.name}
+                        </h3>
+                      </Link>
+                      {listing.gender && (
+                        <div className="flex items-center gap-1 text-[#8F9BB3] text-xs lg:text-sm font-semibold shrink-0 mt-0.5">
+                          <User className="w-3.5 h-3.5 lg:w-4 lg:h-4 text-[#8F9BB3]" />
+                          <span className="capitalize text-[11px] sm:text-xs lg:text-sm">{listing.gender}</span>
+                        </div>
+                      )}
+                    </div>
+                    <p className="mt-0.5 lg:mt-2 text-xs sm:text-sm text-[#8F9BB3] truncate lg:whitespace-normal">
+                      {listing.area}{listing.landmark ? `, ${listing.landmark}` : ''}, {listing.city}
                     </p>
-                  )}
-                  
-                  {/* Styled Amenities Row */}
-                  <div className="flex flex-wrap items-center gap-x-5 gap-y-2 mt-4">
-                    {listing.amenities?.includes('WiFi') && (
-                      <div className="flex items-center gap-1.5 text-[13px] text-[#8F9BB3] font-medium">
-                        <Wifi className="w-4 h-4 text-[#8F9BB3]" />
-                        <span>WiFi</span>
-                      </div>
+
+                    {listing.nearby_hospital && (
+                      <p className="hidden lg:flex text-xs text-text-muted mt-2 items-center gap-1.5">
+                        <Activity className="w-3.5 h-3.5 text-rose-500 shrink-0" /> <span className="font-medium text-text-muted">Nearby Hospital:</span> <span className="font-semibold text-text-primary truncate">{listing.nearby_hospital}</span>
+                      </p>
                     )}
-                    {(listing.bengali_food || listing.amenities?.includes('Food') || listing.amenities?.includes('Bengali Food')) && (
-                      <div className="flex items-center gap-1.5 text-[13px] text-[#8F9BB3] font-medium">
-                        <Utensils className="w-4 h-4 text-[#8F9BB3]" />
-                        <span>Food</span>
-                      </div>
-                    )}
-                    {listing.amenities?.includes('AC') && (
-                      <div className="flex items-center gap-1.5 text-[13px] text-[#8F9BB3] font-medium">
-                        <Wind className="w-4 h-4 text-[#8F9BB3]" />
-                        <span>AC</span>
-                      </div>
-                    )}
+                    
+                    {/* Amenities Row */}
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 lg:gap-x-5 lg:gap-y-2 mt-2 lg:mt-4">
+                      {listing.amenities?.includes('WiFi') && (
+                        <div className="flex items-center gap-1 lg:gap-1.5 text-[11px] sm:text-xs lg:text-[13px] text-[#8F9BB3] font-medium">
+                          <Wifi className="w-3 h-3 lg:w-4 lg:h-4 text-[#8F9BB3]" />
+                          <span>WiFi</span>
+                        </div>
+                      )}
+                      {(listing.bengali_food || listing.amenities?.includes('Food') || listing.amenities?.includes('Bengali Food')) && (
+                        <div className="flex items-center gap-1 lg:gap-1.5 text-[11px] sm:text-xs lg:text-[13px] text-[#8F9BB3] font-medium">
+                          <Utensils className="w-3 h-3 lg:w-4 lg:h-4 text-[#8F9BB3]" />
+                          <span>Food</span>
+                        </div>
+                      )}
+                      {listing.amenities?.includes('AC') && (
+                        <div className="flex items-center gap-1 lg:gap-1.5 text-[11px] sm:text-xs lg:text-[13px] text-[#8F9BB3] font-medium">
+                          <Wind className="w-3 h-3 lg:w-4 lg:h-4 text-[#8F9BB3]" />
+                          <span>AC</span>
+                        </div>
+                      )}
+                    </div>
                   </div>
 
-                  <div className="flex flex-col-reverse sm:flex-row sm:items-center justify-between mt-6 pt-5 border-t border-gray-100 gap-4">
-                    <div className="flex items-center gap-2 w-full sm:w-auto sm:flex-1">
+                  <div className="flex items-end lg:items-center justify-between mt-2 lg:mt-6 pt-2 lg:pt-4 border-t border-gray-100 gap-2 lg:gap-4">
+                    <div className="flex items-center gap-1.5 sm:gap-2 flex-1 max-w-[60%] lg:max-w-none">
                       <Link href={`/explore/stay/${listing.id}`} className="flex-1">
-                        <button className="w-full bg-[#d85a30] hover:bg-[#b84a00] text-white font-bold px-3 py-2.5 rounded-[12px] transition-colors text-sm shadow-sm whitespace-nowrap">
+                        <button className="w-full bg-[#d85a30] hover:bg-[#b84a00] text-white font-bold px-2.5 py-1.5 sm:px-3 sm:py-2.5 rounded-lg lg:rounded-[12px] transition-colors text-[11px] sm:text-xs lg:text-sm shadow-sm whitespace-nowrap">
                           Book Visit
                         </button>
                       </Link>
@@ -496,18 +508,18 @@ export default function StayPage() {
                           rel="noopener noreferrer"
                           className="flex-1"
                         >
-                          <button className="w-full bg-white hover:bg-slate-50 border border-[#E4E9F2] text-slate-700 font-bold px-3 py-2.5 rounded-[12px] transition-all text-sm flex items-center justify-center gap-1.5 whitespace-nowrap">
-                            <MessageSquare className="w-4 h-4 text-slate-500" />
+                          <button className="w-full bg-white hover:bg-slate-50 border border-[#E4E9F2] text-slate-700 font-bold px-2.5 py-1.5 sm:px-3 sm:py-2.5 rounded-lg lg:rounded-[12px] transition-all text-[11px] sm:text-xs lg:text-sm flex items-center justify-center gap-1 whitespace-nowrap">
+                            <MessageSquare className="w-3 h-3 lg:w-4 lg:h-4 text-slate-500" />
                             Chat
                           </button>
                         </a>
                       )}
                     </div>
-                    <div className="text-left sm:text-right shrink-0">
-                      <p className="text-[20px] font-black text-gray-900 leading-none">
+                    <div className="text-right shrink-0">
+                      <p className="text-sm sm:text-base lg:text-[20px] font-black text-gray-900 leading-none">
                         {formatPrice(priceVal)}
                       </p>
-                      <p className="text-[12px] text-[#8F9BB3] mt-1">
+                      <p className="text-[10px] lg:text-[12px] text-[#8F9BB3] mt-0.5 lg:mt-1">
                         {pricePeriod}
                       </p>
                     </div>
