@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { MapPin, Phone, MessageSquare, Wifi, Wind, CheckCircle2, Search, SlidersHorizontal, ChevronDown, Home, Building, Building2, Download, GraduationCap, Train, Bus, Gift, Globe, User, Utensils, BedDouble, Star, Activity } from 'lucide-react';
+import { MapPin, Phone, MessageSquare, Wifi, Wind, CheckCircle2, Search, SlidersHorizontal, ChevronDown, Home, Building, Building2, Download, GraduationCap, Train, Bus, Gift, Globe, User, Users, Utensils, BedDouble, Star, Activity, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/card';
@@ -23,6 +23,8 @@ const STAY_TYPE_ICONS: Record<string, React.ReactNode> = {
   pg: <Home className="w-5 h-5" />,
   hotel: <Building className="w-5 h-5" />,
   rental: <Building2 className="w-5 h-5" />,
+  'rental-house': <Home className="w-5 h-5" />,
+  flatmate: <Users className="w-5 h-5" />,
 };
 
 function ListingCoverImage({ name, city, mapsUrl, imageUrl, type, mapEmbedCode, fallbackIcon }: { 
@@ -86,7 +88,47 @@ export default function StayPage() {
   const [selectedCollege, setSelectedCollege] = useState('');
   const [selectedMetroRoute, setSelectedMetroRoute] = useState('');
 
-  const combinedListings = firestoreListings;
+  const combinedListings = useMemo(() => {
+    const staticFlatmate: Listing = {
+      id: 'flatmate-in-chennai',
+      type: 'flatmate',
+      accommodation_type: 'Flatmate',
+      name: 'Flatmate.in — Share Rooms & Split Bills',
+      description: 'Official Flatmate portal for finding room sharing partners, roommates & splitting bills in Chennai.',
+      city: 'Chennai',
+      area: 'Chennai',
+      address: 'Chennai, Tamil Nadu, India',
+      bengali_friendly: true,
+      bengali_food: false,
+      verified: true,
+      amenities: [],
+      price_per_month: 0,
+      price_monthly: 0,
+      website_link: 'https://www.flatmate.in/property?address=Chennai%2C+Tamil+Nadu%2C+India&p=0',
+      images: [],
+      created_at: '2026-01-01T00:00:00.000Z',
+    };
+    const staticRoomies: Listing = {
+      id: 'roomies-in-chennai',
+      type: 'flatmate',
+      accommodation_type: 'Flatmate',
+      name: 'Roomies.co.in — Room Sharing in Chennai',
+      description: 'Find shared rooms, rooms for rent, and flatmates in Chennai, Tamil Nadu.',
+      city: 'Chennai',
+      area: 'Chennai',
+      address: 'Chennai, Tamil Nadu, India',
+      bengali_friendly: true,
+      bengali_food: false,
+      verified: true,
+      amenities: [],
+      price_per_month: 0,
+      price_monthly: 0,
+      website_link: 'https://www.roomies.co.in/rooms/chennai-tamil-nadu/shared',
+      images: [],
+      created_at: '2026-01-02T00:00:00.000Z',
+    };
+    return [staticFlatmate, staticRoomies, ...firestoreListings];
+  }, [firestoreListings]);
 
   const sortedCities = useMemo(() => {
     return Array.from(new Set(combinedListings.map((l) => l.city).filter(Boolean).map(c => {
@@ -117,7 +159,7 @@ export default function StayPage() {
 
   const filtered = useMemo(() => {
     return combinedListings.filter((l) => {
-      const type = l.type || (l.accommodation_type === 'PG' ? 'pg' : l.accommodation_type === 'Hotel' ? 'hotel' : l.accommodation_type === 'Service Apartment' ? 'rental' : l.accommodation_type === 'Rental House' ? 'rental-house' : '');
+      const type = l.type || (l.accommodation_type === 'PG' ? 'pg' : l.accommodation_type === 'Hotel' ? 'hotel' : l.accommodation_type === 'Service Apartment' ? 'rental' : l.accommodation_type === 'Rental House' ? 'rental-house' : l.accommodation_type === 'Flatmate' ? 'flatmate' : '');
       const name = l.name || '';
       const area = l.area || '';
       const amenities = l.amenities || [];
@@ -188,7 +230,7 @@ export default function StayPage() {
           <h1 className="text-lg sm:text-2xl md:text-3xl font-bold font-display text-text-primary leading-tight">
             Stay & Accommodation
           </h1>
-          <p className="hidden md:block mt-1 text-xs md:text-sm text-text-muted">Find Bengali-friendly PGs, hotels, and service apartments in Tamil Nadu.</p>
+          <p className="hidden md:block mt-1 text-xs md:text-sm text-text-muted">Find Bengali-friendly PGs, hotels, service apartments, and flatmates in Tamil Nadu.</p>
 
           {/* Type Tabs */}
           <div className="mt-2.5 md:mt-3.5 flex flex-wrap items-center gap-1 sm:gap-2 justify-between sm:justify-start w-full">
@@ -198,6 +240,7 @@ export default function StayPage() {
               { value: 'hotel', label: 'Hotels', shortLabel: 'Hotel', icon: <Building className="w-3 h-3 md:w-4 md:h-4" /> },
               { value: 'rental', label: 'Service Apartment', shortLabel: 'Apt', icon: <Building2 className="w-3 h-3 md:w-4 md:h-4" /> },
               { value: 'rental-house', label: 'Rental House', shortLabel: 'Rental', icon: <Home className="w-3 h-3 md:w-4 md:h-4" /> },
+              { value: 'flatmate', label: 'Flatmate', shortLabel: 'Flatmate', icon: <Users className="w-3 h-3 md:w-4 md:h-4" /> },
             ].map((tab) => (
               <button
                 key={tab.value}
@@ -472,35 +515,50 @@ export default function StayPage() {
                     )}
                     
                     {/* Amenities Row */}
-                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 lg:gap-x-5 lg:gap-y-2 mt-2 lg:mt-4">
-                      {listing.amenities?.includes('WiFi') && (
-                        <div className="flex items-center gap-1 lg:gap-1.5 text-[11px] sm:text-xs lg:text-[13px] text-[#8F9BB3] font-medium">
-                          <Wifi className="w-3 h-3 lg:w-4 lg:h-4 text-[#8F9BB3]" />
-                          <span>WiFi</span>
-                        </div>
-                      )}
-                      {(listing.bengali_food || listing.amenities?.includes('Food') || listing.amenities?.includes('Bengali Food')) && (
-                        <div className="flex items-center gap-1 lg:gap-1.5 text-[11px] sm:text-xs lg:text-[13px] text-[#8F9BB3] font-medium">
-                          <Utensils className="w-3 h-3 lg:w-4 lg:h-4 text-[#8F9BB3]" />
-                          <span>Food</span>
-                        </div>
-                      )}
-                      {listing.amenities?.includes('AC') && (
-                        <div className="flex items-center gap-1 lg:gap-1.5 text-[11px] sm:text-xs lg:text-[13px] text-[#8F9BB3] font-medium">
-                          <Wind className="w-3 h-3 lg:w-4 lg:h-4 text-[#8F9BB3]" />
-                          <span>AC</span>
-                        </div>
-                      )}
-                    </div>
+                    {listing.accommodation_type !== 'Flatmate' && listing.type !== 'flatmate' && (
+                      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 lg:gap-x-5 lg:gap-y-2 mt-2 lg:mt-4">
+                        {listing.amenities?.includes('WiFi') && (
+                          <div className="flex items-center gap-1 lg:gap-1.5 text-[11px] sm:text-xs lg:text-[13px] text-[#8F9BB3] font-medium">
+                            <Wifi className="w-3 h-3 lg:w-4 lg:h-4 text-[#8F9BB3]" />
+                            <span>WiFi</span>
+                          </div>
+                        )}
+                        {(listing.bengali_food || listing.amenities?.includes('Food') || listing.amenities?.includes('Bengali Food')) && (
+                          <div className="flex items-center gap-1 lg:gap-1.5 text-[11px] sm:text-xs lg:text-[13px] text-[#8F9BB3] font-medium">
+                            <Utensils className="w-3 h-3 lg:w-4 lg:h-4 text-[#8F9BB3]" />
+                            <span>Food</span>
+                          </div>
+                        )}
+                        {listing.amenities?.includes('AC') && (
+                          <div className="flex items-center gap-1 lg:gap-1.5 text-[11px] sm:text-xs lg:text-[13px] text-[#8F9BB3] font-medium">
+                            <Wind className="w-3 h-3 lg:w-4 lg:h-4 text-[#8F9BB3]" />
+                            <span>AC</span>
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
 
                   <div className="flex items-end lg:items-center justify-between mt-2 lg:mt-6 pt-2 lg:pt-4 border-t border-gray-100 gap-2 lg:gap-4">
                     <div className="flex items-center gap-1.5 sm:gap-2 flex-1 max-w-[60%] lg:max-w-none">
-                      <Link href={`/explore/stay/${listing.id}`} className="flex-1">
-                        <button className="w-full bg-[#d85a30] hover:bg-[#b84a00] text-white font-bold px-2.5 py-1.5 sm:px-3 sm:py-2.5 rounded-lg lg:rounded-[12px] transition-colors text-[11px] sm:text-xs lg:text-sm shadow-sm whitespace-nowrap">
-                          Book Visit
-                        </button>
-                      </Link>
+                      {listing.website_link ? (
+                        <a
+                          href={listing.website_link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex-1"
+                        >
+                          <button className="w-full bg-[#d85a30] hover:bg-[#b84a00] text-white font-bold px-2.5 py-1.5 sm:px-3 sm:py-2.5 rounded-lg lg:rounded-[12px] transition-colors text-[11px] sm:text-xs lg:text-sm shadow-sm whitespace-nowrap flex items-center justify-center gap-1">
+                            Visit Site <ExternalLink className="w-3 h-3 lg:w-3.5 lg:h-3.5" />
+                          </button>
+                        </a>
+                      ) : (
+                        <Link href={`/explore/stay/${listing.id}`} className="flex-1">
+                          <button className="w-full bg-[#d85a30] hover:bg-[#b84a00] text-white font-bold px-2.5 py-1.5 sm:px-3 sm:py-2.5 rounded-lg lg:rounded-[12px] transition-colors text-[11px] sm:text-xs lg:text-sm shadow-sm whitespace-nowrap">
+                            Book Visit
+                          </button>
+                        </Link>
+                      )}
                       {whatsappNum && (
                         <a
                           href={getWhatsAppUrl(whatsappNum, `Hi, I found your listing "${listing.name}" on ProbasiBangali.in`)}
@@ -515,14 +573,16 @@ export default function StayPage() {
                         </a>
                       )}
                     </div>
-                    <div className="text-right shrink-0">
-                      <p className="text-sm sm:text-base lg:text-[20px] font-black text-gray-900 leading-none">
-                        {formatPrice(priceVal)}
-                      </p>
-                      <p className="text-[10px] lg:text-[12px] text-[#8F9BB3] mt-0.5 lg:mt-1">
-                        {pricePeriod}
-                      </p>
-                    </div>
+                    {listing.accommodation_type !== 'Flatmate' && listing.type !== 'flatmate' && priceVal > 0 && (
+                      <div className="text-right shrink-0">
+                        <p className="text-sm sm:text-base lg:text-[20px] font-black text-gray-900 leading-none">
+                          {formatPrice(priceVal)}
+                        </p>
+                        <p className="text-[10px] lg:text-[12px] text-[#8F9BB3] mt-0.5 lg:mt-1">
+                          {pricePeriod}
+                        </p>
+                      </div>
+                    )}
                   </div>
                 </div>
               </Card>

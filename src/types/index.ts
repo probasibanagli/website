@@ -151,7 +151,7 @@ export type LegalServiceItem = LegalAidCentre | LegalHelpline | LegalCategory | 
 
 export interface Listing {
   id: string;
-  type: 'pg' | 'hotel' | 'rental' | 'rental-house';
+  type: 'pg' | 'hotel' | 'rental' | 'rental-house' | 'flatmate';
   name: string;
   description?: string;
   city: string;
@@ -176,7 +176,7 @@ export interface Listing {
   verified: boolean;
   available_rooms?: number;
   deposit_amount?: number;
-  accommodation_type?: 'PG' | 'Hotel' | 'Service Apartment' | 'Rental House';
+  accommodation_type?: 'PG' | 'Hotel' | 'Service Apartment' | 'Rental House' | 'Flatmate';
   contact_person_name?: string;
   contact_whatsapp?: string;
   contact_email?: string;
