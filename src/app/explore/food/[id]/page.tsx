@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { MapPin, Phone, MessageCircle, ArrowLeft, CheckCircle2, ExternalLink, Star } from 'lucide-react';
+import { MapPin, Phone, MessageCircle, ArrowLeft, CheckCircle2, ExternalLink, Star, Utensils } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/card';
@@ -99,7 +99,7 @@ export default function FoodDetailPage() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <p className="text-5xl mb-4">🍛</p>
+          <div className="flex justify-center mb-4 text-primary/40"><Utensils className="w-16 h-16" /></div>
           <h2 className="text-2xl font-bold mb-2">Restaurant Not Found</h2>
           <Link href="/explore/food"><Button variant="primary">Back to Food</Button></Link>
         </div>

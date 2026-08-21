@@ -8,7 +8,7 @@ import { useAuth } from '@/lib/auth/AuthContext';
 import { canAccess } from '@/lib/permissions';
 import { Plus, Pencil, Trash2, Loader2, Shield, ArrowLeft, Save } from 'lucide-react';
 import ImageUpload from '@/components/admin/ImageUpload';
-import { CITIES } from '@/lib/constants';
+import { CITIES, CITY_AREAS } from '@/lib/constants';
 
 interface ListingItem {
   id: string;
@@ -18,7 +18,7 @@ interface ListingItem {
   address?: string;
   pincode?: string;
   description?: string;
-  accommodation_type?: 'PG' | 'Hotel' | 'Service Apartment' | 'Rental Home';
+  accommodation_type?: 'PG' | 'Hotel' | 'Service Apartment' | 'Rental Home' | 'Rental House' | 'Flatmate';
   type?: string;
   contact_person_name?: string;
   owner_name?: string;
@@ -317,11 +317,15 @@ export default function AdminStayPage() {
                     <option value="Hotel">Hotel</option>
                     <option value="Service Apartment">Service Apartment</option>
                     <option value="Rental House">Rental House</option>
+                    <option value="Flatmate">Flatmate</option>
                   </select>
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-text-primary mb-1.5">Area/Neighborhood *</label>
-                  <input required type="text" value={formData.area} onChange={e => setFormData({ ...formData, area: e.target.value })} className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl text-sm" placeholder="e.g. Salt Lake Sector V" />
+                  <select required value={formData.area} onChange={e => setFormData({ ...formData, area: e.target.value })} className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl text-sm">
+                    <option value="">Select Area...</option>
+                    {(formData.city && CITY_AREAS[formData.city] ? CITY_AREAS[formData.city] : []).map((a: string) => <option key={a} value={a}>{a}</option>)}
+                  </select>
                 </div>
                 {formData.accommodation_type === 'PG' && (
                   <div>

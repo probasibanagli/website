@@ -36,10 +36,8 @@ const PLATFORMS = [
   { key: 'website', label: 'Website', icon: <FaLink className="w-5 h-5" />, color: 'bg-slate-700', ringColor: 'ring-slate-700', textColor: 'text-slate-800' },
 ];
 
-const REGIONS = [
-  { key: 'tamil_nadu', label: 'Tamil Nadu', icon: <Building className="w-3.5 h-3.5" /> },
-  { key: 'india', label: 'India', icon: <Globe className="w-3.5 h-3.5" /> },
-  { key: 'all', label: 'Global / All', icon: <Globe2 className="w-3.5 h-3.5" /> },
+const INDIAN_STATES = [
+  'Andaman and Nicobar Islands', 'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chandigarh', 'Chhattisgarh', 'Dadra and Nagar Haveli', 'Daman and Diu', 'Delhi', 'Goa', 'Gujarat', 'Haryana', 'Himachal Pradesh', 'Jammu and Kashmir', 'Jharkhand', 'Karnataka', 'Kerala', 'Lakshadweep', 'Madhya Pradesh', 'Maharashtra', 'Manipur', 'Meghalaya', 'Mizoram', 'Nagaland', 'Odisha', 'Puducherry', 'Punjab', 'Rajasthan', 'Sikkim', 'Tamil Nadu', 'Telangana', 'Tripura', 'Uttar Pradesh', 'Uttarakhand', 'West Bengal', 'All India', 'Global'
 ];
 
 function getPlatformConfig(key: string) {
@@ -71,37 +69,37 @@ function getPlatformButtonLabel(platform: string) {
 export default function GroupsPage() {
   const { data: firestoreGroups, loading } = useFirestore<CommunityGroup>('community_groups');
   const [selectedPlatform, setSelectedPlatform] = useState('');
-  const [selectedRegion, setSelectedRegion] = useState('');
+  const [selectedState, setSelectedState] = useState('');
   const [search, setSearch] = useState('');
 
   const combinedGroups = firestoreGroups;
 
   const filtered = useMemo(() => {
     return combinedGroups.filter((g) => {
-      // Handle platform filtering (default to website if not explicitly supported, but whatsapp if empty)
-      const rawPlatform = (g.platform || '').toLowerCase();
-      let groupPlatform = 'website';
-      if (!rawPlatform) {
-        groupPlatform = 'whatsapp';
-      } else if (PLATFORMS.some(p => p.key === rawPlatform)) {
-        groupPlatform = rawPlatform;
+      // Handle platform filtering (check if group has the specific URL, fallback to legacy join_url/platform)
+      if (selectedPlatform) {
+        if (selectedPlatform === 'whatsapp' && !g.whatsapp_url && !(g.platform === 'whatsapp' && g.join_url)) return false;
+        if (selectedPlatform === 'telegram' && !g.telegram_url && !(g.platform === 'telegram' && g.join_url)) return false;
+        if (selectedPlatform === 'discord' && !g.discord_url && !(g.platform === 'discord' && g.join_url)) return false;
+        if (selectedPlatform === 'facebook' && !g.facebook_url && !(g.platform === 'facebook' && g.join_url)) return false;
+        if (selectedPlatform === 'instagram' && !g.instagram_url && !(g.platform === 'instagram' && g.join_url)) return false;
+        if (selectedPlatform === 'linkedin' && !g.linkedin_url && !(g.platform === 'linkedin' && g.join_url)) return false;
+        if (selectedPlatform === 'website' && !g.website_url && !(g.platform === 'website' && g.join_url)) return false;
       }
-      if (selectedPlatform && groupPlatform !== selectedPlatform) return false;
       
-      // Handle region filtering (normalize spaces and cases)
-      if (selectedRegion && selectedRegion !== 'all') {
-        const groupRegion = (g.region || '').toLowerCase().replace(/\s+/g, '_');
-        if (groupRegion !== selectedRegion) return false;
+      // Handle state filtering
+      if (selectedState && selectedState !== 'all' && selectedState !== 'All States') {
+        if (g.state !== selectedState) return false;
       }
 
       if (search && !g.name.toLowerCase().includes(search.toLowerCase()) && !(g.description || '').toLowerCase().includes(search.toLowerCase())) return false;
       return true;
     });
-  }, [combinedGroups, selectedPlatform, selectedRegion, search]);
+  }, [combinedGroups, selectedPlatform, selectedState, search]);
 
   const handlePlatformChange = (platform: string) => {
     setSelectedPlatform(platform === selectedPlatform ? '' : platform);
-    setSelectedRegion('');
+    setSelectedState('');
   };
 
   return (
@@ -141,31 +139,17 @@ export default function GroupsPage() {
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
                 <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search groups..." className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
               </div>
-              
-              <div className="flex flex-wrap gap-2">
-                <button
-                  onClick={() => setSelectedRegion('')}
-                  className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${
-                    !selectedRegion
-                      ? 'bg-primary text-white shadow-sm'
-                      : 'bg-white text-text-primary border border-border hover:border-primary'
-                  }`}
+              <div className="flex flex-wrap gap-2 flex-1 md:justify-end">
+                <select
+                  value={selectedState}
+                  onChange={(e) => setSelectedState(e.target.value)}
+                  className="px-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 min-w-[200px] bg-white cursor-pointer"
                 >
-                  All Regions
-                </button>
-                {REGIONS.map((r) => (
-                  <button
-                    key={r.key}
-                    onClick={() => setSelectedRegion(r.key === selectedRegion ? '' : r.key)}
-                    className={`flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${
-                      selectedRegion === r.key
-                        ? 'bg-primary text-white shadow-sm'
-                        : 'bg-white text-text-primary border border-border hover:border-primary'
-                    }`}
-                  >
-                    <span>{r.icon}</span> {r.label}
-                  </button>
-                ))}
+                  <option value="">All States / Regions</option>
+                  {INDIAN_STATES.map((state) => (
+                    <option key={state} value={state}>{state}</option>
+                  ))}
+                </select>
               </div>
             </div>
           </div>
@@ -177,7 +161,7 @@ export default function GroupsPage() {
         <p className="text-sm text-text-muted mb-6">
           <span className="font-semibold text-text-primary">{filtered.length}</span> groups found
           {selectedPlatform && <> on <span className="font-semibold text-primary capitalize">{getPlatformConfig(selectedPlatform).label}</span></>}
-          {selectedRegion && <> · <span className="font-medium">{REGIONS.find(r => r.key === selectedRegion)?.label}</span></>}
+          {selectedState && <> · <span className="font-medium">{selectedState}</span></>}
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -200,35 +184,44 @@ export default function GroupsPage() {
             ))
           ) : (
             filtered.map((group) => {
-            const pConfig = getPlatformConfig(group.platform || 'whatsapp');
-            const link = getPlatformLink(group);
+            let activePlatformKey = 'website';
+            const legacyPlatformKey = group.platform || null;
 
-            let secondaryLabel = 'Website';
-            let secondaryIcon = <Globe className="w-4 h-4" />;
-            let secondaryHref = link;
-
-            if (group.website_url) {
-              secondaryLabel = 'Website';
-              secondaryIcon = <FaLink className="w-4 h-4" />;
-              secondaryHref = group.website_url;
-            } else if (group.facebook_url) {
-              secondaryLabel = 'Facebook';
-              secondaryIcon = <FaFacebook className="w-4 h-4" />;
-              secondaryHref = group.facebook_url;
-            } else if (group.instagram_url) {
-              secondaryLabel = 'Instagram';
-              secondaryIcon = <InstagramIcon className="w-4 h-4" />;
-              secondaryHref = group.instagram_url;
-            } else {
-              secondaryLabel = 'Link';
-              secondaryIcon = <ExternalLink className="w-4 h-4" />;
-              secondaryHref = link;
+            if (selectedPlatform && (
+              (selectedPlatform === 'whatsapp' && (group.whatsapp_url || (legacyPlatformKey === 'whatsapp' && group.join_url))) ||
+              (selectedPlatform === 'telegram' && (group.telegram_url || (legacyPlatformKey === 'telegram' && group.join_url))) ||
+              (selectedPlatform === 'discord' && (group.discord_url || (legacyPlatformKey === 'discord' && group.join_url))) ||
+              (selectedPlatform === 'facebook' && (group.facebook_url || (legacyPlatformKey === 'facebook' && group.join_url))) ||
+              (selectedPlatform === 'instagram' && (group.instagram_url || (legacyPlatformKey === 'instagram' && group.join_url))) ||
+              (selectedPlatform === 'linkedin' && (group.linkedin_url || (legacyPlatformKey === 'linkedin' && group.join_url))) ||
+              (selectedPlatform === 'website' && (group.website_url || (legacyPlatformKey === 'website' && group.join_url)))
+            )) {
+              activePlatformKey = selectedPlatform;
+            } else if (group.whatsapp_url || (legacyPlatformKey === 'whatsapp' && group.join_url)) {
+              activePlatformKey = 'whatsapp';
+            } else if (group.telegram_url || (legacyPlatformKey === 'telegram' && group.join_url)) {
+              activePlatformKey = 'telegram';
+            } else if (group.discord_url || (legacyPlatformKey === 'discord' && group.join_url)) {
+              activePlatformKey = 'discord';
+            } else if (group.facebook_url || (legacyPlatformKey === 'facebook' && group.join_url)) {
+              activePlatformKey = 'facebook';
+            } else if (group.instagram_url || (legacyPlatformKey === 'instagram' && group.join_url)) {
+              activePlatformKey = 'instagram';
+            } else if (group.linkedin_url || (legacyPlatformKey === 'linkedin' && group.join_url)) {
+              activePlatformKey = 'linkedin';
+            } else if (group.website_url || (legacyPlatformKey === 'website' && group.join_url)) {
+              activePlatformKey = 'website';
+            } else if (legacyPlatformKey) {
+              activePlatformKey = legacyPlatformKey;
             }
+
+            const pConfig = getPlatformConfig(activePlatformKey);
+            const primaryLink = group.whatsapp_url || group.telegram_url || group.discord_url || group.facebook_url || group.instagram_url || group.linkedin_url || group.website_url || group.join_url || '#';
 
              return (
                <Card key={group.id} padding="none" className="rounded-[24px] overflow-hidden group flex flex-col h-full bg-white border border-gray-100 shadow-[0_4px_25px_-4px_rgba(0,0,0,0.05)] relative">
                  {/* Image Banner */}
-                 <a href={link} target="_blank" rel="noopener noreferrer" className="block relative h-56 bg-slate-50 overflow-hidden">
+                 <a href={primaryLink} target="_blank" rel="noopener noreferrer" className="block relative h-56 bg-slate-50 overflow-hidden">
                    {group.image_url ? (
                      <img src={group.image_url} alt={group.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                    ) : (
@@ -246,7 +239,7 @@ export default function GroupsPage() {
                  <div className="bg-white rounded-t-[28px] p-6 relative z-10 -mt-6 flex-grow flex flex-col justify-between">
                    <div className="flex-1 flex flex-col">
                      <p className="text-[12px] text-[#0A6C4A] font-extrabold tracking-widest mb-2 flex items-center gap-1.5 uppercase">
-                       {group.category || pConfig.label} • {group.region === 'tamil_nadu' ? 'TAMIL NADU' : group.region === 'india' ? 'INDIA' : 'GLOBAL'}
+                       {group.category || pConfig.label} • {group.state || 'INDIA'}
                      </p>
 
                      {/* Title */}
@@ -270,21 +263,33 @@ export default function GroupsPage() {
                      <p className="text-sm text-text-muted mt-4 leading-relaxed line-clamp-3 flex-grow">{group.description}</p>
                    </div>
 
-                   {/* Side-by-Side Action Buttons */}
-                   <div className="flex items-center gap-3 mt-6 pt-4 border-t border-gray-100">
-                     <a href={link} target="_blank" rel="noopener noreferrer" className="flex-1">
-                       <button className="w-full bg-[#d85a30] hover:bg-[#c24f28] text-white font-bold py-2.5 px-4 rounded-xl text-sm flex items-center justify-center gap-1.5 shadow-sm transition-all active:scale-[0.98]">
-                         <span>Join Group</span>
-                         <ArrowRight className="w-4 h-4" />
-                       </button>
-                     </a>
-                     
-                     <a href={secondaryHref} target="_blank" rel="noopener noreferrer" className="flex-1">
-                       <button className="w-full bg-white hover:bg-slate-50 border border-[#E4E9F2] text-[#d85a30] font-bold py-2.5 px-4 rounded-xl text-sm flex items-center justify-center gap-1.5 shadow-sm transition-all active:scale-[0.98]">
-                         {secondaryIcon}
-                         <span>{secondaryLabel}</span>
-                       </button>
-                     </a>
+                   {/* Action Buttons */}
+                   <div className="flex flex-wrap items-center gap-2 mt-6 pt-4 border-t border-gray-100">
+                     {PLATFORMS.filter(p => {
+                       if (p.key === 'whatsapp') return !!group.whatsapp_url || (group.platform === 'whatsapp' && !!group.join_url);
+                       if (p.key === 'telegram') return !!group.telegram_url || (group.platform === 'telegram' && !!group.join_url);
+                       if (p.key === 'discord') return !!group.discord_url || (group.platform === 'discord' && !!group.join_url);
+                       if (p.key === 'facebook') return !!group.facebook_url || (group.platform === 'facebook' && !!group.join_url);
+                       if (p.key === 'instagram') return !!group.instagram_url || (group.platform === 'instagram' && !!group.join_url);
+                       if (p.key === 'linkedin') return !!group.linkedin_url || (group.platform === 'linkedin' && !!group.join_url);
+                       if (p.key === 'website') return !!group.website_url || (group.platform === 'website' && !!group.join_url);
+                       return false;
+                     }).map(p => {
+                       const href = p.key === 'whatsapp' ? (group.whatsapp_url || group.join_url) :
+                                    p.key === 'telegram' ? (group.telegram_url || group.join_url) :
+                                    p.key === 'discord' ? (group.discord_url || group.join_url) :
+                                    p.key === 'facebook' ? (group.facebook_url || group.join_url) :
+                                    p.key === 'instagram' ? (group.instagram_url || group.join_url) :
+                                    p.key === 'linkedin' ? (group.linkedin_url || group.join_url) : (group.website_url || group.join_url);
+                       return (
+                         <a key={p.key} href={href} target="_blank" rel="noopener noreferrer" className="flex-1 min-w-[120px]">
+                           <button className={`w-full bg-white hover:bg-slate-50 border border-[#E4E9F2] ${p.textColor} font-bold py-2 px-3 rounded-xl text-sm flex items-center justify-center gap-1.5 shadow-sm transition-all active:scale-[0.98]`}>
+                             {p.icon}
+                             <span>{p.label}</span>
+                           </button>
+                         </a>
+                       );
+                     })}
                    </div>
                  </div>
                </Card>

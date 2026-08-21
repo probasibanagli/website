@@ -473,31 +473,31 @@ export default function LegalServicesPage() {
 
       {/* Header */}
       <div className="bg-white border-b border-border">
-        <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="flex items-center gap-2 text-sm text-text-muted mb-4">
+        <div className="max-w-[1536px] mx-auto px-3 sm:px-6 lg:px-8 py-3 md:py-4 lg:py-5">
+          <div className="hidden md:flex items-center gap-2 text-xs md:text-sm text-text-muted mb-2">
             <Link href="/" className="hover:text-primary">Home</Link>
             <span>/</span>
             <Link href="/services/government" className="hover:text-primary">Services</Link>
             <span>/</span>
             <span className="text-text-primary font-medium">Legal Services</span>
           </div>
-          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2.5">
             <div>
-              <h1 className="text-3xl sm:text-4xl font-bold font-display text-text-primary flex items-center gap-3">
-                <Scale className="w-9 h-9 text-primary shrink-0" /> Legal Services & Courts
+              <h1 className="text-lg sm:text-2xl md:text-3xl font-bold font-display text-text-primary flex items-center gap-2 leading-tight">
+                <Scale className="w-6 h-6 md:w-8 md:h-8 text-primary shrink-0" /> Legal Services & Courts
               </h1>
-              <p className="mt-2 text-text-muted text-sm max-w-2xl">
-                Official directory of Madras High Court, District Legal Services Authorities (DLSA), Taluk committees, Bar Council, and legal aid institutions across Tamil Nadu.
+              <p className="hidden md:block mt-1 text-xs md:text-sm text-text-muted max-w-2xl">
+                Official directory of Madras High Court, District Legal Services Authorities (DLSA), Taluk committees, Bar Council, and legal aid institutions.
               </p>
             </div>
             <div className="flex flex-wrap gap-2 shrink-0">
               <button onClick={() => setModalOpen(true)}
-                className="inline-flex items-center gap-2 px-4 py-2.5 bg-primary text-white rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors shadow-sm cursor-pointer">
-                <MapPin className="w-4 h-4" /> Find Free Legal Aid Near Me
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 md:px-4 md:py-2 bg-primary text-white rounded-lg md:rounded-xl text-xs md:text-sm font-semibold hover:bg-primary/90 transition-colors shadow-sm cursor-pointer">
+                <MapPin className="w-3.5 h-3.5 md:w-4 md:h-4" /> Find Free Legal Aid
               </button>
               <a href="tel:15100"
-                className="inline-flex items-center gap-2 px-4 py-2.5 bg-white border border-border rounded-xl text-sm font-semibold hover:border-primary hover:text-primary transition-colors">
-                <PhoneCall className="w-4 h-4" /> NALSA Helpline: 15100
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 md:px-4 md:py-2 bg-white border border-border rounded-lg md:rounded-xl text-xs md:text-sm font-semibold hover:border-primary hover:text-primary transition-colors">
+                <PhoneCall className="w-3.5 h-3.5 md:w-4 md:h-4" /> NALSA: 15100
               </a>
             </div>
           </div>

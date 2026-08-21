@@ -6,6 +6,7 @@ type BadgeVariant =
   | 'hotel'
   | 'rental'
   | 'rental-house'
+  | 'flatmate'
   | 'verified'
   | 'bengali'
   | 'teal'
@@ -26,6 +27,7 @@ const variantStyles: Record<BadgeVariant, string> = {
   hotel: 'bg-purple-100 text-purple-700 border-purple-200',
   rental: 'bg-amber-100 text-amber-700 border-amber-200',
   'rental-house': 'bg-orange-100 text-orange-700 border-orange-200',
+  flatmate: 'bg-emerald-100 text-emerald-700 border-emerald-200',
   verified: 'bg-emerald-100 text-emerald-700 border-emerald-200',
   bengali: 'bg-pink-100 text-pink-700 border-pink-200',
   teal: 'bg-teal-100 text-teal-800 border-teal-200',

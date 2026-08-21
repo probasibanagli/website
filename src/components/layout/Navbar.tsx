@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { T } from '@/lib/contexts/LanguageContext';
 import { usePathname, useRouter } from 'next/navigation';
 import {
-  Menu, X, ChevronDown, Phone, Globe, User, Shield, LogOut, Home, Users, Heart, Calendar, PlusCircle, Droplets, LifeBuoy, GraduationCap, Building, Bus, Gift, Info, Scale, Check
+  Menu, X, ChevronDown, Phone, Globe, User, Shield, LogOut, Home, Users, Heart, Calendar, PlusCircle, Droplets, Ambulance, GraduationCap, Building, Bus, Gift, Info, Scale, Check
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -40,7 +40,7 @@ const navLinks = [
     children: [
       { label: 'Hospitals', href: '/emergency/hospitals', icon: <PlusCircle className="w-4 h-4" /> },
       { label: 'Blood Help', href: '/emergency/blood', icon: <Droplets className="w-4 h-4" /> },
-      { label: 'Ambulance & SOS', href: '/emergency/ambulance', icon: <LifeBuoy className="w-4 h-4" /> },
+      { label: 'Ambulance & SOS', href: '/emergency/ambulance', icon: <Ambulance className="w-4 h-4" /> },
     ],
   },
   {
@@ -152,6 +152,7 @@ export function Navbar() {
               {/* Language Switcher */}
               <div className="relative shrink-0">
                 <button
+                  id="navbar-lang-selector"
                   suppressHydrationWarning
                   onClick={() => setLangMenuOpen(!langMenuOpen)}
                   className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3.5 py-1.5 text-[10px] sm:text-xs font-bold text-primary bg-primary/10 hover:bg-primary/15 border-2 border-primary/25 hover:border-primary/50 rounded-full transition-all cursor-pointer shadow-sm notranslate"

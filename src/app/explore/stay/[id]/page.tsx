@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { MapPin, Phone, MessageCircle, ArrowLeft, CheckCircle2, Bed, Users, IndianRupee, Shield, Home, Star, Activity, Navigation } from 'lucide-react';
+import { MapPin, Phone, MessageCircle, ArrowLeft, CheckCircle2, Bed, Users, IndianRupee, Shield, Home, Star, Activity, Navigation, Utensils, HeartHandshake } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/card';
@@ -148,7 +148,22 @@ export default function StayDetailPage() {
               <Card className="p-4">
                 <h3 className="text-sm font-bold mb-3 text-text-primary">Details</h3>
                 <div className="grid grid-cols-2 gap-3 text-sm">
-                  {listing.room_type && <div className="flex items-start gap-2 col-span-2 sm:col-span-1"><Bed className="w-4 h-4 text-primary shrink-0 mt-0.5" /><span className="font-semibold capitalize leading-snug" title={listing.room_type}>{listing.room_type.replace(/ Sharing(?=,)/gi, '')}</span></div>}
+                  {listing.room_type && (
+                    <div className="flex items-start gap-2 col-span-2 sm:col-span-1">
+                      <Bed className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                      <span className="font-semibold capitalize leading-snug" title={listing.room_type}>
+                        {(() => {
+                          const str = listing.room_type || '';
+                          let parts = str.split(',').map((p: string) => p.trim()).filter(Boolean);
+                          const hasNumbers = parts.some((p: string) => /\d/.test(p));
+                          if (hasNumbers) parts = parts.filter((p: string) => !['single', 'double', 'triple'].includes(p.toLowerCase()));
+                          let formatted = parts.join(', ');
+                          if (hasNumbers && !/sharing/i.test(formatted)) formatted += ' Sharing';
+                          return formatted.replace(/ Sharing(?=,)/gi, '');
+                        })()}
+                      </span>
+                    </div>
+                  )}
                   {listing.gender && <div className="flex items-center gap-2"><Users className="w-4 h-4 text-primary" /><span className="font-semibold capitalize truncate">{listing.gender}</span></div>}
                   {listing.deposit_amount !== undefined && <div className="flex items-center gap-2"><IndianRupee className="w-4 h-4 text-primary" /><span className="font-semibold truncate">Dep: {formatPrice(listing.deposit_amount)}</span></div>}
                   {listing.available_rooms !== undefined && <div className="flex items-center gap-2"><Shield className="w-4 h-4 text-primary" /><span className="font-semibold truncate">Rooms: {listing.available_rooms}</span></div>}
@@ -164,8 +179,8 @@ export default function StayDetailPage() {
                   {(listing.amenities || []).map((a: string) => (
                     <Badge key={a} variant="teal">{a}</Badge>
                   ))}
-                  {listing.bengali_food && <Badge variant="bengali">🍛 Bengali Food Available</Badge>}
-                  {listing.bengali_friendly && <Badge variant="bengali">🤝 Bengali-Friendly</Badge>}
+                  {listing.bengali_food && <Badge variant="bengali" className="flex items-center gap-1.5"><Utensils className="w-3.5 h-3.5" /> Bengali Food Available</Badge>}
+                  {listing.bengali_friendly && <Badge variant="bengali" className="flex items-center gap-1.5"><HeartHandshake className="w-3.5 h-3.5" /> Bengali-Friendly</Badge>}
                 </div>
               </Card>
             )}
@@ -175,11 +190,17 @@ export default function StayDetailPage() {
           <Card className="bg-gradient-to-br from-primary-light to-white border-primary/20 p-6 space-y-6 h-full flex flex-col justify-between">
             <div>
               <div className="flex justify-between items-start gap-4">
-                <div>
-                  <p className="text-3xl font-bold text-primary">{formatPrice(listing.price_monthly || listing.price_per_month || listing.price_daily || 0)}</p>
-                  <p className="text-sm text-text-muted">{listing.price_daily ? 'per day' : 'per month'}</p>
-                  {listing.price_range && <p className="text-xs text-text-muted mt-1">{listing.price_range}</p>}
-                </div>
+                {listing.accommodation_type !== 'Flatmate' && listing.type !== 'flatmate' && (listing.price_monthly || listing.price_per_month || listing.price_daily) ? (
+                  <div>
+                    <p className="text-3xl font-bold text-primary">{formatPrice(listing.price_monthly || listing.price_per_month || listing.price_daily || 0)}</p>
+                    <p className="text-sm text-text-muted">{listing.price_daily ? 'per day' : 'per month'}</p>
+                    {listing.price_range && <p className="text-xs text-text-muted mt-1">{listing.price_range}</p>}
+                  </div>
+                ) : (
+                  <div>
+                    <p className="text-lg font-bold text-emerald-700">Room Sharing / Bill Split</p>
+                  </div>
+                )}
                 <div className="text-right text-sm">
                   <p className="font-semibold text-text-primary">{listing.contact_person_name || listing.owner_name}</p>
                   {(listing.contact_phone || listing.owner_phone) && (

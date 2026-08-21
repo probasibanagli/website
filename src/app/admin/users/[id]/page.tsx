@@ -203,7 +203,7 @@ export default function EditUserPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 md:col-span-3">
             <div className="flex items-center justify-between p-3.5 rounded-xl border border-border bg-surface/30">
               <div>
                 <p className="text-xs font-bold text-text-primary">Email Verification</p>

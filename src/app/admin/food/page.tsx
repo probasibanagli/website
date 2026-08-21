@@ -1,6 +1,7 @@
 'use client';
 export const dynamic = 'force-dynamic';
 import AdminModulePage from '@/components/admin/AdminModulePage';
+import { CITIES, CITY_AREAS } from '@/lib/constants';
 
 export default function AdminFoodPage() {
   return (
@@ -18,9 +19,9 @@ export default function AdminFoodPage() {
       ]}
       formFields={[
         { key: 'name', label: 'Name', required: true },
-        { key: 'type', label: 'Type', type: 'select', options: ['restaurant', 'sweets', 'tiffin', 'delivery partner'], required: true },
-        { key: 'city', label: 'City', required: true },
-        { key: 'area', label: 'Area', required: true },
+        { key: 'type', label: 'Type', type: 'select', options: ['restaurant', 'sweets', 'tiffin', 'delivery partner', 'cloud kitchen'], required: true },
+        { key: 'city', label: 'City', type: 'select', options: CITIES, required: true },
+        { key: 'area', label: 'Area', type: 'select', options: (formData) => formData.city && typeof formData.city === 'string' ? (CITY_AREAS[formData.city] || []) : [], required: true },
         { key: 'address', label: 'Address' },
         { key: 'pincode', label: 'Pincode' },
         { key: 'phone', label: 'Phone' },

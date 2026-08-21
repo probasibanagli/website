@@ -95,8 +95,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             events: 'manage',
             ambulance: 'manage',
             government_services: 'manage',
-            legal: 'manage',
-            travel: 'manage'
+            legal: 'manage'
           } : getDefaultPermissions('superadmin'),
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),

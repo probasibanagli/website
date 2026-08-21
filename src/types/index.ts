@@ -17,8 +17,7 @@ export type ModuleKey =
   | 'events'
   | 'ambulance'
   | 'government_services'
-  | 'legal'
-  | 'travel';
+  | 'legal';
 
 export type ModulePermissions = Record<ModuleKey, PermissionLevel>;
 
@@ -60,7 +59,6 @@ export const MODULE_LABELS: Record<ModuleKey, string> = {
   ambulance: 'Ambulance Directory',
   government_services: 'Government Services',
   legal: 'Legal Services',
-  travel: 'Travel',
 };
 
 /* ──────────────── Government Service Data Model ──────────────── */
@@ -153,7 +151,7 @@ export type LegalServiceItem = LegalAidCentre | LegalHelpline | LegalCategory | 
 
 export interface Listing {
   id: string;
-  type: 'pg' | 'hotel' | 'rental' | 'rental-house';
+  type: 'pg' | 'hotel' | 'rental' | 'rental-house' | 'flatmate';
   name: string;
   description?: string;
   city: string;
@@ -178,7 +176,7 @@ export interface Listing {
   verified: boolean;
   available_rooms?: number;
   deposit_amount?: number;
-  accommodation_type?: 'PG' | 'Hotel' | 'Service Apartment' | 'Rental House';
+  accommodation_type?: 'PG' | 'Hotel' | 'Service Apartment' | 'Rental House' | 'Flatmate';
   contact_person_name?: string;
   contact_whatsapp?: string;
   contact_email?: string;
@@ -195,7 +193,7 @@ export interface Listing {
 export interface FoodListing {
   id: string;
   name: string;
-  type?: 'restaurant' | 'sweets' | 'tiffin' | 'delivery partner';
+  type?: 'restaurant' | 'sweets' | 'tiffin' | 'delivery partner' | 'cloud kitchen';
   city: string;
   area: string;
   address?: string;
@@ -342,23 +340,46 @@ export interface Ambulance {
   eta?: string;
   equipment?: string;
   base_rate?: string;
-  sub_category?: string;
+  sub_category?: string; // e.g. private, government
   type_mode?: string;
   source_notes?: string;
   created_at?: string;
   updated_at?: string;
+
+  // Premium category fields
+  main_category?: 'flight' | 'local' | 'train';
+  size_category?: 'small' | 'medium' | 'large';
+  approx_cost?: string;
+  specialization?: string;
+  
+  // Boolean flags for features/displays
+  icu_ambulance?: boolean;
+  cardiac_ambulance?: boolean;
+  neonatal_ambulance?: boolean;
+  ventilator_ambulance?: boolean;
+  nurse_support?: boolean;
+  multi_specialty?: boolean;
+  
+  // Additional services flags
+  patient_shifting?: boolean;
+  dead_body_transport?: boolean;
+  tn_to_wb?: boolean;
+  wb_to_tn?: boolean;
 }
 
 export interface CommunityGroup {
   id: string;
   name: string;
   image_url?: string;
-  platform?: 'whatsapp' | 'telegram' | 'facebook' | 'instagram' | 'linkedin' | 'website';
+  platform?: 'whatsapp' | 'telegram' | 'facebook' | 'instagram' | 'linkedin' | 'website' | 'discord';
   city?: string;
-  region?: 'tamil_nadu' | 'india' | 'all';
+  state?: string;
   description?: string;
   member_count?: number;
   join_url?: string;
+  whatsapp_url?: string;
+  telegram_url?: string;
+  discord_url?: string;
   instagram_url?: string;
   facebook_url?: string;
   linkedin_url?: string;

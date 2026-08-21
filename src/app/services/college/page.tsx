@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
-import { Search, MapPin, Phone, GraduationCap, Globe, ExternalLink, Navigation, ChevronDown, ChevronUp, Lock, ShieldAlert, Mail, ArrowRight, Loader2, Map, X } from 'lucide-react';
+import { Search, MapPin, Phone, GraduationCap, Globe, ExternalLink, Navigation, ChevronDown, ChevronUp, Lock, ShieldAlert, Mail, ArrowRight, Loader2, Map, X, School } from 'lucide-react';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/Badge';
@@ -62,6 +62,8 @@ const CATEGORY_LABELS: Record<string, string> = {
   engineering: 'Engineering Colleges',
   medical: 'Medical Colleges',
   arts_science: 'Arts & Science Colleges',
+  law: 'Law Colleges',
+  management: 'Management Colleges',
   cbse: 'CBSE Schools',
   icse: 'ICSE Schools',
   kv: 'KV Schools'
@@ -71,9 +73,11 @@ const CATEGORY_THEMES: Record<string, { bg: string; text: string; iconBg: string
   engineering: { bg: 'bg-blue-50', text: 'text-blue-700', iconBg: 'bg-blue-100', iconColor: 'text-blue-600' },
   medical: { bg: 'bg-rose-50', text: 'text-rose-700', iconBg: 'bg-rose-100', iconColor: 'text-rose-600' },
   arts_science: { bg: 'bg-emerald-50', text: 'text-emerald-700', iconBg: 'bg-emerald-100', iconColor: 'text-emerald-600' },
+  law: { bg: 'bg-amber-50', text: 'text-amber-700', iconBg: 'bg-amber-100', iconColor: 'text-amber-600' },
+  management: { bg: 'bg-cyan-50', text: 'text-cyan-700', iconBg: 'bg-cyan-100', iconColor: 'text-cyan-600' },
   cbse: { bg: 'bg-indigo-50', text: 'text-indigo-700', iconBg: 'bg-indigo-100', iconColor: 'text-indigo-600' },
   icse: { bg: 'bg-violet-50', text: 'text-violet-700', iconBg: 'bg-violet-100', iconColor: 'text-violet-600' },
-  kv: { bg: 'bg-orange-50', text: 'text-orange-700', iconBg: 'bg-orange-100', iconColor: 'text-orange-600' }
+  kv: { bg: 'bg-fuchsia-50', text: 'text-fuchsia-700', iconBg: 'bg-fuchsia-100', iconColor: 'text-fuchsia-600' },
 };
 
 export default function CollegePage() {
@@ -352,7 +356,9 @@ export default function CollegePage() {
 
             {filtered.length === 0 && (
               <div className="text-center py-20 bg-white rounded-3xl border border-border mt-6">
-                <p className="text-5xl mb-4">{activeTab === 'colleges' ? '🎓' : '🏫'}</p>
+                <div className="flex justify-center mb-4 text-slate-500/40">
+                  {activeTab === 'colleges' ? <GraduationCap className="w-16 h-16" /> : <School className="w-16 h-16" />}
+                </div>
                 <h3 className="text-xl font-bold text-text-primary mb-2">No {activeTab} found</h3>
                 <p className="text-text-muted text-sm">Try using different search keywords or district filters.</p>
               </div>

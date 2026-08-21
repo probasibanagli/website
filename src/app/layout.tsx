@@ -12,6 +12,7 @@ import { BlockedCheck } from '@/components/layout/BlockedCheck';
 import { AlertProvider } from '@/lib/contexts/AlertContext';
 import { cookies } from 'next/headers';
 import { WelcomeModal } from '@/components/layout/WelcomeModal';
+import { FeatureTour } from '@/components/layout/FeatureTour';
 import { PageSkeletonLoader } from '@/components/ui/PageSkeletonLoader';
 
 export const dynamic = 'force-dynamic';
@@ -104,6 +105,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <AuthProvider>
               <BlockedCheck>
                 <WelcomeModal initiallyOpen={!dismissed} />
+                <FeatureTour />
                 <Navbar />
                 <Suspense fallback={<PageSkeletonLoader />}>
                   <main className="flex-1">{children}</main>
