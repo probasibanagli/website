@@ -553,118 +553,82 @@ export default function EmergencyHospitalsPage() {
 
   return (
     <div className="min-h-screen bg-surface">
-      <div className="bg-gradient-to-r from-red-50/70 to-orange-50/50 border-b border-red-100/50">
-        <div className="w-full max-w-none px-4 sm:px-6 lg:px-[38px] pt-5 pb-3 sm:pt-6 sm:pb-4">
-          <div className="flex items-center gap-2 text-sm text-red-600/70 mb-3 font-medium">
-            <Link href="/" className="hover:text-red-600 transition-colors">Home</Link><span>/</span>
-            <Link href="/emergency" className="hover:text-red-600 transition-colors">Emergency</Link><span>/</span>
-            <span className="text-red-700 font-semibold">Hospital Services</span>
+      {/* Header */}
+      <div className="bg-white border-b border-border">
+        <div className="w-full max-w-none px-4 sm:px-6 lg:px-[38px] py-3 md:py-4 lg:py-5">
+          <div className="hidden md:flex items-center gap-2 text-xs md:text-sm text-text-muted mb-2">
+            <Link href="/" className="hover:text-primary">Home</Link><span>/</span>
+            <Link href="/emergency" className="hover:text-primary">Emergency</Link><span>/</span>
+            <span className="text-text-primary font-medium">Hospital Services</span>
           </div>
           
-          <div className="flex flex-col lg:flex-row gap-6 justify-between lg:items-start">
-            <div className="max-w-2xl">
-              <h1 className="text-3xl sm:text-4xl font-bold font-display text-text-primary flex items-center gap-3">
-                <span>Hospitals & Bengali Doctors</span>
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="flex-1 min-w-0">
+              <h1 className="text-lg sm:text-2xl md:text-3xl font-bold font-display text-text-primary leading-tight">
+                Hospitals & Bengali Doctors
               </h1>
-              <p className="mt-2.5 text-text-muted text-base sm:text-lg leading-relaxed">
+              <p className="hidden md:block mt-1 text-xs md:text-sm text-text-muted whitespace-nowrap overflow-hidden text-ellipsis">
                 Connect with leading government and private medical centers, verified Bengali-speaking doctors, support staff, and pharmacies across Tamil Nadu.
               </p>
-              
-              <div className="mt-4 flex flex-wrap gap-3">
-                <a href="tel:108">
-                  <Button variant="danger" size="lg" className="shadow-lg shadow-red-500/20 font-semibold h-11 px-5 text-sm">
-                    <Phone className="w-4 h-4 mr-2" /> Quick Call (108)
-                  </Button>
-                </a>
-                <Link href="/emergency/ambulance">
-                  <Button variant="outline" size="lg" className="border-red-200 text-red-600 hover:bg-red-50/50 h-11 px-5 text-sm">
-                    <Ambulance className="w-4 h-4 mr-2" /> Ambulance services
-                  </Button>
-                </Link>
-              </div>
             </div>
-            
-            {/*
-            <div className="w-full lg:w-[520px] xl:w-[560px] shrink-0 flex items-center">
-              <WordHelper
-                words={ALL_HOSPITAL_TRANSLATION_CARDS}
-                title="Hospital Word Helper"
-                subtitle="Essential hospital and medical phrases in Tamil & Bengali"
-                variant="horizontal"
-              />
+
+            <div className="flex flex-wrap items-center gap-2.5 shrink-0 self-start md:self-center">
+              <a href="tel:108">
+                <Button variant="danger" size="sm" className="shadow-md shadow-red-500/20 font-semibold h-9 sm:h-10 px-4 text-xs sm:text-sm">
+                  <Phone className="w-3.5 h-3.5 mr-1.5" /> Quick Call (108)
+                </Button>
+              </a>
+              <Link href="/emergency/ambulance">
+                <Button variant="outline" size="sm" className="border-red-200 text-red-600 hover:bg-red-50/50 h-9 sm:h-10 px-4 text-xs sm:text-sm">
+                  <Ambulance className="w-3.5 h-3.5 mr-1.5" /> Ambulance services
+                </Button>
+              </Link>
             </div>
-            */}
           </div>
-        </div>
-      </div>
 
-      {/* Tabs Switcher */}
-      <div className="bg-white border-b border-border sticky top-0 z-20 shadow-xs">
-        <div className="w-full max-w-none px-4 sm:px-6 lg:px-[38px]">
-          <div className="flex items-center gap-1 sm:gap-4 md:gap-6 overflow-x-auto scrollbar-none py-1">
-            <button
-              onClick={() => { setSearchTab('hospitals'); setSearchQuery(''); setSpecializationFilter(''); }}
-              className={`py-3.5 px-3.5 sm:px-4 text-sm font-bold border-b-2 transition-all cursor-pointer flex items-center gap-2.5 whitespace-nowrap ${
-                searchTab === 'hospitals' 
-                  ? 'border-primary text-primary bg-primary/5 rounded-t-xl' 
-                  : 'border-transparent text-text-muted hover:text-text-primary hover:bg-surface rounded-t-xl'
-              }`}
-            >
-              <Building2 className={`w-4.5 h-4.5 ${searchTab === 'hospitals' ? 'text-primary' : 'text-text-muted'}`} />
-              <span>1. Hospital</span>
-            </button>
-            
-            <button
-              onClick={() => { setSearchTab('doctors'); setSearchQuery(''); setSpecializationFilter(''); }}
-              className={`py-3.5 px-3.5 sm:px-4 text-sm font-bold border-b-2 transition-all cursor-pointer flex items-center gap-2.5 whitespace-nowrap ${
-                searchTab === 'doctors' 
-                  ? 'border-primary text-primary bg-primary/5 rounded-t-xl' 
-                  : 'border-transparent text-text-muted hover:text-text-primary hover:bg-surface rounded-t-xl'
-              }`}
-            >
-              <Stethoscope className={`w-4.5 h-4.5 ${searchTab === 'doctors' ? 'text-primary' : 'text-text-muted'}`} />
-              <span>2. Bengali Doctor</span>
-            </button>
-            
-            <button
-              onClick={() => { setSearchTab('staff'); setSearchQuery(''); }}
-              className={`py-3.5 px-3.5 sm:px-4 text-sm font-bold border-b-2 transition-all cursor-pointer flex items-center gap-2.5 whitespace-nowrap ${
-                searchTab === 'staff' 
-                  ? 'border-primary text-primary bg-primary/5 rounded-t-xl' 
-                  : 'border-transparent text-text-muted hover:text-text-primary hover:bg-surface rounded-t-xl'
-              }`}
-            >
-              <Users className={`w-4.5 h-4.5 ${searchTab === 'staff' ? 'text-primary' : 'text-text-muted'}`} />
-              <span>3. Bengali Staff</span>
-            </button>
-
-            <button
-              onClick={() => { setSearchTab('pharmacies'); setSearchQuery(''); }}
-              className={`py-3.5 px-3.5 sm:px-4 text-sm font-bold border-b-2 transition-all cursor-pointer flex items-center gap-2.5 whitespace-nowrap ${
-                searchTab === 'pharmacies' 
-                  ? 'border-primary text-primary bg-primary/5 rounded-t-xl' 
-                  : 'border-transparent text-text-muted hover:text-text-primary hover:bg-surface rounded-t-xl'
-              }`}
-            >
-              <Pill className={`w-4.5 h-4.5 ${searchTab === 'pharmacies' ? 'text-primary' : 'text-text-muted'}`} />
-              <span>4. Govt Pharmacy</span>
-            </button>
+          {/* Type Tabs */}
+          <div className="mt-2.5 md:mt-3.5 flex flex-wrap items-center gap-1.5 sm:gap-2 justify-between sm:justify-start w-full">
+            {[
+              { id: 'hospitals', label: 'Hospital', icon: Building2, action: () => { setSearchTab('hospitals'); setSearchQuery(''); setSpecializationFilter(''); } },
+              { id: 'doctors', label: 'Bengali Doctor', icon: Stethoscope, action: () => { setSearchTab('doctors'); setSearchQuery(''); setSpecializationFilter(''); } },
+              { id: 'staff', label: 'Bengali Staff', icon: Users, action: () => { setSearchTab('staff'); setSearchQuery(''); } },
+              { id: 'pharmacies', label: 'Govt Pharmacy', icon: Pill, action: () => { setSearchTab('pharmacies'); setSearchQuery(''); } },
+            ].map((tab) => {
+              const Icon = tab.icon;
+              const isActive = searchTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={tab.action}
+                  className={`inline-flex items-center justify-center gap-1.5 px-2.5 py-1 md:px-3.5 md:py-1.5 rounded-full text-[11px] sm:text-xs md:text-sm font-semibold transition-all cursor-pointer flex-1 sm:flex-initial text-center ${
+                    isActive
+                      ? 'bg-red-600 text-white shadow-sm'
+                      : 'bg-white text-text-primary border border-border hover:border-red-300'
+                  }`}
+                >
+                  <span className={`w-5 h-5 rounded-full flex items-center justify-center transition-colors ${
+                    isActive
+                      ? 'bg-white/20 text-white'
+                      : 'bg-gray-100 text-text-muted'
+                  }`}>
+                    <Icon className="w-3 h-3 md:w-3.5 md:h-3.5" />
+                  </span>
+                  <span>{tab.label}</span>
+                </button>
+              );
+            })}
           </div>
-        </div>
-      </div>
 
-      {/* Search and Filters Header */}
-      <div className="bg-white border-b border-border shadow-xs">
-        <div className="w-full max-w-none px-4 sm:px-6 lg:px-[38px] py-6">
-          <div className="flex flex-wrap items-center gap-4">
+          {/* Filter Bar */}
+          <div className="mt-3.5 flex flex-wrap items-center gap-3">
             {/* 1. Category / Government Pharmacy Level Filter */}
-            <div className="min-w-[210px] flex-1 sm:flex-initial">
+            <div className="min-w-[200px] flex-1 sm:flex-initial">
               {searchTab === 'pharmacies' ? (
                 <select
                   aria-label="Government Pharmacy filter"
                   value={govtLevelFilter}
                   onChange={(e) => setGovtLevelFilter(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl border border-blue-200 text-sm font-bold text-blue-900 bg-blue-50/60 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500/20 hover:border-blue-300 transition-colors shadow-xs"
+                  className="w-full px-3.5 py-2 rounded-xl border border-blue-200 text-xs sm:text-sm font-bold text-blue-900 bg-blue-50/60 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500/20 hover:border-blue-300 transition-colors shadow-xs"
                 >
                   <option value="All">All Govt Pharmacies</option>
                   <option value="Central Government">Central Govt (PMBJP - Jan Aushadhi)</option>
@@ -675,7 +639,7 @@ export default function EmergencyHospitalsPage() {
                   aria-label="Category filter"
                   value={categoryFilter}
                   onChange={(e) => setCategoryFilter(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl border border-border text-sm font-medium bg-white cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/20 hover:border-gray-300 transition-colors shadow-xs"
+                  className="w-full px-3.5 py-2 rounded-xl border border-border text-xs sm:text-sm font-medium bg-white cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/20 hover:border-gray-300 transition-colors shadow-xs"
                 >
                   <option value="">All Categories</option>
                   <option value="Government">Government Hospitals</option>
@@ -686,13 +650,13 @@ export default function EmergencyHospitalsPage() {
 
             {/* 2. Specialization Filter */}
             {searchTab !== 'pharmacies' && (
-              <div className="min-w-[180px] flex-1 sm:flex-initial">
+              <div className="min-w-[170px] flex-1 sm:flex-initial">
                 {searchTab === 'staff' ? (
                   <select
                     aria-label="Department filter"
                     value={departmentFilter}
                     onChange={(e) => setDepartmentFilter(e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl border border-border text-sm font-medium bg-white cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/20 hover:border-gray-300 transition-colors shadow-xs"
+                    className="w-full px-3.5 py-2 rounded-xl border border-border text-xs sm:text-sm font-medium bg-white cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/20 hover:border-gray-300 transition-colors shadow-xs"
                   >
                     <option value="">All Departments</option>
                     {PREDEFINED_DEPARTMENTS.map((dept) => (
@@ -704,7 +668,7 @@ export default function EmergencyHospitalsPage() {
                     aria-label="Specialization filter"
                     value={specializationFilter}
                     onChange={(e) => setSpecializationFilter(e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl border border-border text-sm font-medium bg-white cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/20 hover:border-gray-300 transition-colors shadow-xs font-medium"
+                    className="w-full px-3.5 py-2 rounded-xl border border-border text-xs sm:text-sm font-medium bg-white cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/20 hover:border-gray-300 transition-colors shadow-xs"
                   >
                     <option value="">All Specializations</option>
                     {PREDEFINED_SPECIALIZATIONS.map((spec) => (
@@ -716,12 +680,12 @@ export default function EmergencyHospitalsPage() {
             )}
 
             {/* 3. All Cities Filter */}
-            <div className="min-w-[150px] flex-1 sm:flex-initial">
+            <div className="min-w-[140px] flex-1 sm:flex-initial">
               <select
                 aria-label="City filter"
                 value={cityFilter}
                 onChange={(e) => setCityFilter(e.target.value)}
-                className="w-full px-4 py-2.5 rounded-xl border border-border text-sm font-medium bg-white cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/20 hover:border-gray-300 transition-colors shadow-xs"
+                className="w-full px-3.5 py-2 rounded-xl border border-border text-xs sm:text-sm font-medium bg-white cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/20 hover:border-gray-300 transition-colors shadow-xs"
               >
                 <option value="">All Cities</option>
                 {CITIES.map((c) => (
@@ -731,14 +695,14 @@ export default function EmergencyHospitalsPage() {
             </div>
 
             {/* 4. Search Input */}
-            <div className="relative flex-1 min-w-[240px]">
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-text-muted" />
+            <div className="relative flex-1 min-w-[220px]">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder={searchTab === 'pharmacies' ? "Search Govt Pharmacy, Scheme, Medicine, Area, PIN..." : "Search by Name and Area..."}
-                className="w-full pl-11 pr-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 bg-surface/30 font-medium shadow-xs"
+                className="w-full pl-9 pr-3.5 py-2 rounded-xl border border-border text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 bg-surface/30 font-medium shadow-xs"
               />
             </div>
           </div>
@@ -746,7 +710,7 @@ export default function EmergencyHospitalsPage() {
       </div>
 
       {/* Main Grid Content */}
-      <div className="w-full max-w-none px-4 sm:px-6 lg:px-[38px] py-8">
+      <div className="w-full max-w-none px-4 sm:px-6 lg:px-[38px] py-4 sm:py-5">
         {loading ? (
           <div className="text-center py-20 animate-pulse">
             <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
@@ -757,11 +721,11 @@ export default function EmergencyHospitalsPage() {
             {/* ── HOSPITALS SEARCH RESULTS ── */}
             {searchTab === 'hospitals' && (
               <>
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-[28px] w-full">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 w-full">
                   {filteredHospitals.map((hospital) => (
-                    <Card key={hospital.id} padding="none" className="overflow-hidden group flex flex-col h-full bg-white border border-gray-100 shadow-[0_4px_25px_-4px_rgba(0,0,0,0.05)] rounded-[24px] w-full">
+                    <Card key={hospital.id} padding="none" className="overflow-hidden group flex flex-col h-full bg-white border border-gray-100 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] rounded-[20px] w-full">
                       {/* Image header with text overlay */}
-                      <div className="relative h-[273px] bg-slate-100 overflow-hidden shrink-0">
+                      <div className="relative h-52 sm:h-56 lg:h-60 bg-slate-100 overflow-hidden shrink-0">
                         <ListingCoverImage 
                           name={hospital.name} 
                           city={hospital.city} 
@@ -771,8 +735,8 @@ export default function EmergencyHospitalsPage() {
                         />
                         
                         {/* Gradient Shadow Overlay */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-5 z-10 pointer-events-none">
-                          <h3 className="text-xl font-bold text-white leading-tight font-display">{hospital.name}</h3>
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent flex flex-col justify-end p-5 z-10 pointer-events-none">
+                          <h3 className="text-xl sm:text-2xl font-bold text-white leading-tight font-display">{hospital.name}</h3>
                           <div className="flex items-center gap-1.5 mt-2 text-sm text-white/90">
                             <MapPin className="w-4 h-4 text-white shrink-0" />
                             <span>{hospital.area ? `${hospital.area}, ` : ''}{hospital.city}</span>
@@ -799,13 +763,13 @@ export default function EmergencyHospitalsPage() {
                         </div>
                       </div>
 
-                      <div className="px-6 py-[22px] flex-1 flex flex-col justify-between">
+                      <div className="p-5 sm:p-6 flex-1 flex flex-col justify-between">
                         {/* Specializations Tags */}
                         <div>
                           {hospital.specializations && hospital.specializations.length > 0 && (
                             <div className="flex flex-wrap gap-2 mb-4">
                               {hospital.specializations.slice(0, 4).map((s) => (
-                                <span key={s} className="px-3 py-1.5 bg-[#FFF1F0] border border-[#FFA39E] rounded-lg text-xs font-semibold text-[#B81D18]">
+                                <span key={s} className="px-2.5 py-1 bg-[#FFF1F0] border border-[#FFA39E] rounded-lg text-xs font-semibold text-[#B81D18]">
                                   {s}
                                 </span>
                               ))}
@@ -814,7 +778,7 @@ export default function EmergencyHospitalsPage() {
                         </div>
 
                         {/* Side-by-Side Action Buttons */}
-                        <div className="flex items-center gap-3 w-full mt-6">
+                        <div className="flex items-center gap-3 w-full mt-5">
                           <a href={`tel:${hospital.emergency_phone || hospital.phone || '108'}`} className="flex-1 w-full bg-[#B81D18] hover:bg-[#9E1612] text-white font-bold py-2.5 px-4 rounded-xl text-sm flex items-center justify-center gap-2 shadow-sm transition-all active:scale-[0.98]">
                             <Phone className="w-4 h-4" />
                             <span>Emergency</span>
@@ -843,7 +807,7 @@ export default function EmergencyHospitalsPage() {
             {/* ── DOCTORS SEARCH RESULTS ── */}
             {searchTab === 'doctors' && (
               <>
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-[28px]">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 w-full">
                   {filteredDoctors.map((doctor) => {
                     const docHospitals = doctor.hospital_ids?.map(hid => hospitals.find(h => h.id === hid)).filter(Boolean) || [hospitals.find(h => h.id === doctor.hospital_id)].filter(Boolean);
                     const otpRequired = doctor.otp_required !== false;
@@ -966,7 +930,7 @@ export default function EmergencyHospitalsPage() {
                             </Link>
                           ) : (
                             <Button onClick={() => triggerVerification(doctor.id)} variant="danger" size="sm" className="w-full font-bold shadow-md shadow-red-500/10 text-xs flex items-center justify-center py-2.5">
-                              <Lock className="w-4 h-4 mr-2 shrink-0" /> Verify OTP to View Contact & Profile
+                              <Lock className="w-4 h-4 mr-2 shrink-0" /> Registered users verify OTP • New users register & verify OTP
                             </Button>
                           )}
                         </div>
@@ -987,7 +951,7 @@ export default function EmergencyHospitalsPage() {
             {/* ── STAFF SEARCH RESULTS ── */}
             {searchTab === 'staff' && (
               <>
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-[28px]">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 w-full">
                   {filteredStaff.map((s) => {
                     const hospital = hospitals.find((h) => h.id === s.hospital_id);
                     const otpRequired = s.otp_required !== false;
@@ -1071,7 +1035,7 @@ export default function EmergencyHospitalsPage() {
             {/* ── GOVERNMENT PHARMACY SEARCH RESULTS ── */}
             {searchTab === 'pharmacies' && (
               <>
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-[28px] w-full">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 w-full">
                   {filteredPharmacies.map((pharmacy) => {
                     const isCentral = (pharmacy.government_level || 'Central Government') === 'Central Government';
                     const isState = pharmacy.government_level === 'State Government';
