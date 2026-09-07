@@ -58,15 +58,24 @@ export default function ChamberOfCommerceAdminPage() {
     setLoading(true);
     try {
       const snap = await getDocs(collection(db, COLLECTIONS.chamber_of_commerce || 'chamber_of_commerce'));
+      const map = new Map<string, ChamberBusiness>();
+
+      // 1. Initial seed items as base
+      INITIAL_CHAMBER_BUSINESSES.forEach(b => map.set(b.id, b));
+
+      // 2. Overlay Firestore documents (user submissions, status changes, admin updates)
       if (!snap.empty) {
-        const fetched = snap.docs.map(d => ({ id: d.id, ...d.data() } as ChamberBusiness));
-        if (fetched.length > 0) {
-          setItems(fetched);
-          return;
-        }
+        snap.docs.forEach(d => {
+          const data = { id: d.id, ...d.data() } as ChamberBusiness;
+          if ((data as any).deleted_at) {
+            map.delete(d.id);
+          } else {
+            map.set(d.id, data);
+          }
+        });
       }
-      // If Firestore is empty, initialize with default seed data
-      setItems(INITIAL_CHAMBER_BUSINESSES);
+
+      setItems(Array.from(map.values()));
     } catch (err) {
       console.error('Error fetching chamber businesses:', err);
       setItems(INITIAL_CHAMBER_BUSINESSES);
@@ -117,7 +126,14 @@ export default function ChamberOfCommerceAdminPage() {
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to permanently delete this business listing?')) return;
     try {
-      await deleteDoc(doc(db, COLLECTIONS.chamber_of_commerce || 'chamber_of_commerce', id));
+      // Mark as deleted in Firestore so baseline seed data doesn't revive it
+      await setDoc(doc(db, COLLECTIONS.chamber_of_commerce || 'chamber_of_commerce', id), {
+        id,
+        is_active: false,
+        verified: false,
+        verification_status: 'rejected',
+        deleted_at: new Date().toISOString()
+      }, { merge: true });
       setItems(prev => prev.filter(i => i.id !== id));
     } catch (err: any) {
       console.error('Error deleting business:', err);
@@ -154,6 +170,24 @@ export default function ChamberOfCommerceAdminPage() {
     setShowForm(true);
   };
 
+  // Clean undefined fields for Firestore compatibility
+  function cleanFirestoreData<T extends Record<string, any>>(obj: T): T {
+    const result: any = Array.isArray(obj) ? [] : {};
+    for (const key in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        const val = obj[key];
+        if (val === undefined) {
+          continue;
+        } else if (val !== null && typeof val === 'object' && !(val instanceof Date)) {
+          result[key] = cleanFirestoreData(val);
+        } else {
+          result[key] = val;
+        }
+      }
+    }
+    return result;
+  }
+
   // Save Form
   const handleSaveForm = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -165,30 +199,41 @@ export default function ChamberOfCommerceAdminPage() {
     setSaving(true);
     try {
       const id = editId || `boc-${Date.now()}`;
-      const payload: ChamberBusiness = {
+      const rawPayload: Record<string, any> = {
         id,
-        business_name: formData.business_name || '',
-        owner_name: formData.owner_name || '',
+        business_name: formData.business_name?.trim() || '',
+        owner_name: formData.owner_name?.trim() || '',
         category: formData.category || 'Other Services',
-        sub_category: formData.sub_category || '',
-        gst_number: formData.gst_number || '',
-        year_established: formData.year_established || undefined,
-        description: formData.description || '',
+        sub_category: formData.sub_category?.trim() || '',
+        gst_number: formData.gst_number?.trim() || '',
+        year_established: formData.year_established ? Number(formData.year_established) : null,
+        description: formData.description?.trim() || '',
         services_offered: Array.isArray(formData.services_offered) ? formData.services_offered : [],
-        address: formData.address || '',
-        area: formData.area || '',
-        city: formData.city || 'Chennai',
-        district: formData.district || formData.city || '',
-        state: formData.state || 'Tamil Nadu',
-        pincode: formData.pincode || '',
-        contact_email: formData.contact_email || '',
-        contact_phone: formData.contact_phone || '',
-        whatsapp: formData.whatsapp || '',
-        website: formData.website || '',
-        google_maps_url: formData.google_maps_url || '',
-        logo_url: formData.logo_url || '',
+        address: formData.address?.trim() || '',
+        area: formData.area?.trim() || '',
+        city: formData.city?.trim() || 'Chennai',
+        district: formData.district?.trim() || formData.city?.trim() || '',
+        state: formData.state?.trim() || 'Tamil Nadu',
+        pincode: formData.pincode?.trim() || '',
+        contact_email: formData.contact_email?.trim() || '',
+        contact_phone: formData.contact_phone?.trim() || '',
+        whatsapp: formData.whatsapp?.trim() || '',
+        website: formData.website?.trim() || '',
+        google_maps_url: formData.google_maps_url?.trim() || '',
+        logo_url: formData.logo_url?.trim() || '',
         hiring_status: formData.hiring_status || 'not_hiring',
-        job_openings: formData.job_openings || [],
+        job_openings: (formData.job_openings || []).map(j => ({
+          id: j.id || `job-${Date.now()}`,
+          title: j.title || '',
+          job_type: j.job_type || 'Full-time',
+          experience: j.experience || '',
+          salary_range: j.salary_range || '',
+          description: j.description || '',
+          contact_email: j.contact_email || formData.contact_email || '',
+          contact_phone: j.contact_phone || formData.contact_phone || '',
+          is_active: true,
+          posted_at: j.posted_at || new Date().toISOString().split('T')[0],
+        })),
         verified: formData.verified ?? true,
         verification_status: formData.verification_status || 'verified',
         verified_at: formData.verified_at || new Date().toISOString(),
@@ -197,6 +242,8 @@ export default function ChamberOfCommerceAdminPage() {
         created_at: formData.created_at || new Date().toISOString(),
         updated_at: new Date().toISOString(),
       };
+
+      const payload = cleanFirestoreData(rawPayload) as ChamberBusiness;
 
       await setDoc(doc(db, COLLECTIONS.chamber_of_commerce || 'chamber_of_commerce', id), payload, { merge: true });
 

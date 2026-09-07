@@ -94,26 +94,45 @@ export default function ChamberOfCommercePage() {
       setLoading(true);
       try {
         const snap = await getDocs(collection(db, COLLECTIONS.chamber_of_commerce || 'chamber_of_commerce'));
+        const map = new Map<string, ChamberBusiness>();
+
+        // 1. Seed with initial businesses as baseline
+        INITIAL_CHAMBER_BUSINESSES.forEach(b => map.set(b.id, b));
+
+        // 2. Overlay Firestore documents (admin updates, user submissions, status changes)
         if (!snap.empty) {
-          const items = snap.docs.map(d => ({ id: d.id, ...d.data() } as ChamberBusiness));
-          // Filter to only verified & active for public directory
-          const verifiedItems = items.filter(i => i.verified && (i.is_active !== false));
-          if (verifiedItems.length > 0) {
-            setBusinesses(verifiedItems);
-            // Check if user has an existing listing
-            if (firebaseUser?.uid) {
-              const myListing = items.find(i => i.user_id === firebaseUser.uid);
-              if (myListing) setUserExistingListing(myListing);
-            }
-            setLoading(false);
-            return;
-          }
+          snap.docs.forEach(d => {
+            const data = { id: d.id, ...d.data() } as ChamberBusiness;
+            map.set(d.id, data);
+          });
         }
-        // Fallback to seed data
-        setBusinesses(INITIAL_CHAMBER_BUSINESSES);
+
+        const allItems = Array.from(map.values());
+
+        // Check if current user has an existing listing
+        if (firebaseUser?.uid) {
+          const myListing = allItems.find(i => i.user_id === firebaseUser.uid);
+          if (myListing) setUserExistingListing(myListing);
+        }
+
+        // STRICT PUBLIC FILTER:
+        // Only show items that are explicitly verified by admin
+        // Reject any item where:
+        // - verified is false or missing
+        // - verification_status is 'rejected' or 'pending'
+        // - is_active is false
+        // - item was marked deleted
+        const verifiedItems = allItems.filter(i => 
+          i.verified === true && 
+          i.verification_status === 'verified' && 
+          i.is_active !== false &&
+          !(i as any).deleted_at
+        );
+
+        setBusinesses(verifiedItems);
       } catch (err) {
         console.error('Error loading businesses from Firestore:', err);
-        setBusinesses(INITIAL_CHAMBER_BUSINESSES);
+        setBusinesses(INITIAL_CHAMBER_BUSINESSES.filter(i => i.verified && i.verification_status === 'verified'));
       } finally {
         setLoading(false);
       }
@@ -175,6 +194,24 @@ export default function ChamberOfCommercePage() {
     });
   };
 
+  // Clean undefined fields for Firestore compatibility
+  function cleanFirestoreData<T extends Record<string, any>>(obj: T): T {
+    const result: any = Array.isArray(obj) ? [] : {};
+    for (const key in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        const val = obj[key];
+        if (val === undefined) {
+          continue;
+        } else if (val !== null && typeof val === 'object' && !(val instanceof Date)) {
+          result[key] = cleanFirestoreData(val);
+        } else {
+          result[key] = val;
+        }
+      }
+    }
+    return result;
+  }
+
   // Handle Form Submission
   const handleSubmitRegistration = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -189,9 +226,40 @@ export default function ChamberOfCommercePage() {
         ? servicesInput.split(',').map(s => s.trim()).filter(Boolean)
         : formData.services_offered || [];
 
-      const payload: Partial<ChamberBusiness> = {
-        ...formData,
+      // Build clean payload with defaults for strings instead of undefined
+      const rawPayload: Record<string, any> = {
+        business_name: formData.business_name?.trim() || '',
+        owner_name: formData.owner_name?.trim() || '',
+        category: formData.category || 'Other Services',
+        sub_category: formData.sub_category?.trim() || '',
+        gst_number: formData.gst_number?.trim() || '',
+        year_established: formData.year_established ? Number(formData.year_established) : null,
+        description: formData.description?.trim() || '',
         services_offered: servicesArray,
+        address: formData.address?.trim() || '',
+        area: formData.area?.trim() || '',
+        city: formData.city?.trim() || 'Chennai',
+        state: formData.state?.trim() || 'Tamil Nadu',
+        pincode: formData.pincode?.trim() || '',
+        contact_email: formData.contact_email?.trim() || '',
+        contact_phone: formData.contact_phone?.trim() || '',
+        whatsapp: formData.whatsapp?.trim() || '',
+        website: formData.website?.trim() || '',
+        google_maps_url: formData.google_maps_url?.trim() || '',
+        logo_url: formData.logo_url?.trim() || '',
+        hiring_status: formData.hiring_status || 'not_hiring',
+        job_openings: (formData.job_openings || []).map(j => ({
+          id: j.id || `job-${Date.now()}`,
+          title: j.title || '',
+          job_type: j.job_type || 'Full-time',
+          experience: j.experience || '',
+          salary_range: j.salary_range || '',
+          description: j.description || '',
+          contact_email: j.contact_email || formData.contact_email || '',
+          contact_phone: j.contact_phone || formData.contact_phone || '',
+          is_active: true,
+          posted_at: j.posted_at || new Date().toISOString().split('T')[0],
+        })),
         user_id: firebaseUser?.uid || 'guest',
         verified: false,
         verification_status: 'pending',
@@ -199,6 +267,8 @@ export default function ChamberOfCommercePage() {
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
       };
+
+      const payload = cleanFirestoreData(rawPayload);
 
       const colRef = collection(db, COLLECTIONS.chamber_of_commerce || 'chamber_of_commerce');
       const docRef = await addDoc(colRef, payload);
@@ -422,6 +492,33 @@ export default function ChamberOfCommercePage() {
 
       {/* ─── Main Content / Directory Listings ─── */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+        {/* User Submission Status Banner (if user has a pending or rejected submission) */}
+        {userExistingListing && userExistingListing.verification_status !== 'verified' && (
+          <div className={`mb-6 p-4 rounded-2xl border flex items-start gap-3 shadow-xs ${
+            userExistingListing.verification_status === 'pending'
+              ? 'bg-amber-50/80 border-amber-200 text-amber-900'
+              : 'bg-rose-50/80 border-rose-200 text-rose-900'
+          }`}>
+            {userExistingListing.verification_status === 'pending' ? (
+              <Clock className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+            ) : (
+              <AlertCircle className="w-5 h-5 text-rose-600 shrink-0 mt-0.5" />
+            )}
+            <div className="flex-1 text-sm">
+              <p className="font-bold">
+                {userExistingListing.verification_status === 'pending'
+                  ? `Your Business Listing (${userExistingListing.business_name}) is Under Review`
+                  : `Your Business Listing (${userExistingListing.business_name}) was Rejected`}
+              </p>
+              <p className="text-xs mt-0.5 opacity-90">
+                {userExistingListing.verification_status === 'pending'
+                  ? 'Our admin team is currently reviewing your registration. It will appear in the public directory once verified.'
+                  : (userExistingListing.rejection_reason || 'Information could not be verified by admin. Please contact support or submit updated details.')}
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* Active Filters / Result Count */}
         <div className="flex items-center justify-between mb-6">
           <p className="text-sm font-semibold text-slate-600">
