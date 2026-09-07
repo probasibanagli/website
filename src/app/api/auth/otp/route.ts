@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { adminDb, adminAuth } from '@/lib/firebase-admin';
+import { getDefaultPermissions } from '@/lib/permissions';
 
 const API_KEY = 'e5b0e5f6cbdc6a23b9e0bd29ce8522c4';
 const SENDER_ID = 'VECTRC';
@@ -205,16 +206,7 @@ export async function POST(request: Request) {
           gender: gender || '',
           address: address || '',
           role: 'user',
-          permissions: {
-            stay: 'none',
-            food: 'none',
-            emergency: 'none',
-            community: 'none',
-            services: 'none',
-            blog: 'none',
-            users: 'none',
-            matrimony: 'none',
-          },
+          permissions: getDefaultPermissions('user'),
           created_at: now,
           updated_at: now,
           is_active: true,
