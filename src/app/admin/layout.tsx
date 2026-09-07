@@ -6,7 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import {
   LayoutDashboard, Home, UtensilsCrossed, Bus, AlertTriangle,
   Users, GraduationCap, FileText, UserCog, LogOut, Menu, X,
-  ChevronRight, Crown, Shield, Heart, Activity, Droplets, Truck, Landmark, Scale
+  ChevronRight, Crown, Shield, Heart, Activity, Droplets, Truck, Landmark, Scale, Building2
 } from 'lucide-react';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { getAccessibleModules } from '@/lib/permissions';
@@ -14,8 +14,6 @@ import type { ModuleKey } from '@/types';
 import { MODULE_LABELS } from '@/types';
 import { AdminSidebar } from '@/components/admin/AdminSidebar';
 import { AdminHeader } from '@/components/admin/AdminHeader';
-
-
 
 const moduleIcons: Record<ModuleKey, React.ReactNode> = {
   stay: <Home className="w-4 h-4" />,
@@ -31,6 +29,7 @@ const moduleIcons: Record<ModuleKey, React.ReactNode> = {
   ambulance: <Truck className="w-4 h-4" />,
   government_services: <Landmark className="w-4 h-4" />,
   legal: <Scale className="w-4 h-4" />,
+  chamber_of_commerce: <Building2 className="w-4 h-4" />,
 };
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -131,7 +130,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       .map((mod) => ({
         key: mod,
         label: MODULE_LABELS[mod],
-        href: `/admin/${mod === 'blood_bank' ? 'blood-bank' : mod === 'government_services' ? 'government-services' : mod}`,
+        href: `/admin/${mod === 'blood_bank' ? 'blood-bank' : mod === 'government_services' ? 'government-services' : mod === 'chamber_of_commerce' ? 'chamber-of-commerce' : mod}`,
         icon: moduleIcons[mod],
       }))),
   ];

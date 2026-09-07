@@ -25,6 +25,7 @@ export const COLLECTIONS = {
   government_services: 'government_services',
   legal: 'legal_services',
   hospital_reviews: 'hospital_reviews',
+  chamber_of_commerce: 'chamber_of_commerce',
 } as const;
 
 /**
@@ -44,4 +45,5 @@ export const MODULE_TO_COLLECTION: Record<ModuleKey, string> = {
   ambulance: COLLECTIONS.ambulances,
   government_services: COLLECTIONS.government_services,
   legal: COLLECTIONS.legal,
+  chamber_of_commerce: COLLECTIONS.chamber_of_commerce,
 };

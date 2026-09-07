@@ -11,7 +11,7 @@ import { getAccessibleModules } from '@/lib/permissions';
 import {
   Users, Home, UtensilsCrossed, FileText, AlertTriangle, TrendingUp,
   Activity, Crown, ShieldCheck, Plus, Bell, Search, MessageSquare, Heart, Shield, Loader2,
-  Bus, GraduationCap, Droplets, Truck, Landmark, Scale
+  Bus, GraduationCap, Droplets, Truck, Landmark, Scale, Building2
 } from 'lucide-react';
 
 interface StatCard {
@@ -74,6 +74,7 @@ export default function AdminDashboard() {
           { name: 'matrimonial_profiles', label: 'Matrimonial', icon: <Heart className="w-5 h-5" />, color: 'text-pink-500', bg: 'bg-pink-50' },
           { name: 'blood_banks', label: 'Blood Banks', icon: <Droplets className="w-5 h-5" />, color: 'text-red-500', bg: 'bg-red-50' },
           { name: 'ambulances', label: 'Ambulance Directory', icon: <Truck className="w-5 h-5" />, color: 'text-indigo-500', bg: 'bg-indigo-50' },
+          { name: 'chamber_of_commerce', label: 'Chamber of Commerce', icon: <Building2 className="w-5 h-5" />, color: 'text-amber-600', bg: 'bg-amber-50' },
         ];
         
         const collections = profile?.role === 'superadmin' 
