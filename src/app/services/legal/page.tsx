@@ -363,19 +363,15 @@ function CategoryCard({ cat }: { cat: LegalCategory }) {
 export default function LegalServicesPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [search, setSearch] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<string>('All Offices');
+  const [selectedCategory, setSelectedCategory] = useState<string>('All Categories');
   const [selectedCity, setSelectedCity] = useState<string>('');
   
   const [legalListings, setLegalListings] = useState<LegalServiceListing[]>(INITIAL_LEGAL_SERVICES);
   const [centres, setCentres] = useState<LegalAidCentre[]>([]);
   const [categories, setCategories] = useState<LegalCategory[]>([]);
   const [helplines, setHelplines] = useState<LegalHelpline[]>([
-    { id: 'h-1', type: 'helpline', label: 'NALSA Legal Aid', number: '15100', color: 'bg-emerald-50 border-emerald-200 text-emerald-800' },
-    { id: 'h-2', type: 'helpline', label: 'TNSLSA State Line', number: '1800 4252 441', color: 'bg-indigo-50 border-indigo-200 text-indigo-800' },
-    { id: 'h-3', type: 'helpline', label: 'Women Helpline', number: '181', color: 'bg-rose-50 border-rose-200 text-rose-800' },
-    { id: 'h-4', type: 'helpline', label: 'Child Helpline', number: '1098', color: 'bg-amber-50 border-amber-200 text-amber-800' },
-    { id: 'h-5', type: 'helpline', label: 'Senior Citizen Line', number: '14567', color: 'bg-blue-50 border-blue-200 text-blue-800' },
-    { id: 'h-6', type: 'helpline', label: 'Cyber Crime Cell', number: '1930', color: 'bg-purple-50 border-purple-200 text-purple-800' },
+    { id: 'h-1', type: 'helpline', label: 'NALSA Helpline', number: '15100', color: 'bg-emerald-50 border-emerald-200 text-emerald-800' },
+    { id: 'h-2', type: 'helpline', label: 'Customer Helpline', number: '1915', color: 'bg-indigo-50 border-indigo-200 text-indigo-800' },
   ]);
   const [portals, setPortals] = useState<LegalPortal[]>([
     { id: 'p-1', type: 'portal', label: 'eCourts Services India', desc: 'Case status, cause lists & court orders across all courts', url: 'https://ecourts.gov.in', icon_name: 'Landmark' },
@@ -423,7 +419,7 @@ export default function LegalServicesPage() {
   // Filter listings
   const filteredListings = useMemo(() => {
     return legalListings.filter(item => {
-      const matchCat = selectedCategory === 'All Offices' || item.category === selectedCategory;
+      const matchCat = selectedCategory === 'All Categories' || item.category === selectedCategory;
       const matchCity = !selectedCity || item.city === selectedCity || item.district === selectedCity;
       
       const q = search.toLowerCase().trim();
@@ -452,7 +448,7 @@ export default function LegalServicesPage() {
 
   // Category counts
   const categoryCounts = useMemo(() => {
-    const counts: Record<string, number> = { 'All Offices': legalListings.length };
+    const counts: Record<string, number> = { 'All Categories': legalListings.length };
     legalListings.forEach(l => {
       counts[l.category] = (counts[l.category] || 0) + 1;
     });
@@ -484,10 +480,10 @@ export default function LegalServicesPage() {
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2.5">
             <div>
               <h1 className="text-lg sm:text-2xl md:text-3xl font-bold font-display text-text-primary flex items-center gap-2 leading-tight">
-                <Scale className="w-6 h-6 md:w-8 md:h-8 text-primary shrink-0" /> Legal Services & Courts
+                <Scale className="w-6 h-6 md:w-8 md:h-8 text-primary shrink-0" /> Legal Services
               </h1>
               <p className="hidden md:block mt-1 text-xs md:text-sm text-text-muted max-w-2xl">
-                Official directory of Madras High Court, District Legal Services Authorities (DLSA), Taluk committees, Bar Council, and legal aid institutions.
+                Access trusted legal aid organizations, professional legal advisory services, and Bengali-speaking advocates across South India.
               </p>
             </div>
             <div className="flex flex-wrap gap-2 shrink-0">
@@ -527,35 +523,35 @@ export default function LegalServicesPage() {
           </a>
         </div>
 
-        {/* Emergency Legal Helplines */}
+        {/* Emergency Legal Helplines - Only NALSA and Customer Helpline */}
         <section>
           <h2 className="text-xl font-bold font-display text-text-primary flex items-center gap-2 mb-4">
-            <PhoneCall className="w-5 h-5 text-primary shrink-0" /> Emergency Legal Helplines
+            <PhoneCall className="w-5 h-5 text-primary shrink-0" /> Legal Helplines
           </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl">
             {helplines.map(h => (
               <a key={h.id} href={`tel:${h.number.replace(/[^0-9]/g, '')}`}
-                className={`flex flex-col items-center justify-center p-4 rounded-2xl border text-center gap-1 hover:shadow-md transition-all cursor-pointer ${h.color || 'bg-slate-50 border-slate-200 text-slate-700'}`}>
-                <PhoneCall className="w-5 h-5 mb-1" />
-                <span className="text-xs font-medium opacity-80">{h.label}</span>
-                <span className="text-base sm:text-lg font-extrabold tracking-tight">{h.number}</span>
+                className={`flex flex-col items-center justify-center p-5 rounded-2xl border text-center gap-1.5 hover:shadow-md transition-all cursor-pointer ${h.color || 'bg-slate-50 border-slate-200 text-slate-700'}`}>
+                <PhoneCall className="w-6 h-6 mb-1" />
+                <span className="text-xs font-semibold opacity-90">{h.label}</span>
+                <span className="text-xl sm:text-2xl font-black tracking-tight">{h.number}</span>
               </a>
             ))}
           </div>
         </section>
 
-        {/* ─── LEGAL OFFICES & AUTHORITIES DIRECTORY (LISTINGS MODULE) ─── */}
+        {/* ─── LEGAL DIRECTORY (LISTINGS MODULE) ─── */}
         <section className="space-y-6">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-border pb-4">
             <div>
               <div className="flex items-center gap-2">
                 <Gavel className="w-6 h-6 text-primary" />
                 <h2 className="text-2xl font-bold font-display text-text-primary">
-                  Legal Offices & Authorities Directory
+                  Legal Services & Advocates Directory
                 </h2>
               </div>
               <p className="text-sm text-text-muted mt-1">
-                Explore official contact details, addresses, and portals for courts, DLSAs, and legal committees across Tamil Nadu.
+                Explore verified legal organizations, professional legal services, and Bengali-speaking advocates across South India.
               </p>
             </div>
             <div className="text-xs font-bold text-text-muted bg-surface px-3 py-1.5 rounded-lg border border-border shrink-0 self-start md:self-auto">
@@ -573,7 +569,7 @@ export default function LegalServicesPage() {
                   type="text"
                   value={search}
                   onChange={e => setSearch(e.target.value)}
-                  placeholder="Search by court name, district, address, phone or email..."
+                  placeholder="Search by advocate name, legal service, organization, district, or phone..."
                   className="w-full pl-10 pr-4 py-2.5 bg-surface border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
                 />
                 {search && (
@@ -640,15 +636,15 @@ export default function LegalServicesPage() {
           {filteredListings.length === 0 && (
             <div className="text-center py-16 bg-white rounded-2xl border border-dashed border-border">
               <HelpCircle className="w-12 h-12 mx-auto mb-3 text-border" />
-              <h3 className="text-base font-bold text-text-primary">No legal offices found</h3>
+              <h3 className="text-base font-bold text-text-primary">No legal services or advocates found</h3>
               <p className="text-xs text-text-muted mt-1 max-w-sm mx-auto">
                 No matching results for your search query. Try clearing your filters or searching with a different term.
               </p>
               <button
-                onClick={() => { setSearch(''); setSelectedCategory('All Offices'); setSelectedCity(''); }}
+                onClick={() => { setSearch(''); setSelectedCategory('All Categories'); setSelectedCity(''); }}
                 className="mt-4 px-4 py-2 bg-primary text-white text-xs font-bold rounded-xl hover:bg-primary/90 transition-colors"
               >
-                Reset All Filters
+                Reset Filters
               </button>
             </div>
           )}

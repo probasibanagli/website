@@ -341,8 +341,8 @@ export default function ChamberOfCommercePage() {
                 <span className="text-neutral-700 font-semibold">Bengali Chamber of Commerce</span>
               </div>
 
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold font-display text-text-primary tracking-tight leading-tight">
-                Empowering <span className="text-primary bg-gradient-to-r from-primary to-[#D85A30] bg-clip-text text-transparent">Bengali Businesses</span> & Careers in South India
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold font-display text-black tracking-tight leading-tight">
+                Empowering Bengali Businesses & Careers in South India
               </h1>
 
               <p className="text-base sm:text-lg text-text-muted leading-relaxed max-w-2xl font-normal">
@@ -380,8 +380,8 @@ export default function ChamberOfCommercePage() {
             </div>
 
             {/* Quick Stats Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 gap-3 shrink-0">
-              <div className="p-4 bg-white rounded-2xl border border-slate-200/80 shadow-xs flex flex-col justify-center">
+            <div className="grid grid-cols-2 gap-3 shrink-0">
+              <div className="p-4 bg-white rounded-2xl border border-slate-200/80 shadow-xs flex flex-col justify-center min-w-[140px]">
                 <div className="flex items-center gap-2 text-emerald-600 mb-1">
                   <ShieldCheck className="w-4 h-4" />
                   <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Verified</span>
@@ -390,22 +390,13 @@ export default function ChamberOfCommercePage() {
                 <p className="text-[11px] text-slate-500 mt-0.5">Vetted Enterprises</p>
               </div>
 
-              <div className="p-4 bg-white rounded-2xl border border-slate-200/80 shadow-xs flex flex-col justify-center">
+              <div className="p-4 bg-white rounded-2xl border border-slate-200/80 shadow-xs flex flex-col justify-center min-w-[140px]">
                 <div className="flex items-center gap-2 text-blue-600 mb-1">
                   <Briefcase className="w-4 h-4" />
                   <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Careers</span>
                 </div>
                 <div className="text-2xl font-black text-slate-900">{totalJobsCount}</div>
                 <p className="text-[11px] text-slate-500 mt-0.5">Active Job Openings</p>
-              </div>
-
-              <div className="p-4 bg-white rounded-2xl border border-slate-200/80 shadow-xs flex flex-col justify-center col-span-2 sm:col-span-1 lg:col-span-2">
-                <div className="flex items-center gap-2 text-[#D85A30] mb-1">
-                  <Award className="w-4 h-4" />
-                  <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Network</span>
-                </div>
-                <div className="text-lg font-bold text-slate-900">Tamil Nadu & Bengaluru</div>
-                <p className="text-[11px] text-slate-500 mt-0.5">Business & Cultural Hubs</p>
               </div>
             </div>
           </div>
