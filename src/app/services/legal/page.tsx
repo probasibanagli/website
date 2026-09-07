@@ -500,8 +500,12 @@ export default function LegalServicesPage() {
                 <MapPin className="w-3.5 h-3.5 md:w-4 md:h-4" /> Find Free Legal Aid
               </button>
               <a href="tel:15100"
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 md:px-4 md:py-2 bg-white border border-border rounded-lg md:rounded-xl text-xs md:text-sm font-semibold hover:border-primary hover:text-primary transition-colors">
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 md:px-4 md:py-2 bg-white border border-border rounded-lg md:rounded-xl text-xs md:text-sm font-semibold hover:border-emerald-600 hover:text-emerald-700 transition-colors">
                 <PhoneCall className="w-3.5 h-3.5 md:w-4 md:h-4" /> NALSA: 15100
+              </a>
+              <a href="tel:1915"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 md:px-4 md:py-2 bg-white border border-border rounded-lg md:rounded-xl text-xs md:text-sm font-semibold hover:border-indigo-600 hover:text-indigo-700 transition-colors">
+                <PhoneCall className="w-3.5 h-3.5 md:w-4 md:h-4" /> Consumer Line: 1915
               </a>
             </div>
           </div>
