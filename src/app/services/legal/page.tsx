@@ -371,7 +371,7 @@ export default function LegalServicesPage() {
   const [categories, setCategories] = useState<LegalCategory[]>([]);
   const [helplines, setHelplines] = useState<LegalHelpline[]>([
     { id: 'h-1', type: 'helpline', label: 'NALSA Helpline', number: '15100', color: 'bg-emerald-50 border-emerald-200 text-emerald-800' },
-    { id: 'h-2', type: 'helpline', label: 'Customer Helpline', number: '1915', color: 'bg-indigo-50 border-indigo-200 text-indigo-800' },
+    { id: 'h-2', type: 'helpline', label: 'Consumer Line', number: '1915', color: 'bg-indigo-50 border-indigo-200 text-indigo-800' },
   ]);
   const [portals, setPortals] = useState<LegalPortal[]>([
     { id: 'p-1', type: 'portal', label: 'eCourts Services India', desc: 'Case status, cause lists & court orders across all courts', url: 'https://ecourts.gov.in', icon_name: 'Landmark' },
@@ -402,7 +402,15 @@ export default function LegalServicesPage() {
           if (dbCats.length > 0) setCategories(dbCats);
 
           const dbHelps = items.filter((i: any) => i.type === 'helpline');
-          if (dbHelps.length > 0) setHelplines(dbHelps);
+          if (dbHelps.length > 0) {
+            const filteredHelps = dbHelps.filter((h: any) => {
+              const lbl = (h.label || '').toLowerCase();
+              return lbl.includes('nalsa') || lbl.includes('consumer');
+            });
+            if (filteredHelps.length > 0) {
+              setHelplines(filteredHelps);
+            }
+          }
 
           const dbPorts = items.filter((i: any) => i.type === 'portal');
           if (dbPorts.length > 0) setPortals(dbPorts);
