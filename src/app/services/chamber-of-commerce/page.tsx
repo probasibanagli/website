@@ -195,21 +195,22 @@ export default function ChamberOfCommercePage() {
   };
 
   // Clean undefined fields for Firestore compatibility
-  function cleanFirestoreData<T extends Record<string, any>>(obj: T): T {
-    const result: any = Array.isArray(obj) ? [] : {};
-    for (const key in obj) {
-      if (Object.prototype.hasOwnProperty.call(obj, key)) {
-        const val = obj[key];
-        if (val === undefined) {
-          continue;
-        } else if (val !== null && typeof val === 'object' && !(val instanceof Date)) {
+  function cleanFirestoreData(obj: any): any {
+    if (obj === null || obj === undefined) return obj;
+    if (Array.isArray(obj)) {
+      return obj.map(item => cleanFirestoreData(item)).filter(item => item !== undefined);
+    }
+    if (typeof obj === 'object') {
+      const result: Record<string, any> = {};
+      for (const key of Object.keys(obj)) {
+        const val = (obj as Record<string, any>)[key];
+        if (val !== undefined) {
           result[key] = cleanFirestoreData(val);
-        } else {
-          result[key] = val;
         }
       }
+      return result;
     }
-    return result;
+    return obj;
   }
 
   // Handle Form Submission
