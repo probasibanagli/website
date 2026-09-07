@@ -2068,8 +2068,8 @@ export default function TravelPage() {
                                 )}
 
                                 <div className="flex flex-wrap gap-2 pt-3 border-t border-amber-200/50">
-                                  <a href="https://play.google.com/store/apps/details?id=com.cris.utsmobile&hl=en-US" target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded text-xs font-bold flex items-center gap-1 transition-colors">
-                                    UTS Ticket Booking <ExternalLink className="w-3 h-3"/>
+                                  <a href="https://play.google.com/store/apps/details?id=org.cris.aikyam&hl=en-IN&pli=1" target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded text-xs font-bold flex items-center gap-1 transition-colors">
+                                    RailOne App <ExternalLink className="w-3 h-3"/>
                                   </a>
                                   <a href="https://www.railyatri.in/live-train-status" target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 bg-amber-100 hover:bg-amber-200 text-amber-800 rounded text-xs font-bold flex items-center gap-1 transition-colors">
                                     Live Train Status <ExternalLink className="w-3 h-3"/>
