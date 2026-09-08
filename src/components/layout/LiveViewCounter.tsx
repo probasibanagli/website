@@ -1,16 +1,64 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import { Eye, TrendingUp, Users } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
+function easeOutExpo(x: number): number {
+  return x === 1 ? 1 : 1 - Math.pow(2, -10 * x);
+}
+
 export function LiveViewCounter() {
   const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
-  const [viewCount, setViewCount] = useState<number>(100000);
+  // Display count starts from 0 as requested
+  const [displayCount, setDisplayCount] = useState<number>(0);
+  const [targetCount, setTargetCount] = useState<number>(100000);
   const [isHovered, setIsHovered] = useState(false);
   const [hasIncrementedEffect, setHasIncrementedEffect] = useState(false);
+  const animRef = useRef<number | null>(null);
+
+  // Smooth Count-Up Animation from current display value to target value
+  useEffect(() => {
+    if (!mounted) return;
+
+    if (animRef.current) {
+      cancelAnimationFrame(animRef.current);
+    }
+
+    const startVal = displayCount;
+    const endVal = targetCount;
+    if (startVal === endVal) return;
+
+    const duration = startVal === 0 ? 2200 : 800; // 2.2s for initial roll from 0, 800ms for increments
+    const startTime = performance.now();
+
+    const step = (currentTime: number) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const easedProgress = easeOutExpo(progress);
+      const currentVal = Math.floor(startVal + (endVal - startVal) * easedProgress);
+
+      setDisplayCount(currentVal);
+
+      if (progress < 1) {
+        animRef.current = requestAnimationFrame(step);
+      } else {
+        setDisplayCount(endVal);
+        setHasIncrementedEffect(true);
+        setTimeout(() => setHasIncrementedEffect(false), 1000);
+      }
+    };
+
+    animRef.current = requestAnimationFrame(step);
+
+    return () => {
+      if (animRef.current) {
+        cancelAnimationFrame(animRef.current);
+      }
+    };
+  }, [targetCount, mounted]);
 
   useEffect(() => {
     setMounted(true);
@@ -31,7 +79,7 @@ export function LiveViewCounter() {
         if (res.ok) {
           const data = await res.json();
           if (typeof data.count === 'number' && data.count >= 100000) {
-            setViewCount(data.count);
+            setTargetCount(data.count);
           }
         }
       } catch (err) {
@@ -41,16 +89,10 @@ export function LiveViewCounter() {
 
     fetchOrIncrement();
 
-    // Occasional subtle live traffic tick (every 45-60s) to reflect ongoing live visits
+    // Occasional subtle live traffic tick (every 45s) to reflect ongoing live visits
     const interval = setInterval(() => {
-      // Small chance of simulated live active visitor addition
       if (Math.random() > 0.4) {
-        setViewCount((prev) => {
-          const next = prev + 1;
-          setHasIncrementedEffect(true);
-          setTimeout(() => setHasIncrementedEffect(false), 1200);
-          return next;
-        });
+        setTargetCount((prev) => prev + 1);
       }
     }, 45000);
 
@@ -62,8 +104,8 @@ export function LiveViewCounter() {
     return null;
   }
 
-  // Format count with standard Indian/International commas (e.g. 100,000)
-  const formattedNumber = viewCount.toLocaleString('en-IN');
+  // Format count with standard commas (e.g. 0 -> 100,002)
+  const formattedNumber = displayCount.toLocaleString('en-IN');
 
   return (
     <div
