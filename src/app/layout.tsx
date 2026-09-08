@@ -5,6 +5,7 @@ import Script from 'next/script';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { ChatWidget } from '@/components/chatbot/ChatWidget';
+import { LiveViewCounter } from '@/components/layout/LiveViewCounter';
 import { AuthProvider } from '@/lib/auth/AuthContext';
 import { GlobalLoader } from '@/components/layout/GlobalLoader';
 import { LanguageProvider } from '@/lib/contexts/LanguageContext';
@@ -111,6 +112,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                   <main className="flex-1">{children}</main>
                 </Suspense>
                 <Footer />
+                <LiveViewCounter />
                 <ChatWidget />
               </BlockedCheck>
             </AuthProvider>
