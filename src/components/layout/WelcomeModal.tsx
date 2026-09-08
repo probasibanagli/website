@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { X, Users } from 'lucide-react';
+import { X, Users, Sparkles, Check } from 'lucide-react';
 import { T, useLanguage } from '@/lib/contexts/LanguageContext';
 import { usePathname } from 'next/navigation';
 
@@ -11,6 +11,7 @@ interface WelcomeModalProps {
 
 export function WelcomeModal({ initiallyOpen = false }: WelcomeModalProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [selectedLang, setSelectedLang] = useState<'en' | 'bn' | null>(null);
   const { setLanguage } = useLanguage();
   const pathname = usePathname();
 
@@ -35,13 +36,21 @@ export function WelcomeModal({ initiallyOpen = false }: WelcomeModalProps) {
   };
 
   const handleSelectEnglish = () => {
-    dismissModal();
+    if (selectedLang) return;
+    setSelectedLang('en');
     setLanguage('en', true);
+    setTimeout(() => {
+      dismissModal();
+    }, 150);
   };
 
   const handleSelectBengali = () => {
-    dismissModal();
+    if (selectedLang) return;
+    setSelectedLang('bn');
     setLanguage('bn', true);
+    setTimeout(() => {
+      dismissModal();
+    }, 180);
   };
 
   // Only render the welcome modal on the landing page (homepage '/')
@@ -72,7 +81,7 @@ export function WelcomeModal({ initiallyOpen = false }: WelcomeModalProps) {
         <div className="p-8 pt-10 flex flex-col items-center text-center">
           
           {/* Rust Orange Rounded Icon Circle */}
-          <div className="mb-6 flex items-center justify-center w-16 h-16 rounded-full bg-[#D85A30] text-white">
+          <div className="mb-6 flex items-center justify-center w-16 h-16 rounded-full bg-[#D85A30] text-white shadow-lg shadow-[#D85A30]/20">
             <Users className="w-8 h-8" />
           </div>
 
@@ -92,20 +101,45 @@ export function WelcomeModal({ initiallyOpen = false }: WelcomeModalProps) {
           {/* English Button */}
           <button
             onClick={handleSelectEnglish}
-            className="flex-1 py-3 px-6 rounded-full text-sm font-semibold text-neutral-800 border border-[#E5D5D0] bg-white hover:bg-neutral-50 transition-all duration-200 active:scale-[0.98]"
+            disabled={!!selectedLang}
+            className={`flex-1 py-3 px-6 rounded-full text-sm font-semibold border transition-all duration-200 active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer ${
+              selectedLang === 'en'
+                ? 'bg-neutral-900 text-white border-neutral-900 shadow-md ring-2 ring-neutral-900/20'
+                : 'text-neutral-800 border-[#E5D5D0] bg-white hover:bg-neutral-50 shadow-sm'
+            }`}
           >
-            English
+            {selectedLang === 'en' ? (
+              <>
+                <Check className="w-4 h-4 text-white animate-bounce" />
+                <span>English</span>
+              </>
+            ) : (
+              <span>English</span>
+            )}
           </button>
 
-          {/* Bengali Button (Orange) */}
+          {/* Bengali Button (Orange) with rich instant feedback */}
           <button
             onClick={handleSelectBengali}
-            className="flex-1 py-3 px-6 rounded-full text-sm font-semibold text-white bg-[#D85A30] hover:bg-[#C24D27] flex items-center justify-center gap-2 transition-all duration-200 shadow-md shadow-[#D85A30]/20 active:scale-[0.98]"
+            disabled={!!selectedLang}
+            className={`flex-1 py-3 px-6 rounded-full text-sm font-semibold text-white flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.98] cursor-pointer ${
+              selectedLang === 'bn'
+                ? 'bg-[#B5451F] shadow-lg shadow-[#D85A30]/40 ring-4 ring-[#D85A30]/30 scale-[1.02]'
+                : 'bg-[#D85A30] hover:bg-[#C24D27] shadow-md shadow-[#D85A30]/20 hover:scale-[1.01]'
+            }`}
           >
-            বাংলা (Bengali)
+            {selectedLang === 'bn' ? (
+              <>
+                <Sparkles className="w-4 h-4 animate-spin text-amber-200" />
+                <span className="font-bold">পরিবর্তন হচ্ছে...</span>
+              </>
+            ) : (
+              <span>বাংলা (Bengali)</span>
+            )}
           </button>
         </div>
       </div>
     </div>
   );
 }
+

@@ -14,6 +14,7 @@ import { cookies } from 'next/headers';
 import { WelcomeModal } from '@/components/layout/WelcomeModal';
 import { FeatureTour } from '@/components/layout/FeatureTour';
 import { PageSkeletonLoader } from '@/components/ui/PageSkeletonLoader';
+import { LanguageTransitionOverlay } from '@/components/layout/LanguageTransitionOverlay';
 
 export const dynamic = 'force-dynamic';
 
@@ -66,41 +67,38 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <link rel="apple-touch-icon" href="/logo.png?v=2" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://translate.google.com" />
+        <link rel="preconnect" href="https://translate.googleapis.com" />
+        <link rel="dns-prefetch" href="https://translate.google.com" />
+        <link rel="dns-prefetch" href="https://translate.googleapis.com" />
         <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Hind+Siliguri:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet" />
       </head>
       <body className="min-h-screen flex flex-col" suppressHydrationWarning>
-        <div id="google_translate_element" style={{ display: 'none' }} />
-        <Script id="google-translate-init" strategy="afterInteractive">
+        <div id="google_translate_element" />
+        <Script id="google-translate-init" strategy="beforeInteractive">
           {`
             window.googleTranslateElementInit = function() {
-              new window.google.translate.TranslateElement({
-                pageLanguage: 'en',
-                includedLanguages: 'bn,ta,en',
-                layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
-                autoDisplay: false
-              }, 'google_translate_element');
-            };
-
-            const removeBanner = () => {
-              const banner = document.querySelector('.goog-te-banner-frame');
-              if (banner) {
-                banner.remove();
-                document.body.style.top = '0px';
-              }
-              const skip = document.querySelector('.skiptranslate');
-              if (skip) {
-                skip.style.display = 'none';
+              try {
+                if (window.google && window.google.translate) {
+                  new window.google.translate.TranslateElement({
+                    pageLanguage: 'en',
+                    includedLanguages: 'bn,ta,en',
+                    layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
+                    autoDisplay: false
+                  }, 'google_translate_element');
+                }
+              } catch (e) {
+                console.warn('Google Translate Init Warning:', e);
               }
             };
-            
-            setInterval(removeBanner, 500);
           `}
         </Script>
         <Script
-          src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
+          src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
           strategy="afterInteractive"
         />
         <LanguageProvider>
+          <LanguageTransitionOverlay />
           <AlertProvider>
             <AuthProvider>
               <BlockedCheck>
