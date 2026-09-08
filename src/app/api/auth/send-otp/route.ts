@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import nodemailer from 'nodemailer';
+import { sendWebarooEmail } from '@/lib/webaroo-email';
 import { doc, setDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { COLLECTIONS } from '@/lib/firestore/collections';
@@ -93,42 +93,35 @@ export async function POST(request: Request) {
 
       console.log(`[DEV] Email OTP for ${normalizedEmail}: ${emailOtp}`);
 
-      // Send Email
+      // Send Email via Webaroo Enterprise Gateway
       try {
-        const smtpUser = process.env.SMTP_USER || process.env.GMAIL_EMAIL;
-        let smtpPass = process.env.SMTP_PASS || process.env.GMAIL_PASSWORD || '';
-        if (smtpPass.startsWith('"') && smtpPass.endsWith('"')) {
-          smtpPass = smtpPass.slice(1, -1);
-        }
+        const emailHtml = `
+          <div style="font-family: Arial, sans-serif; padding: 24px; border: 1px solid #e5e7eb; border-radius: 8px; max-width: 480px;">
+            <h2 style="color: #B81D18; margin-top: 0;">Email Verification Code</h2>
+            <p>Hello,</p>
+            <p>Your 6-digit verification OTP is:</p>
+            <div style="text-align: center; margin: 24px 0;">
+              <span style="font-size: 32px; font-weight: bold; letter-spacing: 6px; background: #f8fafc; padding: 12px 24px; border-radius: 8px; border: 1px dashed #cbd5e1; color: #1e293b;">
+                ${emailOtp}
+              </span>
+            </div>
+            <p style="color: #64748b; font-size: 13px;">This OTP is valid for <strong>10 minutes</strong>. Do not share this code with anyone.</p>
+            <hr style="border: none; border-top: 1px solid #e2e8f0; margin-top: 24px;" />
+            <p style="color: #94a3b8; font-size: 11px; text-align: center;">Probasi Bangali Emergency & Community Portal</p>
+          </div>
+        `;
 
-        if (smtpUser && smtpPass) {
-          const transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: { user: smtpUser, pass: smtpPass },
-          });
-          await transporter.sendMail({
-            from: `"Probasi Bangali Directory" <${smtpUser}>`,
-            to: normalizedEmail,
-            subject: 'Your Doctor Directory OTP – Probasi Bangali',
-            html: `
-              <div style="font-family: Arial, sans-serif; padding: 24px; border: 1px solid #e5e7eb; border-radius: 8px; max-width: 480px;">
-                <h2 style="color: #B81D18; margin-top: 0;">Email Verification Code</h2>
-                <p>Hello,</p>
-                <p>Your 6-digit verification OTP is:</p>
-                <div style="text-align: center; margin: 24px 0;">
-                  <span style="font-size: 32px; font-weight: bold; letter-spacing: 6px; background: #f8fafc; padding: 12px 24px; border-radius: 8px; border: 1px dashed #cbd5e1; color: #1e293b;">
-                    ${emailOtp}
-                  </span>
-                </div>
-                <p style="color: #64748b; font-size: 13px;">This OTP is valid for <strong>10 minutes</strong>. Do not share this code with anyone.</p>
-                <hr style="border: none; border-top: 1px solid #e2e8f0; margin-top: 24px;" />
-                <p style="color: #94a3b8; font-size: 11px; text-align: center;">Probasi Bangali Emergency & Community Portal</p>
-              </div>
-            `,
-          });
-          console.log(`[Email OTP] Real email sent successfully to ${normalizedEmail}`);
+        const emailResult = await sendWebarooEmail({
+          to: normalizedEmail,
+          subject: 'Your Doctor Directory OTP – Probasi Bangali',
+          html: emailHtml,
+          campaignName: 'PB Doctor Directory OTP',
+        });
+
+        if (!emailResult.success) {
+          console.warn(`[Send OTP] Webaroo email delivery issue: ${emailResult.error}`);
         } else {
-          console.log(`[DEV / SIMULATION] Email OTP generated for ${normalizedEmail}: ${emailOtp}`);
+          console.log(`[Send OTP] Webaroo email dispatched to ${normalizedEmail}`);
         }
       } catch (e) {
         console.error('Email Sending Error:', e);

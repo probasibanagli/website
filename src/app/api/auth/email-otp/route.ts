@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { adminDb } from '@/lib/firebase-admin';
-import nodemailer from 'nodemailer';
+import { sendWebarooEmail } from '@/lib/webaroo-email';
 
 export async function POST(request: Request) {
   try {
@@ -23,55 +23,47 @@ export async function POST(request: Request) {
 
       console.log(`[Email OTP] Generating OTP ${otpCode} for ${email}`);
 
-      // Send real email if SMTP credentials are set
-      const gmailEmail = process.env.GMAIL_EMAIL;
-      let gmailPassword = process.env.GMAIL_PASSWORD || '';
-      if (gmailPassword.startsWith('"') && gmailPassword.endsWith('"')) {
-        gmailPassword = gmailPassword.slice(1, -1);
-      }
+      // HTML Email template for OTP verification
+      const emailHtml = `
+        <div style="font-family: Arial, sans-serif; padding: 20px; border: 1px solid #eee; border-radius: 5px; max-width: 500px;">
+          <h2 style="color: #D85A30; text-align: center;">Email Verification Code</h2>
+          <p>Hello,</p>
+          <p>Your 6-digit verification code is:</p>
+          <div style="text-align: center; margin: 30px 0;">
+            <span style="font-size: 28px; font-weight: bold; letter-spacing: 5px; background: #f7f7f7; padding: 10px 20px; border-radius: 5px; border: 1px dashed #ccc; color: #333;">
+              ${otpCode}
+            </span>
+          </div>
+          <p style="color: #666; font-size: 12px;">This OTP is valid for <strong>5 minutes</strong>. If you did not request this code, you can safely ignore this email.</p>
+          <hr style="border: none; border-top: 1px solid #eee; margin-top: 20px;" />
+          <p style="color: #999; font-size: 11px; text-align: center;">ProbasiBangali Community Portal</p>
+        </div>
+      `;
 
-      if (gmailEmail && gmailPassword) {
-        try {
-          const transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-              user: gmailEmail,
-              pass: gmailPassword,
-            },
+      // Dispatch email via Webaroo Enterprise Gateway API
+      const emailResult = await sendWebarooEmail({
+        to: email.trim().toLowerCase(),
+        subject: 'Your Email Verification Code - ProbasiBangali',
+        html: emailHtml,
+        campaignName: 'PB Email Verification OTP',
+      });
+
+      if (!emailResult.success) {
+        console.warn(`[Email OTP] Webaroo email delivery issue: ${emailResult.error}`);
+        // In development, still return debugOtp to prevent developer lockout
+        if (process.env.NODE_ENV === 'development') {
+          return NextResponse.json({
+            success: true,
+            debugOtp: otpCode,
+            warning: emailResult.error,
           });
-
-          const mailOptions = {
-            from: `"ProbasiBangali Support" <${gmailEmail}>`,
-            to: email.trim().toLowerCase(),
-            subject: 'Your Email Verification Code - ProbasiBangali',
-            text: `Hello,\n\nYour 6-digit verification code is: ${otpCode}\n\nThis OTP is valid for 5 minutes. Please do not share this code with anyone.\n\nThank you,\nProbasiBangali Team`,
-            html: `
-              <div style="font-family: Arial, sans-serif; padding: 20px; border: 1px solid #eee; border-radius: 5px; max-width: 500px;">
-                <h2 style="color: #D85A30; text-align: center;">Email Verification Code</h2>
-                <p>Hello,</p>
-                <p>Your 6-digit verification code is:</p>
-                <div style="text-align: center; margin: 30px 0;">
-                  <span style="font-size: 28px; font-weight: bold; letter-spacing: 5px; background: #f7f7f7; padding: 10px 20px; border-radius: 5px; border: 1px dashed #ccc; color: #333;">
-                    ${otpCode}
-                  </span>
-                </div>
-                <p style="color: #666; font-size: 12px;">This OTP is valid for <strong>5 minutes</strong>. If you did not request this code, you can safely ignore this email.</p>
-                <hr style="border: none; border-top: 1px solid #eee; margin-top: 20px;" />
-                <p style="color: #999; font-size: 11px; text-align: center;">ProbasiBangali Community Portal</p>
-              </div>
-            `,
-          };
-
-          await transporter.sendMail(mailOptions);
-          console.log(`[Email OTP] Real email sent successfully to ${email}`);
-        } catch (mailError) {
-          console.error('[Email OTP] Nodemailer Send Error:', mailError);
         }
-      } else {
-        console.warn('[Email OTP] GMAIL_EMAIL or GMAIL_PASSWORD is not configured in .env.local. Local simulation only.');
+        return NextResponse.json(
+          { error: emailResult.error || 'Failed to send verification email' },
+          { status: 500 }
+        );
       }
 
-      // Returning the OTP in response for local testing/simulation ease
       return NextResponse.json({ success: true, debugOtp: otpCode });
     }
 

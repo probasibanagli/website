@@ -1,40 +1,68 @@
-const nodemailer = require('nodemailer');
 require('dotenv').config({ path: '.env.local' });
 
-async function testEmail() {
-  const email = process.env.GMAIL_EMAIL;
-  // Clean quotes if present
-  let password = process.env.GMAIL_PASSWORD || '';
-  if (password.startsWith('"') && password.endsWith('"')) {
-    password = password.slice(1, -1);
-  }
+async function testWebarooEmail() {
+  const gatewayUrl = process.env.WEBAROO_GATEWAY_URL || 'https://enterprise.webaroo.com/GatewayAPI/rest';
+  const userid = process.env.WEBAROO_USERID || '2000xxxx';
+  const password = process.env.WEBAROO_PASSWORD || 'password';
+  const recipient = process.argv[2] || 'cc@messagewall.in';
 
-  console.log('Testing SMTP connection with:');
-  console.log('Email:', email);
+  console.log('Testing Webaroo Gateway API with:');
+  console.log('Gateway URL:', gatewayUrl);
+  console.log('User ID:', userid);
   console.log('Password length:', password.length);
-  console.log('Password starts with:', password.substring(0, 3) + '...');
+  console.log('Recipient:', recipient);
 
-  if (!email || !password) {
-    console.error('Error: GMAIL_EMAIL or GMAIL_PASSWORD is not set in .env.local');
-    return;
-  }
+  const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+  const emailHtml = `
+    <div style="font-family: Arial, sans-serif; padding: 20px; border: 1px solid #eee; border-radius: 5px; max-width: 500px;">
+      <h2 style="color: #D85A30; text-align: center;">Email Verification Code</h2>
+      <p>Hello,</p>
+      <p>Your 6-digit verification code is:</p>
+      <div style="text-align: center; margin: 30px 0;">
+        <span style="font-size: 28px; font-weight: bold; letter-spacing: 5px; background: #f7f7f7; padding: 10px 20px; border-radius: 5px; border: 1px dashed #ccc; color: #333;">
+          ${otpCode}
+        </span>
+      </div>
+      <p style="color: #666; font-size: 12px;">This OTP is valid for <strong>5 minutes</strong>.</p>
+    </div>
+  `;
 
-  const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: email,
-      pass: password,
-    },
-  });
+  const formData = new FormData();
+  formData.append('method', 'EMS_POST_CAMPAIGN');
+  formData.append('userid', userid);
+  formData.append('password', password);
+  formData.append('recipients', recipient);
+  formData.append('subject', 'TEST EMAIL OTP');
+  formData.append('content', encodeURIComponent(emailHtml));
+  formData.append('content_type', 'text/html');
+  formData.append('auth_scheme', 'PLAIN');
+  formData.append('name', 'TEST EMAIL');
+  formData.append('v', '1.1');
+  formData.append('format', 'xml');
+  formData.append('check_duplicate_post', 'true');
 
   try {
-    console.log('Verifying SMTP connection...');
-    await transporter.verify();
-    console.log('Success! SMTP connection is verified and working.');
+    console.log('Sending request to Webaroo Gateway API...');
+    const response = await fetch(gatewayUrl, {
+      method: 'POST',
+      body: formData,
+    });
+
+    const responseText = await response.text();
+    console.log('HTTP Status:', response.status);
+    console.log('Raw Gateway Response:');
+    console.log(responseText);
+
+    const isError = responseText.toLowerCase().includes('<status>error</status>');
+    if (isError) {
+      console.warn('\nGateway returned an error response.');
+      console.warn('Note: If credentials (userid/password) are placeholders (2000xxxx), please update them in .env.local with your active Webaroo account details.');
+    } else {
+      console.log('\nSuccess! Gateway accepted the email campaign request.');
+    }
   } catch (error) {
-    console.error('SMTP Verification Failed:');
-    console.error(error);
+    console.error('Network/Execution Error:', error);
   }
 }
 
-testEmail();
+testWebarooEmail();
