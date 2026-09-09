@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next';
 
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = 'https://probasibangali.in';
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://probasibangali.in';
 
   return {
     rules: [
@@ -18,6 +18,17 @@ export default function robots(): MetadataRoute.Robots {
       },
       {
         userAgent: 'Googlebot',
+        allow: '/',
+        disallow: [
+          '/admin/',
+          '/api/',
+          '/profile/',
+          '/settings/',
+          '/blocked/',
+        ],
+      },
+      {
+        userAgent: 'Bingbot',
         allow: '/',
         disallow: [
           '/admin/',

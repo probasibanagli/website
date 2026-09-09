@@ -17,33 +17,64 @@ import { FeatureTour } from '@/components/layout/FeatureTour';
 import { PageSkeletonLoader } from '@/components/ui/PageSkeletonLoader';
 import { LanguageTransitionOverlay } from '@/components/layout/LanguageTransitionOverlay';
 
-import { WebSiteJsonLd, OrganizationJsonLd } from '@/components/seo/JsonLd';
+import { WebSiteJsonLd, OrganizationJsonLd, HomeFaqJsonLd } from '@/components/seo/JsonLd';
 
 export const dynamic = 'force-dynamic';
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://probasibangali.in';
+
 export const metadata: Metadata = {
-  metadataBase: new URL('https://probasibangali.in'),
+  metadataBase: new URL(siteUrl),
   title: {
-    default: 'ProbasiBangali – Bengali Community Portal in Tamil Nadu',
-    template: '%s | ProbasiBangali',
+    default: 'ProbasiBangali (প্রবাসী বাঙালি) – #1 Bengali Community in Tamil Nadu | Food, Stay, Doctors, Ambulance',
+    template: '%s | ProbasiBangali – Bengali Community',
   },
-  description: 'Your trusted Bengali community portal in Tamil Nadu. Explore verified Bengali PG accommodation, authentic Bengali food & mess, Bengali speaking doctors, emergency healthcare assistance, inter-state ambulance, legal guidance, matrimonial matching, and cultural events across Chennai, Coimbatore, Vellore, and Tamil Nadu.',
+  description: 'Probasi Bangali (প্রবাসী বাঙালি / Probashi Bengali) – The official #1 community portal for Bengalis living in Tamil Nadu. Verified Bengali PG accommodation, authentic Bengali food & mess, Bengali speaking doctors in Chennai & CMC Vellore, 24/7 interstate ICU ambulance Chennai to Kolkata, Durga Puja events, and matrimonial matching across Chennai, Coimbatore, Vellore & Tamil Nadu.',
   keywords: [
-    'Probasi Bangali',
-    'Bengali in Tamil Nadu',
-    'Bengali PG Chennai',
-    'Bengali food Chennai',
-    'Bengali doctors Chennai',
-    'Bengali speaking doctors Vellore',
-    'Bengali mess Chennai',
-    'Bengali hotel Chennai',
-    'Bengali community Tamil Nadu',
-    'Ambulance Chennai to Kolkata',
-    'Ambulance Tamil Nadu to West Bengal',
-    'Durga Puja Chennai',
-    'Bengali matrimonial Tamil Nadu',
-    'Bengali students Tamil Nadu',
-    'CMC Vellore Bengali patient help',
+    'bangali',
+    'bengali',
+    'probasi bangali',
+    'probashi bengali',
+    'prabasi bangali',
+    'prabasi bengali',
+    'probasi bangla',
+    'probashi bangla',
+    'probsaibangali',
+    'probasibangali',
+    'probasi bangali tamil nadu',
+    'probashi bengali tamil nadu',
+    'প্রবাসী বাঙালি',
+    'প্রবাসী বাংলা',
+    'বাঙালি',
+    'বাঙালি মেস চেন্নাই',
+    'বাঙালি খাবার তামিলনাড়ু',
+    'বাঙালি ডাক্তার',
+    'দুর্গাপূজা চেন্নাই',
+    'bengali community in tamil nadu',
+    'bangali community tamil nadu',
+    'bengalis in chennai',
+    'bengali in tamil nadu',
+    'bengali pg chennai',
+    'bengali food chennai',
+    'bengali mess chennai',
+    'bengali hotel chennai',
+    'bengali restaurant chennai',
+    'bengali sweets chennai',
+    'kolkata biryani chennai',
+    'bengali doctors chennai',
+    'bengali speaking doctors vellore',
+    'cmc vellore bengali patient help',
+    'ambulance chennai to kolkata',
+    'icu ambulance tamil nadu to west bengal',
+    'durga puja chennai',
+    'bengali association chennai',
+    'bengali matrimonial tamil nadu',
+    'bengali students tamil nadu',
+    'bengali workers tamil nadu',
+    'வங்காளி',
+    'பெங்காலி சமூகம்',
+    'சென்னையில் பெங்காலி உணவு',
+    'சென்னையில் பெங்காலி மருத்துவர்',
   ],
   authors: [{ name: 'ProbasiBangali Community' }],
   creator: 'ProbasiBangali',
@@ -52,10 +83,10 @@ export const metadata: Metadata = {
     canonical: '/',
   },
   openGraph: {
-    title: 'ProbasiBangali – Bengali Community Portal in Tamil Nadu',
-    description: 'Find verified Bengali PG accommodation, authentic food, Bengali speaking doctors, emergency healthcare, and community connections across Tamil Nadu.',
-    url: 'https://probasibangali.in',
-    siteName: 'ProbasiBangali',
+    title: 'ProbasiBangali (প্রবাসী বাঙালি) – #1 Bengali Community in Tamil Nadu',
+    description: 'Connecting Bengalis across Tamil Nadu. Verified Bengali PG & food, Bengali speaking doctors, interstate ICU ambulance Chennai to Kolkata, matrimonial, and community events.',
+    url: siteUrl,
+    siteName: 'ProbasiBangali (প্রবাসী বাঙালি)',
     locale: 'en_IN',
     type: 'website',
     images: [
@@ -63,14 +94,14 @@ export const metadata: Metadata = {
         url: '/logo.png',
         width: 1200,
         height: 630,
-        alt: 'ProbasiBangali – Bengali Community in Tamil Nadu',
+        alt: 'ProbasiBangali (প্রবাসী বাঙালি) – Bengali Community in Tamil Nadu',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'ProbasiBangali – Bengali Community Portal in Tamil Nadu',
-    description: 'Find verified Bengali PG accommodation, authentic food, Bengali speaking doctors, emergency healthcare, and community connections across Tamil Nadu.',
+    title: 'ProbasiBangali (প্রবাসী বাঙালি) – #1 Bengali Community in Tamil Nadu',
+    description: 'Connecting Bengalis across Tamil Nadu with verified PG, authentic food, Bengali speaking doctors, ambulance, and community support.',
     images: ['/logo.png'],
   },
   robots: {
@@ -83,6 +114,13 @@ export const metadata: Metadata = {
       'max-image-preview': 'large',
       'max-snippet': -1,
     },
+  },
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
+  },
+  other: {
+    'geo.region': 'IN-TN',
+    'geo.placename': 'Chennai, Tamil Nadu, India',
   },
   icons: {
     icon: [
@@ -152,6 +190,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         />
         <WebSiteJsonLd />
         <OrganizationJsonLd />
+        <HomeFaqJsonLd />
         <LanguageProvider>
           <LanguageTransitionOverlay />
           <AlertProvider>

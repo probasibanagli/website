@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://probasibangali.in';
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://probasibangali.in';
   const now = new Date();
 
   return [

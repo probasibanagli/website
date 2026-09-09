@@ -1,18 +1,27 @@
 import type { Metadata } from 'next';
 import { BreadcrumbJsonLd } from '@/components/seo/JsonLd';
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://probasibangali.in';
+
 export const metadata: Metadata = {
-  title: 'Bengali Food, Mess & Restaurants in Tamil Nadu',
-  description: 'Discover authentic Bengali restaurants, sweet shops, fish markets, tiffin services, and home delivery across Chennai, Coimbatore, Vellore and Tamil Nadu. Kolkata biryani, kosha mangsho, ilish, and mishti doi.',
+  title: 'Bengali Food, Mess & Restaurants in Chennai & Tamil Nadu | ProbasiBangali',
+  description: 'Discover authentic Bengali food, mess, sweet shops, fish markets, tiffin services, and home delivery across Chennai, Coimbatore, Vellore and Tamil Nadu. Kolkata biryani, kosha mangsho, ilish, and mishti doi.',
   keywords: [
     'Bengali food Chennai',
+    'Bangali food Chennai',
+    'Bengali mess Chennai',
+    'Bangali mess Chennai',
     'Bengali restaurant Tamil Nadu',
     'Bengali sweets Chennai',
     'Kolkata biryani in Chennai',
-    'Bengali mess Chennai',
     'Bengali tiffin service Chennai',
     'Bengali fish market Chennai',
     'Mishti doi Chennai',
+    'বাঙালি খাবার চেন্নাই',
+    'বাঙালি মেস',
+    'কলকাতা বিরিয়ানি',
+    'মিষ্টি দই',
+    'Probasi Bangali food',
   ],
   alternates: {
     canonical: '/explore/food',
@@ -20,7 +29,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Bengali Food, Mess & Restaurants in Tamil Nadu | ProbasiBangali',
     description: 'Find authentic Bengali restaurants, sweet shops, tiffin services, and Kolkata flavors in Tamil Nadu.',
-    url: 'https://probasibangali.in/explore/food',
+    url: `${SITE_URL}/explore/food`,
     type: 'website',
   },
   twitter: {
@@ -35,8 +44,8 @@ export default function FoodLayout({ children }: { children: React.ReactNode }) 
     <>
       <BreadcrumbJsonLd
         items={[
-          { name: 'Home', url: 'https://probasibangali.in' },
-          { name: 'Bengali Food & Restaurants', url: 'https://probasibangali.in/explore/food' },
+          { name: 'Home', url: SITE_URL },
+          { name: 'Bengali Food & Restaurants', url: `${SITE_URL}/explore/food` },
         ]}
       />
       {children}
