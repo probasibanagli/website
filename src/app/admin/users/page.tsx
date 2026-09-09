@@ -26,7 +26,11 @@ const ADMIN_DEFAULT_PERMISSIONS = {
   matrimony: 'edit',
   travel: 'edit',
   blood_bank: 'edit',
-  ambulance: 'edit'
+  ambulance: 'edit',
+  events: 'edit',
+  government_services: 'edit',
+  legal: 'edit',
+  chamber_of_commerce: 'edit',
 };
 
 const USER_DEFAULT_PERMISSIONS = {
@@ -43,7 +47,8 @@ const USER_DEFAULT_PERMISSIONS = {
   ambulance: 'none',
   events: 'none',
   government_services: 'none',
-  legal: 'none'
+  legal: 'none',
+  chamber_of_commerce: 'none',
 };
 
 const AVAILABLE_MODULES = [
@@ -60,7 +65,8 @@ const AVAILABLE_MODULES = [
   { key: 'ambulance', label: 'Ambulance Directory' },
   { key: 'events', label: 'Events & Festivals' },
   { key: 'government_services', label: 'Government Services' },
-  { key: 'legal', label: 'Legal Services' }
+  { key: 'legal', label: 'Legal Services' },
+  { key: 'chamber_of_commerce', label: 'Chamber of Commerce' }
 ];
 
 export default function AdminUsersPage() {

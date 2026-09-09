@@ -139,9 +139,14 @@ button, input, select, textarea {
   animation: shimmer 1.5s infinite linear;
 }
 
-/* Bengali script styling */
-.bengali-text {
-  font-family: var(--font-bengali);
+/* Bengali script styling & accelerated font rendering */
+.bengali-text,
+html[lang="bn"],
+html[lang="bn"] body,
+body.translated-ltr,
+body.translated-rtl {
+  font-family: var(--font-bengali), var(--font-sans), system-ui, -apple-system, sans-serif !important;
+  font-feature-settings: "liga" 1;
 }
 
 /* Traditional Bengali Alpana Repeating Pattern Watermark */
@@ -154,7 +159,7 @@ button, input, select, textarea {
    GOOGLE TRANSLATE HIDING (AGRESSIVE)
    ============================================================ */
 
-/* Hide the main toolbar banner */
+/* Hide the main toolbar banner and tooltip */
 .goog-te-banner-frame, 
 #goog-gt-tt, 
 .goog-te-balloon-frame, 
@@ -162,6 +167,8 @@ button, input, select, textarea {
 .goog-tooltip,
 .goog-tooltip:hover {
     display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
 }
 
 /* Hide the "original text" tooltip on hover */
@@ -177,14 +184,23 @@ body {
     position: relative !important;
 }
 
-/* Hide the widget container itself */
+/* Position Google Translate widget container off-screen without display:none */
 #google_translate_element {
-    display: none !important;
+    position: fixed !important;
+    top: -9999px !important;
+    left: -9999px !important;
+    width: 1px !important;
+    height: 1px !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    z-index: -9999 !important;
 }
 
-/* Hide any skiptranslate elements Google injects */
-.skiptranslate {
+/* Only hide top body-level skiptranslate banner frame, do not hide the select combo */
+body > .skiptranslate {
     display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
 }
 
 /* Hide the attribution images/labels */

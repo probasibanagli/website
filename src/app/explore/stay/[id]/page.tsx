@@ -190,11 +190,17 @@ export default function StayDetailPage() {
           <Card className="bg-gradient-to-br from-primary-light to-white border-primary/20 p-6 space-y-6 h-full flex flex-col justify-between">
             <div>
               <div className="flex justify-between items-start gap-4">
-                <div>
-                  <p className="text-3xl font-bold text-primary">{formatPrice(listing.price_monthly || listing.price_per_month || listing.price_daily || 0)}</p>
-                  <p className="text-sm text-text-muted">{listing.price_daily ? 'per day' : 'per month'}</p>
-                  {listing.price_range && <p className="text-xs text-text-muted mt-1">{listing.price_range}</p>}
-                </div>
+                {listing.accommodation_type !== 'Flatmate' && listing.type !== 'flatmate' && (listing.price_monthly || listing.price_per_month || listing.price_daily) ? (
+                  <div>
+                    <p className="text-3xl font-bold text-primary">{formatPrice(listing.price_monthly || listing.price_per_month || listing.price_daily || 0)}</p>
+                    <p className="text-sm text-text-muted">{listing.price_daily ? 'per day' : 'per month'}</p>
+                    {listing.price_range && <p className="text-xs text-text-muted mt-1">{listing.price_range}</p>}
+                  </div>
+                ) : (
+                  <div>
+                    <p className="text-lg font-bold text-emerald-700">Room Sharing / Bill Split</p>
+                  </div>
+                )}
                 <div className="text-right text-sm">
                   <p className="font-semibold text-text-primary">{listing.contact_person_name || listing.owner_name}</p>
                   {(listing.contact_phone || listing.owner_phone) && (

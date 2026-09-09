@@ -17,7 +17,8 @@ export type ModuleKey =
   | 'events'
   | 'ambulance'
   | 'government_services'
-  | 'legal';
+  | 'legal'
+  | 'chamber_of_commerce';
 
 export type ModulePermissions = Record<ModuleKey, PermissionLevel>;
 
@@ -59,6 +60,7 @@ export const MODULE_LABELS: Record<ModuleKey, string> = {
   ambulance: 'Ambulance Directory',
   government_services: 'Government Services',
   legal: 'Legal Services',
+  chamber_of_commerce: 'Chamber of Commerce',
 };
 
 /* ──────────────── Government Service Data Model ──────────────── */
@@ -151,7 +153,7 @@ export type LegalServiceItem = LegalAidCentre | LegalHelpline | LegalCategory | 
 
 export interface Listing {
   id: string;
-  type: 'pg' | 'hotel' | 'rental' | 'rental-house';
+  type: 'pg' | 'hotel' | 'rental' | 'rental-house' | 'flatmate';
   name: string;
   description?: string;
   city: string;
@@ -176,7 +178,7 @@ export interface Listing {
   verified: boolean;
   available_rooms?: number;
   deposit_amount?: number;
-  accommodation_type?: 'PG' | 'Hotel' | 'Service Apartment' | 'Rental House';
+  accommodation_type?: 'PG' | 'Hotel' | 'Service Apartment' | 'Rental House' | 'Flatmate';
   contact_person_name?: string;
   contact_whatsapp?: string;
   contact_email?: string;
@@ -596,5 +598,59 @@ export interface HospitalReview {
   category: 'Hospital Services' | 'Doctors & Staff' | 'Cleanliness' | 'Facilities' | 'Website Experience' | 'Other';
   comment: string;
   created_at: string;
+}
+
+/* ──────────────── Bengali Chamber of Commerce Data Model ──────────────── */
+
+export interface ChamberJobOpening {
+  id: string;
+  title: string;
+  job_type: 'Full-time' | 'Part-time' | 'Internship' | 'Freelance' | 'Contract';
+  location?: string;
+  experience?: string;
+  salary_range?: string;
+  description?: string;
+  requirements?: string;
+  contact_email?: string;
+  contact_phone?: string;
+  is_active?: boolean;
+  posted_at?: string;
+}
+
+export interface ChamberBusiness {
+  id: string;
+  user_id?: string; // Firebase UID of the owner who registered
+  owner_name: string;
+  business_name: string;
+  category: string;
+  sub_category?: string;
+  registration_number?: string;
+  gst_number?: string;
+  year_established?: string | number;
+  description: string;
+  services_offered?: string[];
+  address: string;
+  area?: string;
+  city: string;
+  district?: string;
+  state?: string;
+  pincode?: string;
+  contact_email: string;
+  contact_phone: string;
+  whatsapp?: string;
+  website?: string;
+  google_maps_url?: string;
+  logo_url?: string;
+  images?: string[];
+  hiring_status: 'hiring' | 'open_for_enquiry' | 'not_hiring';
+  job_openings?: ChamberJobOpening[];
+  verified: boolean;
+  verification_status: 'pending' | 'verified' | 'rejected';
+  rejection_reason?: string;
+  verified_at?: string;
+  verified_by?: string;
+  is_active?: boolean;
+  created_at: string;
+  updated_at?: string;
 }
 

@@ -18,7 +18,7 @@ interface ListingItem {
   address?: string;
   pincode?: string;
   description?: string;
-  accommodation_type?: 'PG' | 'Hotel' | 'Service Apartment' | 'Rental Home';
+  accommodation_type?: 'PG' | 'Hotel' | 'Service Apartment' | 'Rental Home' | 'Rental House' | 'Flatmate';
   type?: string;
   contact_person_name?: string;
   owner_name?: string;
@@ -317,6 +317,7 @@ export default function AdminStayPage() {
                     <option value="Hotel">Hotel</option>
                     <option value="Service Apartment">Service Apartment</option>
                     <option value="Rental House">Rental House</option>
+                    <option value="Flatmate">Flatmate</option>
                   </select>
                 </div>
                 <div>

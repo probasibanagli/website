@@ -68,7 +68,7 @@ function LegalAdminContent() {
   function openAdd() {
     setEditId(null);
     setFormData({
-      category: 'Legal Services Authority',
+      category: 'Legal Organizations',
       city: 'Chennai',
       verified: true
     });
@@ -410,12 +410,9 @@ function LegalAdminContent() {
                   className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm cursor-pointer focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
                 >
                   <option value="">Select Category...</option>
-                  <option value="Judiciary - High Court">Judiciary - High Court</option>
-                  <option value="Legal Services Authority">Legal Services Authority</option>
-                  <option value="Bar Council">Bar Council</option>
-                  <option value="Government - Law Department">Government - Law Department</option>
-                  <option value="Legal Education">Legal Education</option>
-                  <option value="Other">Other</option>
+                  <option value="Legal Organizations">Legal Organizations</option>
+                  <option value="Legal Services">Legal Services</option>
+                  <option value="Bengali Advocates">Bengali Advocates</option>
                 </select>
               </div>
 
@@ -592,10 +589,10 @@ function LegalAdminContent() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-text-primary flex items-center gap-2">
-            <Scale className="w-6 h-6 text-primary" /> Legal Services & Courts Management
+            <Scale className="w-6 h-6 text-primary" /> Legal Services Management
           </h1>
           <p className="text-text-muted text-sm mt-1">
-            Manage high courts, district legal services authorities, taluk committees, bar councils, and legal aid listings.
+            Manage legal organizations, legal advisory services, and Bengali advocates listings.
           </p>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
@@ -624,30 +621,42 @@ function LegalAdminContent() {
         </div>
       </div>
 
+      {/* Category Tabs */}
+      <div className="flex items-center gap-2 border-b border-border pb-2 overflow-x-auto">
+        {['All Categories', 'Legal Organizations', 'Legal Services', 'Bengali Advocates'].map((tab) => {
+          const isAll = tab === 'All Categories';
+          const isSelected = isAll ? !categoryFilter : categoryFilter === tab;
+          const count = isAll ? items.length : items.filter(i => i.category === tab).length;
+          return (
+            <button
+              key={tab}
+              onClick={() => setCategoryFilter(isAll ? '' : tab)}
+              className={`px-4 py-2 text-sm font-bold rounded-xl whitespace-nowrap transition-all cursor-pointer flex items-center gap-2 ${
+                isSelected
+                  ? 'bg-primary text-white shadow-sm'
+                  : 'bg-white text-text-muted hover:text-text-primary hover:bg-surface border border-border'
+              }`}
+            >
+              <span>{tab}</span>
+              <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${isSelected ? 'bg-white/20 text-white' : 'bg-surface text-text-muted'}`}>
+                {count}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
       {/* Filters and Search Bar */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-white p-4 rounded-2xl border border-border shadow-xs">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-white p-4 rounded-2xl border border-border shadow-xs">
         <div className="relative">
           <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" />
           <input 
             type="text" 
-            placeholder="Search office name, address, phone..."
+            placeholder="Search name, advocate, address, phone..."
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
             className="w-full pl-9 pr-3 py-2 bg-surface border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
           />
-        </div>
-
-        <div className="relative">
-          <select 
-            value={categoryFilter} 
-            onChange={e => setCategoryFilter(e.target.value)} 
-            className="w-full px-3 py-2 bg-surface border border-border rounded-xl text-sm cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/20"
-          >
-            <option value="">All Categories ({items.length})</option>
-            {LEGAL_CATEGORIES.filter(c => c !== 'All Offices').map(cat => (
-              <option key={cat} value={cat}>{cat}</option>
-            ))}
-          </select>
         </div>
 
         <div className="relative">

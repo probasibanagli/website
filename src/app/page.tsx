@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { T } from '@/lib/contexts/LanguageContext';
-import { ArrowRight, Home, UtensilsCrossed, Bus, Users, Heart, Calendar, CalendarDays, GraduationCap, Landmark, Hospital, Droplets, Siren, Phone, MapPin, Shield, Zap } from 'lucide-react';
+import { ArrowRight, Home, UtensilsCrossed, Bus, Users, Heart, Calendar, CalendarDays, GraduationCap, Landmark, Hospital, Droplets, Siren, Phone, MapPin, Shield, Zap, HelpCircle, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/Badge';
@@ -23,17 +23,24 @@ export default function HomePage() {
             
             {/* Text Column */}
             <div className="flex-1 text-center lg:text-left space-y-6 animate-fade-in">
-              <Badge variant="teal" className="inline-flex">
-                <T>Bengali community platform for Tamil Nadu</T>
-              </Badge>
+              <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2">
+                <Badge variant="teal" className="inline-flex">
+                  <T>#1 Bengali Community Platform in Tamil Nadu</T>
+                </Badge>
+                <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-primary/10 text-primary border border-primary/20">
+                  প্রবাসী বাঙালি • Probashi Bengali
+                </span>
+              </div>
 
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold font-display text-text-primary leading-tight animate-fade-in delay-100">
-                <T>Feel at</T> <em className="text-primary not-italic"><T>Home</T></em>,<br />
-                <T>Wherever You Are</T>
+                Probasi Bangali <span className="text-primary font-normal text-2xl sm:text-3xl lg:text-4xl inline-block ml-2">(প্রবাসী বাঙালি)</span>
+                <span className="block mt-2 text-3xl sm:text-4xl lg:text-5xl font-display font-semibold text-text-primary">
+                  <T>Feel at</T> <em className="text-primary not-italic"><T>Home</T></em>, <T>Wherever You Are</T>
+                </span>
               </h1>
 
               <p className="text-lg text-text-muted max-w-2xl mx-auto lg:mx-0 leading-relaxed animate-fade-in delay-200">
-                <T>Find Bengali food, safe accommodation, travel help, and community connections — built for Bengalis living in Tamil Nadu.</T>
+                <T>The dedicated Bengali community portal across Tamil Nadu. Find authentic Bengali food & mess, verified Bengali PG accommodation, Bengali speaking doctors in Chennai & CMC Vellore, 24/7 interstate ICU ambulance, and Durga Puja celebrations.</T>
               </p>
 
               <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-4 animate-fade-in delay-300">
@@ -293,6 +300,102 @@ export default function HomePage() {
         </div>
       </section>
 
+
+      {/* ====== BENGALI COMMUNITY SEO & FAQ SECTION ====== */}
+      <section className="py-16 lg:py-24 bg-white border-t border-border/40">
+        <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
+          <ScrollReveal direction="up">
+            <div className="text-center max-w-3xl mx-auto mb-12">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold mb-3 border border-primary/20">
+                <HelpCircle className="w-3.5 h-3.5" />
+                <span>Probasi Bangali (প্রবাসী বাঙালি) Guide</span>
+              </div>
+              <h2 className="text-3xl sm:text-4xl font-bold font-display text-text-primary tracking-tight">
+                Frequently Asked Questions about Bengalis in Tamil Nadu
+              </h2>
+              <p className="mt-3 text-base text-text-muted">
+                Essential information for Bengali residents, students, professionals, and patients visiting Chennai, Coimbatore, Vellore, and Tamil Nadu.
+              </p>
+            </div>
+
+            <div className="space-y-4 max-w-4xl mx-auto">
+              {[
+                {
+                  q: 'What is Probasi Bangali (প্রবাসী বাঙালি / Probashi Bengali)?',
+                  tag: 'About Community',
+                  a: 'Probasi Bangali (also referred to as Probashi Bengali, Prabasi Bangali, or প্রবাসী বাঙালি) is the premier community portal dedicated to Bengali people residing in Tamil Nadu. The platform bridges the diaspora with verified Bengali PG accommodation, authentic Kolkata-style food & mess, Bengali-speaking doctors, interstate road ambulance, and cultural associations.',
+                  link: '/community/groups',
+                  linkText: 'Join Bengali Community',
+                },
+                {
+                  q: 'Where can I find authentic Bengali food, mess, and sweets in Chennai & Tamil Nadu?',
+                  tag: 'Bengali Food',
+                  a: 'Probasi Bangali features a curated directory of authentic Bengali restaurants, sweet shops (Mishti Doi, Rosogolla, Sandesh), daily home-delivery mess, and fresh fish markets across Chennai (T. Nagar, Velachery, Central, Anna Nagar, Porur) as well as Coimbatore and Vellore.',
+                  link: '/explore/food',
+                  linkText: 'Explore Bengali Food & Mess',
+                },
+                {
+                  q: 'How can I find Bengali speaking doctors in Chennai and CMC Vellore?',
+                  tag: 'Healthcare',
+                  a: 'Navigating medical treatments in Tamil Nadu is made easier through our verified list of Bengali speaking doctors, nurses, and patient care consultants across top hospitals including CMC Vellore, Apollo Hospitals Chennai, SIMS, and MIOT International.',
+                  link: '/emergency/hospitals/bengali-doctors',
+                  linkText: 'Find Bengali Doctors',
+                },
+                {
+                  q: 'Is 24/7 ICU ambulance available from Chennai/Tamil Nadu to West Bengal/Kolkata?',
+                  tag: 'Emergency SOS',
+                  a: 'Yes, Probasi Bangali connects patients and families directly with verified 24/7 private ICU road ambulances equipped with ventilators, continuous oxygen support, and trained medical escorts for patient transport from Chennai, Vellore, and across Tamil Nadu to Kolkata and West Bengal.',
+                  link: '/emergency/ambulance',
+                  linkText: 'View ICU Ambulance Services',
+                },
+                {
+                  q: 'How to find Bengali PG and room rentals in Chennai and Tamil Nadu?',
+                  tag: 'Stay & PG',
+                  a: 'Our verified accommodation portal lists student and working professional PGs, hostels, and flatmates with Bengali food options near major IT corridors (OMR, Guindy, Velachery) and universities (VIT Vellore, SRM, Anna University).',
+                  link: '/explore/stay',
+                  linkText: 'Browse Bengali PG & Stay',
+                },
+                {
+                  q: 'Where are Durga Puja and Bengali cultural events celebrated in Tamil Nadu?',
+                  tag: 'Durga Puja & Culture',
+                  a: 'Explore listings of Durga Puja pandals, Kali Puja, Saraswati Puja, Bengali New Year (Poila Boishakh), and cultural programs organized by Bengali associations in Chennai, Coimbatore, and Vellore.',
+                  link: '/community/events',
+                  linkText: 'Discover Durga Puja Events',
+                },
+              ].map((faq, idx) => (
+                <details
+                  key={idx}
+                  className="group rounded-2xl border border-border/80 bg-white p-5 sm:p-6 transition-all duration-200 hover:border-primary/40 hover:shadow-sm [&_summary::-webkit-details-marker]:hidden"
+                >
+                  <summary className="flex cursor-pointer items-center justify-between gap-4 text-left">
+                    <div className="space-y-1">
+                      <span className="text-xs font-semibold text-primary uppercase tracking-wider">{faq.tag}</span>
+                      <h3 className="text-base sm:text-lg font-bold text-text-primary group-hover:text-primary transition-colors">
+                        {faq.q}
+                      </h3>
+                    </div>
+                    <div className="h-8 w-8 shrink-0 rounded-full bg-slate-100 flex items-center justify-center text-text-muted group-hover:bg-primary/10 group-hover:text-primary transition-colors">
+                      <ChevronDown className="h-4 w-4 transition-transform duration-200 group-open:rotate-180" />
+                    </div>
+                  </summary>
+                  <div className="mt-4 pt-4 border-t border-border/40 text-sm sm:text-base text-text-muted leading-relaxed">
+                    <p>{faq.a}</p>
+                    <div className="mt-3">
+                      <Link
+                        href={faq.link}
+                        className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-primary hover:underline"
+                      >
+                        <span>{faq.linkText}</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </Link>
+                    </div>
+                  </div>
+                </details>
+              ))}
+            </div>
+          </ScrollReveal>
+        </div>
+      </section>
 
       {/* ====== CTA SECTION ====== */}
       <section className="py-20 bg-accent-light">

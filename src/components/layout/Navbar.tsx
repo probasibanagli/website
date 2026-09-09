@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { T } from '@/lib/contexts/LanguageContext';
 import { usePathname, useRouter } from 'next/navigation';
 import {
-  Menu, X, ChevronDown, Phone, Globe, User, Shield, LogOut, Home, Users, Heart, Calendar, PlusCircle, Droplets, Ambulance, GraduationCap, Building, Bus, Gift, Info, Scale, Check
+  Menu, X, ChevronDown, Phone, Globe, User, Shield, LogOut, Home, Users, Heart, Calendar, PlusCircle, Droplets, Ambulance, GraduationCap, Building, Bus, Gift, Info, Scale, Check, Briefcase
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -49,6 +49,7 @@ const navLinks = [
       { label: 'College/School Finder', href: '/services/college', icon: <GraduationCap className="w-4 h-4" /> },
       { label: 'Government Services', href: '/services/government', icon: <Building className="w-4 h-4" /> },
       { label: 'Legal Services', href: '/services/legal', icon: <Scale className="w-4 h-4" /> },
+      { label: 'Chamber of Commerce', href: '/services/chamber-of-commerce', icon: <Briefcase className="w-4 h-4" /> },
     ],
   },
 ];

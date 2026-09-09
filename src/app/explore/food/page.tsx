@@ -126,162 +126,147 @@ export default function FoodPage() {
   }, [combinedListings, activeType, city, area, bengaliOnly, searchQuery]);
 
   return (
-    <div className="min-h-screen bg-surface">
+    <div className="min-h-screen bg-surface">      {/* Header */}
       <div className="bg-white border-b border-border">
-        <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="flex flex-col lg:flex-row gap-8 justify-between">
-            <div className="flex-1">
-              <div className="flex items-center gap-2 text-sm text-text-muted mb-4">
-            <Link href="/" className="hover:text-primary">Home</Link><span>/</span>
-            <Link href="/explore/food" className="hover:text-primary">Explore</Link><span>/</span>
+        <div className="max-w-[1536px] mx-auto px-3 sm:px-6 lg:px-8 py-3 md:py-4 lg:py-5">
+          <div className="hidden md:flex items-center gap-2 text-xs md:text-sm text-text-muted mb-2">
+            <Link href="/" className="hover:text-primary">Home</Link>
+            <span>/</span>
+            <Link href="/explore/food" className="hover:text-primary">Explore</Link>
+            <span>/</span>
             <span className="text-text-primary font-medium">Food</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold font-display text-text-primary">Bengali Food & Sweets</h1>
-          <p className="mt-2 text-text-muted">Discover authentic Bengali restaurants, sweet shops, tiffin services, and delivery partners.</p>
+          <h1 className="text-lg sm:text-2xl md:text-3xl font-bold font-display text-text-primary leading-tight">
+            Bengali Food & Sweets
+          </h1>
+          <p className="hidden md:block mt-1 text-xs md:text-sm text-text-muted">Authentic Bengali restaurants, sweet shops, and tiffin services in Tamil Nadu.</p>
 
           {/* Type Tabs */}
-          <div className="mt-6 flex flex-wrap gap-2">
+          <div className="mt-2.5 md:mt-3.5 flex flex-wrap items-center gap-1 sm:gap-2 justify-between sm:justify-start w-full">
             {[
-              { value: 'all', label: 'All', icon: null },
-              { value: 'restaurant', label: 'Restaurants', icon: (active: boolean) => <Utensils className={`w-4 h-4 ${active ? 'text-white' : 'text-black'}`} /> },
-              { value: 'sweets', label: 'Sweets', icon: (active: boolean) => <Candy className={`w-4 h-4 ${active ? 'text-white' : 'text-black'}`} /> },
-              { value: 'tiffin', label: 'Tiffin', icon: (active: boolean) => <Soup className={`w-4 h-4 ${active ? 'text-white' : 'text-black'}`} /> },
-              { value: 'cloud kitchen', label: 'Cloud Kitchen', icon: (active: boolean) => <ChefHat className={`w-4 h-4 ${active ? 'text-white' : 'text-black'}`} /> },
+              { value: 'all', label: 'All', icon: (active: boolean) => <Utensils className={`w-3.5 h-3.5 ${active ? 'text-white' : 'text-primary'}`} /> },
+              { value: 'restaurant', label: 'Restaurants', icon: (active: boolean) => <Utensils className={`w-3.5 h-3.5 ${active ? 'text-white' : 'text-primary'}`} /> },
+              { value: 'sweets', label: 'Sweets', icon: (active: boolean) => <Candy className={`w-3.5 h-3.5 ${active ? 'text-white' : 'text-primary'}`} /> },
+              { value: 'tiffin', label: 'Tiffin Service', icon: (active: boolean) => <Soup className={`w-3.5 h-3.5 ${active ? 'text-white' : 'text-primary'}`} /> },
+              { value: 'delivery partner', label: 'Delivery', icon: (active: boolean) => <Truck className={`w-3.5 h-3.5 ${active ? 'text-white' : 'text-primary'}`} /> },
             ].map((tab) => {
               const active = activeType === tab.value;
               return (
                 <button key={tab.value} onClick={() => setActiveType(tab.value as string)}
-                  className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all cursor-pointer ${active ? 'bg-primary text-white shadow-md' : 'bg-white text-text-primary border border-border hover:border-primary'}`}>
+                  className={`inline-flex items-center justify-center gap-1.5 px-2.5 py-1 md:px-3.5 md:py-1.5 rounded-full text-[11px] sm:text-xs md:text-sm font-semibold transition-all cursor-pointer flex-1 sm:flex-initial text-center ${active ? 'bg-primary text-white shadow-sm' : 'bg-white text-text-primary border border-border hover:border-primary'}`}>
                   {tab.icon ? tab.icon(active) : null}
                   <span>{tab.label}</span>
                 </button>
               );
             })}
-
           </div>
 
           {/* Unified Filter Bar */}
-          <div className="mt-6 flex flex-col sm:flex-row flex-wrap gap-3 relative z-30">
+          <div className="mt-2.5 md:mt-3.5 flex flex-col md:flex-row md:flex-wrap items-stretch md:items-center gap-2 md:gap-3 relative z-30">
             {/* Search */}
-            <div className="relative flex-1 min-w-[200px] max-w-sm">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
-              <input value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="Search restaurants..." className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+            <div className="relative w-full md:flex-1 md:min-w-[200px] md:max-w-xs">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 md:w-4 md:h-4 text-text-muted" />
+              <input value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="Search restaurants..." className="w-full pl-9 pr-3 py-1.5 md:pl-10 md:pr-4 md:py-2 rounded-lg md:rounded-xl border border-border text-xs md:text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 shadow-sm" />
             </div>
 
-            {/* City Dropdown */}
-            <div className={`relative min-w-[180px] ${isCityOpen ? 'z-50' : ''}`}>
-              <button
-                onClick={() => setIsCityOpen(!isCityOpen)}
-                className="flex items-center justify-between w-full px-4 py-2.5 rounded-xl border border-border bg-white text-sm focus:outline-none focus:ring-2 focus:ring-orange-200"
-              >
-                <span className="truncate">{city || 'All Cities'}</span>
-                <ChevronDown className={`w-4 h-4 text-text-muted transition-transform ${isCityOpen ? 'rotate-180' : ''}`} />
-              </button>
-
-              {isCityOpen && (
-                <>
-                  <div className="fixed inset-0 z-40" onClick={() => setIsCityOpen(false)} />
-                  <div className="absolute top-full left-0 w-full mt-1 bg-white border border-border rounded-xl shadow-lg z-50 max-h-60 overflow-y-auto">
-                    <button
-                      onClick={() => handleCityChange('')}
-                      className={`w-full text-left px-4 py-2 text-sm hover:bg-surface transition-colors ${!city ? 'bg-orange-50 font-medium text-orange-600' : 'text-text-primary'}`}
-                    >
-                      All Cities
-                    </button>
-                    {sortedCities.map((c) => (
-                      <button
-                        key={c}
-                        onClick={() => handleCityChange(c)}
-                        className={`w-full text-left px-4 py-2 text-sm hover:bg-surface transition-colors ${city === c ? 'bg-orange-50 font-medium text-orange-600' : 'text-text-primary'}`}
-                      >
-                        {c}
-                      </button>
-                    ))}
-                  </div>
-                </>
-              )}
-            </div>
-
-            {/* Area Dropdown */}
-            {city && (
-              <div className={`relative min-w-[180px] ${isAreaOpen ? 'z-50' : ''}`}>
+            {/* Dropdowns container */}
+            <div className="flex flex-wrap items-center gap-1.5 md:gap-2 w-full md:w-auto">
+              {/* City Dropdown */}
+              <div className={`relative flex-1 sm:flex-none md:min-w-[160px] ${isCityOpen ? 'z-50' : ''}`}>
                 <button
-                  onClick={() => setIsAreaOpen(!isAreaOpen)}
-                  className="flex items-center justify-between w-full px-4 py-2.5 rounded-xl border border-border bg-white text-sm focus:outline-none focus:ring-2 focus:ring-orange-200 animate-fade-in"
+                  onClick={() => setIsCityOpen(!isCityOpen)}
+                  className="flex items-center justify-between gap-1.5 w-full px-2.5 py-1.5 md:px-3.5 md:py-2 rounded-lg md:rounded-xl border border-border bg-white text-xs md:text-sm focus:outline-none focus:ring-2 focus:ring-orange-200"
                 >
-                  <span className="truncate">{area || 'All Areas'}</span>
-                  <ChevronDown className={`w-4 h-4 text-text-muted transition-transform ${isAreaOpen ? 'rotate-180' : ''}`} />
+                  <span className="truncate max-w-[100px] md:max-w-none">{city || 'All Cities'}</span>
+                  <ChevronDown className={`w-3.5 h-3.5 md:w-4 md:h-4 text-text-muted transition-transform ${isCityOpen ? 'rotate-180' : ''}`} />
                 </button>
-                {isAreaOpen && (
+
+                {isCityOpen && (
                   <>
-                    <div className="fixed inset-0 z-40" onClick={() => setIsAreaOpen(false)} />
-                    <div className="absolute top-full left-0 w-full mt-1 bg-white border border-border rounded-xl shadow-lg z-50 max-h-48 overflow-y-auto">
+                    <div className="fixed inset-0 z-40" onClick={() => setIsCityOpen(false)} />
+                    <div className="absolute top-full left-0 w-44 md:w-full mt-1 bg-white border border-border rounded-xl shadow-lg z-50 max-h-60 overflow-y-auto">
                       <button
-                        onClick={() => { setArea(''); setIsAreaOpen(false); }}
-                        className={`w-full text-left px-4 py-2 text-sm hover:bg-surface transition-colors ${!area ? 'bg-orange-50 font-medium text-orange-600' : 'text-text-primary'}`}
+                        onClick={() => handleCityChange('')}
+                        className={`w-full text-left px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm hover:bg-surface transition-colors ${!city ? 'bg-orange-50 font-medium text-orange-600' : 'text-text-primary'}`}
                       >
-                        All Areas
+                        All Cities
                       </button>
-                      {availableAreas.map((a) => (
+                      {sortedCities.map((c) => (
                         <button
-                          key={a}
-                          onClick={() => { setArea(a); setIsAreaOpen(false); }}
-                          className={`w-full text-left px-4 py-2 text-sm hover:bg-surface transition-colors ${area === a ? 'bg-orange-50 font-medium text-orange-600' : 'text-text-primary'}`}
+                          key={c}
+                          onClick={() => handleCityChange(c)}
+                          className={`w-full text-left px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm hover:bg-surface transition-colors ${city === c ? 'bg-orange-50 font-medium text-orange-600' : 'text-text-primary'}`}
                         >
-                          {a}
+                          {c}
                         </button>
                       ))}
                     </div>
                   </>
                 )}
               </div>
-            )}
 
-            {/* Bengali Friendly Toggle */}
-            {city && (
-              <button
-                onClick={() => setBengaliOnly(!bengaliOnly)}
-                className={`flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer animate-fade-in ${
-                  bengaliOnly ? 'bg-orange-500 text-white shadow-md' : 'bg-white border border-border text-text-primary hover:border-orange-400'
-                }`}
-              >
-                <Sparkles className={`w-4 h-4 ${bengaliOnly ? 'text-white' : 'text-black'}`} />
-                <span>Bengali Friendly</span>
-              </button>
-            )}
-          </div>
+              {/* Area Dropdown */}
+              {city && (
+                <div className={`relative flex-1 sm:flex-none md:min-w-[160px] ${isAreaOpen ? 'z-50' : ''}`}>
+                  <button
+                    onClick={() => setIsAreaOpen(!isAreaOpen)}
+                    className="flex items-center justify-between gap-1.5 w-full px-2.5 py-1.5 md:px-3.5 md:py-2 rounded-lg md:rounded-xl border border-border bg-white text-xs md:text-sm focus:outline-none focus:ring-2 focus:ring-orange-200 animate-fade-in"
+                  >
+                    <span className="truncate max-w-[100px] md:max-w-none">{area || 'All Areas'}</span>
+                    <ChevronDown className={`w-3.5 h-3.5 md:w-4 md:h-4 text-text-muted transition-transform ${isAreaOpen ? 'rotate-180' : ''}`} />
+                  </button>
+                  {isAreaOpen && (
+                    <>
+                      <div className="fixed inset-0 z-40" onClick={() => setIsAreaOpen(false)} />
+                      <div className="absolute top-full left-0 w-44 md:w-full mt-1 bg-white border border-border rounded-xl shadow-lg z-50 max-h-48 overflow-y-auto">
+                        <button
+                          onClick={() => { setArea(''); setIsAreaOpen(false); }}
+                          className={`w-full text-left px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm hover:bg-surface transition-colors ${!area ? 'bg-orange-50 font-medium text-orange-600' : 'text-text-primary'}`}
+                        >
+                          All Areas
+                        </button>
+                        {availableAreas.map((a) => (
+                          <button
+                            key={a}
+                            onClick={() => { setArea(a); setIsAreaOpen(false); }}
+                            className={`w-full text-left px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm hover:bg-surface transition-colors ${area === a ? 'bg-orange-50 font-medium text-orange-600' : 'text-text-primary'}`}
+                          >
+                            {a}
+                          </button>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </div>
+              )}
+
+              {/* Bengali Friendly Toggle */}
+              {city && (
+                <button
+                  onClick={() => setBengaliOnly(!bengaliOnly)}
+                  className={`flex items-center gap-1 px-2.5 py-1.5 md:px-3.5 md:py-2 rounded-lg md:rounded-xl text-xs md:text-sm font-medium transition-all cursor-pointer animate-fade-in shrink-0 ${
+                    bengaliOnly ? 'bg-orange-500 text-white shadow-md' : 'bg-white border border-border text-text-primary hover:border-orange-400'
+                  }`}
+                >
+                  <Sparkles className={`w-3 h-3 md:w-3.5 md:h-3.5 ${bengaliOnly ? 'text-white' : 'text-black'}`} />
+                  <span>Bengali Friendly</span>
+                </button>
+              )}
             </div>
-            
-            {/* Right Sidebar for Word Helper */}
-            {/*
-            <div className="w-full lg:w-[450px] xl:w-[500px] shrink-0 flex items-center">
-              <WordHelper 
-                words={FOOD_TAMIL_WORDS} 
-                title="Food Word Helper" 
-                subtitle="Essential food and dining phrases in Tamil & Bengali"
-                variant="horizontal"
-              />
-            </div>
-            */}
           </div>
         </div>
       </div>
 
       {/* Results */}
-      <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         <p className="text-sm text-text-muted mb-6"><span className="font-semibold text-text-primary">{filtered.length}</span> places found</p>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
           {filtered.map((food) => {
-                // Dynamic mock details matching mockup style
-            const reviewsCount = 50 + (food.name.charCodeAt(1) % 150);
-            
-            // Build custom tags
             const tagsToShow = [];
             if (food.type === 'restaurant') tagsToShow.push({ name: 'Restaurant', icon: null });
             if (food.type === 'sweets') tagsToShow.push({ name: 'Sweets', icon: null });
             if (food.type === 'tiffin') tagsToShow.push({ name: 'Tiffin Service', icon: null });
             
-            // Add specialties safely (handle case where it might be a string in DB)
             const rawSpecialties = food.specialties as any;
             const specialtiesArray = Array.isArray(rawSpecialties) 
               ? rawSpecialties 
@@ -292,7 +277,7 @@ export default function FoodPage() {
             });
             
             if (food.zomato_url || food.swiggy_url || food.type === 'delivery partner') {
-              tagsToShow.push({ name: 'Home Delivery', icon: <Truck className="w-3.5 h-3.5 text-[#0A6C4A]" /> });
+              tagsToShow.push({ name: 'Home Delivery', icon: <Truck className="w-3 h-3 text-[#0A6C4A]" /> });
             }
 
             const orderUrl = food.zomato_url || food.swiggy_url || (food.whatsapp ? getWhatsAppUrl(food.whatsapp, `Hi, I'd like to order from "${food.name}" via ProbasiBangali.in`) : `/explore/food/${food.id}`);
@@ -303,9 +288,10 @@ export default function FoodPage() {
             ];
 
             return (
-              <Card key={food.id} padding="none" className="rounded-[24px] overflow-hidden group border border-gray-100 shadow-[0_4px_25px_-4px_rgba(0,0,0,0.05)] bg-white p-4 flex flex-col justify-between">
+              <Card key={food.id} padding="none" className="rounded-2xl lg:rounded-[24px] overflow-hidden group border border-gray-100 shadow-[0_2px_15px_-4px_rgba(0,0,0,0.06)] bg-white p-3 sm:p-4 flex flex-col justify-between h-full">
                 <div className="flex flex-col flex-grow">
-                  <div className="relative w-full h-44 rounded-2xl overflow-hidden mb-4 bg-slate-100">
+                  {/* Image Cover */}
+                  <div className="relative w-full h-40 sm:h-44 rounded-xl lg:rounded-2xl overflow-hidden shrink-0 bg-slate-100 mb-3 sm:mb-4">
                     <ListingCoverImage
                       name={food.name}
                       city={food.city}
@@ -314,30 +300,32 @@ export default function FoodPage() {
                       type={food.type}
                       mapEmbedCode={food.map_embed_code}
                       fallbackIcon={
-                        <div className="text-black opacity-45 scale-[1.5]">
-                          {food.type === 'restaurant' ? <Utensils className="w-12 h-12" /> : food.type === 'sweets' ? <Candy className="w-12 h-12" /> : food.type === 'tiffin' ? <Soup className="w-12 h-12" /> : <Truck className="w-12 h-12" />}
+                        <div className="text-black opacity-45 scale-[1.2] lg:scale-[1.5]">
+                          {food.type === 'restaurant' ? <Utensils className="w-10 h-10 lg:w-12 lg:h-12" /> : food.type === 'sweets' ? <Candy className="w-10 h-10 lg:w-12 lg:h-12" /> : food.type === 'tiffin' ? <Soup className="w-10 h-10 lg:w-12 lg:h-12" /> : <Truck className="w-10 h-10 lg:w-12 lg:h-12" />}
                         </div>
                       }
                     />
                     {food.rating && (
-                      <div className="absolute top-3 left-3 bg-white text-gray-900 text-[11px] font-bold px-2.5 py-1 rounded-full shadow-sm flex items-center gap-1">
-                        <Star className="w-3.5 h-3.5 fill-[#B06000] text-[#B06000]" />
+                      <div className="absolute top-2 left-2 lg:top-3 lg:left-3 bg-white text-gray-900 text-[10px] lg:text-[11px] font-bold px-2 py-0.5 lg:px-2.5 lg:py-1 rounded-full shadow-sm flex items-center gap-1">
+                        <Star className="w-3 h-3 lg:w-3.5 lg:h-3.5 fill-[#B06000] text-[#B06000]" />
                         <span>{food.rating}</span>
                       </div>
                     )}
                   </div>
 
-                  <div className="px-1">
+                  {/* Title & Address */}
+                  <div className="px-0.5">
                     <Link href={`/explore/food/${food.id}`}>
-                      <h3 className="text-lg font-bold text-gray-900 hover:text-[#A63A13] transition-colors leading-tight font-display">
+                      <h3 className="text-base sm:text-lg font-bold text-gray-900 hover:text-[#d85a30] transition-colors leading-tight font-display">
                         {food.name}
                       </h3>
                     </Link>
 
-                    <p className="mt-1 text-xs text-[#8F9BB3] line-clamp-2 leading-relaxed">
+                    <p className="mt-1 text-xs text-[#8F9BB3] line-clamp-1 leading-relaxed">
                       {food.address || `${food.area}, ${food.city}`}
                     </p>
 
+                    {/* Specialty Badges */}
                     <div className="flex flex-wrap items-center gap-1.5 mt-3">
                       {tagsToShow.slice(0, 3).map((tag, idx) => (
                         <span key={idx} className={`${tagColors[idx % 3]} text-[10px] font-extrabold px-2.5 py-1 rounded-md uppercase tracking-wide`}>
@@ -346,9 +334,10 @@ export default function FoodPage() {
                       ))}
                     </div>
 
-                    <div className="flex flex-wrap items-center gap-2 mt-3.5">
+                    {/* Quick Partner Links (Call, Zomato, Swiggy, etc.) */}
+                    <div className="flex flex-wrap items-center gap-1.5 mt-3">
                       {food.phone && (
-                        <a href={`tel:${food.phone}`} className="flex items-center gap-1 text-[11px] bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-3 py-1 rounded-full transition-colors shadow-sm">
+                        <a href={`tel:${food.phone}`} className="inline-flex items-center gap-1 text-[11px] bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-2.5 py-1 rounded-full transition-colors shadow-xs">
                           <Phone className="w-3 h-3 text-slate-500" />
                           <span>Call</span>
                         </a>
@@ -356,8 +345,8 @@ export default function FoodPage() {
                       {DELIVERY_PARTNERS.map((partner) => {
                         const url = (food as unknown as Record<string, unknown>)[partner.key] as string | undefined;
                         return url ? (
-                          <a key={partner.key} href={url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-[11px] bg-orange-50 hover:bg-orange-100 text-orange-700 font-bold px-3 py-1 rounded-full transition-colors border border-orange-100 shadow-sm text-black">
-                            <Truck className="w-3 h-3 text-black" />
+                          <a key={partner.key} href={url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-[11px] bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-2.5 py-1 rounded-full transition-colors shadow-xs">
+                            <Truck className="w-3 h-3 text-slate-500" />
                             <span>{partner.label}</span>
                           </a>
                         ) : null;
@@ -366,10 +355,11 @@ export default function FoodPage() {
                   </div>
                 </div>
 
-                <div className="w-full mt-5 px-1">
+                {/* Bottom Order Now Button */}
+                <div className="w-full mt-4">
                   <a href={orderUrl} target={orderUrl.startsWith('http') ? '_blank' : undefined} rel="noopener noreferrer" className="block w-full">
-                    <button className="w-full bg-[#d85a30] hover:bg-[#c24f28] text-white font-bold py-3 px-4 rounded-[12px] flex items-center justify-center gap-2 text-sm transition-all shadow-sm active:scale-[0.98]">
-                      <Utensils className="w-4 h-4" />
+                    <button className="w-full bg-[#d85a30] hover:bg-[#b84a00] text-white font-bold py-2.5 px-4 rounded-[12px] flex items-center justify-center gap-2 text-sm transition-all shadow-sm active:scale-[0.98]">
+                      <Utensils className="w-4 h-4 text-white" />
                       Order Now
                     </button>
                   </a>
