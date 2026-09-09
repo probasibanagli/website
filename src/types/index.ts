@@ -367,6 +367,12 @@ export interface Ambulance {
   dead_body_transport?: boolean;
   tn_to_wb?: boolean;
   wb_to_tn?: boolean;
+
+  // Bengali coordinator & Contact person details
+  contact_person_name?: string;
+  contact_person_phone?: string;
+  bengali_speaking?: boolean;
+  bengali_contact_avatar?: string;
 }
 
 export interface CommunityGroup {
