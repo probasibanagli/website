@@ -161,7 +161,8 @@ export default function MatrimonialAdminPage() {
       <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
         <div>
           <h1 className="text-2xl font-bold text-text-primary flex items-center gap-2">
-            💖 Matrimonial Moderation
+            <Heart className="w-6 h-6 text-rose-500 fill-rose-500" />
+            <span>Matrimonial Moderation</span>
           </h1>
           <p className="text-text-muted text-sm mt-1">
             Review new profile applications, verify profiles, and manage matched couples.
@@ -258,7 +259,7 @@ export default function MatrimonialAdminPage() {
 
             {filteredProfiles.length === 0 && (
               <div className="text-center py-10 bg-white border border-dashed border-border rounded-2xl">
-                <p className="text-3xl mb-2">🔎</p>
+                <Search className="w-8 h-8 text-text-muted mx-auto mb-2 opacity-50" />
                 <p className="text-xs text-text-muted">No matrimonial profiles match this selection.</p>
               </div>
             )}

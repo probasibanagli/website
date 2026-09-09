@@ -12,7 +12,8 @@ import { AlertPopup, AlertType } from '@/components/ui/AlertPopup';
 import { ConfirmPopup } from '@/components/ui/ConfirmPopup';
 import {
   Shield, Crown, Search, ChevronRight, Check, X, Loader2,
-  UserPlus, Users, Trash2, Ban, UserCheck, Activity, Eye, Settings, ShieldCheck, ArrowLeft
+  UserPlus, Users, Trash2, Ban, UserCheck, Activity, Eye, Settings, ShieldCheck, ArrowLeft,
+  LogIn, LogOut, PlusCircle, Edit3, Filter, Calendar, Download, RefreshCw, Clock, ChevronDown
 } from 'lucide-react';
 
 const ADMIN_DEFAULT_PERMISSIONS = {
@@ -102,6 +103,12 @@ export default function AdminUsersPage() {
 
   const [filterRole, setFilterRole] = useState<string>('all');
 
+  // Activity Audit Log Filter States
+  const [activityActionFilter, setActivityActionFilter] = useState<string>('all');
+  const [activityAdminFilter, setActivityAdminFilter] = useState<string>('all');
+  const [activityDateFilter, setActivityDateFilter] = useState<string>('all');
+  const [activitySearchQuery, setActivitySearchQuery] = useState<string>('');
+  const [refreshingActivities, setRefreshingActivities] = useState<boolean>(false);
   // Popup States
   const [alertConfig, setAlertConfig] = useState<{isOpen: boolean, message: string, type: AlertType}>({ isOpen: false, message: '', type: 'info' });
   const [confirmConfig, setConfirmConfig] = useState<{isOpen: boolean, message: string, title?: string, confirmText?: string, onConfirm: () => void}>({ isOpen: false, message: '', onConfirm: () => {} });
@@ -202,9 +209,10 @@ export default function AdminUsersPage() {
 
   async function loadActivities() {
     if (!firebaseUser) return;
+    setRefreshingActivities(true);
     try {
       const token = await getIdToken();
-      const res = await fetch('/api/admin/activities', {
+      const res = await fetch('/api/admin/activities?limit=500', {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -215,6 +223,8 @@ export default function AdminUsersPage() {
       }
     } catch (e) {
       console.error('Failed to load activities', e);
+    } finally {
+      setRefreshingActivities(false);
     }
   }
 
@@ -234,6 +244,24 @@ export default function AdminUsersPage() {
       if (!res.ok) throw new Error('Failed to update status');
 
       setUsers((prev) => prev.map((u) => u.uid === uid ? { ...u, is_active: !currentActive } : u));
+      const targetUser = users.find(u => u.uid === uid);
+      const targetName = targetUser?.full_name || targetUser?.email || uid;
+      fetch('/api/admin/activities', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: currentActive ? 'User Blocked' : 'User Unblocked',
+          action_type: 'edit',
+          performed_by: profile?.full_name || profile?.email || 'Admin',
+          admin_email: profile?.email || '',
+          user_role: profile?.role || 'admin',
+          module: 'users',
+          target_id: uid,
+          details: `${currentActive ? 'Blocked' : 'Unblocked'} account for "${targetName}" (${uid})`,
+          timestamp: new Date().toISOString(),
+        }),
+      }).catch(() => {});
+
       if (isSuperAdmin) loadActivities();
       showAlert(`User ${currentActive ? 'blocked' : 'unblocked'} successfully!`, 'success');
     } catch (e: any) {
@@ -258,6 +286,8 @@ export default function AdminUsersPage() {
 
   async function executeDeleteUser(uid: string) {
     try {
+      const targetUser = users.find(u => u.uid === uid);
+      const targetName = targetUser?.full_name || targetUser?.email || uid;
       const token = await getIdToken();
       const res = await fetch(`/api/admin/users/${uid}`, {
         method: 'DELETE',
@@ -268,6 +298,22 @@ export default function AdminUsersPage() {
       if (!res.ok) throw new Error('Failed to delete user');
 
       setUsers((prev) => prev.filter((u) => u.uid !== uid));
+      fetch('/api/admin/activities', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'User Account Deleted',
+          action_type: 'delete',
+          performed_by: profile?.full_name || profile?.email || 'Admin',
+          admin_email: profile?.email || '',
+          user_role: profile?.role || 'admin',
+          module: 'users',
+          target_id: uid,
+          details: `Permanently deleted account for "${targetName}" (${uid})`,
+          timestamp: new Date().toISOString(),
+        }),
+      }).catch(() => {});
+
       if (isSuperAdmin) loadActivities();
       showAlert('User account deleted permanently!', 'success');
     } catch (e: any) {
@@ -292,9 +338,27 @@ export default function AdminUsersPage() {
 
   async function executeDeleteVisitor(id: string) {
     try {
+      const targetVisitor = visitors.find(v => v.id === id);
+      const visitorContact = targetVisitor?.phone || targetVisitor?.email || id;
       await deleteDoc(doc(db, 'otps', id));
       setVisitors(prev => prev.filter(v => v.id !== id));
-      setVisitors(prev => prev.filter(v => v.id !== id));
+      fetch('/api/admin/activities', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'Visitor Log Deleted',
+          action_type: 'delete',
+          performed_by: profile?.full_name || profile?.email || 'Admin',
+          admin_email: profile?.email || '',
+          user_role: profile?.role || 'admin',
+          module: 'users',
+          target_id: id,
+          details: `Deleted OTP visitor verification log for ${visitorContact}`,
+          timestamp: new Date().toISOString(),
+        }),
+      }).catch(() => {});
+
+      if (isSuperAdmin) loadActivities();
       showAlert('Visitor verification log deleted successfully.', 'success');
     } catch (err: any) {
       showAlert('Failed to delete visitor log: ' + err.message, 'error');
@@ -354,9 +418,13 @@ export default function AdminUsersPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           action: 'Admin Account Created',
+          action_type: 'create',
           performed_by: profile?.full_name || 'Super Admin',
+          admin_email: profile?.email || '',
           user_role: 'superadmin',
-          details: `Created Admin account for ${createForm.full_name} (${createForm.email})`
+          module: 'users',
+          details: `Created Admin account for ${createForm.full_name} (${createForm.email})`,
+          timestamp: new Date().toISOString(),
         })
       }).catch(() => {});
 
@@ -394,6 +462,119 @@ export default function AdminUsersPage() {
     const email = v.email || '';
     return phone.toLowerCase().includes(searchTerm.toLowerCase()) || email.toLowerCase().includes(searchTerm.toLowerCase());
   });
+
+  // Unique admins list for filtering
+  const uniqueAdmins = Array.from(
+    new Set(
+      activities
+        .map((a) => a.performed_by?.trim() || a.admin_email?.trim())
+        .filter(Boolean)
+    )
+  ).sort();
+
+  // Filtered Activities
+  const filteredActivities = activities.filter((act) => {
+    // 1. Action Type Filter
+    if (activityActionFilter === 'login_logout') {
+      if (act.action_type !== 'login' && act.action_type !== 'logout') return false;
+    } else if (activityActionFilter === 'login') {
+      if (act.action_type !== 'login') return false;
+    } else if (activityActionFilter === 'logout') {
+      if (act.action_type !== 'logout') return false;
+    } else if (activityActionFilter === 'create') {
+      if (act.action_type !== 'create') return false;
+    } else if (activityActionFilter === 'edit') {
+      if (act.action_type !== 'edit') return false;
+    } else if (activityActionFilter === 'delete') {
+      if (act.action_type !== 'delete') return false;
+    }
+
+    // 2. Admin User Filter
+    if (activityAdminFilter !== 'all') {
+      const perf = (act.performed_by || '').toLowerCase();
+      const mail = (act.admin_email || '').toLowerCase();
+      const target = activityAdminFilter.toLowerCase();
+      if (!perf.includes(target) && !mail.includes(target)) {
+        return false;
+      }
+    }
+
+    // 3. Date / Time Filter
+    if (activityDateFilter !== 'all') {
+      const actTime = new Date(act.timestamp).getTime();
+      const now = new Date();
+      const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+
+      if (activityDateFilter === 'today') {
+        if (actTime < todayStart) return false;
+      } else if (activityDateFilter === 'yesterday') {
+        const yesterdayStart = todayStart - 24 * 60 * 60 * 1000;
+        if (actTime < yesterdayStart || actTime >= todayStart) return false;
+      } else if (activityDateFilter === '7days') {
+        const sevenDaysAgo = todayStart - 7 * 24 * 60 * 60 * 1000;
+        if (actTime < sevenDaysAgo) return false;
+      } else if (activityDateFilter === '30days') {
+        const thirtyDaysAgo = todayStart - 30 * 24 * 60 * 60 * 1000;
+        if (actTime < thirtyDaysAgo) return false;
+      }
+    }
+
+    // 4. Search Filter
+    const q = (activitySearchQuery || localSearch).trim().toLowerCase();
+    if (q) {
+      const actionStr = (act.action || '').toLowerCase();
+      const perfStr = (act.performed_by || '').toLowerCase();
+      const emailStr = (act.admin_email || '').toLowerCase();
+      const roleStr = (act.user_role || '').toLowerCase();
+      const detailsStr = (act.details || '').toLowerCase();
+      const dateStr = new Date(act.timestamp).toLocaleString('en-IN').toLowerCase();
+      return (
+        actionStr.includes(q) ||
+        perfStr.includes(q) ||
+        emailStr.includes(q) ||
+        roleStr.includes(q) ||
+        detailsStr.includes(q) ||
+        dateStr.includes(q)
+      );
+    }
+
+    return true;
+  });
+
+  // Activity Metrics
+  const nowTs = new Date();
+  const todayStartTs = new Date(nowTs.getFullYear(), nowTs.getMonth(), nowTs.getDate()).getTime();
+
+  const totalLogins = activities.filter((a) => a.action_type === 'login').length;
+  const totalLogouts = activities.filter((a) => a.action_type === 'logout').length;
+  const todayLogins = activities.filter((a) => a.action_type === 'login' && new Date(a.timestamp).getTime() >= todayStartTs).length;
+  const todayLogouts = activities.filter((a) => a.action_type === 'logout' && new Date(a.timestamp).getTime() >= todayStartTs).length;
+  const totalCreates = activities.filter((a) => a.action_type === 'create').length;
+  const totalEdits = activities.filter((a) => a.action_type === 'edit').length;
+  const totalDeletes = activities.filter((a) => a.action_type === 'delete').length;
+
+  const exportActivitiesToCsv = () => {
+    if (filteredActivities.length === 0) return alert('No activity records to export.');
+    const headers = ['Timestamp', 'Action Type', 'Action Name', 'Admin Name', 'Admin Email', 'Admin Role', 'Details'];
+    const rows = filteredActivities.map(a => [
+      `"${new Date(a.timestamp).toLocaleString('en-IN')}"`,
+      `"${a.action_type || 'other'}"`,
+      `"${(a.action || '').replace(/"/g, '""')}"`,
+      `"${(a.performed_by || '').replace(/"/g, '""')}"`,
+      `"${(a.admin_email || '').replace(/"/g, '""')}"`,
+      `"${(a.user_role || '').replace(/"/g, '""')}"`,
+      `"${(a.details || '').replace(/"/g, '""')}"`
+    ]);
+    const csvContent = "data:text/csv;charset=utf-8," + [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `admin_audit_logs_${new Date().toISOString().slice(0, 10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
 
   if (!canView) {
     return (
@@ -526,6 +707,71 @@ export default function AdminUsersPage() {
         )}
       </div>
 
+      {/* Tab Switcher Pills */}
+      <div className="flex items-center gap-2 border-b border-border/80 pb-3 overflow-x-auto scrollbar-none">
+        <Link
+          href="/admin/users?tab=users"
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap ${
+            activeTab === 'users'
+              ? 'bg-primary text-white shadow-sm'
+              : 'bg-surface hover:bg-surface/80 text-text-muted hover:text-text-primary border border-border/50'
+          }`}
+        >
+          <Users className="w-4 h-4" />
+          <span>User Accounts</span>
+          <span className={`px-2 py-0.5 rounded-full text-[11px] font-bold ${activeTab === 'users' ? 'bg-white/20 text-white' : 'bg-neutral-200 text-text-muted'}`}>
+            {regularUsersList.length}
+          </span>
+        </Link>
+
+        <Link
+          href="/admin/users?tab=admins"
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap ${
+            activeTab === 'admins'
+              ? 'bg-primary text-white shadow-sm'
+              : 'bg-surface hover:bg-surface/80 text-text-muted hover:text-text-primary border border-border/50'
+          }`}
+        >
+          <Shield className="w-4 h-4" />
+          <span>Administrators</span>
+          <span className={`px-2 py-0.5 rounded-full text-[11px] font-bold ${activeTab === 'admins' ? 'bg-white/20 text-white' : 'bg-neutral-200 text-text-muted'}`}>
+            {adminsList.length}
+          </span>
+        </Link>
+
+        <Link
+          href="/admin/users?tab=visitors"
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap ${
+            activeTab === 'visitors'
+              ? 'bg-primary text-white shadow-sm'
+              : 'bg-surface hover:bg-surface/80 text-text-muted hover:text-text-primary border border-border/50'
+          }`}
+        >
+          <UserCheck className="w-4 h-4" />
+          <span>Directory Visitors</span>
+          <span className={`px-2 py-0.5 rounded-full text-[11px] font-bold ${activeTab === 'visitors' ? 'bg-white/20 text-white' : 'bg-neutral-200 text-text-muted'}`}>
+            {visitors.length}
+          </span>
+        </Link>
+
+        {isSuperAdmin && (
+          <Link
+            href="/admin/users?tab=activities"
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap ${
+              activeTab === 'activities'
+                ? 'bg-primary text-white shadow-sm'
+                : 'bg-surface hover:bg-surface/80 text-text-muted hover:text-text-primary border border-border/50'
+            }`}
+          >
+            <Activity className="w-4 h-4" />
+            <span>Admin Activity Tracking & Audit Logs</span>
+            <span className={`px-2 py-0.5 rounded-full text-[11px] font-bold ${activeTab === 'activities' ? 'bg-white/20 text-white' : 'bg-neutral-200 text-text-muted'}`}>
+              {activities.length}
+            </span>
+          </Link>
+        )}
+      </div>
+
 
 
       {/* Filters */}
@@ -534,7 +780,8 @@ export default function AdminUsersPage() {
           <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" />
           <input
             type="text"
-            placeholder={`Search ${activeTab === 'visitors' ? 'visitors by phone/email' : activeTab}...`}
+            placeholder={`Search ${activeTab === 
+              'visitors' ? 'visitors by phone/email' : activeTab}...`}
             value={localSearch}
             onChange={(e) => {
               const value = e.target.value;
@@ -779,44 +1026,438 @@ export default function AdminUsersPage() {
             </div>
           )}
 
-          {/* TAB 4: ACTIVITY LOGS */}
+          {/* TAB 4: ACTIVITY LOGS & AUDIT TRAIL */}
           {activeTab === 'activities' && isSuperAdmin && (
-            <div className="bg-white/50 rounded-2xl border border-border overflow-hidden shadow-sm">
-              <table className="w-full">
-                <thead>
-                  <tr className="bg-surface/50 border-b border-border">
-                    <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Timestamp</th>
-                    <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">User/Admin</th>
-                    <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Role</th>
-                    <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Action</th>
-                    <th className="text-left px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-wider">Details</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border">
-                  {activities.map((act) => (
-                    <tr key={act.id} className="hover:bg-surface transition-colors text-sm">
-                      <td className="px-5 py-4 text-xs text-text-muted font-mono whitespace-nowrap">
-                        {new Date(act.timestamp).toLocaleString('en-IN')}
-                      </td>
-                      <td className="px-5 py-4 font-semibold text-text-primary">{act.performed_by}</td>
-                      <td className="px-5 py-4">
-                        <span className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${
-                          act.user_role === 'superadmin' ? 'bg-amber-100 text-amber-700' :
-                          act.user_role === 'admin' ? 'bg-primary/10 text-primary' :
-                          'bg-surface text-text-muted border border-border'
-                        }`}>
-                          {act.user_role}
-                        </span>
-                      </td>
-                      <td className="px-5 py-4 font-medium text-text-primary">{act.action}</td>
-                      <td className="px-5 py-4 text-xs text-text-muted max-w-sm truncate">{act.details}</td>
-                    </tr>
-                  ))}
-                  {activities.length === 0 && (
-                    <tr><td colSpan={5} className="px-5 py-12 text-center text-text-muted text-sm italic">No activities logged yet</td></tr>
-                  )}
-                </tbody>
-              </table>
+            <div className="space-y-6">
+              {/* Activity KPI Cards */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+                <div className="bg-white p-4 rounded-2xl border border-border shadow-xs">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-semibold text-text-muted">Logins</span>
+                    <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                      <LogIn className="w-4 h-4" />
+                    </div>
+                  </div>
+                  <div className="mt-2 flex items-baseline gap-2">
+                    <span className="text-2xl font-bold text-text-primary">{totalLogins}</span>
+                    <span className="text-xs text-emerald-600 font-medium">({todayLogins} today)</span>
+                  </div>
+                  <p className="text-[11px] text-text-muted mt-0.5">Admin Sessions</p>
+                </div>
+
+                <div className="bg-white p-4 rounded-2xl border border-border shadow-xs">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-semibold text-text-muted">Logouts</span>
+                    <div className="w-8 h-8 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center">
+                      <LogOut className="w-4 h-4" />
+                    </div>
+                  </div>
+                  <div className="mt-2 flex items-baseline gap-2">
+                    <span className="text-2xl font-bold text-text-primary">{totalLogouts}</span>
+                    <span className="text-xs text-rose-600 font-medium">({todayLogouts} today)</span>
+                  </div>
+                  <p className="text-[11px] text-text-muted mt-0.5">Logged out</p>
+                </div>
+
+                <div className="bg-white p-4 rounded-2xl border border-border shadow-xs">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-semibold text-text-muted">Created</span>
+                    <div className="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+                      <PlusCircle className="w-4 h-4" />
+                    </div>
+                  </div>
+                  <div className="mt-2">
+                    <span className="text-2xl font-bold text-text-primary">{totalCreates}</span>
+                  </div>
+                  <p className="text-[11px] text-text-muted mt-0.5">New records added</p>
+                </div>
+
+                <div className="bg-white p-4 rounded-2xl border border-border shadow-xs">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-semibold text-text-muted">Edited</span>
+                    <div className="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
+                      <Edit3 className="w-4 h-4" />
+                    </div>
+                  </div>
+                  <div className="mt-2">
+                    <span className="text-2xl font-bold text-text-primary">{totalEdits}</span>
+                  </div>
+                  <p className="text-[11px] text-text-muted mt-0.5">Modifications</p>
+                </div>
+
+                <div className="bg-white p-4 rounded-2xl border border-border shadow-xs col-span-2 sm:col-span-1">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-semibold text-text-muted">Deleted</span>
+                    <div className="w-8 h-8 rounded-xl bg-red-50 text-red-600 flex items-center justify-center">
+                      <Trash2 className="w-4 h-4" />
+                    </div>
+                  </div>
+                  <div className="mt-2">
+                    <span className="text-2xl font-bold text-red-600">{totalDeletes}</span>
+                  </div>
+                  <p className="text-[11px] text-text-muted mt-0.5">Removed records</p>
+                </div>
+              </div>
+
+              {/* Advanced Filter Toolbar */}
+              <div className="bg-white p-4 rounded-2xl border border-border shadow-sm space-y-3">
+                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+                  {/* Left: Quick Action Filter Chips */}
+                  <div className="flex items-center gap-1.5 overflow-x-auto pb-1 lg:pb-0 scrollbar-none">
+                    <button
+                      type="button"
+                      onClick={() => setActivityActionFilter('all')}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
+                        activityActionFilter === 'all'
+                          ? 'bg-neutral-800 text-white shadow-xs'
+                          : 'bg-surface text-text-muted hover:text-text-primary border border-border/60'
+                      }`}
+                    >
+                      All Actions ({activities.length})
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setActivityActionFilter('login_logout')}
+                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
+                        activityActionFilter === 'login_logout'
+                          ? 'bg-emerald-700 text-white shadow-xs'
+                          : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200'
+                      }`}
+                    >
+                      <LogIn className="w-3 h-3" />
+                      Login & Logout ({totalLogins + totalLogouts})
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setActivityActionFilter('login')}
+                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
+                        activityActionFilter === 'login'
+                          ? 'bg-green-700 text-white shadow-xs'
+                          : 'bg-green-50 text-green-700 hover:bg-green-100 border border-green-200'
+                      }`}
+                    >
+                      Logins ({totalLogins})
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setActivityActionFilter('logout')}
+                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
+                        activityActionFilter === 'logout'
+                          ? 'bg-rose-700 text-white shadow-xs'
+                          : 'bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200'
+                      }`}
+                    >
+                      Logouts ({totalLogouts})
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setActivityActionFilter('create')}
+                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
+                        activityActionFilter === 'create'
+                          ? 'bg-blue-700 text-white shadow-xs'
+                          : 'bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200'
+                      }`}
+                    >
+                      <PlusCircle className="w-3 h-3" />
+                      Created ({totalCreates})
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setActivityActionFilter('edit')}
+                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
+                        activityActionFilter === 'edit'
+                          ? 'bg-amber-700 text-white shadow-xs'
+                          : 'bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200'
+                      }`}
+                    >
+                      <Edit3 className="w-3 h-3" />
+                      Edited ({totalEdits})
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setActivityActionFilter('delete')}
+                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
+                        activityActionFilter === 'delete'
+                          ? 'bg-red-700 text-white shadow-xs'
+                          : 'bg-red-50 text-red-700 hover:bg-red-100 border border-red-200'
+                      }`}
+                    >
+                      <Trash2 className="w-3 h-3" />
+                      Deleted ({totalDeletes})
+                    </button>
+                  </div>
+
+                  {/* Right: Actions */}
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button
+                      type="button"
+                      onClick={exportActivitiesToCsv}
+                      title="Download Activity Audit Trail as CSV"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface hover:bg-surface/80 border border-border text-xs font-bold text-text-primary transition-colors cursor-pointer"
+                    >
+                      <Download className="w-3.5 h-3.5 text-primary" />
+                      Export CSV
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={loadActivities}
+                      disabled={refreshingActivities}
+                      title="Refresh activity logs"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface hover:bg-surface/80 border border-border text-xs font-bold text-text-primary transition-colors cursor-pointer disabled:opacity-50"
+                    >
+                      <RefreshCw className={`w-3.5 h-3.5 text-primary ${refreshingActivities ? 'animate-spin' : ''}`} />
+                      Refresh
+                    </button>
+                  </div>
+                </div>
+
+                {/* Second Row: Dropdowns & Search */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 border-t border-border/50">
+                  {/* Admin User Selector */}
+                  <div className="relative">
+                    <Users className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none" />
+                    <select
+                      value={activityAdminFilter}
+                      onChange={(e) => setActivityAdminFilter(e.target.value)}
+                      className="w-full pl-9 pr-8 py-2 rounded-xl bg-surface/50 border border-border text-xs font-semibold text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 appearance-none cursor-pointer"
+                    >
+                      <option value="all">All Administrators ({uniqueAdmins.length})</option>
+                      {uniqueAdmins.map((admin) => (
+                        <option key={admin} value={admin}>
+                          {admin}
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronDown className="w-3.5 h-3.5 absolute right-3 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none" />
+                  </div>
+
+                  {/* Date Range Selector */}
+                  <div className="relative">
+                    <Calendar className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none" />
+                    <select
+                      value={activityDateFilter}
+                      onChange={(e) => setActivityDateFilter(e.target.value)}
+                      className="w-full pl-9 pr-8 py-2 rounded-xl bg-surface/50 border border-border text-xs font-semibold text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 appearance-none cursor-pointer"
+                    >
+                      <option value="all">All Time</option>
+                      <option value="today">Today</option>
+                      <option value="yesterday">Yesterday</option>
+                      <option value="7days">Last 7 Days</option>
+                      <option value="30days">Last 30 Days</option>
+                    </select>
+                    <ChevronDown className="w-3.5 h-3.5 absolute right-3 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none" />
+                  </div>
+
+                  {/* Real-time Search */}
+                  <div className="relative">
+                    <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none" />
+                    <input
+                      type="text"
+                      placeholder="Search action, admin, details..."
+                      value={activitySearchQuery}
+                      onChange={(e) => setActivitySearchQuery(e.target.value)}
+                      className="w-full pl-9 pr-8 py-2 rounded-xl bg-surface/50 border border-border text-xs text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary/20"
+                    />
+                    {activitySearchQuery && (
+                      <button
+                        type="button"
+                        onClick={() => setActivitySearchQuery('')}
+                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary p-0.5 rounded transition-colors"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Activity Log Table */}
+              <div className="bg-white rounded-2xl border border-border overflow-hidden shadow-sm">
+                <div className="px-5 py-3.5 bg-surface/50 border-b border-border flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Clock className="w-4 h-4 text-primary" />
+                    <span className="text-xs font-bold text-text-primary uppercase tracking-wider">
+                      Audit Log Entries
+                    </span>
+                  </div>
+                  <span className="text-xs text-text-muted font-medium">
+                    Showing <strong className="text-text-primary">{filteredActivities.length}</strong> of {activities.length} entries
+                  </span>
+                </div>
+
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="bg-surface/30 border-b border-border/80">
+                        <th className="text-left px-5 py-3.5 text-xs font-bold text-text-muted uppercase tracking-wider">Time & Date</th>
+                        <th className="text-left px-5 py-3.5 text-xs font-bold text-text-muted uppercase tracking-wider">Action Type</th>
+                        <th className="text-left px-5 py-3.5 text-xs font-bold text-text-muted uppercase tracking-wider">Performed By</th>
+                        <th className="text-left px-5 py-3.5 text-xs font-bold text-text-muted uppercase tracking-wider">Role</th>
+                        <th className="text-left px-5 py-3.5 text-xs font-bold text-text-muted uppercase tracking-wider">Event Details</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-border">
+                      {filteredActivities.map((act) => {
+                        const dateObj = new Date(act.timestamp);
+                        const formattedDate = dateObj.toLocaleDateString('en-IN', {
+                          day: '2-digit',
+                          month: 'short',
+                          year: 'numeric'
+                        });
+                        const formattedTime = dateObj.toLocaleTimeString('en-IN', {
+                          hour: '2-digit',
+                          minute: '2-digit',
+                          second: '2-digit',
+                          hour12: true
+                        });
+
+                        // Calculate relative time
+                        const diffSec = Math.floor((Date.now() - dateObj.getTime()) / 1000);
+                        let relativeTime = 'Just now';
+                        if (diffSec >= 60 && diffSec < 3600) relativeTime = `${Math.floor(diffSec / 60)}m ago`;
+                        else if (diffSec >= 3600 && diffSec < 86400) relativeTime = `${Math.floor(diffSec / 3600)}h ago`;
+                        else if (diffSec >= 86400) relativeTime = `${Math.floor(diffSec / 86400)}d ago`;
+
+                        const type = act.action_type || 'other';
+
+                        return (
+                          <tr key={act.id} className="hover:bg-surface/40 transition-colors text-sm">
+                            {/* Timestamp */}
+                            <td className="px-5 py-4 whitespace-nowrap">
+                              <div className="text-xs font-semibold text-text-primary">{formattedDate}</div>
+                              <div className="text-[11px] font-mono text-text-muted flex items-center gap-1.5 mt-0.5">
+                                <span>{formattedTime}</span>
+                                <span className="text-[10px] px-1.5 py-0.2 rounded bg-neutral-100 text-neutral-600 font-sans">
+                                  {relativeTime}
+                                </span>
+                              </div>
+                            </td>
+
+                            {/* Action Type Badge */}
+                            <td className="px-5 py-4 whitespace-nowrap">
+                              {type === 'login' ? (
+                                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-2xs">
+                                  <LogIn className="w-3.5 h-3.5 text-emerald-600" />
+                                  Admin Login
+                                </span>
+                              ) : type === 'logout' ? (
+                                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200 shadow-2xs">
+                                  <LogOut className="w-3.5 h-3.5 text-rose-600" />
+                                  Admin Logout
+                                </span>
+                              ) : type === 'create' ? (
+                                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-blue-50 text-blue-700 border border-blue-200 shadow-2xs">
+                                  <PlusCircle className="w-3.5 h-3.5 text-blue-600" />
+                                  Created
+                                </span>
+                              ) : type === 'edit' ? (
+                                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200 shadow-2xs">
+                                  <Edit3 className="w-3.5 h-3.5 text-amber-600" />
+                                  Updated
+                                </span>
+                              ) : type === 'delete' ? (
+                                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-red-50 text-red-700 border border-red-200 shadow-2xs">
+                                  <Trash2 className="w-3.5 h-3.5 text-red-600" />
+                                  Deleted
+                                </span>
+                              ) : (
+                                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-neutral-100 text-neutral-700 border border-neutral-200 shadow-2xs">
+                                  <Activity className="w-3.5 h-3.5 text-neutral-600" />
+                                  Activity
+                                </span>
+                              )}
+                            </td>
+
+                            {/* Performed By */}
+                            <td className="px-5 py-4">
+                              <div className="flex items-center gap-2.5">
+                                <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold uppercase shrink-0">
+                                  {act.performed_by?.charAt(0) || 'A'}
+                                </div>
+                                <div className="min-w-0">
+                                  <p className="text-sm font-semibold text-text-primary leading-tight truncate">
+                                    {act.performed_by || 'Admin'}
+                                  </p>
+                                  {act.admin_email && (
+                                    <p className="text-[11px] text-text-muted truncate mt-0.5">
+                                      {act.admin_email}
+                                    </p>
+                                  )}
+                                </div>
+                              </div>
+                            </td>
+
+                            {/* Role */}
+                            <td className="px-5 py-4 whitespace-nowrap">
+                              <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase ${
+                                act.user_role === 'superadmin' ? 'bg-amber-50 text-amber-700 border border-amber-200' :
+                                act.user_role === 'admin' ? 'bg-primary/10 text-primary border border-primary/20' :
+                                'bg-surface text-text-muted border border-border'
+                              }`}>
+                                {act.user_role === 'superadmin' ? (
+                                  <>
+                                    <Crown className="w-3 h-3 text-amber-600" />
+                                    Super Admin
+                                  </>
+                                ) : (
+                                  act.user_role || 'Admin'
+                                )}
+                              </span>
+                            </td>
+
+                            {/* Details & Event */}
+                            <td className="px-5 py-4">
+                              <div className="space-y-1">
+                                <div className="font-semibold text-text-primary text-xs">
+                                  {act.action}
+                                </div>
+                                <div className="text-xs text-text-muted leading-relaxed max-w-md">
+                                  {act.details}
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })}
+
+                      {filteredActivities.length === 0 && (
+                        <tr>
+                          <td colSpan={5} className="px-5 py-16 text-center">
+                            <div className="max-w-xs mx-auto space-y-3">
+                              <div className="w-12 h-12 rounded-full bg-surface border border-border flex items-center justify-center mx-auto text-text-muted">
+                                <Search className="w-5 h-5" />
+                              </div>
+                              <p className="text-sm font-semibold text-text-primary">No activity logs found</p>
+                              <p className="text-xs text-text-muted">No records match the current filter selection.</p>
+                              {(activityActionFilter !== 'all' || activityAdminFilter !== 'all' || activityDateFilter !== 'all' || activitySearchQuery) && (
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setActivityActionFilter('all');
+                                    setActivityAdminFilter('all');
+                                    setActivityDateFilter('all');
+                                    setActivitySearchQuery('');
+                                  }}
+                                  className="text-xs font-bold text-primary hover:underline cursor-pointer"
+                                >
+                                  Clear All Filters
+                                </button>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
           )}
         </>

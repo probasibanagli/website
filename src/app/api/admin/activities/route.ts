@@ -48,12 +48,43 @@ export async function GET(request: Request) {
   }
 
   try {
+    const { searchParams } = new URL(request.url);
+    const limitNum = Math.min(parseInt(searchParams.get('limit') || '500', 10), 1000);
+
     const snap = await adminDb.collection('activities')
       .orderBy('timestamp', 'desc')
-      .limit(100)
+      .limit(limitNum)
       .get();
 
-    const logs = snap.docs.map((d: any) => ({ id: d.id, ...d.data() }));
+    const logs = snap.docs.map((d: any) => {
+      const data = d.data();
+      let actionType = data.action_type;
+      
+      // Auto-classify legacy logs if action_type is missing
+      if (!actionType) {
+        const act = (data.action || '').toLowerCase();
+        if (act.includes('login') || act.includes('sign in') || act.includes('signed in')) {
+          actionType = 'login';
+        } else if (act.includes('logout') || act.includes('sign out') || act.includes('signed out')) {
+          actionType = 'logout';
+        } else if (act.includes('creat') || act.includes('add') || act.includes('new')) {
+          actionType = 'create';
+        } else if (act.includes('edit') || act.includes('updat') || act.includes('patch') || act.includes('block') || act.includes('unblock') || act.includes('permission')) {
+          actionType = 'edit';
+        } else if (act.includes('delet') || act.includes('remov')) {
+          actionType = 'delete';
+        } else {
+          actionType = 'other';
+        }
+      }
+
+      return {
+        id: d.id,
+        ...data,
+        action_type: actionType,
+      };
+    });
+
     return NextResponse.json({ logs });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
@@ -63,18 +94,49 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { action, performed_by, user_role, details } = body;
+    const {
+      action,
+      performed_by,
+      user_role,
+      details,
+      action_type,
+      admin_email,
+      module,
+      target_id,
+    } = body;
+
+    let deducedType = action_type;
+    if (!deducedType) {
+      const actLower = (action || '').toLowerCase();
+      if (actLower.includes('login') || actLower.includes('sign in') || actLower.includes('signed in')) {
+        deducedType = 'login';
+      } else if (actLower.includes('logout') || actLower.includes('sign out') || actLower.includes('signed out')) {
+        deducedType = 'logout';
+      } else if (actLower.includes('creat') || actLower.includes('add') || actLower.includes('new')) {
+        deducedType = 'create';
+      } else if (actLower.includes('edit') || actLower.includes('updat') || actLower.includes('patch') || actLower.includes('block') || actLower.includes('unblock') || actLower.includes('permission')) {
+        deducedType = 'edit';
+      } else if (actLower.includes('delet') || actLower.includes('remov')) {
+        deducedType = 'delete';
+      } else {
+        deducedType = 'other';
+      }
+    }
 
     const log = {
-      action,
+      action: action || 'Action Performed',
+      action_type: deducedType,
       performed_by: performed_by || 'System',
+      admin_email: admin_email || '',
       user_role: user_role || 'system',
+      module: module || 'admin',
       details: details || '',
-      timestamp: new Date().toISOString(),
+      target_id: target_id || null,
+      timestamp: body.timestamp || new Date().toISOString(),
     };
 
-    await adminDb.collection('activities').add(log);
-    return NextResponse.json({ success: true });
+    const docRef = await adminDb.collection('activities').add(log);
+    return NextResponse.json({ success: true, id: docRef.id });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }

@@ -119,10 +119,16 @@ export async function PATCH(request: Request, ctx: any) {
   // Log action
   await adminDb.collection('activities').add({
     action: typeof body.is_active === 'boolean' ? (body.is_active ? 'User Unblocked' : 'User Blocked') : 'User Profile Updated',
+    action_type: 'edit',
     performed_by: caller.full_name || 'Admin',
+    admin_email: caller.email || '',
     user_role: caller.role,
+    module: 'users',
+    target_id: id,
     timestamp: new Date().toISOString(),
-    details: `Updated user profile for ID: ${id}`
+    details: typeof body.is_active === 'boolean' 
+      ? `${body.is_active ? 'Unblocked' : 'Blocked'} user account with ID: ${id}`
+      : `Updated user profile/permissions for ID: ${id}`
   }).catch(() => {});
 
   return NextResponse.json({ status: 'ok' });
@@ -153,8 +159,12 @@ export async function DELETE(request: Request, ctx: any) {
     // Log action
     await adminDb.collection('activities').add({
       action: 'Account Deleted',
+      action_type: 'delete',
       performed_by: caller.full_name || 'Admin',
+      admin_email: caller.email || '',
       user_role: caller.role,
+      module: 'users',
+      target_id: id,
       timestamp: new Date().toISOString(),
       details: `Permanently deleted user account with ID: ${id}`
     }).catch(() => {});

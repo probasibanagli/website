@@ -11,7 +11,7 @@ import { getAccessibleModules } from '@/lib/permissions';
 import {
   Users, Home, UtensilsCrossed, FileText, AlertTriangle, TrendingUp,
   Activity, Crown, ShieldCheck, Plus, Bell, Search, MessageSquare, Heart, Shield, Loader2,
-  Bus, GraduationCap, Droplets, Truck, Landmark, Scale, Building2
+  Bus, GraduationCap, Droplets, Truck, Landmark, Scale, Building2, ArrowUpRight
 } from 'lucide-react';
 
 interface StatCard {
@@ -440,7 +440,8 @@ export default function AdminDashboard() {
             <div className="mt-4">
               <p className="text-xs font-bold text-[#D85A30] uppercase tracking-wider">Metrics Center</p>
               <p className="text-sm font-extrabold text-neutral-900 tracking-tight mt-1 flex items-center gap-1">
-                Bloom All Features ↗
+                <span>Bloom All Features</span>
+                <ArrowUpRight className="w-3.5 h-3.5 text-neutral-600" />
               </p>
             </div>
           </div>
@@ -554,8 +555,9 @@ export default function AdminDashboard() {
                       {stat.icon}
                     </div>
                     {stat.badge && (
-                      <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-emerald-50 text-emerald-600 text-[9px] font-bold">
-                        ↗ {stat.badge}
+                      <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-emerald-50 text-emerald-600 text-[9px] font-bold">
+                        <ArrowUpRight className="w-2.5 h-2.5" />
+                        <span>{stat.badge}</span>
                       </span>
                     )}
                   </div>

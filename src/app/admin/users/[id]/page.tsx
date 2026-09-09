@@ -102,10 +102,15 @@ export default function EditUserPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          action: 'Permissions Updated',
-          performed_by: myProfile?.full_name || 'Super Admin',
-          user_role: 'superadmin',
-          details: `Updated permissions for ${fullName}`
+          action: 'Permissions & Profile Updated',
+          action_type: 'edit',
+          performed_by: myProfile?.full_name || myProfile?.email || 'Super Admin',
+          admin_email: myProfile?.email || '',
+          user_role: myProfile?.role || 'superadmin',
+          module: 'users',
+          target_id: userId,
+          details: `Updated permissions & profile for "${fullName}" (${email})`,
+          timestamp: new Date().toISOString(),
         })
       }).catch(() => { });
 

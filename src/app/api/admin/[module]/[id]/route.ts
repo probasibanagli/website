@@ -67,7 +67,23 @@ export async function PATCH(request: Request, ctx: any) {
   const result = await verify(request, module, 'edit');
   if ('error' in result) return NextResponse.json({ error: result.error }, { status: result.status });
   const body = await request.json();
-  await adminDb.collection(col).doc(id).update({ ...body, updated_at: new Date().toISOString() });
+  const now = new Date().toISOString();
+  await adminDb.collection(col).doc(id).update({ ...body, updated_at: now });
+
+  const caller = 'user' in result ? result.user : null;
+  const itemName = body.name || body.title || body.full_name || id;
+  await adminDb.collection('activities').add({
+    action: `${module.toUpperCase()} Updated`,
+    action_type: 'edit',
+    performed_by: caller?.full_name || caller?.email || 'Admin',
+    admin_email: caller?.email || '',
+    user_role: caller?.role || 'admin',
+    module: module,
+    target_id: id,
+    details: `Updated item "${itemName}" in ${col}`,
+    timestamp: now,
+  }).catch(() => {});
+
   return NextResponse.json({ status: 'ok' });
 }
 
@@ -78,5 +94,19 @@ export async function DELETE(request: Request, ctx: any) {
   const result = await verify(request, module, 'manage');
   if ('error' in result) return NextResponse.json({ error: result.error }, { status: result.status });
   await adminDb.collection(col).doc(id).delete();
+
+  const caller = 'user' in result ? result.user : null;
+  await adminDb.collection('activities').add({
+    action: `${module.toUpperCase()} Deleted`,
+    action_type: 'delete',
+    performed_by: caller?.full_name || caller?.email || 'Admin',
+    admin_email: caller?.email || '',
+    user_role: caller?.role || 'admin',
+    module: module,
+    target_id: id,
+    details: `Deleted item (${id}) from ${col}`,
+    timestamp: new Date().toISOString(),
+  }).catch(() => {});
+
   return NextResponse.json({ status: 'ok' });
 }
