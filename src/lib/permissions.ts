@@ -46,7 +46,8 @@ export function getAccessibleModules(
   const ALL_MODULES: ModuleKey[] = [
     'stay', 'food', 'emergency',
     'community', 'services', 'blog', 'users', 'matrimony',
-    'blood_bank', 'events', 'ambulance', 'government_services', 'legal'
+    'blood_bank', 'events', 'ambulance', 'government_services', 'legal',
+    'chamber_of_commerce'
   ];
 
   // Super Admin has access to all modules
@@ -74,6 +75,7 @@ export function getDefaultPermissions(role: UserRole): ModulePermissions {
     ambulance: 'none',
     government_services: 'none',
     legal: 'none',
+    chamber_of_commerce: 'none',
   };
 
   const full: ModulePermissions = {
@@ -90,6 +92,7 @@ export function getDefaultPermissions(role: UserRole): ModulePermissions {
     ambulance: 'manage',
     government_services: 'manage',
     legal: 'manage',
+    chamber_of_commerce: 'manage',
   };
 
   switch (role) {
@@ -110,7 +113,8 @@ export function getDefaultPermissions(role: UserRole): ModulePermissions {
 export const ALL_MODULES: ModuleKey[] = [
   'stay', 'food', 'emergency',
   'community', 'services', 'blog', 'users', 'matrimony',
-  'blood_bank', 'events', 'ambulance', 'government_services', 'legal'
+  'blood_bank', 'events', 'ambulance', 'government_services', 'legal',
+  'chamber_of_commerce'
 ];
 
 /**

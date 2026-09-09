@@ -596,10 +596,9 @@ export default function TravelPage() {
         zoomControl: true,
       });
 
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-        subdomains: 'abcd',
-        maxZoom: 20
+      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        maxZoom: 19
       }).addTo(map);
 
       mapRef.current = map;
@@ -850,14 +849,13 @@ export default function TravelPage() {
 
   // Fetch MTC bus suggestions for autocomplete (From)
   useEffect(() => {
-    if (timetableCategory === 'city' && cityPublicMode === 'bus' && cityFrom.trim().length > 0) {
+    if (timetableCategory === 'city' && cityPublicMode === 'bus') {
       const controller = new AbortController();
-      fetch(`/api/mtc-bus?autocomplete=${encodeURIComponent(cityFrom)}`, { signal: controller.signal })
+      fetch(`/api/mtc-bus?autocomplete=${encodeURIComponent(cityFrom.trim())}`, { signal: controller.signal })
         .then(res => res.json())
         .then(data => {
-          if (data.stops) {
+          if (data && data.stops) {
             setBusSuggestionsFrom(data.stops);
-            setShowSuggestionsFrom(true);
           }
         })
         .catch(err => {
@@ -872,14 +870,13 @@ export default function TravelPage() {
 
   // Fetch MTC bus suggestions for autocomplete (To)
   useEffect(() => {
-    if (timetableCategory === 'city' && cityPublicMode === 'bus' && cityTo.trim().length > 0) {
+    if (timetableCategory === 'city' && cityPublicMode === 'bus') {
       const controller = new AbortController();
-      fetch(`/api/mtc-bus?autocomplete=${encodeURIComponent(cityTo)}`, { signal: controller.signal })
+      fetch(`/api/mtc-bus?autocomplete=${encodeURIComponent(cityTo.trim())}`, { signal: controller.signal })
         .then(res => res.json())
         .then(data => {
-          if (data.stops) {
+          if (data && data.stops) {
             setBusSuggestionsTo(data.stops);
-            setShowSuggestionsTo(true);
           }
         })
         .catch(err => {
@@ -1469,11 +1466,6 @@ export default function TravelPage() {
                                   <div className="absolute right-4 md:right-auto md:left-1/2 top-1/2 -translate-y-1/2 md:-translate-x-1/2 z-20">
                                     <button
                                       type="button"
-                                      onClick={() => {
-                                        const temp = cityFrom;
-                                        setCityFrom(cityTo);
-                                        setCityTo(temp);
-                                      }}
                                       className="w-8 h-8 rounded-full bg-white border border-slate-200 shadow-sm flex items-center justify-center hover:bg-slate-50 active:scale-95 transition-all text-primary hover:text-primary-dark cursor-pointer"
                                       title="Swap Stations"
                                     >
@@ -1482,64 +1474,110 @@ export default function TravelPage() {
                                   </div>
 
                                   <div className="relative">
-                                    <label className="block text-xs font-bold uppercase tracking-wider text-text-muted mb-1.5">From Station / Area</label>
+                                    <div className="flex items-center justify-between mb-1.5">
+                                      <label className="block text-xs font-bold uppercase tracking-wider text-text-muted">From Station / Area</label>
+                                      {cityPublicMode === 'bus' && cityFrom && (
+                                        <button
+                                          type="button"
+                                          onClick={() => { setCityFrom(''); setBusSearchResult(null); }}
+                                          className="text-[10px] text-text-muted hover:text-red-500 font-semibold cursor-pointer"
+                                        >
+                                          Clear
+                                        </button>
+                                      )}
+                                    </div>
                                     <input
                                       type="text"
                                       value={cityFrom}
-                                      onChange={(e) => setCityFrom(e.target.value)}
+                                      onChange={(e) => {
+                                        setCityFrom(e.target.value);
+                                        if (cityPublicMode === 'bus') setShowSuggestionsFrom(true);
+                                      }}
                                       onFocus={() => { if (cityPublicMode === 'bus') setShowSuggestionsFrom(true); }}
                                       onBlur={() => {
                                         if (cityPublicMode === 'bus') {
-                                          setTimeout(() => setShowSuggestionsFrom(false), 200);
+                                          setTimeout(() => setShowSuggestionsFrom(false), 250);
                                         }
                                       }}
-                                      placeholder={cityTransportType === 'private' ? 'Enter pickup point...' : 'Enter starting point...'}
+                                      placeholder={cityTransportType === 'private' ? 'Enter pickup point...' : (cityPublicMode === 'bus' ? 'e.g. Adyar, Tambaram, CMBT...' : 'Enter starting point...')}
                                       className="w-full px-4 py-3 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 bg-white"
                                     />
                                     {cityPublicMode === 'bus' && showSuggestionsFrom && busSuggestionsFrom.length > 0 && (
-                                      <div className="absolute left-0 right-0 z-50 mt-1 max-h-60 overflow-y-auto bg-white border border-border rounded-xl shadow-lg text-sm">
+                                      <div className="absolute left-0 right-0 z-50 mt-1 max-h-64 overflow-y-auto bg-white border border-border rounded-xl shadow-xl text-sm divide-y divide-slate-100">
+                                        <div className="px-3 py-1.5 bg-slate-50 text-[10px] font-bold text-text-muted uppercase tracking-wider flex items-center justify-between sticky top-0 z-10">
+                                          <span>{cityFrom.trim() ? 'Matching MTC Stops' : 'Popular Chennai Hubs'}</span>
+                                          <span className="text-green-700 font-bold">{busSuggestionsFrom.length} stops</span>
+                                        </div>
                                         {busSuggestionsFrom.map((stop, idx) => (
                                           <div
                                             key={`sugg-from-${idx}`}
-                                            onMouseDown={() => {
+                                            onMouseDown={(e) => {
+                                              e.preventDefault();
                                               setCityFrom(stop);
                                               setShowSuggestionsFrom(false);
                                             }}
-                                            className="px-4 py-2 hover:bg-slate-50 cursor-pointer text-text-primary border-b border-slate-100 last:border-0 font-medium"
+                                            className="px-4 py-2.5 hover:bg-green-50/70 hover:text-green-800 cursor-pointer text-text-primary font-medium flex items-center justify-between transition-colors"
                                           >
-                                            {stop}
+                                            <div className="flex items-center gap-2">
+                                              <span className="text-green-600 text-xs">🚏</span>
+                                              <span>{stop}</span>
+                                            </div>
+                                            <span className="text-[10px] text-text-muted opacity-60">Select</span>
                                           </div>
                                         ))}
                                       </div>
                                     )}
                                   </div>
                                   <div className="relative">
-                                    <label className="block text-xs font-bold uppercase tracking-wider text-text-muted mb-1.5">To Station / Area</label>
+                                    <div className="flex items-center justify-between mb-1.5">
+                                      <label className="block text-xs font-bold uppercase tracking-wider text-text-muted">To Station / Area</label>
+                                      {cityPublicMode === 'bus' && cityTo && (
+                                        <button
+                                          type="button"
+                                          onClick={() => { setCityTo(''); setBusSearchResult(null); }}
+                                          className="text-[10px] text-text-muted hover:text-red-500 font-semibold cursor-pointer"
+                                        >
+                                          Clear
+                                        </button>
+                                      )}
+                                    </div>
                                     <input
                                       type="text"
                                       value={cityTo}
-                                      onChange={(e) => setCityTo(e.target.value)}
+                                      onChange={(e) => {
+                                        setCityTo(e.target.value);
+                                        if (cityPublicMode === 'bus') setShowSuggestionsTo(true);
+                                      }}
                                       onFocus={() => { if (cityPublicMode === 'bus') setShowSuggestionsTo(true); }}
                                       onBlur={() => {
                                         if (cityPublicMode === 'bus') {
-                                          setTimeout(() => setShowSuggestionsTo(false), 200);
+                                          setTimeout(() => setShowSuggestionsTo(false), 250);
                                         }
                                       }}
-                                      placeholder={cityTransportType === 'private' ? 'Enter dropoff point...' : 'Enter destination...'}
+                                      placeholder={cityTransportType === 'private' ? 'Enter dropoff point...' : (cityPublicMode === 'bus' ? 'e.g. Velachery, T.Nagar, Central...' : 'Enter destination...')}
                                       className="w-full px-4 py-3 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 bg-white"
                                     />
                                     {cityPublicMode === 'bus' && showSuggestionsTo && busSuggestionsTo.length > 0 && (
-                                      <div className="absolute left-0 right-0 z-50 mt-1 max-h-60 overflow-y-auto bg-white border border-border rounded-xl shadow-lg text-sm">
+                                      <div className="absolute left-0 right-0 z-50 mt-1 max-h-64 overflow-y-auto bg-white border border-border rounded-xl shadow-xl text-sm divide-y divide-slate-100">
+                                        <div className="px-3 py-1.5 bg-slate-50 text-[10px] font-bold text-text-muted uppercase tracking-wider flex items-center justify-between sticky top-0 z-10">
+                                          <span>{cityTo.trim() ? 'Matching MTC Stops' : 'Popular Chennai Hubs'}</span>
+                                          <span className="text-green-700 font-bold">{busSuggestionsTo.length} stops</span>
+                                        </div>
                                         {busSuggestionsTo.map((stop, idx) => (
                                           <div
                                             key={`sugg-to-${idx}`}
-                                            onMouseDown={() => {
+                                            onMouseDown={(e) => {
+                                              e.preventDefault();
                                               setCityTo(stop);
                                               setShowSuggestionsTo(false);
                                             }}
-                                            className="px-4 py-2 hover:bg-slate-50 cursor-pointer text-text-primary border-b border-slate-100 last:border-0 font-medium"
+                                            className="px-4 py-2.5 hover:bg-green-50/70 hover:text-green-800 cursor-pointer text-text-primary font-medium flex items-center justify-between transition-colors"
                                           >
-                                            {stop}
+                                            <div className="flex items-center gap-2">
+                                              <span className="text-green-600 text-xs">🚏</span>
+                                              <span>{stop}</span>
+                                            </div>
+                                            <span className="text-[10px] text-text-muted opacity-60">Select</span>
                                           </div>
                                         ))}
                                       </div>
@@ -1549,39 +1587,41 @@ export default function TravelPage() {
                               </div>
 
                               {/* MTC Bus Official Link and Accuracy Warning */}
-                              <div className="p-4 bg-green-50/60 rounded-2xl border border-green-200/50 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 text-xs">
-                                <div className="flex items-start gap-3">
-                                  <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-700 shrink-0 text-base font-sans">
-                                    🚌
+                              {cityTransportType === 'public' && cityPublicMode === 'bus' && (
+                                <div className="p-4 bg-green-50/60 rounded-2xl border border-green-200/50 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 text-xs">
+                                  <div className="flex items-start gap-3">
+                                    <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-700 shrink-0 text-base font-sans">
+                                      🚌
+                                    </div>
+                                    <div>
+                                      <h5 className="font-bold text-green-900 text-sm">Route Information Accuracy</h5>
+                                      <p className="text-green-700/90 leading-relaxed mt-0.5 font-medium">
+                                        Please note that MTC bus route information is approximate and approximately <strong>90% accurate</strong>.
+                                      </p>
+                                    </div>
                                   </div>
-                                  <div>
-                                    <h5 className="font-bold text-green-900 text-sm">Route Information Accuracy</h5>
-                                    <p className="text-green-700/90 leading-relaxed mt-0.5 font-medium">
-                                      Please note that MTC bus route information is approximate and approximately <strong>90% accurate</strong>.
-                                    </p>
+                                  <div className="flex flex-wrap items-center gap-2 w-full md:w-auto shrink-0">
+                                    <a
+                                      href="https://commuter.mtcbusits.in/commuter/dashboard"
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 bg-green-600 hover:bg-green-700 active:scale-95 text-white font-extrabold rounded-xl shadow-sm transition-all cursor-pointer text-xs"
+                                    >
+                                      <span>MTC Official Portal (CBS - Commuter)</span>
+                                      <ExternalLink className="w-3.5 h-3.5" />
+                                    </a>
+                                    <a
+                                      href="https://www.chennaione.in/"
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 bg-emerald-700 hover:bg-emerald-800 active:scale-95 text-white font-extrabold rounded-xl shadow-sm transition-all cursor-pointer text-xs"
+                                    >
+                                      <span>chennai one</span>
+                                      <ExternalLink className="w-3.5 h-3.5" />
+                                    </a>
                                   </div>
                                 </div>
-                                <div className="flex flex-wrap items-center gap-2 w-full md:w-auto shrink-0">
-                                  <a
-                                    href="https://commuter.mtcbusits.in/commuter/dashboard"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 bg-green-600 hover:bg-green-700 active:scale-95 text-white font-extrabold rounded-xl shadow-sm transition-all cursor-pointer text-xs"
-                                  >
-                                    <span>MTC Official Portal (CBS - Commuter)</span>
-                                    <ExternalLink className="w-3.5 h-3.5" />
-                                  </a>
-                                  <a
-                                    href="https://www.chennaione.in/"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 bg-emerald-700 hover:bg-emerald-800 active:scale-95 text-white font-extrabold rounded-xl shadow-sm transition-all cursor-pointer text-xs"
-                                  >
-                                    <span>chennai one</span>
-                                    <ExternalLink className="w-3.5 h-3.5" />
-                                  </a>
-                                </div>
-                              </div>
+                              )}
                             </div>
                           )}
 
@@ -2027,8 +2067,8 @@ export default function TravelPage() {
                                 )}
 
                                 <div className="flex flex-wrap gap-2 pt-3 border-t border-amber-200/50">
-                                  <a href="https://play.google.com/store/apps/details?id=com.cris.utsmobile&hl=en-US" target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded text-xs font-bold flex items-center gap-1 transition-colors">
-                                    UTS Ticket Booking <ExternalLink className="w-3 h-3"/>
+                                  <a href="https://play.google.com/store/apps/details?id=org.cris.aikyam&hl=en-IN&pli=1" target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded text-xs font-bold flex items-center gap-1 transition-colors">
+                                    RailOne App <ExternalLink className="w-3 h-3"/>
                                   </a>
                                   <a href="https://www.railyatri.in/live-train-status" target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 bg-amber-100 hover:bg-amber-200 text-amber-800 rounded text-xs font-bold flex items-center gap-1 transition-colors">
                                     Live Train Status <ExternalLink className="w-3 h-3"/>

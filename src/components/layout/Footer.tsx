@@ -89,6 +89,7 @@ export function Footer() {
               <li><Link href="/services/college" className="text-sm text-gray-300 hover:text-primary transition-colors font-medium"><T>College & School Finder</T></Link></li>
               <li><Link href="/services/government" className="text-sm text-gray-300 hover:text-primary transition-colors font-medium"><T>Government Services</T></Link></li>
               <li><Link href="/services/legal" className="text-sm text-gray-300 hover:text-primary transition-colors font-medium"><T>Free Legal Services</T></Link></li>
+              <li><Link href="/services/chamber-of-commerce" className="text-sm text-gray-300 hover:text-primary transition-colors font-medium"><T>Chamber of Commerce</T></Link></li>
               <li className="pt-2">
                 <Link href="/emergency/ambulance" className="inline-flex items-center gap-2 text-xs font-bold bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white border border-red-500/20 px-3 py-1.5 rounded-full transition-all">
                   <span className="relative flex h-2 w-2">

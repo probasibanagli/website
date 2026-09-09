@@ -11,7 +11,7 @@ import { getAccessibleModules } from '@/lib/permissions';
 import {
   Users, Home, UtensilsCrossed, FileText, AlertTriangle, TrendingUp,
   Activity, Crown, ShieldCheck, Plus, Bell, Search, MessageSquare, Heart, Shield, Loader2,
-  Bus, GraduationCap, Droplets, Truck, Landmark, Scale
+  Bus, GraduationCap, Droplets, Truck, Landmark, Scale, Building2
 } from 'lucide-react';
 
 interface StatCard {
@@ -74,6 +74,7 @@ export default function AdminDashboard() {
           { name: 'matrimonial_profiles', label: 'Matrimonial', icon: <Heart className="w-5 h-5" />, color: 'text-pink-500', bg: 'bg-pink-50' },
           { name: 'blood_banks', label: 'Blood Banks', icon: <Droplets className="w-5 h-5" />, color: 'text-red-500', bg: 'bg-red-50' },
           { name: 'ambulances', label: 'Ambulance Directory', icon: <Truck className="w-5 h-5" />, color: 'text-indigo-500', bg: 'bg-indigo-50' },
+          { name: 'chamber_of_commerce', label: 'Chamber of Commerce', icon: <Building2 className="w-5 h-5" />, color: 'text-amber-600', bg: 'bg-amber-50' },
         ];
         
         const collections = profile?.role === 'superadmin' 
@@ -587,6 +588,7 @@ export default function AdminDashboard() {
                 (profile?.role === 'superadmin' ? [
                   { label: 'Admin Management', href: '/admin/users?tab=admins', icon: <Shield className="w-4 h-4" />, highlight: true },
                   { label: 'User Management', href: '/admin/users?tab=users', icon: <Users className="w-4 h-4" />, highlight: true },
+                  { label: 'Chamber of Commerce', href: '/admin/chamber-of-commerce', icon: <Building2 className="w-4 h-4" />, highlight: true },
                   { label: 'Activity Logs', href: '/admin/users?tab=activities', icon: <Activity className="w-4 h-4" />, highlight: true },
                 ] : [
                   { mod: 'stay', label: 'Stay Directory', href: '/admin/stay', icon: <Home className="w-4 h-4" /> },
@@ -600,8 +602,8 @@ export default function AdminDashboard() {
                   { mod: 'ambulance', label: 'Ambulances', href: '/admin/ambulance', icon: <Truck className="w-4 h-4" /> },
                   { mod: 'government_services', label: 'Govt Services', href: '/admin/government-services', icon: <Landmark className="w-4 h-4" /> },
                   { mod: 'legal', label: 'Legal Services', href: '/admin/legal', icon: <Scale className="w-4 h-4" /> },
-                  { mod: 'travel', label: 'Travel & Transport', href: '/admin/travel', icon: <Bus className="w-4 h-4" /> },
-                ].filter((action: any) => accessibleModules.includes(action.mod))).map((action: any) => {
+                  { mod: 'chamber_of_commerce', label: 'Chamber of Commerce', href: '/admin/chamber-of-commerce', icon: <Building2 className="w-4 h-4" /> },
+                ].filter((action: any) => (accessibleModules as string[]).includes(action.mod))).map((action: any) => {
                 const colorClass = action.highlight 
                   ? 'bg-[#D85A30] text-white hover:bg-[#c24e25]' 
                   : 'bg-white/50 text-neutral-800 hover:bg-neutral-50/80 border border-[#EADED9]/60';
@@ -626,19 +628,45 @@ export default function AdminDashboard() {
         <div className="lg:col-span-1 bg-white/50 rounded-2xl p-6 border border-[#EADED9]/60 shadow-sm">
           <div className="flex items-center justify-between mb-5">
             <h3 className="text-base font-bold text-neutral-900 tracking-tight">Recent Activity</h3>
-            {/* <a href="/admin/users?tab=activities" className="text-xs font-bold text-[#D85A30] hover:underline">
-              View All
-            </a> */}
           </div>
 
           <div className="space-y-3.5">
             {(() => {
+              function isRelevant(eventText: string): boolean {
+                if (profile?.role === 'superadmin') return true;
+                const e = eventText.toLowerCase();
+                const has = (mod: string) => (accessibleModules as string[]).includes(mod);
+
+                if ((e.includes('stay') || e.includes('accommodation') || e.includes('pg ') || e.includes('hostel')) && has('stay')) return true;
+                if ((e.includes('food') || e.includes('sweet') || e.includes('restaurant') || e.includes('catering')) && has('food')) return true;
+                if ((e.includes('hospital') || e.includes('oxygen') || e.includes('doctor') || e.includes('emergency')) && has('emergency')) return true;
+                if (e.includes('blood') && has('blood_bank')) return true;
+                if (e.includes('ambulance') && has('ambulance')) return true;
+                if ((e.includes('chamber') || e.includes('business') || e.includes('job opening')) && has('chamber_of_commerce')) return true;
+                if ((e.includes('legal') || e.includes('advocate') || e.includes('court') || e.includes('law')) && has('legal')) return true;
+                if ((e.includes('gov') || e.includes('aadhaar') || e.includes('passport') || e.includes('ration') || e.includes('voter')) && has('government_services')) return true;
+                if ((e.includes('blog') || e.includes('post') || e.includes('article')) && has('blog')) return true;
+                if ((e.includes('matrimoni') || e.includes('bride') || e.includes('groom')) && has('matrimony')) return true;
+                if ((e.includes('community') || e.includes('group') || e.includes('event')) && (has('community') || has('events'))) return true;
+                if ((e.includes('college') || e.includes('campus')) && has('services')) return true;
+                return false;
+              }
+
               const filteredLogs = recentLogs.filter(log => {
+                if (!isRelevant(log.event)) return false;
                 if (!searchVal) return true;
                 const q = searchVal.toLowerCase();
                 return log.event.toLowerCase().includes(q) || log.time.toLowerCase().includes(q);
               });
               const visibleLogs = showAllActivities ? filteredLogs : filteredLogs.slice(0, 4);
+
+              if (visibleLogs.length === 0) {
+                return (
+                  <div className="text-center py-8 text-neutral-400 text-xs font-medium">
+                    No recent activity in your assigned modules.
+                  </div>
+                );
+              }
 
               return (
                 <>
