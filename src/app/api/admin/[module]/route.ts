@@ -76,6 +76,22 @@ export async function POST(request: Request, ctx: any) {
 
   const body = await request.json();
   const id = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
-  await adminDb.collection(col).doc(id).set({ ...body, id, created_at: new Date().toISOString() });
+  const now = new Date().toISOString();
+  await adminDb.collection(col).doc(id).set({ ...body, id, created_at: now });
+
+  const itemName = body.name || body.title || body.full_name || id;
+  const caller = 'user' in result ? result.user : null;
+  await adminDb.collection('activities').add({
+    action: `${module.toUpperCase()} Created`,
+    action_type: 'create',
+    performed_by: caller?.full_name || caller?.email || 'Admin',
+    admin_email: caller?.email || '',
+    user_role: caller?.role || 'admin',
+    module: module,
+    target_id: id,
+    details: `Created new item "${itemName}" in ${col}`,
+    timestamp: now,
+  }).catch(() => {});
+
   return NextResponse.json({ id });
 }

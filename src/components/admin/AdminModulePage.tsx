@@ -98,14 +98,53 @@ export default function AdminModulePage({ moduleKey, collectionName, columns, fo
     setSaving(true);
     try {
       const now = new Date().toISOString();
+      const moduleName = MODULE_LABELS[moduleKey] || moduleKey;
+      const itemName = formData.name || formData.title || formData.full_name || editId || 'Item';
+
       if (editId) {
         await updateDoc(doc(db, collectionName, editId), { ...formData, updated_at: now });
         setItems(prev => prev.map(i => i.id === editId ? { ...i, ...formData } : i));
+        
+        // Log activity
+        fetch('/api/admin/activities', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: `${moduleName} Updated`,
+            action_type: 'edit',
+            performed_by: profile?.full_name || profile?.email || 'Admin',
+            admin_email: profile?.email || '',
+            user_role: profile?.role || 'admin',
+            module: moduleKey,
+            details: `Updated "${itemName}" in ${collectionName}`,
+            target_id: editId,
+            timestamp: now,
+          }),
+        }).catch(() => {});
+
         alert('Item updated successfully!');
       } else {
         const id = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
         await setDoc(doc(db, collectionName, id), { ...formData, id, created_at: now });
         setItems(prev => [{ id, ...formData, created_at: now }, ...prev]);
+
+        // Log activity
+        fetch('/api/admin/activities', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: `${moduleName} Created`,
+            action_type: 'create',
+            performed_by: profile?.full_name || profile?.email || 'Admin',
+            admin_email: profile?.email || '',
+            user_role: profile?.role || 'admin',
+            module: moduleKey,
+            details: `Created new "${itemName}" in ${collectionName}`,
+            target_id: id,
+            timestamp: now,
+          }),
+        }).catch(() => {});
+
         alert('Item added successfully!');
       }
       setShowForm(false);
@@ -118,8 +157,30 @@ export default function AdminModulePage({ moduleKey, collectionName, columns, fo
   async function handleDelete(id: string) {
     if (!confirm('Are you sure you want to delete this item?')) return;
     try {
+      const targetItem = items.find(i => i.id === id);
+      const itemName = (targetItem?.name || targetItem?.title || targetItem?.full_name || id) as string;
+      const moduleName = MODULE_LABELS[moduleKey] || moduleKey;
+
       await deleteDoc(doc(db, collectionName, id));
       setItems(prev => prev.filter(i => i.id !== id));
+
+      // Log activity
+      fetch('/api/admin/activities', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: `${moduleName} Deleted`,
+          action_type: 'delete',
+          performed_by: profile?.full_name || profile?.email || 'Admin',
+          admin_email: profile?.email || '',
+          user_role: profile?.role || 'admin',
+          module: moduleKey,
+          details: `Deleted "${itemName}" from ${collectionName}`,
+          target_id: id,
+          timestamp: new Date().toISOString(),
+        }),
+      }).catch(() => {});
+
       alert('Item deleted successfully!');
     } catch (e) {
       console.error(e);

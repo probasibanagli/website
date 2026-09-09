@@ -10,7 +10,7 @@ import { COLLECTIONS } from '@/lib/firestore/collections';
 import type { Hospital, BengaliDoctor, BengaliStaff, Pharmacy, HospitalReview } from '@/types';
 import { CITIES, TN_DISTRICTS } from '@/lib/constants';
 import ImageUpload from '@/components/admin/ImageUpload';
-import { Plus, Pencil, Trash2, X, Loader2, Shield, Building2, UserRound, PhoneCall, CheckCircle, Users, ArrowLeft, Save, Pill, Clock, Truck, Star, MessageSquare, Download, FileSpreadsheet, FileText, Search, Filter } from 'lucide-react';
+import { Plus, Pencil, Trash2, X, Loader2, Shield, Building2, UserRound, PhoneCall, CheckCircle, Users, ArrowLeft, Save, Pill, Clock, Truck, Star, MessageSquare, Download, FileSpreadsheet, FileText, Search, Filter, Landmark } from 'lucide-react';
 import { exportToCSV, exportToExcel } from '@/lib/utils/export';
 
 const DISTRICT_OPTIONS = TN_DISTRICTS.filter(d => d !== 'All Districts');
@@ -631,7 +631,10 @@ function AdminEmergencyPageContent() {
                     <input type="text" value={formData.opd_timings || ''} onChange={e => setFormData({...formData, opd_timings: e.target.value})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" placeholder="e.g. Mon-Sat 10:00 AM - 2:00 PM" />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Google Rating (e.g. 4.8 ⭐)</label>
+                    <label className="text-sm font-semibold text-text-primary mb-1.5 flex items-center gap-1.5">
+                      <span>Google Rating (e.g. 4.8)</span>
+                      <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-400" />
+                    </label>
                     <input type="number" step="0.1" min="1" max="5" value={formData.google_rating || ''} onChange={e => setFormData({...formData, google_rating: parseFloat(e.target.value) || undefined})} className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm" placeholder="e.g. 4.8" />
                   </div>
                   <div>
@@ -811,7 +814,9 @@ function AdminEmergencyPageContent() {
                             : 'bg-white text-text-primary border-border hover:bg-slate-50'
                         }`}
                       >
-                        <div className="text-xl">🏛️</div>
+                        <div className="p-1.5 rounded-lg bg-white/20">
+                          <Landmark className="w-5 h-5" />
+                        </div>
                         <div>
                           <div className="font-bold text-sm">Central Government</div>
                           <div className={`text-xs mt-0.5 ${ (formData.government_level || 'Central Government') === 'Central Government' ? 'text-blue-100' : 'text-text-muted'}`}>
@@ -834,7 +839,9 @@ function AdminEmergencyPageContent() {
                             : 'bg-white text-text-primary border-border hover:bg-slate-50'
                         }`}
                       >
-                        <div className="text-xl">🏬</div>
+                        <div className="p-1.5 rounded-lg bg-white/20">
+                          <Building2 className="w-5 h-5" />
+                        </div>
                         <div>
                           <div className="font-bold text-sm">State Government (Tamil Nadu)</div>
                           <div className={`text-xs mt-0.5 ${ formData.government_level === 'State Government' ? 'text-emerald-100' : 'text-text-muted'}`}>
@@ -1373,7 +1380,7 @@ function AdminEmergencyPageContent() {
                         <div className="flex flex-col gap-1">
                           <div className="flex items-center gap-1.5 font-bold text-amber-700 text-xs">
                             <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-500" />
-                            <span>{item.google_rating ? item.google_rating.toFixed(1) : '4.8'} ⭐</span>
+                            <span>{item.google_rating ? item.google_rating.toFixed(1) : '4.8'}</span>
                             <span className="text-text-muted font-normal">({item.google_review_count || 326} reviews)</span>
                           </div>
                           {(item.google_review_url || item.google_review_link) ? (
@@ -1408,12 +1415,22 @@ function AdminEmergencyPageContent() {
                       <td className="px-5 py-4 text-sm text-text-primary font-medium">
                         <div className="font-bold text-text-primary text-base">{item.name}</div>
                         <div className="text-xs font-semibold mt-1">
-                          <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-[11px] ${
+                          <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] ${
                             (item.government_level || 'Central Government') === 'Central Government'
                               ? 'bg-blue-100 text-blue-800 font-bold border border-blue-200'
                               : 'bg-emerald-100 text-emerald-800 font-bold border border-emerald-200'
                           }`}>
-                            {(item.government_level || 'Central Government') === 'Central Government' ? '🏛️ Central Government' : '🏬 State Government'}
+                            {(item.government_level || 'Central Government') === 'Central Government' ? (
+                              <>
+                                <Landmark className="w-3 h-3 text-blue-700" />
+                                <span>Central Government</span>
+                              </>
+                            ) : (
+                              <>
+                                <Building2 className="w-3 h-3 text-emerald-700" />
+                                <span>State Government</span>
+                              </>
+                            )}
                           </span>
                         </div>
                       </td>

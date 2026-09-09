@@ -87,6 +87,19 @@ export async function POST(request: Request) {
       created_at: now, updated_at: now, created_by: user.uid, is_active: true,
       is_first_login: true,
     });
+
+    await adminDb.collection('activities').add({
+      action: `${role === 'superadmin' ? 'Super Admin' : 'Admin'} Account Created`,
+      action_type: 'create',
+      performed_by: user.full_name || 'Super Admin',
+      admin_email: user.email || '',
+      user_role: user.role || 'superadmin',
+      module: 'users',
+      target_id: newUser.uid,
+      details: `Created new ${role || 'admin'} account for "${full_name}" (${email})`,
+      timestamp: now,
+    }).catch(() => {});
+
     return NextResponse.json({ uid: newUser.uid });
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : 'Failed to create user';

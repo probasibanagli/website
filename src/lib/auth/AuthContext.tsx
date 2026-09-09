@@ -167,6 +167,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (!document.cookie.includes('session=temp_admin_cookie')) {
         document.cookie = "session=temp_session_cookie; path=/";
       }
+      fetch('/api/admin/activities', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'Super Admin Login',
+          action_type: 'login',
+          performed_by: 'Super Admin',
+          admin_email: 'admin@pro.in',
+          user_role: 'superadmin',
+          details: 'Super Admin logged in (Direct authentication)',
+          timestamp: new Date().toISOString(),
+        }),
+      }).catch(() => {});
       try {
         await signInWithEmailAndPassword(auth, email, password);
       } catch (err) {
@@ -175,7 +188,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       window.location.href = '/admin';
       return;
     }
-    await signInWithEmailAndPassword(auth, email, password);
+    const cred = await signInWithEmailAndPassword(auth, email, password);
+    try {
+      const snap = await getDoc(doc(db, 'users', cred.user.uid));
+      if (snap.exists()) {
+        const uData = snap.data() as UserProfile;
+        if (uData.role === 'admin' || uData.role === 'superadmin') {
+          fetch('/api/admin/activities', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              action: uData.role === 'superadmin' ? 'Super Admin Login' : 'Admin Login',
+              action_type: 'login',
+              performed_by: uData.full_name || uData.email || 'Admin',
+              admin_email: uData.email || email,
+              user_role: uData.role,
+              details: `${uData.full_name || uData.email} logged in to Admin Panel`,
+              timestamp: new Date().toISOString(),
+            }),
+          }).catch(() => {});
+        }
+      }
+    } catch (e) {
+      console.warn('Could not log admin login activity:', e);
+    }
   };
 
   const signUp = async (email: string, password: string, fullName: string, phone?: string, phoneVerified = false, emailVerified = false) => {
@@ -295,6 +331,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       await updateDoc(doc(db, 'users', user.uid), updates);
     }
 
+    if (existingProfile && (existingProfile.role === 'admin' || existingProfile.role === 'superadmin')) {
+      fetch('/api/admin/activities', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: existingProfile.role === 'superadmin' ? 'Super Admin Login' : 'Admin Login',
+          action_type: 'login',
+          performed_by: existingProfile.full_name || existingProfile.phone || 'Admin',
+          admin_email: existingProfile.email || existingProfile.phone || '',
+          user_role: existingProfile.role,
+          details: `${existingProfile.full_name || existingProfile.phone} logged in via Phone OTP`,
+          timestamp: new Date().toISOString(),
+        }),
+      }).catch(() => {});
+    }
+
     return { user, profile: existingProfile };
   };
 
@@ -355,6 +407,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
 
   const logOut = async () => {
+    try {
+      const currentProfile = state.profile;
+      if (currentProfile && (currentProfile.role === 'admin' || currentProfile.role === 'superadmin')) {
+        await fetch('/api/admin/activities', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: currentProfile.role === 'superadmin' ? 'Super Admin Logout' : 'Admin Logout',
+            action_type: 'logout',
+            performed_by: currentProfile.full_name || currentProfile.email || 'Admin',
+            admin_email: currentProfile.email || '',
+            user_role: currentProfile.role,
+            details: `${currentProfile.full_name || currentProfile.email} successfully logged out of admin session.`,
+            timestamp: new Date().toISOString(),
+          }),
+        }).catch(() => {});
+      }
+    } catch (e) {
+      console.warn('Logout activity log error:', e);
+    }
     document.cookie = "session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     await firebaseSignOut(auth);
   };
