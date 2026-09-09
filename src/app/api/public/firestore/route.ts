@@ -76,3 +76,70 @@ export async function GET(request: Request) {
     return NextResponse.json({ items: [], fallback: true, reason: error?.message });
   }
 }
+
+export async function POST(request: Request) {
+  try {
+    const body = await request.json();
+    const collectionName = body.collection;
+    const docData = body.data || body;
+    const customId = body.id || docData.id;
+
+    if (!collectionName || !WHITELISTED_COLLECTIONS.has(collectionName)) {
+      return NextResponse.json(
+        { error: 'Invalid or unauthorized collection access.' },
+        { status: 400 }
+      );
+    }
+
+    if (!docData || typeof docData !== 'object') {
+      return NextResponse.json(
+        { error: 'Invalid document payload.' },
+        { status: 400 }
+      );
+    }
+
+    const docId = customId || `doc-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+    const finalData = {
+      ...docData,
+      id: docId,
+      created_at: docData.created_at || new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    };
+
+    await adminDb.collection(collectionName).doc(docId).set(finalData, { merge: true });
+
+    return NextResponse.json({ success: true, id: docId, item: finalData });
+  } catch (error: any) {
+    console.error('API Firestore POST error:', error?.message || error);
+    return NextResponse.json(
+      { error: error?.message || 'Failed to save document to Firestore' },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(request: Request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const collectionName = searchParams.get('collection');
+    const docId = searchParams.get('docId');
+
+    if (!collectionName || !WHITELISTED_COLLECTIONS.has(collectionName) || !docId) {
+      return NextResponse.json(
+        { error: 'Invalid collection or docId parameter.' },
+        { status: 400 }
+      );
+    }
+
+    await adminDb.collection(collectionName).doc(docId).delete();
+
+    return NextResponse.json({ success: true, id: docId });
+  } catch (error: any) {
+    console.error('API Firestore DELETE error:', error?.message || error);
+    return NextResponse.json(
+      { error: error?.message || 'Failed to delete document from Firestore' },
+      { status: 500 }
+    );
+  }
+}
+

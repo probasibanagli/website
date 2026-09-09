@@ -236,6 +236,9 @@ function AdminEmergencyPageContent() {
     if (!confirm('Are you sure you want to delete this feedback review?')) return;
     try {
       setFeedbacks(prev => prev.filter(f => f.id !== id));
+      await fetch(`/api/public/firestore?collection=hospital_reviews&docId=${id}`, {
+        method: 'DELETE'
+      }).catch(err => console.warn('API DELETE review error:', err));
       await deleteDoc(doc(db, COLLECTIONS.hospital_reviews, id)).catch(() => {});
       try {
         const localData = JSON.parse(localStorage.getItem('hospital_reviews') || '[]');
@@ -1037,7 +1040,7 @@ function AdminEmergencyPageContent() {
           <p className="text-text-muted text-sm mt-1">Manage Hospitals, Doctors, Staff, and Pharmacy</p>
         </div>
         <div className="flex items-center gap-2">
-          {canEdit && (
+          {canEdit && activeTab !== 'feedbacks' && (
             <button onClick={openAdd} className="inline-flex items-center gap-2 px-4 py-2.5 bg-primary hover:bg-primary-dark text-white rounded-xl text-sm font-medium transition-colors shadow-md active:scale-95 cursor-pointer">
               <Plus className="w-4 h-4" /> Add New {activeTab === 'hospitals' ? 'Hospital' : activeTab === 'doctors' ? 'Doctor' : activeTab === 'staff' ? 'Staff' : 'Govt Pharmacy'}
             </button>
