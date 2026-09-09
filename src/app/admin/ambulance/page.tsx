@@ -186,6 +186,10 @@ function AmbulancePageContent() {
       const deadBodyIdx = getHeaderIndex(headers, ['dead body transportation', 'deadbodytransportation', 'deadbody']);
       const tnToWbIdx = getHeaderIndex(headers, ['tn to wb service', 'tntowbservice', 'tntowb']);
       const wbToTnIdx = getHeaderIndex(headers, ['wb to tn service', 'wbtotnservice', 'wbtotn']);
+      const contactPersonIdx = getHeaderIndex(headers, ['contact person name', 'contactpersonname', 'contact person', 'contactperson', 'person name', 'coordinator']);
+      const contactPhoneIdx = getHeaderIndex(headers, ['contact person phone', 'contactpersonphone', 'contact person number', 'contactphone', 'coordinator phone', 'coordinator number']);
+      const bengaliSpeakingIdx = getHeaderIndex(headers, ['bengali speaking', 'bengalispeaking', 'bengali speaking person', 'bengali availability', 'bengali available', 'bengali']);
+      const avatarIdx = getHeaderIndex(headers, ['avatar', 'avatar url', 'contact avatar', 'bengali contact avatar', 'image avatar']);
 
       let cityIdx = baseCityIdx !== -1 ? baseCityIdx : routeDirectionIdx;
 
@@ -259,6 +263,10 @@ function AmbulancePageContent() {
           dead_body_transport: parseBool(deadBodyIdx),
           tn_to_wb: parseBool(tnToWbIdx),
           wb_to_tn: parseBool(wbToTnIdx),
+          contact_person_name: contactPersonIdx !== -1 && r[contactPersonIdx] ? String(r[contactPersonIdx]).trim() : '',
+          contact_person_phone: contactPhoneIdx !== -1 && r[contactPhoneIdx] ? String(r[contactPhoneIdx]).trim() : '',
+          bengali_speaking: parseBool(bengaliSpeakingIdx),
+          bengali_contact_avatar: avatarIdx !== -1 && r[avatarIdx] ? String(r[avatarIdx]).trim() : '',
           created_at: now,
           updated_at: now,
         };
@@ -541,6 +549,92 @@ function AmbulancePageContent() {
                   ))}
                 </div>
               </div>
+
+              {/* Bengali-Speaking Contact Person Section */}
+              <div className="md:col-span-2 p-5 bg-orange-50/50 border border-orange-200/70 rounded-2xl space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-orange-200/50">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-full bg-orange-500/10 flex items-center justify-center text-orange-600 font-bold text-sm">
+                      বং
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-bold text-neutral-900">Bengali-Speaking Contact Person Details</h3>
+                      <p className="text-xs text-neutral-500">Provide direct support contact for Bengali patients & family</p>
+                    </div>
+                  </div>
+                  
+                  <label className="inline-flex items-center gap-2 px-3 py-1.5 bg-white border border-orange-200 rounded-xl text-xs font-bold text-orange-700 cursor-pointer shadow-sm hover:bg-orange-50 transition-colors">
+                    <input 
+                      type="checkbox" 
+                      checked={!!formData.bengali_speaking} 
+                      onChange={e => {
+                        const checked = e.target.checked;
+                        setFormData({
+                          ...formData, 
+                          bengali_speaking: checked,
+                          bengali_contact_avatar: checked ? (formData.bengali_contact_avatar || '/images/bengali_ambulance_contact_avatar.png') : formData.bengali_contact_avatar
+                        });
+                      }} 
+                      className="rounded text-orange-600 focus:ring-orange-500/20" 
+                    />
+                    Bengali-speaking Available
+                  </label>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-bold text-neutral-700 mb-1.5">Contact Person Name</label>
+                    <input 
+                      type="text" 
+                      value={formData.contact_person_name || ''} 
+                      onChange={e => setFormData({...formData, contact_person_name: e.target.value})} 
+                      className="w-full px-4 py-2.5 bg-white border border-border rounded-xl text-sm focus:border-orange-500 focus:outline-none" 
+                      placeholder="e.g. Subhashish Roy / Dr. Banerjee" 
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-neutral-700 mb-1.5">Contact Person Phone Number</label>
+                    <input 
+                      type="text" 
+                      value={formData.contact_person_phone || ''} 
+                      onChange={e => setFormData({...formData, contact_person_phone: e.target.value})} 
+                      className="w-full px-4 py-2.5 bg-white border border-border rounded-xl text-sm focus:border-orange-500 focus:outline-none" 
+                      placeholder="e.g. +91 98765 43210" 
+                    />
+                  </div>
+
+                  <div className="md:col-span-2 space-y-2 pt-2">
+                    <label className="block text-xs font-bold text-neutral-700">Bengali Contact Avatar (Cartoon Style)</label>
+                    <div className="flex flex-wrap items-center gap-4">
+                      {[
+                        { id: '/images/bengali_ambulance_contact_avatar.png', label: 'Male Coordinator Avatar' },
+                        { id: '/images/bengali_ambulance_contact_avatar_f.png', label: 'Female Coordinator Avatar' },
+                      ].map((av) => {
+                        const isSelected = (formData.bengali_contact_avatar === av.id) || (!formData.bengali_contact_avatar && av.id === '/images/bengali_ambulance_contact_avatar.png' && formData.bengali_speaking);
+                        return (
+                          <button
+                            type="button"
+                            key={av.id}
+                            onClick={() => setFormData({ ...formData, bengali_contact_avatar: av.id })}
+                            className={`flex items-center gap-3 p-2 pr-4 rounded-2xl border-2 transition-all cursor-pointer bg-white ${
+                              isSelected
+                                ? 'border-orange-500 ring-2 ring-orange-500/20 shadow-sm'
+                                : 'border-border hover:border-neutral-300'
+                            }`}
+                          >
+                            <img src={av.id} alt="" className="w-12 h-12 rounded-xl object-cover bg-neutral-100 shrink-0" />
+                            <div className="text-left">
+                              <p className="text-xs font-bold text-neutral-900">{av.label}</p>
+                              <p className="text-[10px] text-neutral-500">{isSelected ? '✓ Selected' : 'Click to select'}</p>
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
             
             <div className="flex items-center justify-end gap-3 pt-4 border-t border-border">
@@ -625,10 +719,10 @@ function AmbulancePageContent() {
               <thead>
                 <tr className="border-b border-border bg-surface/50 text-text-muted text-xs font-bold uppercase tracking-wider">
                   <th className="p-4">Ambulance Service Name</th>
+                  <th className="p-4">Bengali Contact</th>
                   <th className="p-4">Category</th>
                   <th className="p-4">Size</th>
                   <th className="p-4">Features</th>
-                  <th className="p-4">Type/Mode</th>
                   <th className="p-4">City</th>
                   <th className="p-4">Phone</th>
                   <th className="p-4">Address</th>
@@ -666,6 +760,30 @@ function AmbulancePageContent() {
                         )}
                       </td>
                       <td className="p-4 text-xs">
+                        {item.bengali_speaking || item.contact_person_name ? (
+                          <div className="flex items-center gap-2.5">
+                            <img 
+                              src={item.bengali_contact_avatar || '/images/bengali_ambulance_contact_avatar.png'} 
+                              alt="" 
+                              className="w-8 h-8 rounded-full object-cover border border-orange-200 bg-orange-50 shrink-0" 
+                            />
+                            <div>
+                              <div className="font-bold text-neutral-900 flex items-center gap-1">
+                                <span>{item.contact_person_name || 'Coordinator'}</span>
+                                {item.bengali_speaking && (
+                                  <span className="px-1.5 py-0.2 bg-orange-100 text-orange-700 text-[10px] font-bold rounded">বং</span>
+                                )}
+                              </div>
+                              <div className="text-text-muted text-[11px] font-medium">
+                                {item.contact_person_phone || item.phone || '-'}
+                              </div>
+                            </div>
+                          </div>
+                        ) : (
+                          <span className="text-text-muted text-xs">-</span>
+                        )}
+                      </td>
+                      <td className="p-4 text-xs">
                         <div className="font-bold uppercase text-neutral-700">
                           {item.main_category || 'local'}
                         </div>
@@ -679,7 +797,6 @@ function AmbulancePageContent() {
                       <td className="p-4 text-xs max-w-[150px] truncate" title={features}>
                         {features || <span className="text-text-muted text-xs">-</span>}
                       </td>
-                      <td className="p-4 text-xs font-semibold">{item.type_mode || '-'}</td>
                       <td className="p-4">{item.city}</td>
                       <td className="p-4 font-semibold text-text-primary">{item.phone || '-'}</td>
                       <td className="p-4 max-w-[240px] whitespace-normal break-words" title={item.address}>

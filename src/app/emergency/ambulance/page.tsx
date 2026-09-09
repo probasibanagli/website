@@ -41,16 +41,19 @@ export default function AmbulancePage() {
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [city, setCity] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+  const [bengaliOnly, setBengaliOnly] = useState(false);
 
   useEffect(() => {
     async function fetchAmbulances() {
       try {
         const res = await fetch('/api/public/firestore?collection=ambulances');
         const data = await res.json();
-        const items = data.items || [];
+        const items: Ambulance[] = Array.isArray(data) ? data : (data.items || []);
         const sorted = items.sort((a: Ambulance, b: Ambulance) => {
           const getScore = (item: Ambulance) => {
             let score = 0;
+            if (item.bengali_speaking) score += 5;
+            if (item.contact_person_name) score += 3;
             if (item.name?.trim()) score++;
             if (item.sub_category?.trim()) score++;
             if (item.type_mode?.trim()) score++;
@@ -62,13 +65,9 @@ export default function AmbulancePage() {
           };
 
           const scoreA = getScore(a);
-          const scoreB = getScore(b);
-
-          if (scoreA !== scoreB) {
-            return scoreB - scoreA;
-          }
-          return (a.name || '').localeCompare(b.name || '');
+          return getScore(b) - getScore(a);
         });
+
         setAmbulances(sorted);
       } catch (e) {
         console.error('Error fetching ambulances:', e);
@@ -114,23 +113,28 @@ export default function AmbulancePage() {
       if (sizeCat !== sizeFilter) return false;
     }
 
-    // 4. Additional Services filter
+    // 4. Bengali Support filter
+    if (bengaliOnly && !amb.bengali_speaking && !amb.contact_person_name) return false;
+
+    // 5. Additional Services filter
     if (selectedServices.patient_shifting && !amb.patient_shifting) return false;
     if (selectedServices.dead_body_transport && !amb.dead_body_transport) return false;
     if (selectedServices.tn_to_wb && !amb.tn_to_wb) return false;
     if (selectedServices.wb_to_tn && !amb.wb_to_tn) return false;
 
-    // 5. City filter
+    // 6. City filter
     if (city && amb.city !== city) return false;
 
-    // 6. Search query filter
+    // 7. Search query filter
     if (searchQuery) {
       const q = searchQuery.toLowerCase();
       const nameMatch = amb.name?.toLowerCase().includes(q);
       const addressMatch = amb.address?.toLowerCase().includes(q);
       const notesMatch = amb.source_notes?.toLowerCase().includes(q);
       const specMatch = amb.specialization?.toLowerCase().includes(q);
-      if (!nameMatch && !addressMatch && !notesMatch && !specMatch) return false;
+      const contactMatch = amb.contact_person_name?.toLowerCase().includes(q);
+      const contactPhoneMatch = amb.contact_person_phone?.toLowerCase().includes(q);
+      if (!nameMatch && !addressMatch && !notesMatch && !specMatch && !contactMatch && !contactPhoneMatch) return false;
     }
 
     return true;
@@ -316,6 +320,30 @@ export default function AmbulancePage() {
               </div>
             </div>
 
+            {/* BENGALI SUPPORT FILTER */}
+            <div className="space-y-3">
+              <div className="flex items-center gap-1.5">
+                <span className="w-1.5 h-4 bg-[#D85A30] rounded-full" />
+                <span className="text-[11px] font-bold text-text-muted uppercase tracking-wider">Bengali Support</span>
+              </div>
+              <button
+                onClick={() => setBengaliOnly(prev => !prev)}
+                className={`w-full flex items-center justify-between p-3.5 rounded-xl border text-xs font-bold transition-all ${
+                  bengaliOnly
+                    ? 'bg-orange-50 border-orange-300 text-orange-700 shadow-xs'
+                    : 'bg-white border-border hover:border-neutral-300 text-neutral-700'
+                }`}
+              >
+                <div className="flex items-center gap-2.5">
+                  <span className="w-6 h-6 rounded-full bg-orange-600 text-white font-black text-[10px] flex items-center justify-center">
+                    বং
+                  </span>
+                  <span>Bengali Speaking Available</span>
+                </div>
+                {bengaliOnly && <CheckCircle2 className="w-4 h-4 text-orange-600 fill-orange-100" />}
+              </button>
+            </div>
+
             {/* B. AMBULANCE SIZE */}
             <div className="space-y-3">
               <div className="flex items-center gap-1.5">
@@ -482,6 +510,60 @@ export default function AmbulancePage() {
                             ))}
                           </div>
                         )}
+
+                        {/* Bengali Contact Person Highlight Box */}
+                        {(amb.bengali_speaking || amb.contact_person_name) && (
+                          <div className="mt-2 p-3.5 bg-gradient-to-r from-orange-50/90 via-amber-50/70 to-orange-50/50 border border-orange-200/80 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xs">
+                            <div className="flex items-center gap-3">
+                              <div className="relative shrink-0">
+                                <img 
+                                  src={amb.bengali_contact_avatar || '/images/bengali_ambulance_contact_avatar.png'} 
+                                  alt={amb.contact_person_name || 'Bengali Coordinator'} 
+                                  className="w-12 h-12 rounded-2xl object-cover bg-white border-2 border-orange-300 shadow-sm"
+                                />
+                                <span className="absolute -bottom-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 text-[9px] font-bold text-white shadow-xs">
+                                  ✓
+                                </span>
+                              </div>
+                              <div>
+                                <div className="flex items-center gap-2 flex-wrap">
+                                  <span className="text-sm font-bold text-neutral-900 font-display">
+                                    {amb.contact_person_name || 'Bengali Support Coordinator'}
+                                  </span>
+                                  <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-orange-600 text-white text-[10px] font-extrabold rounded-full tracking-wide uppercase shadow-xs">
+                                    বাংলা সহায়তা
+                                  </span>
+                                </div>
+                                <p className="text-xs text-neutral-600 mt-0.5">
+                                  {amb.bengali_speaking 
+                                    ? 'Bengali-speaking support available for patients & families' 
+                                    : 'Direct Ambulance Coordinator'}
+                                </p>
+                              </div>
+                            </div>
+
+                            {amb.contact_person_phone && (
+                              <div className="flex items-center gap-2 w-full sm:w-auto shrink-0">
+                                <a 
+                                  href={`tel:${amb.contact_person_phone}`}
+                                  className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-3.5 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-xl text-xs font-bold transition-all shadow-xs active:scale-95"
+                                >
+                                  <Phone className="w-3.5 h-3.5 fill-white" />
+                                  <span>Call {amb.contact_person_name ? amb.contact_person_name.split(' ')[0] : 'Coordinator'}</span>
+                                </a>
+                                <a 
+                                  href={`https://wa.me/${amb.contact_person_phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(`Hello ${amb.contact_person_name || ''}, I need ambulance assistance from ProbasiBangali.`)}`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="inline-flex items-center justify-center w-8 h-8 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl transition-all shadow-xs active:scale-95"
+                                  title="Chat on WhatsApp"
+                                >
+                                  <span className="text-xs font-bold">WA</span>
+                                </a>
+                              </div>
+                            )}
+                          </div>
+                        )}
                       </div>
 
                       {/* Middle details */}
@@ -629,6 +711,30 @@ export default function AmbulancePage() {
                   );
                 })}
               </div>
+            </div>
+
+            {/* BENGALI SUPPORT */}
+            <div className="space-y-3">
+              <div className="flex items-center gap-1.5">
+                <span className="w-1.5 h-4 bg-[#D85A30] rounded-full" />
+                <span className="text-[11px] font-bold text-text-muted uppercase tracking-wider">Bengali Support</span>
+              </div>
+              <button
+                onClick={() => setBengaliOnly(prev => !prev)}
+                className={`w-full flex items-center justify-between p-3.5 rounded-xl border text-sm font-bold transition-all ${
+                  bengaliOnly
+                    ? 'bg-orange-50 border-orange-300 text-orange-700 shadow-xs'
+                    : 'bg-neutral-50 border-transparent text-neutral-700'
+                }`}
+              >
+                <div className="flex items-center gap-2.5">
+                  <span className="w-6 h-6 rounded-full bg-orange-600 text-white font-black text-[10px] flex items-center justify-center">
+                    বং
+                  </span>
+                  <span>Bengali Speaking Available</span>
+                </div>
+                {bengaliOnly && <CheckCircle2 className="w-4 h-4 text-orange-600 fill-orange-100" />}
+              </button>
             </div>
 
             {/* B. AMBULANCE SIZE */}
