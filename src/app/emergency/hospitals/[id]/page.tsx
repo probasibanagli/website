@@ -255,12 +255,29 @@ export default function HospitalDetailsPage({ params }: { params: Promise<{ id: 
         created_at: now
       };
 
+      // 1. Post to Server API (Firebase Admin SDK - guaranteed write)
+      try {
+        await fetch('/api/public/firestore', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            collection: 'hospital_reviews',
+            id: newReview.id,
+            data: newReview,
+          }),
+        });
+      } catch (apiErr) {
+        console.warn('API POST review error:', apiErr);
+      }
+
+      // 2. Client-side Firestore setDoc attempt as fallback
       try {
         await setDoc(doc(db, COLLECTIONS.hospital_reviews, newReview.id), newReview);
       } catch (err) {
-        console.warn('Error writing review to Firestore:', err);
+        console.warn('Error writing review to Firestore client SDK:', err);
       }
 
+      // 3. Save to localStorage
       try {
         const existingLocal = JSON.parse(localStorage.getItem('hospital_reviews') || '[]');
         localStorage.setItem('hospital_reviews', JSON.stringify([newReview, ...existingLocal]));
@@ -273,6 +290,7 @@ export default function HospitalDetailsPage({ params }: { params: Promise<{ id: 
       alert('Thank you! Your feedback has been submitted successfully.');
     } catch (err) {
       console.error('Error submitting review:', err);
+      alert('Failed to submit feedback. Please try again.');
     } finally {
       setSubmittingReview(false);
     }
