@@ -32,25 +32,21 @@ export function WelcomeModal({ initiallyOpen = false }: WelcomeModalProps) {
 
   const handleClose = () => {
     dismissModal();
-    setLanguage('en', true);
+    setLanguage('en');
   };
 
   const handleSelectEnglish = () => {
     if (selectedLang) return;
     setSelectedLang('en');
-    setLanguage('en', true);
-    setTimeout(() => {
-      dismissModal();
-    }, 150);
+    dismissModal();
+    setLanguage('en');
   };
 
   const handleSelectBengali = () => {
     if (selectedLang) return;
     setSelectedLang('bn');
-    setLanguage('bn', true);
-    setTimeout(() => {
-      dismissModal();
-    }, 180);
+    dismissModal();
+    setLanguage('bn');
   };
 
   // Only render the welcome modal on the landing page (homepage '/')

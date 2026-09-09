@@ -140,30 +140,44 @@ export function FeatureTour() {
     const scrollY = window.scrollY;
     const scrollX = window.scrollX;
 
+    if (currentStep.targetId === 'word-helper-fab') {
+      // Specifically position comfortably above the FAB with generous clearance
+      return {
+        bottom: `${window.innerHeight - targetRect.top + margin + 4}px`,
+        right: `${window.innerWidth - targetRect.right}px`,
+        width: '320px',
+        maxWidth: 'calc(100vw - 32px)',
+      };
+    }
+
     switch (currentStep.position) {
       case 'bottom':
         return {
           top: `${targetRect.bottom + scrollY + margin}px`,
           left: `${Math.max(margin, Math.min(window.innerWidth - 340, targetRect.left + scrollX + targetRect.width / 2 - 160))}px`,
           width: '320px',
+          maxWidth: 'calc(100vw - 32px)',
         };
       case 'top':
         return {
-          top: `${targetRect.top + scrollY - margin - 180}px`, // approximate height
+          top: `${targetRect.top + scrollY - margin - 200}px`,
           left: `${Math.max(margin, Math.min(window.innerWidth - 340, targetRect.left + scrollX + targetRect.width / 2 - 160))}px`,
           width: '320px',
+          maxWidth: 'calc(100vw - 32px)',
         };
       case 'left':
         return {
           top: `${targetRect.top + scrollY + targetRect.height / 2 - 100}px`,
           left: `${targetRect.left + scrollX - 320 - margin}px`,
           width: '320px',
+          maxWidth: 'calc(100vw - 32px)',
         };
       case 'right':
         return {
           top: `${targetRect.top + scrollY + targetRect.height / 2 - 100}px`,
           left: `${targetRect.right + scrollX + margin}px`,
           width: '320px',
+          maxWidth: 'calc(100vw - 32px)',
         };
       default:
         return {};
@@ -172,8 +186,8 @@ export function FeatureTour() {
 
   return (
     <div className="fixed inset-0 z-[99] pointer-events-none">
-      {/* SVG Overlay Spotlight */}
-      <div className="absolute inset-0 bg-black/45 backdrop-blur-[2px] transition-opacity duration-300 pointer-events-auto">
+      {/* SVG Overlay Spotlight - pure transparent cutout with dark overlay and NO blur filter so spotlighted target is crystal clear */}
+      <div className="absolute inset-0 bg-black/40 transition-opacity duration-300 pointer-events-auto">
         <svg className="w-full h-full">
           <defs>
             <mask id="spotlight-mask">
@@ -188,15 +202,15 @@ export function FeatureTour() {
               />
             </mask>
           </defs>
-          <rect width="100%" height="100%" fill="black" opacity="0.4" mask="url(#spotlight-mask)" />
+          <rect width="100%" height="100%" fill="black" opacity="0.45" mask="url(#spotlight-mask)" />
         </svg>
       </div>
 
       {/* Target element highlight ring (purely aesthetic border) */}
       <div
-        className="absolute transition-all duration-300 border-[3px] border-[#D85A30] animate-pulse pointer-events-none"
+        className="fixed transition-all duration-300 border-[3px] border-[#D85A30] animate-pulse pointer-events-none z-[100]"
         style={{
-          top: `${targetRect.top + window.scrollY - 6}px`,
+          top: `${targetRect.top - 6}px`,
           left: `${targetRect.left - 6}px`,
           width: `${targetRect.width + 12}px`,
           height: `${targetRect.height + 12}px`,
@@ -206,7 +220,7 @@ export function FeatureTour() {
 
       {/* Tooltip Card */}
       <div
-        className="absolute z-[100] bg-white rounded-2xl border border-black/5 shadow-2xl p-6 flex flex-col gap-4 pointer-events-auto animate-fade-in animate-slide-up"
+        className="fixed z-[101] bg-white rounded-2xl border border-black/5 shadow-2xl p-6 flex flex-col gap-4 pointer-events-auto animate-fade-in animate-slide-up"
         style={getTooltipStyle()}
       >
         <button

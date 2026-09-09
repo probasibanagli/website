@@ -142,32 +142,11 @@ export default function AmbulancePage() {
 
   return (
     <div className="min-h-screen bg-[#F8F7F4]">
-      {/* SOS Banner */}
-      <div className="bg-red-600 text-white">
-        <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-12 text-center">
-          <div className="flex items-center justify-center gap-2 text-sm text-white/80 mb-6">
-            <Link href="/" className="hover:text-white">Home</Link><span>/</span>
-            <span className="font-medium">Emergency SOS</span>
-          </div>
-
-          {/* SOS BUTTON */}
-          <button
-            onClick={() => setShowSOS(true)}
-            className="w-40 h-40 mx-auto rounded-full bg-white text-red-600 flex flex-col items-center justify-center shadow-2xl hover:scale-110 transition-transform animate-pulse-glow cursor-pointer mb-6"
-          >
-            <Siren className="w-12 h-12 mb-1" />
-            <span className="text-2xl font-black">SOS</span>
-          </button>
-          <h1 className="text-3xl sm:text-4xl font-bold font-display">Emergency & SOS</h1>
-          <p className="mt-2 text-white/80">One-tap access to emergency services. No login required.</p>
-        </div>
-      </div>
-
       {/* SOS Modal */}
       {showSOS && (
         <div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4" onClick={() => setShowSOS(false)}>
           <div className="bg-white rounded-3xl max-w-sm w-full p-6 space-y-3 animate-slide-up" onClick={(e) => e.stopPropagation()}>
-            <h2 className="text-xl font-bold text-center text-red-600 mb-4">⚠️ Emergency Options</h2>
+            <h2 className="text-xl font-bold text-center text-red-600 mb-4">⚠️ Emergency Quick Dial</h2>
             {[
               { label: 'Call Ambulance (108)', number: '108', color: 'bg-red-600' },
               { label: 'Call Police (100)', number: '100', color: 'bg-blue-600' },
@@ -184,226 +163,259 @@ export default function AmbulancePage() {
         </div>
       )}
 
-      <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        {/* Emergency Numbers */}
-        <h2 className="text-2xl font-bold font-display mb-6">Emergency Numbers</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-12">
-          {emergencyNumbers.map((em) => (
-            <a key={em.number} href={`tel:${em.number}`}>
-              <Card className="group flex items-center gap-4 hover:border-red-300">
-                <div className="w-14 h-14 rounded-2xl bg-surface border border-border/40 flex items-center justify-center shrink-0 shadow-sm group-hover:scale-110 transition-transform">
-                  {em.icon(em.color)}
-                </div>
-                <div>
-                  <h3 className="font-bold text-text-primary">{em.label}</h3>
-                  <p className="text-2xl font-black text-primary">{em.number}</p>
-                  <p className="text-xs text-text-muted">{em.desc}</p>
-                </div>
-              </Card>
-            </a>
-          ))}
-        </div>
-
-        {/* Directory Header with Local/Flight Tabs */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border pb-4 mb-8">
+      {/* Main Container: Immediate above-the-fold search, filter, and listings */}
+      <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        
+        {/* Breadcrumb & Compact Header Bar */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 mb-6 border-b border-border/70">
           <div>
-            <h2 className="text-2xl font-bold font-display">Ambulance Directory</h2>
-            <p className="text-text-muted text-sm mt-1">Browse and filter verified medical transport services</p>
-            
-            <div className="mt-4 flex flex-col sm:flex-row sm:items-center gap-3 relative z-30">
-              {/* Search */}
-              <div className="relative flex-1 min-w-[200px] md:max-w-xs">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
-                <input 
-                  value={searchQuery} 
-                  onChange={(e) => setSearchQuery(e.target.value)} 
-                  placeholder="Search ambulances by name or area..." 
-                  className="w-full pl-10 pr-4 py-2 bg-white border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" 
-                />
-              </div>
-
-              {/* City select */}
-              <select 
-                value={city} 
-                onChange={(e) => setCity(e.target.value)} 
-                className="px-4 py-2 rounded-xl border border-border text-sm bg-white cursor-pointer min-w-[160px]"
-              >
-                <option value="">All Cities</option>
-                {CITIES.map((c) => <option key={c} value={c}>{c}</option>)}
-              </select>
+            <div className="flex items-center gap-2 text-xs text-text-muted mb-1.5">
+              <Link href="/" className="hover:text-primary transition-colors">Home</Link>
+              <span>/</span>
+              <span className="text-text-primary font-semibold">Ambulance Directory</span>
             </div>
+            <h1 className="text-2xl sm:text-3xl font-bold font-display text-text-primary flex items-center gap-2.5">
+              <Truck className="w-7 h-7 text-[#D85A30]" />
+              Ambulance Directory & SOS
+            </h1>
+            <p className="text-text-muted text-xs sm:text-sm mt-0.5">
+              Find verified road, train, and air ambulance services with Bengali support
+            </p>
           </div>
-          
-          <div className="flex items-center gap-3">
-            {/* Mobile Filters Toggle */}
-            <button
-              onClick={() => setShowMobileFilters(true)}
-              className="lg:hidden flex items-center gap-2 px-4 py-2.5 bg-white border border-border rounded-xl text-sm font-semibold text-text-primary hover:bg-neutral-50 shadow-sm"
+
+          {/* Search, City & Action bar */}
+          <div className="flex flex-wrap items-center gap-2.5">
+            {/* Search Input */}
+            <div className="relative flex-1 sm:w-72 min-w-[200px]">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
+              <input 
+                value={searchQuery} 
+                onChange={(e) => setSearchQuery(e.target.value)} 
+                placeholder="Search ambulance, area, coordinator..." 
+                className="w-full pl-10 pr-4 py-2 bg-white border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#D85A30]/30 shadow-xs" 
+              />
+            </div>
+
+            {/* City Selector */}
+            <select 
+              value={city} 
+              onChange={(e) => setCity(e.target.value)} 
+              className="px-3.5 py-2 rounded-xl border border-border text-sm bg-white cursor-pointer min-w-[140px] shadow-xs outline-none focus:ring-2 focus:ring-[#D85A30]/30"
             >
-              <ListFilter className="w-4 h-4 text-primary" /> Filters
+              <option value="">All Cities</option>
+              {CITIES.map((c) => <option key={c} value={c}>{c}</option>)}
+            </select>
+
+            {/* Quick SOS Trigger Button */}
+            <button
+              onClick={() => setShowSOS(true)}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl text-sm shadow-sm hover:shadow-md transition-all active:scale-95 cursor-pointer shrink-0 animate-pulse-glow"
+            >
+              <Siren className="w-4 h-4" />
+              <span>SOS (108 / 112)</span>
             </button>
 
-            {/* Horizontal tabs removed - Filter moved to sidebar/modal */}
+            {/* Mobile Filter Toggle */}
+            <button
+              onClick={() => setShowMobileFilters(true)}
+              className="lg:hidden inline-flex items-center gap-2 px-3.5 py-2 bg-white border border-border rounded-xl text-sm font-semibold text-text-primary hover:bg-neutral-50 shadow-xs"
+            >
+              <ListFilter className="w-4 h-4 text-[#D85A30]" />
+              <span>Filters</span>
+            </button>
           </div>
         </div>
 
-        {/* Two-Column Grid: Left Sidebar (Filters), Right Content (Listings) */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
+        {/* Two-Column Grid: Left Sidebar (Emergency Numbers + Filters), Right Content (Listings) */}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
           
-          {/* 1. Sidebar Filters (Desktop View) */}
-          <div className="hidden lg:block bg-white rounded-[24px] border border-border/80 shadow-sm overflow-hidden p-6 space-y-8">
-            <div className="flex items-center gap-2 border-b border-border/50 pb-4">
-              <ListFilter className="w-5 h-5 text-text-primary" />
-              <h3 className="font-bold text-lg text-text-primary">Filters</h3>
-            </div>
+          {/* 1. Sidebar (Desktop View) */}
+          <div className="hidden lg:block space-y-6">
 
-            {/* 1. TRANSPORT TYPE */}
-            <div className="space-y-3">
-              <div className="flex items-center gap-1.5">
-                <span className="w-1.5 h-4 bg-[#D85A30] rounded-full" />
-                <span className="text-[11px] font-bold text-text-muted uppercase tracking-wider">Transport Type</span>
-              </div>
-              <div className="space-y-1">
-                {[
-                  { value: 'all', label: 'All Types' },
-                  { value: 'local', label: 'Local (Road)' },
-                  { value: 'flight', label: 'Flight (Air)' },
-                  { value: 'train', label: 'Train (Rail)' },
-                ].map((opt) => {
-                  const isActive = mainTab === opt.value;
-                  return (
-                    <button
-                      key={opt.value}
-                      onClick={() => handleMainTabChange(opt.value as any)}
-                      className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold transition-all ${
-                        isActive 
-                          ? 'bg-[#D85A30] text-white font-bold' 
-                          : 'text-text-primary hover:bg-neutral-50 hover:text-primary'
-                      }`}
-                    >
-                      <span>{opt.label}</span>
-                      {isActive && <CheckCircle2 className="w-4 h-4 text-white fill-white/20" />}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* 2. AGENCY CATEGORY */}
-            <div className="space-y-3">
-              <div className="flex items-center gap-1.5">
-                <span className="w-1.5 h-4 bg-[#D85A30] rounded-full" />
-                <span className="text-[11px] font-bold text-text-muted uppercase tracking-wider">Agency Category</span>
-              </div>
-              <div className="space-y-1">
-                {[
-                  { value: 'all', label: 'All Services' },
-                  { value: 'government', label: 'Government' },
-                  { value: 'private', label: 'Private' },
-                ].map((opt) => {
-                  const isActive = subFilter === opt.value;
-                  return (
-                    <button
-                      key={opt.value}
-                      onClick={() => setSubFilter(opt.value as any)}
-                      className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold transition-all ${
-                        isActive 
-                          ? 'bg-[#D85A30] text-white font-bold' 
-                          : 'text-text-primary hover:bg-neutral-50 hover:text-primary'
-                      }`}
-                    >
-                      <span>{opt.label}</span>
-                      {isActive && <CheckCircle2 className="w-4 h-4 text-white fill-white/20" />}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* BENGALI SUPPORT FILTER */}
-            <div className="space-y-3">
-              <div className="flex items-center gap-1.5">
-                <span className="w-1.5 h-4 bg-[#D85A30] rounded-full" />
-                <span className="text-[11px] font-bold text-text-muted uppercase tracking-wider">Bengali Support</span>
-              </div>
-              <button
-                onClick={() => setBengaliOnly(prev => !prev)}
-                className={`w-full flex items-center justify-between p-3.5 rounded-xl border text-xs font-bold transition-all ${
-                  bengaliOnly
-                    ? 'bg-orange-50 border-orange-300 text-orange-700 shadow-xs'
-                    : 'bg-white border-border hover:border-neutral-300 text-neutral-700'
-                }`}
-              >
-                <div className="flex items-center gap-2.5">
-                  <span className="w-6 h-6 rounded-full bg-orange-600 text-white font-black text-[10px] flex items-center justify-center">
-                    বং
-                  </span>
-                  <span>Bengali Speaking Available</span>
+            {/* Emergency Speed Dial Card */}
+            <div className="bg-white rounded-3xl border border-border/80 p-5 shadow-xs space-y-3.5">
+              <div className="flex items-center justify-between border-b border-border/50 pb-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-7 h-7 rounded-full bg-red-50 text-red-600 flex items-center justify-center">
+                    <Siren className="w-4 h-4" />
+                  </div>
+                  <h3 className="font-bold text-sm text-text-primary tracking-tight">Emergency Speed Dial</h3>
                 </div>
-                {bengaliOnly && <CheckCircle2 className="w-4 h-4 text-orange-600 fill-orange-100" />}
-              </button>
-            </div>
-
-            {/* B. AMBULANCE SIZE */}
-            <div className="space-y-3">
-              <div className="flex items-center gap-1.5">
-                <span className="w-1.5 h-4 bg-[#D85A30] rounded-full" />
-                <span className="text-[11px] font-bold text-text-muted uppercase tracking-wider">Ambulance Size</span>
+                <span className="text-[10px] bg-red-50 text-red-600 border border-red-100 px-2 py-0.5 rounded-full font-bold">24x7</span>
               </div>
-              <div className="flex flex-wrap gap-2">
+              
+              <div className="grid grid-cols-2 gap-2">
                 {[
-                  { value: 'all', label: 'All Sizes' },
-                  { value: 'small', label: 'Small' },
-                  { value: 'medium', label: 'Medium' },
-                  { value: 'large', label: 'Large' },
-                ].map((opt) => {
-                  const isActive = sizeFilter === opt.value;
-                  return (
-                    <button
-                      key={opt.value}
-                      onClick={() => setSizeFilter(opt.value as any)}
-                      className={`px-4 py-2 rounded-full text-xs font-semibold transition-all border ${
-                        isActive 
-                          ? 'bg-[#D85A30] border-[#D85A30] text-white font-bold' 
-                          : 'bg-white border-border hover:border-neutral-400 text-text-primary'
-                      }`}
-                    >
-                      {opt.label}
-                    </button>
-                  );
-                })}
+                  { label: 'Ambulance', number: '108', desc: 'Govt. 108', numColor: 'text-red-600' },
+                  { label: 'Emergency', number: '112', desc: 'All Helplines', numColor: 'text-neutral-900' },
+                  { label: 'Police', number: '100', desc: 'TN Police', numColor: 'text-blue-600' },
+                  { label: 'Fire', number: '101', desc: 'Fire Rescue', numColor: 'text-orange-600' },
+                ].map((item) => (
+                  <a
+                    key={item.number}
+                    href={`tel:${item.number}`}
+                    className="flex flex-col p-2.5 bg-surface/50 hover:bg-surface rounded-2xl border border-border/60 hover:border-red-200 transition-all text-left group"
+                  >
+                    <span className="text-[10px] text-text-muted font-medium group-hover:text-text-primary transition-colors">{item.label}</span>
+                    <span className={`text-lg font-black leading-tight ${item.numColor}`}>{item.number}</span>
+                  </a>
+                ))}
               </div>
             </div>
-
-            {/* C. ADDITIONAL SERVICES */}
-            <div className="space-y-3">
-              <div className="flex items-center gap-1.5">
-                <span className="w-1.5 h-4 bg-[#D85A30] rounded-full" />
-                <span className="text-[11px] font-bold text-text-muted uppercase tracking-wider">Additional Services</span>
+            
+            {/* Filters Box */}
+            <div className="bg-white rounded-3xl border border-border/80 shadow-xs overflow-hidden p-5 space-y-6">
+              <div className="flex items-center gap-2 border-b border-border/50 pb-3">
+                <ListFilter className="w-4 h-4 text-[#D85A30]" />
+                <h3 className="font-bold text-sm text-text-primary">Filter Ambulance Services</h3>
               </div>
-              <div className="space-y-1">
-                {[
-                  { key: 'patient_shifting', label: 'Patient Shifting', icon: <BriefcaseMedical className="w-4 h-4 shrink-0" /> },
-                  { key: 'dead_body_transport', label: 'Dead Body Transport', icon: <Truck className="w-4 h-4 shrink-0" /> },
-                  { key: 'tn_to_wb', label: 'Interstate (TN → WB)', icon: <ArrowLeftRight className="w-4 h-4 shrink-0" /> },
-                  { key: 'wb_to_tn', label: 'Interstate (WB → TN)', icon: <ArrowLeftRight className="w-4 h-4 shrink-0" /> },
-                ].map((srv) => {
-                  const isActive = selectedServices[srv.key as keyof typeof selectedServices];
-                  return (
-                    <button
-                      key={srv.key}
-                      onClick={() => toggleService(srv.key as any)}
-                      className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-xs font-bold transition-all ${
-                        isActive 
-                          ? 'bg-[#D85A30] text-white shadow-md' 
-                          : 'text-text-primary hover:bg-neutral-50'
-                      }`}
-                    >
-                      {srv.icon}
-                      <span>{srv.label}</span>
-                    </button>
-                  );
-                })}
+
+              {/* BENGALI SUPPORT FILTER */}
+              <div className="space-y-2.5">
+                <div className="flex items-center gap-1.5">
+                  <span className="w-1.5 h-3.5 bg-[#D85A30] rounded-full" />
+                  <span className="text-[11px] font-bold text-text-muted uppercase tracking-wider">Bengali Support</span>
+                </div>
+                <button
+                  onClick={() => setBengaliOnly(prev => !prev)}
+                  className={`w-full flex items-center justify-between p-3 rounded-2xl border text-xs font-bold transition-all cursor-pointer ${
+                    bengaliOnly
+                      ? 'bg-orange-50 border-orange-300 text-orange-700 shadow-xs ring-2 ring-orange-400/20'
+                      : 'bg-surface/50 border-border hover:border-neutral-300 text-neutral-700'
+                  }`}
+                >
+                  <div className="flex items-center gap-2.5">
+                    <span className="w-6 h-6 rounded-full bg-orange-600 text-white font-black text-[10px] flex items-center justify-center">
+                      বং
+                    </span>
+                    <span>Bengali Speaking Only</span>
+                  </div>
+                  {bengaliOnly && <CheckCircle2 className="w-4 h-4 text-orange-600 fill-orange-100" />}
+                </button>
+              </div>
+
+              {/* 1. TRANSPORT TYPE */}
+              <div className="space-y-2.5">
+                <div className="flex items-center gap-1.5">
+                  <span className="w-1.5 h-3.5 bg-[#D85A30] rounded-full" />
+                  <span className="text-[11px] font-bold text-text-muted uppercase tracking-wider">Transport Type</span>
+                </div>
+                <div className="grid grid-cols-2 gap-1.5">
+                  {[
+                    { value: 'all', label: 'All' },
+                    { value: 'local', label: 'Local Road' },
+                    { value: 'flight', label: 'Flight' },
+                    { value: 'train', label: 'Train' },
+                  ].map((opt) => {
+                    const isActive = mainTab === opt.value;
+                    return (
+                      <button
+                        key={opt.value}
+                        onClick={() => handleMainTabChange(opt.value as any)}
+                        className={`px-3 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer border text-center ${
+                          isActive 
+                            ? 'bg-[#D85A30] border-[#D85A30] text-white font-bold shadow-xs' 
+                            : 'bg-surface/40 border-border hover:border-neutral-300 text-text-primary'
+                        }`}
+                      >
+                        {opt.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* 2. AGENCY CATEGORY */}
+              <div className="space-y-2.5">
+                <div className="flex items-center gap-1.5">
+                  <span className="w-1.5 h-3.5 bg-[#D85A30] rounded-full" />
+                  <span className="text-[11px] font-bold text-text-muted uppercase tracking-wider">Agency Category</span>
+                </div>
+                <div className="grid grid-cols-3 gap-1.5">
+                  {[
+                    { value: 'all', label: 'All' },
+                    { value: 'government', label: 'Govt' },
+                    { value: 'private', label: 'Private' },
+                  ].map((opt) => {
+                    const isActive = subFilter === opt.value;
+                    return (
+                      <button
+                        key={opt.value}
+                        onClick={() => setSubFilter(opt.value as any)}
+                        className={`px-2.5 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer border text-center ${
+                          isActive 
+                            ? 'bg-[#D85A30] border-[#D85A30] text-white font-bold shadow-xs' 
+                            : 'bg-surface/40 border-border hover:border-neutral-300 text-text-primary'
+                        }`}
+                      >
+                        {opt.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* 3. AMBULANCE SIZE */}
+              <div className="space-y-2.5">
+                <div className="flex items-center gap-1.5">
+                  <span className="w-1.5 h-3.5 bg-[#D85A30] rounded-full" />
+                  <span className="text-[11px] font-bold text-text-muted uppercase tracking-wider">Ambulance Size</span>
+                </div>
+                <div className="grid grid-cols-2 gap-1.5">
+                  {[
+                    { value: 'all', label: 'All Sizes' },
+                    { value: 'small', label: 'Small' },
+                    { value: 'medium', label: 'Medium' },
+                    { value: 'large', label: 'Large' },
+                  ].map((opt) => {
+                    const isActive = sizeFilter === opt.value;
+                    return (
+                      <button
+                        key={opt.value}
+                        onClick={() => setSizeFilter(opt.value as any)}
+                        className={`px-3 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer border text-center ${
+                          isActive 
+                            ? 'bg-[#D85A30] border-[#D85A30] text-white font-bold shadow-xs' 
+                            : 'bg-surface/40 border-border hover:border-neutral-300 text-text-primary'
+                        }`}
+                      >
+                        {opt.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* 4. ADDITIONAL SERVICES */}
+              <div className="space-y-2.5">
+                <div className="flex items-center gap-1.5">
+                  <span className="w-1.5 h-3.5 bg-[#D85A30] rounded-full" />
+                  <span className="text-[11px] font-bold text-text-muted uppercase tracking-wider">Special Services</span>
+                </div>
+                <div className="space-y-1">
+                  {[
+                    { key: 'patient_shifting', label: 'Patient Shifting', icon: <BriefcaseMedical className="w-3.5 h-3.5 shrink-0" /> },
+                    { key: 'dead_body_transport', label: 'Dead Body Transport', icon: <Truck className="w-3.5 h-3.5 shrink-0" /> },
+                    { key: 'tn_to_wb', label: 'Interstate (TN → WB)', icon: <ArrowLeftRight className="w-3.5 h-3.5 shrink-0" /> },
+                    { key: 'wb_to_tn', label: 'Interstate (WB → TN)', icon: <ArrowLeftRight className="w-3.5 h-3.5 shrink-0" /> },
+                  ].map((srv) => {
+                    const isActive = selectedServices[srv.key as keyof typeof selectedServices];
+                    return (
+                      <button
+                        key={srv.key}
+                        onClick={() => toggleService(srv.key as any)}
+                        className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                          isActive 
+                            ? 'bg-[#D85A30] text-white shadow-xs' 
+                            : 'bg-surface/30 hover:bg-surface text-text-primary border border-border/50'
+                        }`}
+                      >
+                        {srv.icon}
+                        <span className="truncate">{srv.label}</span>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
             </div>
           </div>
